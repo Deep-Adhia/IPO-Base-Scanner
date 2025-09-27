@@ -205,3 +205,32 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# IPO Scanner specific files
+# Environment variables (contains sensitive data)
+.env
+
+# Generated data files (exclude from local development)
+# Note: GitHub Actions will force-add these files, so they can be committed by CI/CD
+recent_ipo_symbols.csv
+recent_ipo_symbols.txt
+ipo_signals.csv
+ipo_positions.csv
+
+# Backtest results (exclude from local development)
+# Note: GitHub Actions will force-add these files, so they can be committed by CI/CD
+hybrid_test_*.csv
+ipo_hybrid_results_*.csv
+backtest_results_*.csv
+proper_backtest_results_*.csv
+
+# Checkpoint files (local only, never commit)
+hybrid_checkpoint.pkl
+*.pkl
+
+# Log files
+*.log
+
+# Temporary files
+temp_*
+tmp_*
