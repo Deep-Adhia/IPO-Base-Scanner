@@ -75,31 +75,57 @@ import logging
 # Load environment
 load_dotenv()
 
-# Environment variables with better error handling
+# Helper functions for environment variables with robust defaults
+def get_env_int(key, default):
+    """Get environment variable as integer with fallback"""
+    try:
+        return int(os.getenv(key, default) or default)
+    except (ValueError, TypeError):
+        print(f"Warning: Invalid {key} value, using default: {default}")
+        return default
+
+def get_env_float(key, default):
+    """Get environment variable as float with fallback"""
+    try:
+        return float(os.getenv(key, default) or default)
+    except (ValueError, TypeError):
+        print(f"Warning: Invalid {key} value, using default: {default}")
+        return default
+
+def get_env_list(key, default, separator=","):
+    """Get environment variable as list with fallback"""
+    try:
+        value = os.getenv(key, default)
+        return [int(x.strip()) for x in value.split(separator) if x.strip()]
+    except (ValueError, TypeError):
+        print(f"Warning: Invalid {key} value, using default: {default}")
+        return [int(x.strip()) for x in default.split(separator)]
+
+# Environment variables with robust defaults
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# Handle IPO_YEARS_BACK with proper validation
-ipo_years_str = os.getenv("IPO_YEARS_BACK", "1")
-try:
-    IPO_YEARS = int(ipo_years_str) if ipo_years_str else 1
-except (ValueError, TypeError):
-    print(f"Warning: Invalid IPO_YEARS_BACK value '{ipo_years_str}', using default: 1")
-    IPO_YEARS = 1
-STOP_PCT         = float(os.getenv("STOP_PCT",         "0.03"))
+# Core configuration
+IPO_YEARS_BACK = get_env_int("IPO_YEARS_BACK", 1)
+STOP_PCT = get_env_float("STOP_PCT", 0.03)
+
 # Dynamic partial take per grade
-PT_A_PLUS       = float(os.getenv("PT_A_PLUS",        "0.15"))
-PT_B            = float(os.getenv("PT_B",             "0.12"))
-PT_C            = float(os.getenv("PT_C",             "0.10"))
-CONSOL_WINDOWS  = list(map(int, os.getenv("CONSOL_WINDOWS","10,20,40,80,120").split(",")))
-VOL_MULT         = float(os.getenv("VOL_MULT",        "1.2"))
-ABS_VOL_MIN      = float(os.getenv("ABS_VOL_MIN",     "3000000"))
-LOOKAHEAD        = int(os.getenv("LOOKAHEAD",        "80"))
-MAX_DAYS         = int(os.getenv("MAX_DAYS",         "200"))
-CACHE_FILE       = os.getenv("CACHE_FILE",           "ipo_cache.pkl")
-SIGNALS_CSV      = os.getenv("SIGNALS_CSV",         "ipo_signals.csv")
-POSITIONS_CSV    = os.getenv("POSITIONS_CSV",       "ipo_positions.csv")
-HEARTBEAT_RUNS   = int(os.getenv("HEARTBEAT_RUNS",    "0"))
+PT_A_PLUS = get_env_float("PT_A_PLUS", 0.15)
+PT_B = get_env_float("PT_B", 0.12)
+PT_C = get_env_float("PT_C", 0.10)
+# Trading parameters
+CONSOL_WINDOWS = get_env_list("CONSOL_WINDOWS", "10,20,40,80,120")
+VOL_MULT = get_env_float("VOL_MULT", 1.2)
+ABS_VOL_MIN = get_env_int("ABS_VOL_MIN", 3000000)
+LOOKAHEAD = get_env_int("LOOKAHEAD", 80)
+MAX_DAYS = get_env_int("MAX_DAYS", 200)
+# File paths
+CACHE_FILE = os.getenv("CACHE_FILE", "ipo_cache.pkl")
+SIGNALS_CSV = os.getenv("SIGNALS_CSV", "ipo_signals.csv")
+POSITIONS_CSV = os.getenv("POSITIONS_CSV", "ipo_positions.csv")
+
+# System parameters
+HEARTBEAT_RUNS = get_env_int("HEARTBEAT_RUNS", 0)
 
 # Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -112,8 +138,8 @@ def send_telegram(msg):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
         requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
-        except Exception as e:
-            logger.error(f"Telegram error: {e}")
+    except Exception as e:
+        logger.error(f"Telegram error: {e}")
 
 def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date):
     """Format detailed IPO signal alert"""
