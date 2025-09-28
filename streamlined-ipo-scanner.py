@@ -61,7 +61,7 @@ def send_telegram(msg):
             timeout=10)
     except Exception as e:
         logger.error(f"Telegram error: {e}")
-
+    
 def initialize_csvs():
     if not os.path.exists(SIGNALS_CSV):
         pd.DataFrame(columns=[
@@ -117,8 +117,8 @@ def fetch_data(symbol, start_date):
             return df.sort_values("DATE")
         except:
             time.sleep(1)
-    return None
-
+            return None
+    
 def update_positions():
     df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
     for idx, pos in df_pos[df_pos["status"]=="ACTIVE"].iterrows():
@@ -131,12 +131,32 @@ def update_positions():
         trailing = max(pos["stop_loss"], st.iloc[-1])
         pnl = (price - pos["entry_price"])/pos["entry_price"]*100
         days = (datetime.today().date()-start).days
+        
+        # Enhanced exit strategies
+        exit_reason = None
+        
+        # Early Base-Break Exit (0-10 days) - need to get base low from original signal
+        if days <= 10:
+            # For now, use a simple approach - if price drops below entry * 0.95 in first 10 days
+            if price < pos["entry_price"] * 0.95:
+                exit_reason = "Early Base Break"
+        
+        # Tiered Time-Based Stops
+        if days > 30 and price < pos["entry_price"] * 0.95:
+            exit_reason = "Time Stop -5%"
+        elif days > 60 and price < pos["entry_price"] * 0.92:
+            exit_reason = "Time Stop -8%"
+        
+        # Traditional stop loss
         if price <= trailing:
+            exit_reason = "Stop Loss"
+        
+        if exit_reason:
             df_pos.loc[idx, ["status","exit_date","exit_price","pnl_pct","days_held"]] = [
                 "CLOSED", datetime.today().strftime("%Y-%m-%d"),
                 price, pnl, days
             ]
-            send_telegram(f"🛑 <b>Stop Loss Hit</b>\n{sym} @ ₹{price:.2f}\nPnL {pnl:.1f}%")
+            send_telegram(f"🛑 <b>{exit_reason}</b>\n{sym} @ ₹{price:.2f}\nPnL {pnl:.1f}%")
         else:
             df_pos.loc[idx, ["current_price","trailing_stop","pnl_pct","days_held"]] = [
                 price, trailing, pnl, days
@@ -158,38 +178,62 @@ def detect_scan(symbols, listing_map):
         lhigh = df["HIGH"].iloc[0]
         for w in CONSOL_WINDOWS:
             if len(df) < w: continue
-            avgv = df["VOLUME"].iloc[-w:].mean()
-            for i in range(w, min(len(df),MAX_DAYS)):
-                perf = (df["CLOSE"].iat[i] - lhigh)/lhigh
+            for i in range(w, min(len(df), MAX_DAYS)):
+                perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
                 if not (0.08 <= -perf <= 0.35): continue
-                score = compute_grade_hybrid(df, i, w, avgv)
-                grade = assign_grade(score)
-                if grade == "D": continue
-                entry = df["OPEN"].iat[i]
-                stop = entry*(1-STOP_PCT)
-                date = df["DATE"].iat[i]
-                sid = f"{sym}_{date.strftime('%Y%m%d')}"
-                if sid in existing: continue
-                pt = dynamic_partial_take(grade)
-                row = {
-                    "signal_id":sid,"symbol":sym,"signal_date":date,
-                    "entry_price":entry,"grade":grade,"score":score,
-                    "stop_loss":stop,"target_price":entry*(1+pt),
-                    "status":"ACTIVE","exit_date":"","exit_price":0,
-                    "pnl_pct":0,"days_held":0
-                }
-                pd.concat([pd.read_csv(SIGNALS_CSV),pd.DataFrame([row])])\
-                  .to_csv(SIGNALS_CSV,index=False)
-                pos = {
-                    "symbol":sym,"entry_date":date,"entry_price":entry,
-                    "grade":grade,"current_price":entry,"stop_loss":stop,
-                    "trailing_stop":stop,"pnl_pct":0,"days_held":0,"status":"ACTIVE"
-                }
-                pd.concat([pd.read_csv(POSITIONS_CSV),pd.DataFrame([pos])])\
-                  .to_csv(POSITIONS_CSV,index=False)
-                send_telegram(f"🎯 <b>IPO Signal</b>\n{sym} {grade} @ ₹{entry:.2f}")
+                low, high2 = df["LOW"][:i+1].tail(w).min(), df["HIGH"][:i+1].tail(w).max()
+                prng = (high2 - low) / low * 100
+                if prng > 60: continue
+                avgv = df["VOLUME"][:i+1].tail(w).mean()
+                vol_ok = ((df["VOLUME"].iat[i] >= 2.5*avgv and df["VOLUME"].iloc[i-2:i+1].sum() >= 4*avgv) or
+                         df["VOLUME"].iat[i]/avgv >= VOL_MULT or
+                         (df["VOLUME"].iloc[i-2:i+1].sum() * df["CLOSE"].iat[i]) >= ABS_VOL_MIN)
+                if not vol_ok: continue
+                for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
+                    if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
+                        # Follow-through filter: next day close > base high and volume ≥110% of breakout day
+                        if j + 1 < len(df):
+                            breakout_close = df["CLOSE"].iat[j]
+                            breakout_volume = df["VOLUME"].iat[j]
+                            next_day_close = df["CLOSE"].iat[j + 1]
+                            next_day_volume = df["VOLUME"].iat[j + 1]
+                            base_high = df["HIGH"][j-w+1:j+1].max()
+
+                            if next_day_close <= base_high:
+                                continue
+                            if next_day_volume < 1.1 * breakout_volume:
+                                continue
+
+                        score = compute_grade_hybrid(df, j, w, avgv)
+                        grade = assign_grade(score)
+                        if grade == "D": continue
+                        
+                        entry = df["OPEN"].iat[j]
+                        stop = low * (1 - STOP_PCT)
+                        date = df["DATE"].iat[j]
+                        sid = f"{sym}_{date.strftime('%Y%m%d')}"
+                        if sid in existing: continue
+                        
+                        pt = dynamic_partial_take(grade)
+                        row = {
+                            "signal_id": sid, "symbol": sym, "signal_date": date,
+                            "entry_price": entry, "grade": grade, "score": score,
+                            "stop_loss": stop, "target_price": entry*(1+pt),
+                            "status": "ACTIVE", "exit_date": "", "exit_price": 0,
+                            "pnl_pct": 0, "days_held": 0
+                        }
+                        pd.concat([pd.read_csv(SIGNALS_CSV), pd.DataFrame([row])])\
+                          .to_csv(SIGNALS_CSV, index=False)
+                        pos = {
+                            "symbol": sym, "entry_date": date, "entry_price": entry,
+                            "grade": grade, "current_price": entry, "stop_loss": stop,
+                            "trailing_stop": stop, "pnl_pct": 0, "days_held": 0, "status": "ACTIVE"
+                        }
+                        pd.concat([pd.read_csv(POSITIONS_CSV), pd.DataFrame([pos])])\
+                          .to_csv(POSITIONS_CSV, index=False)
+                        send_telegram(f"🎯 <b>IPO Signal</b>\n{sym} {grade} @ ₹{entry:.2f}")
+                        break
                 break
-            break
 
 def weekly_summary():
     df = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"])

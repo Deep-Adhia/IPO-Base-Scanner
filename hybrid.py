@@ -195,11 +195,20 @@ def smart_b_filters(df, entry_idx, avg_vol):
     close = df['CLOSE']
     rsi = compute_rsi(close)
     macd_line, macd_signal = compute_macd(close)
-    momentum_ok = (rsi.iloc[entry_idx] > 55) and (macd_line.iloc[entry_idx] > macd_signal.iloc[entry_idx])
+
+    # Require RSI >= 60 for a stronger momentum filter
+    if rsi.iloc[entry_idx] < 60:
+        return False
+
+    # Require MACD line to be above signal by 0.1% of closing price
+    if (macd_line.iloc[entry_idx] - macd_signal.iloc[entry_idx]) < 0.001 * close.iloc[entry_idx]:
+        return False
+
     volume_ok = df['VOLUME'].iat[entry_idx] > 2.5*avg_vol
     ema20 = close.ewm(span=20).mean()
     trend_ok = close.iloc[entry_idx] > ema20.iloc[entry_idx]
-    return momentum_ok and volume_ok and trend_ok
+
+    return volume_ok and trend_ok
 
 def smart_c_filters(df, entry_idx, entry_price, w, avg_vol):
     c_score = 0
@@ -232,6 +241,32 @@ def reject_quick_losers(df, entry_idx, w, avg_vol):
     current_price = close.iloc[entry_idx]
     if current_price < recent_high * 0.92: red_flags += 1
     return red_flags >= 2
+
+def should_exit_early(df, entry_idx, current_idx, entry_price, base_low):
+    """Check for early exit conditions to prevent big losses"""
+    current_price = df['CLOSE'].iat[current_idx]
+    days_held = current_idx - entry_idx
+    
+    # Early stop if drops below base low within first 10 days
+    if days_held <= 10 and current_price < base_low:
+        return True, "Base Break"
+    
+    # Progressive stop loss - tighter stops for longer holds without profit
+    if days_held > 30 and current_price < entry_price * 0.95:  # -5% after 30 days
+        return True, "Time Stop"
+    
+    if days_held > 60 and current_price < entry_price * 0.92:  # -8% after 60 days
+        return True, "Extended Time Stop"
+    
+    return False, None
+
+def get_dynamic_stop_loss(entry_price, base_low, days_held):
+    """Calculate dynamic stop loss based on time held - LESS AGGRESSIVE"""
+    base_stop = base_low * 0.98  # 2% below base low
+    # Much less aggressive: only tighten after 100+ days
+    time_stop = entry_price * (0.97 - (max(0, days_held - 100) * 0.0001))
+    
+    return max(base_stop, time_stop)
 
 # Environment variables already loaded at the top
 
@@ -333,21 +368,43 @@ for idx, row in ipo_df.iterrows():
             if prng > 60:
                 continue
             avgv = df['VOLUME'][:i+1].tail(w).mean()
-            vol_ok = ((df['VOLUME'].iat[i] >= 2.5*avgv and df['VOLUME'].iloc[i-2:i+1].sum() >= 4*avgv) or 
+            vol_ok = ((df['VOLUME'].iat[i] >= 2.5*avgv and df['VOLUME'].iloc[i-2:i+1].sum() >= 4*avgv) or
                      df['VOLUME'].iat[i]/avgv >= VOL_MULT or
                      (df['VOLUME'].iloc[i-2:i+1].sum() * df['CLOSE'].iat[i]) >= ABS_VOL_MIN)
             if not vol_ok:
                 continue
             for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
                 if df['HIGH'].iat[j] > max(high2, lhigh*0.97):
+                    # Follow-through filter: next day close > base high and volume ≥110% of breakout day
+                    if j + 1 < len(df):
+                        breakout_close = df['CLOSE'].iat[j]
+                        breakout_volume = df['VOLUME'].iat[j]
+                        next_day_close = df['CLOSE'].iat[j + 1]
+                        next_day_volume = df['VOLUME'].iat[j + 1]
+                        base_high = df['HIGH'][j-w+1:j+1].max()
+
+                        if next_day_close <= base_high:
+                            continue
+                        if next_day_volume < 1.1 * breakout_volume:
+                            continue
+
                     if reject_quick_losers(df, j, w, avgv):
                         stats['rejected_losers'] += 1
                         continue
+
                     score = compute_grade_hybrid(df, j, w, avgv)
                     grade = assign_grade(score)
-                    if grade == 'C' and not smart_c_filters(df, j, df['OPEN'].iat[j], w, avgv): continue
-                    if grade == 'B' and not smart_b_filters(df, j, avgv): continue
-                    if grade == 'D': continue
+
+                    # Enhanced B-grade filters with RSI and MACD
+                    if grade == 'B' and not smart_b_filters(df, j, avgv):
+                        continue
+
+                    if grade == 'C' and not smart_c_filters(df, j, df['OPEN'].iat[j], w, avgv):
+                        continue
+
+                    if grade == 'D':
+                        continue
+
                     entry_date = df['DATE'].iat[j]
                     signal_key = (sym, entry_date)
                     symbol_signals.append({
@@ -390,16 +447,44 @@ for idx, row in ipo_df.iterrows():
             exit_idx = None
             first_sell_price = None
             exit_label = "Full Exit"
+            days_to_first_profit = None
+            days_trailed_after_partial = None
+            
             for k in range(j+1, len(df)):
                 c, lo = df['CLOSE'].iat[k], df['LOW'].iat[k]
+                days_held = k - j
+                
+                # Early Base-Break Exit (0-10 days)
+                if days_held <= 10 and c < low:
+                    profit = (c - j_open) / j_open
+                    exit_label = "Early Base Break"
+                    exit_idx = k
+                    break
+                
+                # Tiered Time-Based Stops
+                if days_held > 30 and c < j_open * 0.95:
+                    profit = (c - j_open) / j_open
+                    exit_label = "Time Stop -5%"
+                    exit_idx = k
+                    break
+                
+                if days_held > 60 and c < j_open * 0.92:
+                    profit = (c - j_open) / j_open
+                    exit_label = "Time Stop -8%"
+                    exit_idx = k
+                    break
+                
                 if not part and c >= j_open * (1 + partial_take):
                     profit += 0.5 * partial_take
                     part = True
                     stop = j_open
                     first_sell_price = c
                     exit_label = "Partial+Stop"
+                    days_to_first_profit = days_held  # Track days to first profit
+                
                 if part:
                     stop = max(stop, st.iat[k])
+                
                 if lo <= stop or c <= stop:
                     if not part:
                         profit = (stop - j_open) / j_open
@@ -407,6 +492,7 @@ for idx, row in ipo_df.iterrows():
                         first_sell_price = None
                     else:
                         profit += 0.5 * ((stop - j_open) / j_open)
+                        days_trailed_after_partial = days_held - days_to_first_profit  # Track days trailed after partial
                     exit_idx = k
                     break
             else:
@@ -419,6 +505,7 @@ for idx, row in ipo_df.iterrows():
                 else:
                     profit += 0.5 * ((final - j_open) / j_open)
                     exit_label = "Partial+Hold"
+                    days_trailed_after_partial = days_held - days_to_first_profit  # Track days trailed after partial
                 exit_idx = len(df) - 1
             days_in_trade = (df['DATE'].iat[exit_idx] - entry).days if exit_idx is not None else (df['DATE'].iat[-1] - entry).days
             absolute_return_pct = (df['CLOSE'].iat[exit_idx] - j_open) / j_open * 100
@@ -426,7 +513,7 @@ for idx, row in ipo_df.iterrows():
             results.append((
                 sym, entry, j_open, grade, score, pos_size, df['DATE'].iat[exit_idx],
                 df['CLOSE'].iat[exit_idx], system_return_pct, absolute_return_pct,
-                days_in_trade, first_sell_price, exit_label
+                days_in_trade, first_sell_price, exit_label, days_to_first_profit, days_trailed_after_partial
             ))
 
 # Save final checkpoint
@@ -436,7 +523,7 @@ save_checkpoint(results, stats, processed_signals, processed_ipos)
 dfout = pd.DataFrame(results, columns=[
     'symbol', 'entry_date', 'entry_price', 'grade', 'score', 'position_size',
     'exit_date', 'exit_price', 'system_return_pct', 'absolute_return_pct', 'days_in_trade',
-    'first_sell_price', 'exit_label'
+    'first_sell_price', 'exit_label', 'days_to_first_profit', 'days_trailed_after_partial'
 ])
 print("🎯 HYBRID STRATEGY RESULTS:")
 print("=" * 35)
@@ -460,6 +547,45 @@ if len(dfout) > 0:
         avg_return = dfout[dfout['grade']==grade]['system_return_pct'].mean()
         win_rate = (dfout[dfout['grade']==grade]['system_return_pct'] > 0).mean() * 100
         print(f"{grade} Grade: {count} trades, {avg_return:.2f}% avg, {win_rate:.1f}% win rate")
+    
+    # New analytical columns
+    print(f"\n⏱️ Timing Analysis:")
+    partial_trades = dfout[dfout['days_to_first_profit'].notna()]
+    if len(partial_trades) > 0:
+        avg_days_to_profit = partial_trades['days_to_first_profit'].mean()
+        print(f"Average days to first profit: {avg_days_to_profit:.1f} days")
+        
+        trailed_trades = partial_trades[partial_trades['days_trailed_after_partial'].notna()]
+        if len(trailed_trades) > 0:
+            avg_days_trailed = trailed_trades['days_trailed_after_partial'].mean()
+            print(f"Average days trailed after partial: {avg_days_trailed:.1f} days")
+        else:
+            print("No trades were trailed after partial profit")
+    else:
+        print("No trades reached partial profit target")
+    
+    # Enhanced Exit Strategy Analysis
+    print(f"\n🚪 Exit Strategy Analysis:")
+    exit_counts = dfout['exit_label'].value_counts()
+    for exit_type, count in exit_counts.items():
+        avg_return = dfout[dfout['exit_label']==exit_type]['system_return_pct'].mean()
+        avg_days = dfout[dfout['exit_label']==exit_type]['days_in_trade'].mean()
+        print(f"{exit_type}: {count} trades, {avg_return:.2f}% avg return, {avg_days:.1f} days avg")
+    
+    # Losing Trades Analysis
+    losing_trades = dfout[dfout['system_return_pct'] < 0]
+    if len(losing_trades) > 0:
+        print(f"\n📉 Losing Trades Analysis:")
+        print(f"Total losing trades: {len(losing_trades)}")
+        print(f"Average loss: {losing_trades['system_return_pct'].mean():.2f}%")
+        print(f"Average days held: {losing_trades['days_in_trade'].mean():.1f} days")
+        
+        # Check how many were "Full Hold" vs other exits
+        full_hold_losses = losing_trades[losing_trades['exit_label'] == 'Full Hold']
+        if len(full_hold_losses) > 0:
+            print(f"Full Hold losses: {len(full_hold_losses)} ({len(full_hold_losses)/len(losing_trades)*100:.1f}%)")
+            print(f"Full Hold avg loss: {full_hold_losses['system_return_pct'].mean():.2f}%")
+            print(f"Full Hold avg days: {full_hold_losses['days_in_trade'].mean():.1f} days")
 
 # Save with backtest year range filename
 filename = f"hybrid_test_{IPO_YEARS_BACK}_years.csv"
