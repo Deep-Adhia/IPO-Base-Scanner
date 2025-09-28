@@ -613,8 +613,15 @@ def stop_loss_update_scan():
 
 def heartbeat():
     """Send heartbeat to confirm scanner is alive"""
-    active_positions = len(pd.read_csv(POSITIONS_CSV))
-    send_telegram(f"💓 <b>Scanner Heartbeat</b>\n\n⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n📈 Active Positions: {active_positions}")
+    logger.info("💓 Sending heartbeat...")
+    try:
+        active_positions = len(pd.read_csv(POSITIONS_CSV))
+        message = f"💓 <b>Scanner Heartbeat</b>\n\n⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n📈 Active Positions: {active_positions}"
+        logger.info(f"Heartbeat message: {message}")
+        send_telegram(message)
+        logger.info("✅ Heartbeat sent successfully")
+    except Exception as e:
+        logger.error(f"❌ Heartbeat failed: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
