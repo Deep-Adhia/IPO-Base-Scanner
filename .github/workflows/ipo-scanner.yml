@@ -74,6 +74,7 @@ jobs:
       
       - name: Upload CSV files
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ipo-data-${{ github.run_number }}
           path: |
@@ -81,15 +82,33 @@ jobs:
             ipo_positions.csv
             recent_ipo_symbols.csv
           retention-days: 30
+          if-no-files-found: warn
       
       - name: Commit and push CSV files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ipo_signals.csv ipo_positions.csv recent_ipo_symbols.csv
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
+          
+          # Check which files exist before adding them
+          files_to_add=""
+          if [ -f "ipo_signals.csv" ]; then
+            files_to_add="$files_to_add ipo_signals.csv"
+          fi
+          if [ -f "ipo_positions.csv" ]; then
+            files_to_add="$files_to_add ipo_positions.csv"
+          fi
+          if [ -f "recent_ipo_symbols.csv" ]; then
+            files_to_add="$files_to_add recent_ipo_symbols.csv"
+          fi
+          
+          if [ -n "$files_to_add" ]; then
+            git add $files_to_add
+            if git diff --staged --quiet; then
+              echo "No changes to commit"
+            else
+              git commit -m "Update IPO data - ${{ github.run_number }} [skip ci]"
+              git push
+            fi
           else
-            git commit -m "Update IPO data - ${{ github.run_number }} [skip ci]"
-            git push
+            echo "No CSV files found to commit"
           fi
