@@ -35,12 +35,24 @@ jobs:
         id: cache-talib
         uses: actions/cache@v4
         with:
-          path: /usr/local/lib/libta_lib.so
+          path: |
+            /usr/local/lib/libta_lib.so
+            /usr/local/include/ta-lib
+            /usr/local/bin/ta-config
           key: talib-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            talib-${{ runner.os }}-
+      
+      - name: Debug cache status
+        run: |
+          echo "Cache hit: ${{ steps.cache-talib.outputs.cache-hit }}"
+          echo "Cache key: talib-${{ runner.os }}-${{ hashFiles('requirements.txt') }}"
+          ls -la /usr/local/lib/ || echo "No /usr/local/lib directory"
       
       - name: Install system dependencies
         if: steps.cache-talib.outputs.cache-hit != 'true'
         run: |
+          echo "Installing TA-Lib from source..."
           sudo apt-get update
           sudo apt-get install -y build-essential wget
           wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
@@ -50,6 +62,7 @@ jobs:
           make
           sudo make install
           sudo ldconfig
+          echo "TA-Lib installation completed"
       
       - name: Cache Python dependencies
         id: cache-pip
@@ -69,10 +82,14 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
         run: |
-          # Check if mode was provided via workflow_dispatch
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.mode }}" ]; then
-            echo "Running in manual mode: ${{ github.event.inputs.mode }}"
-            python streamlined-ipo-scanner.py ${{ github.event.inputs.mode }}
+          # Always use the provided mode for manual triggers
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            MODE="${{ github.event.inputs.mode }}"
+            if [ -z "$MODE" ]; then
+              MODE="scan"
+            fi
+            echo "Running manual trigger in mode: $MODE"
+            python streamlined-ipo-scanner.py $MODE
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Running scheduled workflow"
             case "${{ github.schedule }}" in
