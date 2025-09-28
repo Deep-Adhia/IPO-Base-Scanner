@@ -2,32 +2,81 @@ name: IPO Scanner
 
 on:
   schedule:
-    - cron: '30 14 * * 1-5'   # Daily scan
+    - cron: '30 14 * * 1-5'   # Daily scan at 2:30 PM IST
+    - cron: '0 18 * * 1-5'    # Stop-loss update at 6:00 PM IST
     - cron: '30 14 * * 0'     # Weekly summary, Sunday
-    - cron: '30 15 * * 0'     # Monthly review, first Sunday
+    - cron: '0 15 1 * *'      # Monthly review, 1st of month
   workflow_dispatch:
     inputs:
       mode:
-        description: 'scan | weekly_summary | monthly_review'
+        description: 'scan | stop_loss_update | weekly_summary | monthly_review | heartbeat'
         required: true
         default: 'scan'
+        type: choice
+        options:
+          - scan
+          - stop_loss_update
+          - weekly_summary
+          - monthly_review
+          - heartbeat
 
 jobs:
   run-scanner:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - run: pip install -r requirements.txt
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
       - name: Run scanner
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
-        run: python streamlined-ipo-scanner.py ${{ github.event.inputs.mode }}
-      - uses: actions/upload-artifact@v3
+        run: |
+          if [ "${{ github.event.inputs.mode }}" != "" ]; then
+            python streamlined-ipo-scanner.py ${{ github.event.inputs.mode }}
+          else
+            # Determine mode based on schedule
+            if [ "${{ github.event_name }}" = "schedule" ]; then
+              case "${{ github.schedule }}" in
+                "30 14 * * 1-5") python streamlined-ipo-scanner.py scan ;;
+                "0 18 * * 1-5") python streamlined-ipo-scanner.py stop_loss_update ;;
+                "30 14 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
+                "0 15 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
+                *) python streamlined-ipo-scanner.py scan ;;
+              esac
+            else
+              python streamlined-ipo-scanner.py scan
+            fi
+          fi
+      
+      - name: Upload CSV files
+        uses: actions/upload-artifact@v4
         with:
-          name: ipo_signals
-          path: ipo_signals.csv
+          name: ipo-data-${{ github.run_number }}
+          path: |
+            ipo_signals.csv
+            ipo_positions.csv
+            recent_ipo_symbols.csv
+          retention-days: 30
+      
+      - name: Commit and push CSV files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ipo_signals.csv ipo_positions.csv recent_ipo_symbols.csv
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update IPO data - ${{ github.run_number }} [skip ci]"
+            git push
+          fi
