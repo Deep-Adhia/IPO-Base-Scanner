@@ -74,9 +74,18 @@ import logging
 
 # Load environment
 load_dotenv()
-BOT_TOKEN        = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_ID          = os.getenv("TELEGRAM_CHAT_ID")
-IPO_YEARS        = int(os.getenv("IPO_YEARS_BACK",    "2"))
+
+# Environment variables with better error handling
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+# Handle IPO_YEARS_BACK with proper validation
+ipo_years_str = os.getenv("IPO_YEARS_BACK", "1")
+try:
+    IPO_YEARS = int(ipo_years_str) if ipo_years_str else 1
+except (ValueError, TypeError):
+    print(f"Warning: Invalid IPO_YEARS_BACK value '{ipo_years_str}', using default: 1")
+    IPO_YEARS = 1
 STOP_PCT         = float(os.getenv("STOP_PCT",         "0.03"))
 # Dynamic partial take per grade
 PT_A_PLUS       = float(os.getenv("PT_A_PLUS",        "0.15"))
@@ -103,8 +112,8 @@ def send_telegram(msg):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
         requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
-    except Exception as e:
-        logger.error(f"Telegram error: {e}")
+        except Exception as e:
+            logger.error(f"Telegram error: {e}")
 
 def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date):
     """Format detailed IPO signal alert"""
