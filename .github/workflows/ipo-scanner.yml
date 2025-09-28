@@ -1,4 +1,4 @@
-name: IPO Scanner
+name: IPO Scanner v2
 
 on:
   schedule:
