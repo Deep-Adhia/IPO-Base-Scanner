@@ -69,21 +69,22 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
         run: |
-          if [ "${{ github.event.inputs.mode }}" != "" ]; then
+          # Check if mode was provided via workflow_dispatch
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.mode }}" ]; then
+            echo "Running in manual mode: ${{ github.event.inputs.mode }}"
             python streamlined-ipo-scanner.py ${{ github.event.inputs.mode }}
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "Running scheduled workflow"
+            case "${{ github.schedule }}" in
+              "30 14 * * 1-5") python streamlined-ipo-scanner.py scan ;;
+              "0 18 * * 1-5") python streamlined-ipo-scanner.py stop_loss_update ;;
+              "30 14 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
+              "0 15 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
+              *) python streamlined-ipo-scanner.py scan ;;
+            esac
           else
-            # Determine mode based on schedule
-            if [ "${{ github.event_name }}" = "schedule" ]; then
-              case "${{ github.schedule }}" in
-                "30 14 * * 1-5") python streamlined-ipo-scanner.py scan ;;
-                "0 18 * * 1-5") python streamlined-ipo-scanner.py stop_loss_update ;;
-                "30 14 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
-                "0 15 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
-                *) python streamlined-ipo-scanner.py scan ;;
-              esac
-            else
-              python streamlined-ipo-scanner.py scan
-            fi
+            echo "Running default mode: scan"
+            python streamlined-ipo-scanner.py scan
           fi
       
       - name: Upload CSV files
