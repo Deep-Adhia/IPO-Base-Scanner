@@ -105,10 +105,6 @@ def get_env_list(key, default, separator=","):
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# Debug logging for environment variables
-print(f"🔍 Debug - BOT_TOKEN: {'Set' if BOT_TOKEN else 'Missing'}")
-print(f"🔍 Debug - CHAT_ID: {CHAT_ID}")
-print(f"🔍 Debug - BOT_TOKEN length: {len(BOT_TOKEN) if BOT_TOKEN else 0}")
 
 # Core configuration
 IPO_YEARS_BACK = get_env_int("IPO_YEARS_BACK", 1)
@@ -137,17 +133,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 def send_telegram(msg):
-    logger.info(f"🔍 Telegram Debug - BOT_TOKEN: {'Set' if BOT_TOKEN else 'Missing'}")
-    logger.info(f"🔍 Telegram Debug - CHAT_ID: {CHAT_ID}")
-    logger.info(f"🔍 Telegram Debug - BOT_TOKEN length: {len(BOT_TOKEN) if BOT_TOKEN else 0}")
-    
     if not BOT_TOKEN or not CHAT_ID:
         logger.info("[Telegram disabled]")
         return
     
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    logger.info(f"🔍 Telegram Debug - URL: {url}")
-    logger.info(f"🔍 Telegram Debug - Message: {msg[:100]}...")
     
     try:
         response = requests.post(url, json={
@@ -156,8 +146,6 @@ def send_telegram(msg):
             "parse_mode": "HTML",
             "disable_notification": False  # Force notification in group chats
         }, timeout=10)
-        logger.info(f"🔍 Telegram Debug - Status: {response.status_code}")
-        logger.info(f"🔍 Telegram Debug - Response: {response.text}")
         
         if response.status_code == 200:
             logger.info("✅ Telegram message sent successfully!")
@@ -231,7 +219,7 @@ def initialize_csvs():
 
 def cache_recent_ipos():
     try:
-        df = fetch_recent_ipo_symbols(years_back=IPO_YEARS)
+        df = fetch_recent_ipo_symbols(years_back=IPO_YEARS_BACK)
         with open(CACHE_FILE, "wb") as f:
             pickle.dump(df, f)
     except:
@@ -371,6 +359,7 @@ def detect_scan(symbols, listing_map):
         symbols_processed += 1
         if symbols_processed % 20 == 0:
             logger.info(f"Processed {symbols_processed}/{len(symbols)} symbols...")
+        
         if sym in pd.read_csv(POSITIONS_CSV)["symbol"].tolist(): continue
         ld = listing_map.get(sym)
         if not ld: continue
@@ -666,6 +655,7 @@ if __name__ == "__main__":
     initialize_csvs()
     update_positions()
     symbols, listing_map = get_symbols_and_listing()
+    
 
     if args.mode == "scan":
         signals_found = detect_scan(symbols, listing_map)
