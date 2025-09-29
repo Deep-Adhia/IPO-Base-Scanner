@@ -31,21 +31,38 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Cache system packages
-        id: cache-apt
+      - name: Cache TA-Lib installation
+        id: cache-talib
         uses: actions/cache@v4
         with:
-          path: /var/cache/apt/archives
-          key: apt-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          path: |
+            /usr/local/lib/libta_lib.so*
+            /usr/local/include/ta-lib
+            /usr/local/bin/ta-config
+          key: talib-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
           restore-keys: |
-            apt-${{ runner.os }}-
+            talib-${{ runner.os }}-
       
-      - name: Install TA-Lib
+      - name: Install TA-Lib from source
+        if: steps.cache-talib.outputs.cache-hit != 'true'
         run: |
-          echo "Installing TA-Lib..."
+          echo "Installing TA-Lib from source (cache miss)..."
           sudo apt-get update
-          sudo apt-get install -y libta-lib-dev
+          sudo apt-get install -y build-essential wget
+          wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+          tar -xzf ta-lib-0.4.0-src.tar.gz
+          cd ta-lib/
+          ./configure --prefix=/usr/local
+          make
+          sudo make install
+          sudo ldconfig
           echo "TA-Lib installation completed"
+      
+      - name: Install TA-Lib (cached)
+        if: steps.cache-talib.outputs.cache-hit == 'true'
+        run: |
+          echo "Using cached TA-Lib installation..."
+          sudo ldconfig
       
       - name: Verify TA-Lib installation
         run: |
