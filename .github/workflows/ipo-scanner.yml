@@ -76,6 +76,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
+      - name: Debug environment variables
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
+        run: |
+          echo "=== Environment Variables Debug ==="
+          echo "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:0:10}..." # Show first 10 chars
+          echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID"
+          echo "IPO_YEARS_BACK: $IPO_YEARS_BACK"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Input mode: ${{ github.event.inputs.mode }}"
+          echo "=================================="
+      
       - name: Run scanner
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

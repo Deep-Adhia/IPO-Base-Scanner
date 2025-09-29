@@ -105,6 +105,11 @@ def get_env_list(key, default, separator=","):
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
+# Debug logging for environment variables
+print(f"🔍 Debug - BOT_TOKEN: {'Set' if BOT_TOKEN else 'Missing'}")
+print(f"🔍 Debug - CHAT_ID: {CHAT_ID}")
+print(f"🔍 Debug - BOT_TOKEN length: {len(BOT_TOKEN) if BOT_TOKEN else 0}")
+
 # Core configuration
 IPO_YEARS_BACK = get_env_int("IPO_YEARS_BACK", 1)
 STOP_PCT = get_env_float("STOP_PCT", 0.03)
@@ -138,8 +143,8 @@ def send_telegram(msg):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
         requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
-    except Exception as e:
-        logger.error(f"Telegram error: {e}")
+        except Exception as e:
+            logger.error(f"Telegram error: {e}")
 
 def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date):
     """Format detailed IPO signal alert"""
