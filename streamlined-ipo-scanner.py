@@ -137,14 +137,29 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 def send_telegram(msg):
+    logger.info(f"🔍 Telegram Debug - BOT_TOKEN: {'Set' if BOT_TOKEN else 'Missing'}")
+    logger.info(f"🔍 Telegram Debug - CHAT_ID: {CHAT_ID}")
+    logger.info(f"🔍 Telegram Debug - BOT_TOKEN length: {len(BOT_TOKEN) if BOT_TOKEN else 0}")
+    
     if not BOT_TOKEN or not CHAT_ID:
         logger.info("[Telegram disabled]")
         return
+    
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    logger.info(f"🔍 Telegram Debug - URL: {url}")
+    logger.info(f"🔍 Telegram Debug - Message: {msg[:100]}...")
+    
     try:
-        requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
+        response = requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
+        logger.info(f"🔍 Telegram Debug - Status: {response.status_code}")
+        logger.info(f"🔍 Telegram Debug - Response: {response.text}")
+        
+        if response.status_code == 200:
+            logger.info("✅ Telegram message sent successfully!")
+        else:
+            logger.error(f"❌ Telegram API error: {response.status_code} - {response.text}")
     except Exception as e:
-            logger.error(f"Telegram error: {e}")
+        logger.error(f"❌ Telegram error: {e}")
 
 def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date):
     """Format detailed IPO signal alert"""
