@@ -143,7 +143,7 @@ def send_telegram(msg):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
         requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
-        except Exception as e:
+    except Exception as e:
             logger.error(f"Telegram error: {e}")
 
 def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date):
@@ -245,7 +245,7 @@ def fetch_data(symbol, start_date):
             if df.empty: 
                 logger.warning(f"No data for {symbol}")
                 return None
-            
+    
             # Handle column name mismatches by standardizing column names
             if not df.empty:
                 # Create a mapping for common column name variations
@@ -276,8 +276,8 @@ def fetch_data(symbol, start_date):
                 
                 if missing_columns:
                     logger.warning(f"Missing required columns for {symbol}: {missing_columns}")
-            return None
-    
+                    return None
+            
             df["DATE"] = pd.to_datetime(df["DATE"]).dt.date
             return df.sort_values("DATE")
         except Exception as e:
@@ -290,7 +290,7 @@ def fetch_data(symbol, start_date):
                 time.sleep(2)
             else:
                 logger.error(f"Failed to fetch data for {symbol} after 3 attempts")
-                return None
+            return None
     
 def update_positions():
     df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
