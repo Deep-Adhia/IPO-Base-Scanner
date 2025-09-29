@@ -89,6 +89,30 @@ jobs:
           echo "Event name: ${{ github.event_name }}"
           echo "Input mode: ${{ github.event.inputs.mode }}"
           echo "=================================="
+          
+          # Test if CHAT_ID is properly set
+          if [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "❌ ERROR: TELEGRAM_CHAT_ID is empty!"
+            exit 1
+          else
+            echo "✅ TELEGRAM_CHAT_ID is set: $TELEGRAM_CHAT_ID"
+          fi
+          
+          # Test if BOT_TOKEN is properly set
+          if [ -z "$TELEGRAM_BOT_TOKEN" ]; then
+            echo "❌ ERROR: TELEGRAM_BOT_TOKEN is empty!"
+            exit 1
+          else
+            echo "✅ TELEGRAM_BOT_TOKEN is set (length: ${#TELEGRAM_BOT_TOKEN})"
+          fi
+      
+      - name: Test Telegram connectivity
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          echo "Testing Telegram connectivity..."
+          python test_env_vars.py
       
       - name: Run scanner
         env:
