@@ -31,37 +31,11 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Cache TA-Lib installation
-        id: cache-talib
-        uses: actions/cache@v4
-        with:
-          path: |
-            /usr/local/lib/libta_lib.so
-            /usr/local/include/ta-lib
-            /usr/local/bin/ta-config
-          key: talib-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            talib-${{ runner.os }}-
-      
-      - name: Debug cache status
+      - name: Install TA-Lib (simplified)
         run: |
-          echo "Cache hit: ${{ steps.cache-talib.outputs.cache-hit }}"
-          echo "Cache key: talib-${{ runner.os }}-${{ hashFiles('requirements.txt') }}"
-          ls -la /usr/local/lib/ || echo "No /usr/local/lib directory"
-      
-      - name: Install system dependencies
-        if: steps.cache-talib.outputs.cache-hit != 'true'
-        run: |
-          echo "Installing TA-Lib from source..."
+          echo "Installing TA-Lib..."
           sudo apt-get update
-          sudo apt-get install -y build-essential wget
-          wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-          tar -xzf ta-lib-0.4.0-src.tar.gz
-          cd ta-lib/
-          ./configure --prefix=/usr/local
-          make
-          sudo make install
-          sudo ldconfig
+          sudo apt-get install -y libta-lib-dev
           echo "TA-Lib installation completed"
       
       - name: Cache Python dependencies
@@ -76,6 +50,31 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
+      - name: Show workflow mode and timing
+        run: |
+          echo "🚀 =========================================="
+          echo "🚀 IPO Scanner Workflow Started"
+          echo "🚀 =========================================="
+          echo "📅 Date: $(date)"
+          echo "⏰ Time: $(date +%H:%M:%S)"
+          echo "🔄 Event: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "🎯 Mode: ${{ github.event.inputs.mode }} (Manual Trigger)"
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "⏰ Mode: Scheduled Run"
+            echo "📋 Schedule: ${{ github.schedule }}"
+            case "${{ github.schedule }}" in
+              "30 14 * * 1-5") echo "📊 Scheduled Mode: Daily Scan (2:30 PM IST)" ;;
+              "0 18 * * 1-5") echo "📊 Scheduled Mode: Stop-Loss Update (6:00 PM IST)" ;;
+              "30 14 * * 0") echo "📊 Scheduled Mode: Weekly Summary (Sunday 2:30 PM IST)" ;;
+              "0 15 1 * *") echo "📊 Scheduled Mode: Monthly Review (1st of month 3:00 PM IST)" ;;
+              *) echo "📊 Scheduled Mode: Unknown" ;;
+            esac
+          else
+            echo "🎯 Mode: Default (scan)"
+          fi
+          echo "🚀 =========================================="
+      
       - name: Debug environment variables
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -86,8 +85,6 @@ jobs:
           echo "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:0:10}..." # Show first 10 chars
           echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID"
           echo "IPO_YEARS_BACK: $IPO_YEARS_BACK"
-          echo "Event name: ${{ github.event_name }}"
-          echo "Input mode: ${{ github.event.inputs.mode }}"
           echo "=================================="
           
           # Test if CHAT_ID is properly set

@@ -649,6 +649,15 @@ if __name__ == "__main__":
                         nargs="?",default="scan")
     args = parser.parse_args()
 
+    # Show mode identification
+    print("🚀 ==========================================")
+    print("🚀 IPO Scanner Started")
+    print("🚀 ==========================================")
+    print(f"📅 Date: {datetime.now().strftime('%Y-%m-%d')}")
+    print(f"⏰ Time: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"🎯 Mode: {args.mode.upper()}")
+    print("🚀 ==========================================")
+
     initialize_csvs()
     update_positions()
     symbols, listing_map = get_symbols_and_listing()
