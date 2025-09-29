@@ -31,38 +31,45 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Cache TA-Lib installation
+      - name: Cache TA-Lib compiled binaries
         id: cache-talib
         uses: actions/cache@v4
         with:
           path: |
-            /usr/local/lib/libta_lib.so*
-            /usr/local/include/ta-lib
-            /usr/local/bin/ta-config
-          key: talib-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+            talib-install/
+          key: talib-binaries-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
           restore-keys: |
-            talib-${{ runner.os }}-
+            talib-binaries-${{ runner.os }}-
       
-      - name: Install TA-Lib from source
-        if: steps.cache-talib.outputs.cache-hit != 'true'
+      - name: Install TA-Lib (cached or build)
         run: |
-          echo "Installing TA-Lib from source (cache miss)..."
+          echo "Installing TA-Lib..."
           sudo apt-get update
           sudo apt-get install -y build-essential wget
-          wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-          tar -xzf ta-lib-0.4.0-src.tar.gz
-          cd ta-lib/
-          ./configure --prefix=/usr/local
-          make
-          sudo make install
-          sudo ldconfig
-          echo "TA-Lib installation completed"
-      
-      - name: Install TA-Lib (cached)
-        if: steps.cache-talib.outputs.cache-hit == 'true'
-        run: |
-          echo "Using cached TA-Lib installation..."
-          sudo ldconfig
+          
+          if [ -d "talib-install" ]; then
+            echo "Using cached TA-Lib installation..."
+            sudo cp -r talib-install/* /usr/local/
+            sudo ldconfig
+            echo "✅ Cached TA-Lib restored"
+          else
+            echo "Building TA-Lib from source..."
+            wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+            tar -xzf ta-lib-0.4.0-src.tar.gz
+            cd ta-lib/
+            ./configure --prefix=/usr/local
+            make
+            sudo make install
+            sudo ldconfig
+            
+            # Cache the installation for next time
+            echo "Caching TA-Lib installation..."
+            mkdir -p talib-install
+            sudo cp -r /usr/local/lib/libta_lib.so* talib-install/ 2>/dev/null || true
+            sudo cp -r /usr/local/include/ta-lib talib-install/ 2>/dev/null || true
+            sudo cp /usr/local/bin/ta-config talib-install/ 2>/dev/null || true
+            echo "✅ TA-Lib built and cached"
+          fi
       
       - name: Verify TA-Lib installation
         run: |
