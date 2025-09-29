@@ -150,7 +150,12 @@ def send_telegram(msg):
     logger.info(f"🔍 Telegram Debug - Message: {msg[:100]}...")
     
     try:
-        response = requests.post(url, json={"chat_id":CHAT_ID, "text":msg, "parse_mode":"HTML"}, timeout=10)
+        response = requests.post(url, json={
+            "chat_id": CHAT_ID, 
+            "text": msg, 
+            "parse_mode": "HTML",
+            "disable_notification": False  # Force notification in group chats
+        }, timeout=10)
         logger.info(f"🔍 Telegram Debug - Status: {response.status_code}")
         logger.info(f"🔍 Telegram Debug - Response: {response.text}")
         
