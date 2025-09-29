@@ -47,7 +47,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential wget
           
-          if [ -d "talib-install" ]; then
+          # Create cache directory
+          mkdir -p talib-install
+          
+          if [ -d "talib-install" ] && [ "$(ls -A talib-install 2>/dev/null)" ]; then
             echo "Using cached TA-Lib installation..."
             sudo cp -r talib-install/* /usr/local/
             sudo ldconfig
@@ -64,11 +67,16 @@ jobs:
             
             # Cache the installation for next time
             echo "Caching TA-Lib installation..."
-            mkdir -p talib-install
             sudo cp -r /usr/local/lib/libta_lib.so* talib-install/ 2>/dev/null || true
             sudo cp -r /usr/local/include/ta-lib talib-install/ 2>/dev/null || true
             sudo cp /usr/local/bin/ta-config talib-install/ 2>/dev/null || true
-            echo "✅ TA-Lib built and cached"
+            
+            # Ensure directory has content for caching
+            if [ "$(ls -A talib-install 2>/dev/null)" ]; then
+              echo "✅ TA-Lib built and cached"
+            else
+              echo "⚠️ Warning: No files cached (permission issue)"
+            fi
           fi
       
       - name: Verify TA-Lib installation
