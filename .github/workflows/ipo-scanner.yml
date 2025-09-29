@@ -31,12 +31,26 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Install TA-Lib (simplified)
+      - name: Cache system packages
+        id: cache-apt
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            apt-${{ runner.os }}-
+      
+      - name: Install TA-Lib
         run: |
           echo "Installing TA-Lib..."
           sudo apt-get update
           sudo apt-get install -y libta-lib-dev
           echo "TA-Lib installation completed"
+      
+      - name: Verify TA-Lib installation
+        run: |
+          echo "Verifying TA-Lib installation..."
+          python -c "import talib; print('✅ TA-Lib is available')" || echo "❌ TA-Lib not available"
       
       - name: Cache Python dependencies
         id: cache-pip
