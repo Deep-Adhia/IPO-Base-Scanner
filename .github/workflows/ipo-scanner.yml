@@ -19,11 +19,20 @@ on:
           - weekly_summary
           - monthly_review
           - heartbeat
+      environment:
+        description: 'Environment to use (production, staging, development)'
+        required: false
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - development
 
 jobs:
   run-scanner:
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ github.event.inputs.environment || 'production' }}
     steps:
       - uses: actions/checkout@v4
       
