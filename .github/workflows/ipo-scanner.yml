@@ -93,13 +93,26 @@ jobs:
           # Check if we have cached TA-Lib files
           if [ -d "talib-install" ] && [ -f "talib-install/lib/libta_lib.so" ]; then
             echo "✅ Found cached TA-Lib, installing..."
-            sudo cp -r talib-install/* /usr/local/
+            echo "Cache contents:"
+            find talib-install -type f -exec ls -la {} \;
+            
+            # Copy files to system locations
+            sudo cp -r talib-install/lib/* /usr/local/lib/ 2>/dev/null || true
+            sudo cp -r talib-install/include/* /usr/local/include/ 2>/dev/null || true
+            sudo cp -r talib-install/bin/* /usr/local/bin/ 2>/dev/null || true
             sudo ldconfig
+            
             echo "✅ TA-Lib installed from cache"
             # Install Python package
             pip install TA-Lib
             echo "✅ Python TA-Lib package installed from cache"
             exit 0
+          else
+            echo "❌ No valid cached TA-Lib found"
+            if [ -d "talib-install" ]; then
+              echo "Cache directory exists but is empty or invalid:"
+              ls -la talib-install/
+            fi
           fi
           
           echo "TA-Lib not found, building from source..."
@@ -116,17 +129,43 @@ jobs:
           
           # Cache the installation for next time
           echo "Caching TA-Lib installation..."
+          
+          # Remove old cache directory and create fresh one
+          rm -rf talib-install
           mkdir -p talib-install/lib talib-install/include talib-install/bin
           
-          # Copy files and verify they exist
-          sudo cp -r /usr/local/lib/libta_lib.so* talib-install/lib/ 2>/dev/null || echo "No lib files to copy"
-          sudo cp -r /usr/local/include/ta-lib talib-install/include/ 2>/dev/null || echo "No include files to copy"
-          sudo cp /usr/local/bin/ta-config talib-install/bin/ 2>/dev/null || echo "No bin files to copy"
+          # Copy files with proper error handling
+          echo "Copying library files..."
+          if ls /usr/local/lib/libta_lib.so* 1> /dev/null 2>&1; then
+            sudo cp -r /usr/local/lib/libta_lib.so* talib-install/lib/
+            echo "✅ Library files copied"
+          else
+            echo "❌ No library files found in /usr/local/lib/"
+          fi
+          
+          echo "Copying header files..."
+          if [ -d "/usr/local/include/ta-lib" ]; then
+            sudo cp -r /usr/local/include/ta-lib talib-install/include/
+            echo "✅ Header files copied"
+          else
+            echo "❌ No header files found in /usr/local/include/ta-lib"
+          fi
+          
+          echo "Copying binary files..."
+          if [ -f "/usr/local/bin/ta-config" ]; then
+            sudo cp /usr/local/bin/ta-config talib-install/bin/
+            echo "✅ Binary files copied"
+          else
+            echo "❌ No binary files found in /usr/local/bin/"
+          fi
+          
+          # Fix ownership
           sudo chown -R runner:runner talib-install/
           
           # Verify cache contents
-          echo "Cache contents after save:"
+          echo "=== Final cache contents ==="
           find talib-install -type f -exec ls -la {} \; || echo "No files in cache"
+          echo "Cache size: $(du -sh talib-install 2>/dev/null || echo '0B')"
           
           echo "✅ TA-Lib built and installed"
       
