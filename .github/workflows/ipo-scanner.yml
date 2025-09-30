@@ -43,6 +43,11 @@ jobs:
         with:
           python-version: '3.10'
       
+      - name: Prepare TA-Lib cache directory
+        run: |
+          mkdir -p talib-install
+          echo "Created talib-install directory"
+      
       - name: Cache TA-Lib installation
         id: cache-talib
         uses: actions/cache@v4
@@ -52,6 +57,7 @@ jobs:
           key: talib-${{ runner.os }}-v1
           restore-keys: |
             talib-${{ runner.os }}-
+          fail-on-cache-miss: false
 
       - name: Debug cache status
         run: |
@@ -95,7 +101,7 @@ jobs:
           sudo ldconfig
           
           # Cache the installation for next time
-          mkdir -p talib-install
+          mkdir -p talib-install/lib talib-install/include talib-install/bin
           sudo cp -r /usr/local/lib/libta_lib.so* talib-install/lib/ 2>/dev/null || true
           sudo cp -r /usr/local/include/ta-lib talib-install/include/ 2>/dev/null || true
           sudo cp /usr/local/bin/ta-config talib-install/bin/ 2>/dev/null || true
