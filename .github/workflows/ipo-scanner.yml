@@ -62,9 +62,8 @@ jobs:
         with:
           path: |
             talib-install/
-          key: talib-${{ runner.os }}-v2
+          key: talib-${{ runner.os }}-v1
           restore-keys: |
-            talib-${{ runner.os }}-v1
             talib-${{ runner.os }}-
           fail-on-cache-miss: false
 
@@ -141,9 +140,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: pip-${{ runner.os }}-v2-${{ hashFiles('requirements.txt') }}
+          key: pip-${{ runner.os }}-v1-${{ hashFiles('requirements.txt') }}
           restore-keys: |
-            pip-${{ runner.os }}-v1-${{ hashFiles('requirements.txt') }}
             pip-${{ runner.os }}-
       
       - name: Install Python dependencies
