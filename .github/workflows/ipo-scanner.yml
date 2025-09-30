@@ -43,7 +43,7 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Cache TA-Lib compiled binaries
+      - name: Cache TA-Lib installation
         id: cache-talib
         uses: actions/cache@v4
         with:
@@ -51,9 +51,9 @@ jobs:
             /usr/local/lib/libta_lib.so*
             /usr/local/include/ta-lib
             /usr/local/bin/ta-config
-          key: talib-binaries-${{ runner.os }}-v1
+          key: talib-${{ runner.os }}-v1
           restore-keys: |
-            talib-binaries-${{ runner.os }}-
+            talib-${{ runner.os }}-
       
       - name: Debug cache status
         run: |
@@ -66,17 +66,16 @@ jobs:
         run: |
           echo "Installing TA-Lib..."
           
-          # Check if TA-Lib is already installed from cache
+          # Check if TA-Lib is already available (from cache)
           if python -c "import talib" 2>/dev/null; then
             echo "✅ TA-Lib already available from cache"
             exit 0
           fi
           
-          echo "TA-Lib not found, installing system dependencies..."
+          echo "TA-Lib not found, building from source..."
           sudo apt-get update
           sudo apt-get install -y build-essential wget
           
-          echo "Building TA-Lib from source..."
           wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
           tar -xzf ta-lib-0.4.0-src.tar.gz
           cd ta-lib/
