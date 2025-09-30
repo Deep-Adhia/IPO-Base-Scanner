@@ -123,14 +123,48 @@ jobs:
       
       - name: Debug environment variables
         env:
+          # Telegram secrets
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          
+          # Core configuration
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
+          STOP_PCT: ${{ vars.STOP_PCT || '0.03' }}
+          
+          # Profit taking targets
+          PT_A_PLUS: ${{ vars.PT_A_PLUS || '0.15' }}
+          PT_B: ${{ vars.PT_B || '0.12' }}
+          PT_C: ${{ vars.PT_C || '0.10' }}
+          
+          # Trading parameters
+          CONSOL_WINDOWS: ${{ vars.CONSOL_WINDOWS || '10,20,40,80,120' }}
+          VOL_MULT: ${{ vars.VOL_MULT || '1.2' }}
+          ABS_VOL_MIN: ${{ vars.ABS_VOL_MIN || '3000000' }}
+          LOOKAHEAD: ${{ vars.LOOKAHEAD || '80' }}
+          MAX_DAYS: ${{ vars.MAX_DAYS || '200' }}
+          MAX_FLAT_HOLD_WEEKS: ${{ vars.MAX_FLAT_HOLD_WEEKS || '20' }}
+          
+          # File paths
+          CACHE_FILE: ${{ vars.CACHE_FILE || 'ipo_cache.pkl' }}
+          SIGNALS_CSV: ${{ vars.SIGNALS_CSV || 'ipo_signals.csv' }}
+          POSITIONS_CSV: ${{ vars.POSITIONS_CSV || 'ipo_positions.csv' }}
+          
+          # System parameters
+          HEARTBEAT_RUNS: ${{ vars.HEARTBEAT_RUNS || '0' }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
         run: |
           echo "=== Environment Variables Debug ==="
+          echo "🔐 Secrets:"
           echo "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:0:10}..." # Show first 10 chars
           echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID"
           echo "IPO_YEARS_BACK: $IPO_YEARS_BACK"
+          echo ""
+          echo "⚙️ Variables:"
+          echo "STOP_PCT: $STOP_PCT"
+          echo "PT_A_PLUS: $PT_A_PLUS, PT_B: $PT_B, PT_C: $PT_C"
+          echo "CONSOL_WINDOWS: $CONSOL_WINDOWS"
+          echo "VOL_MULT: $VOL_MULT, ABS_VOL_MIN: $ABS_VOL_MIN"
+          echo "LOOKAHEAD: $LOOKAHEAD, MAX_DAYS: $MAX_DAYS"
           echo "=================================="
           
           # Test if CHAT_ID is properly set
@@ -152,9 +186,35 @@ jobs:
       
       - name: Run scanner
         env:
+          # Telegram secrets
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          
+          # Core configuration
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
+          STOP_PCT: ${{ vars.STOP_PCT || '0.03' }}
+          
+          # Profit taking targets
+          PT_A_PLUS: ${{ vars.PT_A_PLUS || '0.15' }}
+          PT_B: ${{ vars.PT_B || '0.12' }}
+          PT_C: ${{ vars.PT_C || '0.10' }}
+          
+          # Trading parameters
+          CONSOL_WINDOWS: ${{ vars.CONSOL_WINDOWS || '10,20,40,80,120' }}
+          VOL_MULT: ${{ vars.VOL_MULT || '1.2' }}
+          ABS_VOL_MIN: ${{ vars.ABS_VOL_MIN || '3000000' }}
+          LOOKAHEAD: ${{ vars.LOOKAHEAD || '80' }}
+          MAX_DAYS: ${{ vars.MAX_DAYS || '200' }}
+          MAX_FLAT_HOLD_WEEKS: ${{ vars.MAX_FLAT_HOLD_WEEKS || '20' }}
+          
+          # File paths
+          CACHE_FILE: ${{ vars.CACHE_FILE || 'ipo_cache.pkl' }}
+          SIGNALS_CSV: ${{ vars.SIGNALS_CSV || 'ipo_signals.csv' }}
+          POSITIONS_CSV: ${{ vars.POSITIONS_CSV || 'ipo_positions.csv' }}
+          
+          # System parameters
+          HEARTBEAT_RUNS: ${{ vars.HEARTBEAT_RUNS || '0' }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
         run: |
           # Always use the provided mode for manual triggers
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
