@@ -2,10 +2,10 @@ name: IPO Scanner v2
 
 on:
   schedule:
-    - cron: '30 14 * * 1-5'   # Daily scan at 2:30 PM IST
-    - cron: '0 18 * * 1-5'    # Stop-loss update at 6:00 PM IST
-    - cron: '30 14 * * 0'     # Weekly summary, Sunday
-    - cron: '0 15 1 * *'      # Monthly review, 1st of month
+    - cron: '0 9 * * 1-5'     # Daily scan at 2:30 PM IST (9:00 AM UTC)
+    - cron: '30 12 * * 1-5'   # Stop-loss update at 6:00 PM IST (12:30 PM UTC)
+    - cron: '0 9 * * 0'       # Weekly summary, Sunday 2:30 PM IST (9:00 AM UTC)
+    - cron: '30 9 1 * *'      # Monthly review, 1st of month 3:00 PM IST (9:30 AM UTC)
   workflow_dispatch:
     inputs:
       mode:
@@ -33,6 +33,8 @@ jobs:
   run-scanner:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || 'production' }}
+    # Note: GitHub Actions runs in UTC timezone
+    # IST = UTC + 5:30, so 2:30 PM IST = 9:00 AM UTC
     steps:
       - uses: actions/checkout@v4
       
