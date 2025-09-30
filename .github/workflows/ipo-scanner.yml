@@ -48,14 +48,23 @@ jobs:
           mkdir -p talib-install
           echo "Created talib-install directory"
       
+      - name: Clean up old caches
+        run: |
+          echo "Cleaning up old cache directories..."
+          # Remove any old cache directories that might exist
+          rm -rf talib-cache-* 2>/dev/null || true
+          rm -rf talib-install-old 2>/dev/null || true
+          echo "Old caches cleaned up"
+      
       - name: Cache TA-Lib installation
         id: cache-talib
         uses: actions/cache@v4
         with:
           path: |
             talib-install/
-          key: talib-${{ runner.os }}-v1
+          key: talib-${{ runner.os }}-v2
           restore-keys: |
+            talib-${{ runner.os }}-v1
             talib-${{ runner.os }}-
           fail-on-cache-miss: false
 
@@ -120,12 +129,22 @@ jobs:
           echo "Verifying TA-Lib installation..."
           python -c "import talib; print('✅ TA-Lib is available')" || echo "❌ TA-Lib not available"
       
+      - name: Clean up old Python caches
+        run: |
+          echo "Cleaning up old Python cache directories..."
+          # Remove any old pip cache directories
+          rm -rf ~/.cache/pip-old 2>/dev/null || true
+          echo "Old Python caches cleaned up"
+      
       - name: Cache Python dependencies
         id: cache-pip
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          key: pip-${{ runner.os }}-v2-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-v1-${{ hashFiles('requirements.txt') }}
+            pip-${{ runner.os }}-
       
       - name: Install Python dependencies
         run: |
