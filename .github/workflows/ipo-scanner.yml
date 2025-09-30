@@ -76,6 +76,9 @@ jobs:
             sudo cp -r talib-install/* /usr/local/
             sudo ldconfig
             echo "✅ TA-Lib installed from cache"
+            # Install Python package
+            pip install TA-Lib
+            echo "✅ Python TA-Lib package installed from cache"
             exit 0
           fi
           
@@ -99,6 +102,12 @@ jobs:
           sudo chown -R runner:runner talib-install/
           
           echo "✅ TA-Lib built and installed"
+      
+      - name: Install Python TA-Lib package
+        run: |
+          echo "Installing Python TA-Lib package..."
+          pip install TA-Lib
+          echo "✅ Python TA-Lib package installed"
       
       - name: Verify TA-Lib installation
         run: |
