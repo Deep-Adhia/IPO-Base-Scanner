@@ -2,10 +2,9 @@ name: IPO Scanner v2
 
 on:
   schedule:
-    - cron: '0 9 * * 1-5'     # Daily scan at 2:30 PM IST (9:00 AM UTC)
-    - cron: '30 12 * * 1-5'   # Stop-loss update at 6:00 PM IST (12:30 PM UTC)
-    - cron: '0 9 * * 0'       # Weekly summary, Sunday 2:30 PM IST (9:00 AM UTC)
-    - cron: '30 9 1 * *'      # Monthly review, 1st of month 3:00 PM IST (9:30 AM UTC)
+    - cron: '30 15 * * 1-5'   # Daily scan + stop-loss update at 9:00 PM IST (3:30 PM UTC)
+    - cron: '30 15 * * 0'     # Weekly summary, Sunday 9:00 PM IST (3:30 PM UTC)
+    - cron: '30 15 1 * *'     # Monthly review, 1st of month 9:00 PM IST (3:30 PM UTC)
   workflow_dispatch:
     inputs:
       mode:
@@ -239,10 +238,14 @@ jobs:
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Running scheduled workflow"
             case "${{ github.schedule }}" in
-              "0 9 * * 1-5") python streamlined-ipo-scanner.py scan ;;
-              "30 12 * * 1-5") python streamlined-ipo-scanner.py stop_loss_update ;;
-              "0 9 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
-              "30 9 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
+              "30 15 * * 1-5") 
+                echo "Running daily scan and stop loss update"
+                python streamlined-ipo-scanner.py scan
+                echo "Updating stop losses..."
+                python streamlined-ipo-scanner.py stop_loss_update
+                ;;
+              "30 15 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
+              "30 15 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
               *) python streamlined-ipo-scanner.py scan ;;
             esac
           else
