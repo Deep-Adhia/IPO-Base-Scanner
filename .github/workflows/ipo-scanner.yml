@@ -45,8 +45,10 @@ jobs:
       
       - name: Prepare TA-Lib cache directory
         run: |
+          # Clean up any existing cache directory
+          rm -rf talib-install
           mkdir -p talib-install
-          echo "Created talib-install directory"
+          echo "Created fresh talib-install directory"
       
       - name: Clean up old caches
         run: |
