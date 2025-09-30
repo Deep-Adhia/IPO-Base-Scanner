@@ -73,6 +73,12 @@ jobs:
           echo "Cache hit: ${{ steps.cache-talib.outputs.cache-hit }}"
           echo "Cache key: ${{ steps.cache-talib.outputs.cache-primary-key }}"
           echo "========================="
+          echo "=== Cache Contents Debug ==="
+          ls -la talib-install/ || echo "talib-install directory not found"
+          if [ -d "talib-install" ]; then
+            find talib-install -type f -exec ls -la {} \; || echo "No files found in talib-install"
+          fi
+          echo "========================="
 
       - name: Install TA-Lib (cached or build)
         run: |
@@ -109,11 +115,18 @@ jobs:
           sudo ldconfig
           
           # Cache the installation for next time
+          echo "Caching TA-Lib installation..."
           mkdir -p talib-install/lib talib-install/include talib-install/bin
-          sudo cp -r /usr/local/lib/libta_lib.so* talib-install/lib/ 2>/dev/null || true
-          sudo cp -r /usr/local/include/ta-lib talib-install/include/ 2>/dev/null || true
-          sudo cp /usr/local/bin/ta-config talib-install/bin/ 2>/dev/null || true
+          
+          # Copy files and verify they exist
+          sudo cp -r /usr/local/lib/libta_lib.so* talib-install/lib/ 2>/dev/null || echo "No lib files to copy"
+          sudo cp -r /usr/local/include/ta-lib talib-install/include/ 2>/dev/null || echo "No include files to copy"
+          sudo cp /usr/local/bin/ta-config talib-install/bin/ 2>/dev/null || echo "No bin files to copy"
           sudo chown -R runner:runner talib-install/
+          
+          # Verify cache contents
+          echo "Cache contents after save:"
+          find talib-install -type f -exec ls -la {} \; || echo "No files in cache"
           
           echo "✅ TA-Lib built and installed"
       
