@@ -43,86 +43,34 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Prepare TA-Lib cache directory
-        run: |
-          # Clean up any existing cache directory
-          rm -rf talib-install
-          mkdir -p talib-install
-          echo "Created fresh talib-install directory"
-      
-      - name: Clean up old caches
-        run: |
-          echo "Cleaning up old cache directories..."
-          # Remove any old cache directories that might exist
-          rm -rf talib-cache-* 2>/dev/null || true
-          rm -rf talib-install-old 2>/dev/null || true
-          echo "Old caches cleaned up"
-      
       - name: Cache TA-Lib installation
         id: cache-talib
         uses: actions/cache@v4
         with:
           path: |
-            talib-install/
-          key: talib-${{ runner.os }}-v2
+            /usr/local/lib/libta_lib.so*
+            /usr/local/include/ta-lib
+            /usr/local/bin/ta-config
+          key: talib-Linux-v3
           restore-keys: |
-            talib-${{ runner.os }}-v1
-            talib-${{ runner.os }}-
-          fail-on-cache-miss: false
+            talib-Linux-v2
+            talib-Linux-v1
+            talib-Linux-
 
-      - name: Debug cache status
+      - name: Install TA-Lib
         run: |
-          echo "=== Cache Status Debug ==="
-          echo "Cache hit: ${{ steps.cache-talib.outputs.cache-hit }}"
-          echo "Cache key: ${{ steps.cache-talib.outputs.cache-primary-key }}"
-          echo "========================="
-          echo "=== Cache Contents Debug ==="
-          ls -la talib-install/ || echo "talib-install directory not found"
-          if [ -d "talib-install" ]; then
-            find talib-install -type f -exec ls -la {} \; || echo "No files found in talib-install"
-            # Check if cache is empty and clear it
-            file_count=$(find talib-install -type f | wc -l)
-            if [ "$file_count" -eq 0 ]; then
-              echo "❌ Cache is empty, clearing it to force rebuild"
-              rm -rf talib-install
-              mkdir -p talib-install
-            fi
-          fi
-          echo "========================="
-
-      - name: Install TA-Lib (cached or build)
-        run: |
-          echo "Installing TA-Lib..."
-          
-          # Check if TA-Lib is already available (from cache)
+          # Check if TA-Lib is already available
           if python -c "import talib" 2>/dev/null; then
-            echo "✅ TA-Lib already available from cache"
+            echo "✅ TA-Lib already available"
             exit 0
           fi
           
           # Check if we have cached TA-Lib files
-          if [ -d "talib-install" ] && [ -f "talib-install/lib/libta_lib.so" ]; then
-            echo "✅ Found cached TA-Lib, installing..."
-            echo "Cache contents:"
-            find talib-install -type f -exec ls -la {} \;
-            
-            # Copy files to system locations
-            sudo cp -r talib-install/lib/* /usr/local/lib/ 2>/dev/null || true
-            sudo cp -r talib-install/include/* /usr/local/include/ 2>/dev/null || true
-            sudo cp -r talib-install/bin/* /usr/local/bin/ 2>/dev/null || true
-            sudo ldconfig
-            
-            echo "✅ TA-Lib installed from cache"
-            # Install Python package
+          if [ -f "/usr/local/lib/libta_lib.so" ] && [ -d "/usr/local/include/ta-lib" ]; then
+            echo "✅ Found cached TA-Lib, installing Python package..."
             pip install TA-Lib
             echo "✅ Python TA-Lib package installed from cache"
             exit 0
-          else
-            echo "❌ No valid cached TA-Lib found"
-            if [ -d "talib-install" ]; then
-              echo "Cache directory exists but is empty or invalid:"
-              ls -la talib-install/
-            fi
           fi
           
           echo "TA-Lib not found, building from source..."
@@ -137,58 +85,7 @@ jobs:
           sudo make install
           sudo ldconfig
           
-          # Cache the installation for next time
-          echo "Caching TA-Lib installation..."
-          
-          # Remove old cache directory and create fresh one
-          rm -rf talib-install
-          mkdir -p talib-install/lib talib-install/include talib-install/bin
-          
-          # Copy files with proper error handling
-          echo "Copying library files..."
-          if ls /usr/local/lib/libta_lib.so* 1> /dev/null 2>&1; then
-            sudo cp -r /usr/local/lib/libta_lib.so* talib-install/lib/
-            echo "✅ Library files copied"
-          else
-            echo "❌ No library files found in /usr/local/lib/"
-          fi
-          
-          echo "Copying header files..."
-          if [ -d "/usr/local/include/ta-lib" ]; then
-            sudo cp -r /usr/local/include/ta-lib talib-install/include/
-            echo "✅ Header files copied"
-          else
-            echo "❌ No header files found in /usr/local/include/ta-lib"
-          fi
-          
-          echo "Copying binary files..."
-          if [ -f "/usr/local/bin/ta-config" ]; then
-            sudo cp /usr/local/bin/ta-config talib-install/bin/
-            echo "✅ Binary files copied"
-          else
-            echo "❌ No binary files found in /usr/local/bin/"
-          fi
-          
-          # Fix ownership
-          sudo chown -R runner:runner talib-install/
-          
-          # Verify cache contents
-          echo "=== Final cache contents ==="
-          find talib-install -type f -exec ls -la {} \; || echo "No files in cache"
-          echo "Cache size: $(du -sh talib-install 2>/dev/null || echo '0B')"
-          
           echo "✅ TA-Lib built and installed"
-      
-      - name: Install Python TA-Lib package
-        run: |
-          echo "Installing Python TA-Lib package..."
-          pip install TA-Lib
-          echo "✅ Python TA-Lib package installed"
-      
-      - name: Verify TA-Lib installation
-        run: |
-          echo "Verifying TA-Lib installation..."
-          python -c "import talib; print('✅ TA-Lib is available')" || echo "❌ TA-Lib not available"
       
       - name: Clean up old Python caches
         run: |
@@ -225,10 +122,10 @@ jobs:
             echo "⏰ Mode: Scheduled Run"
             echo "📋 Schedule: ${{ github.schedule }}"
             case "${{ github.schedule }}" in
-              "30 14 * * 1-5") echo "📊 Scheduled Mode: Daily Scan (2:30 PM IST)" ;;
-              "0 18 * * 1-5") echo "📊 Scheduled Mode: Stop-Loss Update (6:00 PM IST)" ;;
-              "30 14 * * 0") echo "📊 Scheduled Mode: Weekly Summary (Sunday 2:30 PM IST)" ;;
-              "0 15 1 * *") echo "📊 Scheduled Mode: Monthly Review (1st of month 3:00 PM IST)" ;;
+              "0 9 * * 1-5") echo "📊 Scheduled Mode: Daily Scan (2:30 PM IST)" ;;
+              "30 12 * * 1-5") echo "📊 Scheduled Mode: Stop-Loss Update (6:00 PM IST)" ;;
+              "0 9 * * 0") echo "📊 Scheduled Mode: Weekly Summary (Sunday 2:30 PM IST)" ;;
+              "30 9 1 * *") echo "📊 Scheduled Mode: Monthly Review (1st of month 3:00 PM IST)" ;;
               *) echo "📊 Scheduled Mode: Unknown" ;;
             esac
           else
@@ -342,10 +239,10 @@ jobs:
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Running scheduled workflow"
             case "${{ github.schedule }}" in
-              "30 14 * * 1-5") python streamlined-ipo-scanner.py scan ;;
-              "0 18 * * 1-5") python streamlined-ipo-scanner.py stop_loss_update ;;
-              "30 14 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
-              "0 15 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
+              "0 9 * * 1-5") python streamlined-ipo-scanner.py scan ;;
+              "30 12 * * 1-5") python streamlined-ipo-scanner.py stop_loss_update ;;
+              "0 9 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
+              "30 9 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
               *) python streamlined-ipo-scanner.py scan ;;
             esac
           else
