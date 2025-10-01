@@ -40,7 +40,14 @@ def fetch_recent_ipo_symbols(years_back=1):
             if date_col and symbol_col:
                 df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
                 cutoff = datetime.now() - timedelta(days=365 * years_back)
-                recent_ipos = df[df[date_col] > cutoff]
+                
+                # Additional validation: filter out dates that are too far in the future
+                max_future_date = datetime.now() + timedelta(days=30)  # Allow 30 days in future
+                valid_dates = (df[date_col] > cutoff) & (df[date_col] <= max_future_date)
+                recent_ipos = df[valid_dates]
+                
+                print(f"📅 Date filtering: {len(df)} total -> {len(recent_ipos)} recent IPOs")
+                print(f"📅 Date range: {recent_ipos[date_col].min()} to {recent_ipos[date_col].max()}")
                 
                 symbols = recent_ipos[symbol_col].tolist()
                 companies = recent_ipos[name_col].tolist() if name_col else symbols
@@ -54,6 +61,28 @@ def fetch_recent_ipo_symbols(years_back=1):
                     'company': companies,
                     'listing_date': dates
                 })
+                
+                # Manual blacklist of known old companies that might appear with wrong dates
+                blacklisted_symbols = {
+                    'RNBDENIMS',  # R&B Denims Ltd. - IPO was in 2014
+                    'RELIANCE',   # Reliance Industries - very old
+                    'TCS',        # Tata Consultancy Services - very old
+                    'INFY',       # Infosys - very old
+                    'HDFCBANK',   # HDFC Bank - very old
+                    'ICICIBANK',  # ICICI Bank - very old
+                    'SBIN',       # State Bank of India - very old
+                    'BHARTIARTL', # Bharti Airtel - very old
+                    'ITC',        # ITC Limited - very old
+                    'LT',         # Larsen & Toubro - very old
+                }
+                
+                # Remove blacklisted symbols
+                before_blacklist = len(df_symbols)
+                df_symbols = df_symbols[~df_symbols['symbol'].isin(blacklisted_symbols)]
+                after_blacklist = len(df_symbols)
+                
+                if before_blacklist != after_blacklist:
+                    print(f"🚫 Removed {before_blacklist - after_blacklist} blacklisted old companies")
                 
                 # Save files (overwrite existing)
                 df_symbols.to_csv("recent_ipo_symbols.csv", index=False)

@@ -1,7 +1,7 @@
 name: IPO Scanner v2
 
 on:
-        schedule:
+  schedule:
           - cron: '0 18 * * 1-5'    # Daily scan at 6:00 PM IST (12:30 PM UTC) - optimal time for fresh data
           - cron: '30 15 * * 0'     # Weekly summary, Sunday 9:00 PM IST (3:30 PM UTC)
           - cron: '30 15 1 * *'     # Monthly review, 1st of month 9:00 PM IST (3:30 PM UTC)

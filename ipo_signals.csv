@@ -1,4 +1,3 @@
 signal_id,symbol,signal_date,entry_price,grade,score,stop_loss,target_price,status,exit_date,exit_price,pnl_pct,days_held
 NATCAPSUQ_20251001_120_152_LIVE,NATCAPSUQ,2025-10-01,278.0,B,2,264.1,311.36,ACTIVE,,0,0,0
 SUPREME_20251002_40_162_LIVE,SUPREME,2025-10-02,84.95,C,1,80.7,93.44,ACTIVE,,0,0,0
-RNBDENIMS_20251002_10_18_LIVE,RNBDENIMS,2025-10-02,120.5,C,1,114.48,132.55,ACTIVE,,0,0,0
