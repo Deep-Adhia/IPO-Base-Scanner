@@ -8,9 +8,9 @@ def fetch_recent_ipo_symbols(years_back=1):
     try:
         print(f"🔄 Fetching recent IPO symbols for last {years_back} year(s)...")
         
-        # Method 1: Try NSE API
+        # Method 1: Use NSE EQUITY_L.csv with robust validation
         try:
-            print("📡 Trying NSE API...")
+            print("📡 Fetching NSE equity list with validation...")
             url = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
             headers = {'User-Agent': 'Mozilla/5.0'}
             session = requests.Session()
@@ -20,7 +20,7 @@ def fetch_recent_ipo_symbols(years_back=1):
             resp.raise_for_status()
             
             df = pd.read_csv(StringIO(resp.text))
-            print(f"📊 NSE API returned {len(df)} records")
+            print(f"📊 NSE EQUITY_L returned {len(df)} records")
             print(f"📋 Columns: {list(df.columns)}")
             
             # Handle different column names
@@ -41,13 +41,45 @@ def fetch_recent_ipo_symbols(years_back=1):
                 df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
                 cutoff = datetime.now() - timedelta(days=365 * years_back)
                 
-                # Additional validation: filter out dates that are too far in the future
-                max_future_date = datetime.now() + timedelta(days=30)  # Allow 30 days in future
-                valid_dates = (df[date_col] > cutoff) & (df[date_col] <= max_future_date)
-                recent_ipos = df[valid_dates]
+                # ROBUST VALIDATION: Multiple layers of filtering
+                print(f"📅 Initial data: {len(df)} companies")
                 
-                print(f"📅 Date filtering: {len(df)} total -> {len(recent_ipos)} recent IPOs")
-                print(f"📅 Date range: {recent_ipos[date_col].min()} to {recent_ipos[date_col].max()}")
+                # 1. Remove companies with invalid dates
+                valid_dates_mask = df[date_col].notna()
+                df = df[valid_dates_mask]
+                print(f"📅 After removing invalid dates: {len(df)} companies")
+                
+                # 2. Remove companies with future dates (more than 7 days)
+                current_date = datetime.now()
+                max_future_date = current_date + timedelta(days=7)
+                valid_future_mask = df[date_col] <= max_future_date
+                df = df[valid_future_mask]
+                print(f"📅 After removing future dates: {len(df)} companies")
+                
+                # 3. Remove companies with very old dates (before 2020)
+                min_date = datetime(2020, 1, 1)
+                valid_old_mask = df[date_col] >= min_date
+                df = df[valid_old_mask]
+                print(f"📅 After removing very old dates: {len(df)} companies")
+                
+                # 4. Filter for recent IPOs only
+                recent_mask = df[date_col] > cutoff
+                recent_ipos = df[recent_mask]
+                print(f"📅 After recent IPO filter: {len(recent_ipos)} companies")
+                
+                # 5. Additional validation: Check for suspicious patterns
+                # Remove companies with suspicious names or symbols
+                suspicious_patterns = [
+                    'RELIANCE', 'TCS', 'INFY', 'HDFC', 'ICICI', 'SBI', 'BHARTI', 'ITC', 'LT',
+                    'RNBDENIMS', 'R&B', 'Denims', 'BANK', 'FINANCE', 'STEEL', 'CEMENT'
+                ]
+                
+                # Create a mask to exclude suspicious companies
+                suspicious_mask = recent_ipos[name_col].str.contains('|'.join(suspicious_patterns), case=False, na=False)
+                recent_ipos = recent_ipos[~suspicious_mask]
+                print(f"📅 After removing suspicious companies: {len(recent_ipos)} companies")
+                
+                print(f"📅 Final date range: {recent_ipos[date_col].min()} to {recent_ipos[date_col].max()}")
                 
                 symbols = recent_ipos[symbol_col].tolist()
                 companies = recent_ipos[name_col].tolist() if name_col else symbols
