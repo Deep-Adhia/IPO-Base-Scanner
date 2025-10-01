@@ -403,7 +403,7 @@ def update_positions():
         sym = pos["symbol"]
         start = pos["entry_date"].date()
         df = fetch_data(sym, start)
-        if df is None: continue
+        if df is None or df.empty: continue
         price = df["CLOSE"].iloc[-1]
         st = supertrend(df)
         trailing = max(pos["stop_loss"], st.iloc[-1])
@@ -534,7 +534,7 @@ def detect_live_patterns(symbols, listing_map):
         ld = listing_map.get(sym)
         if not ld: continue
         df = fetch_data(sym, ld)
-        if df is None: continue
+        if df is None or df.empty: continue
         
         lhigh = df["HIGH"].iloc[0]
         
@@ -722,7 +722,7 @@ def detect_scan(symbols, listing_map):
         ld = listing_map.get(sym)
         if not ld: continue
         df = fetch_data(sym, ld)
-        if df is None: continue
+        if df is None or df.empty: continue
         lhigh = df["HIGH"].iloc[0]
         for w in CONSOL_WINDOWS:
             if len(df) < w: continue
