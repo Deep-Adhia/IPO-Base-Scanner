@@ -1,10 +1,10 @@
 name: IPO Scanner v2
 
 on:
-  schedule:
-    - cron: '30 15 * * 1-5'   # Daily scan + stop-loss update at 9:00 PM IST (3:30 PM UTC)
-    - cron: '30 15 * * 0'     # Weekly summary, Sunday 9:00 PM IST (3:30 PM UTC)
-    - cron: '30 15 1 * *'     # Monthly review, 1st of month 9:00 PM IST (3:30 PM UTC)
+        schedule:
+          - cron: '0 18 * * 1-5'    # Daily scan at 6:00 PM IST (12:30 PM UTC) - optimal time for fresh data
+          - cron: '30 15 * * 0'     # Weekly summary, Sunday 9:00 PM IST (3:30 PM UTC)
+          - cron: '30 15 1 * *'     # Monthly review, 1st of month 9:00 PM IST (3:30 PM UTC)
   workflow_dispatch:
     inputs:
       mode:
@@ -237,16 +237,26 @@ jobs:
             python streamlined-ipo-scanner.py $MODE
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Running scheduled workflow"
+            echo "Schedule: ${{ github.schedule }}"
             case "${{ github.schedule }}" in
-              "30 15 * * 1-5") 
+              "0 18 * * 1-5") 
                 echo "Running daily scan and stop loss update"
                 python streamlined-ipo-scanner.py scan
                 echo "Updating stop losses..."
                 python streamlined-ipo-scanner.py stop_loss_update
                 ;;
-              "30 15 * * 0") python streamlined-ipo-scanner.py weekly_summary ;;
-              "30 15 1 * *") python streamlined-ipo-scanner.py monthly_review ;;
-              *) python streamlined-ipo-scanner.py scan ;;
+              "30 15 * * 0") 
+                echo "Running weekly summary"
+                python streamlined-ipo-scanner.py weekly_summary 
+                ;;
+              "30 15 1 * *") 
+                echo "Running monthly review"
+                python streamlined-ipo-scanner.py monthly_review 
+                ;;
+              *) 
+                echo "Unknown schedule, running default scan"
+                python streamlined-ipo-scanner.py scan 
+                ;;
             esac
           else
             echo "Running default mode: scan"

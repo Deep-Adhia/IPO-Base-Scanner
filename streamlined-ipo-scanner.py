@@ -159,12 +159,13 @@ logger = logging.getLogger(__name__)
 
 def send_telegram(msg):
     if not BOT_TOKEN or not CHAT_ID:
-        logger.info("[Telegram disabled]")
+        logger.warning(f"[Telegram disabled] BOT_TOKEN: {'SET' if BOT_TOKEN else 'MISSING'}, CHAT_ID: {'SET' if CHAT_ID else 'MISSING'}")
         return
     
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     
     try:
+        logger.info(f"Sending Telegram message to chat_id: {CHAT_ID}")
         response = requests.post(url, json={
             "chat_id": CHAT_ID, 
             "text": msg, 
@@ -174,6 +175,7 @@ def send_telegram(msg):
         
         if response.status_code == 200:
             logger.info("✅ Telegram message sent successfully!")
+            logger.info(f"Response: {response.json()}")
         else:
             logger.error(f"❌ Telegram API error: {response.status_code} - {response.text}")
     except Exception as e:
@@ -306,96 +308,69 @@ def get_symbols_and_listing():
     return list(set(recent + active)), listing_map
 
 def fetch_data(symbol, start_date):
-    for attempt in range(3):
-        try:
-            # Try to get data including today first
-            today = datetime.today().date()
+    """Fetch the most recent available data for a symbol"""
+    try:
+        today = datetime.today().date()
+        
+        # Try to get data for the last 30 days to find the most recent data
+        for days_back in range(0, 30):
+            target_date = today - timedelta(days=days_back)
             df = stock_df(symbol,
                 from_date=start_date,
-                to_date=today,
+                to_date=target_date,
                 series="EQ")
             
-            # If no data for today, try yesterday
-            if df.empty:
-                yesterday = today - timedelta(days=1)
-                df = stock_df(symbol,
-                    from_date=start_date,
-                    to_date=yesterday,
-                    series="EQ")
-                logger.info(f"Using yesterday's data for {symbol}: {yesterday}")
-            else:
-                # Check if we have today's data
+            if not df.empty:
+                # Check data freshness
                 latest_date = df['DATE'].max()
                 if hasattr(latest_date, 'date'):
                     latest_date = latest_date.date()
-                if latest_date < today:
-                    yesterday = today - timedelta(days=1)
-                    df = stock_df(symbol,
-                        from_date=start_date,
-                        to_date=yesterday,
-                        series="EQ")
-                    logger.info(f"Using yesterday's data for {symbol}: {yesterday}")
+                
+                days_old = (today - latest_date).days
+                if days_old <= 1:
+                    logger.info(f"Using fresh data for {symbol}: {latest_date}")
+                elif days_old <= 3:
+                    logger.info(f"Using recent data for {symbol}: {latest_date} ({days_old} days old)")
                 else:
-                    logger.info(f"Using today's data for {symbol}: {today}")
-            
-            # If still no data, try last 3 days
-            if df.empty:
-                three_days_ago = today - timedelta(days=3)
-                df = stock_df(symbol,
-                    from_date=start_date,
-                    to_date=three_days_ago,
-                    series="EQ")
-                logger.info(f"Using 3-day-old data for {symbol}: {three_days_ago}")
-            
-            if df.empty: 
-                logger.warning(f"No data for {symbol}")
-                return None
-    
-            # Handle column name mismatches by standardizing column names
-            if not df.empty:
-                # Create a mapping for common column name variations
-                column_mapping = {
-                    'CH_TIMESTAMP': 'DATE',
-                    'CH_SERIES': 'SERIES', 
-                    'CH__OPENING_PRICE': 'OPEN',
-                    'CH_OPENING_PRICE': 'OPEN', 
-                    'CH_TRADE_HIGH_PRICE': 'HIGH',
-                    'CH_TRADE_LOW_PRICE': 'LOW',
-                    'CH_PREVIOUS_CLS_PRICE': 'PREV. CLOSE',
-                    'CH_LAST_TRADED_PRICE': 'LTP',
-                    'CH_CLOSING_PRICE': 'CLOSE',
-                    'CH_TOT_TRADED_QTY': 'VOLUME',
-                    'CH_TOT_TRADED_VAL': 'VALUE',
-                    'CH_TOTAL_TRADES': 'NO OF TRADES',
-                    'CH_SYMBOL': 'SYMBOL',
-                    'CH_52WEEK_HIGH_PRICE': '52W H',
-                    'CH_52WEEK_LOW_PRICE': '52W L'
-                }
+                    logger.warning(f"Using old data for {symbol}: {latest_date} ({days_old} days old)")
                 
-                # Rename columns if they exist
-                df = df.rename(columns=column_mapping)
+                # Standardize column names
+                if not df.empty:
+                    column_mapping = {
+                        'CH_TIMESTAMP': 'DATE',
+                        'CH_OPENING_PRICE': 'OPEN', 
+                        'CH_TRADE_HIGH_PRICE': 'HIGH',
+                        'CH_TRADE_LOW_PRICE': 'LOW',
+                        'CH_CLOSING_PRICE': 'CLOSE',
+                        'CH_LAST_TRADED_PRICE': 'LTP',
+                        'CH_PREV_CLS_PRICE': 'PREV_CLOSE',
+                        'CH_TOT_TRADED_QTY': 'VOLUME'
+                    }
+                    df = df.rename(columns=column_mapping)
+                    
+                    # Ensure required columns exist
+                    required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'LTP', 'VOLUME']
+                    missing_cols = [col for col in required_cols if col not in df.columns]
+                    if missing_cols:
+                        logger.warning(f"Missing columns for {symbol}: {missing_cols}")
+                        return None
+                    
+                    # Convert DATE to datetime
+                    df['DATE'] = pd.to_datetime(df['DATE'])
+                    
+                    # Sort by date
+                    df = df.sort_values('DATE').reset_index(drop=True)
+                    
+                    return df
                 
-                # Ensure required columns exist
-                required_columns = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']
-                missing_columns = [col for col in required_columns if col not in df.columns]
-                
-                if missing_columns:
-                    logger.warning(f"Missing required columns for {symbol}: {missing_columns}")
-                    return None
-            
-            df["DATE"] = pd.to_datetime(df["DATE"]).dt.date
-            return df.sort_values("DATE")
-        except Exception as e:
-            # If there's a column mismatch or other data issue, return None
-            if "are in the [columns]" in str(e) or "column" in str(e).lower():
-                logger.warning(f"Column mismatch for {symbol}: {str(e)[:100]}")
-                return None
-            logger.warning(f"Attempt {attempt + 1} failed for {symbol}: {str(e)[:100]}")
-            if attempt < 2:  # Don't sleep on last attempt
-                time.sleep(2)
-            else:
-                logger.error(f"Failed to fetch data for {symbol} after 3 attempts")
-                return None
+                break
+        
+        logger.warning(f"No data found for {symbol} in the last 30 days")
+        return None
+        
+    except Exception as e:
+        logger.error(f"Error fetching data for {symbol}: {e}")
+        return None
     
 def update_positions():
     df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
@@ -536,14 +511,23 @@ def detect_live_patterns(symbols, listing_map):
         df = fetch_data(sym, ld)
         if df is None or df.empty: continue
         
+        # Check data freshness - reject signals with data older than 2 days for live trading
+        latest_date = df['DATE'].max()
+        if hasattr(latest_date, 'date'):
+            latest_date = latest_date.date()
+        days_old = (datetime.today().date() - latest_date).days
+        if days_old > 2:
+            logger.warning(f"Skipping {sym} - data is {days_old} days old (latest: {latest_date}). Too old for live trading!")
+            continue
+        
         lhigh = df["HIGH"].iloc[0]
         
         # Use your proven backtest logic but check for LIVE patterns (recent breakouts)
         for w in CONSOL_WINDOWS[::-1]:  # Start with larger windows first
             if len(df) < w: continue
             
-            # Check recent data for live patterns (last 3 days only for live trading)
-            recent_start = max(w, len(df)-3)  # Only check last 3 days for live patterns
+            # Check recent data for live patterns (last 10 days for better coverage)
+            recent_start = max(w, len(df)-10)  # Check last 10 days for live patterns
             for i in range(recent_start, len(df)):
                 perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
                 if not (0.08 <= -perf <= 0.35): continue
@@ -593,46 +577,40 @@ def detect_live_patterns(symbols, listing_map):
 
                         # This is a LIVE pattern - generate signal
                         # For live trading, we need to get current market price
-                        # Try to get real-time price, fallback to latest LTP
-                        try:
-                            # TODO: Integrate with real-time data source (e.g., Alpha Vantage, Yahoo Finance, etc.)
-                            # For now, use latest LTP but add warning
-                            entry = df["LTP"].iloc[-1]
-                            
-                            # Log detailed data for analysis
-                            logger.info(f"=== SIGNAL DATA FOR {sym} ===")
-                            logger.info(f"Pattern detected at index {j} (consolidation window: {w})")
-                            logger.info(f"Data range: {df['DATE'].min()} to {df['DATE'].max()}")
-                            
-                            # Check data freshness
-                            latest_date = df['DATE'].max()
-                            if hasattr(latest_date, 'date'):
-                                latest_date = latest_date.date()
-                            days_old = (datetime.today().date() - latest_date).days
-                            if days_old > 1:
-                                logger.warning(f"⚠️  DATA IS {days_old} DAYS OLD! Latest data: {latest_date}")
-                            else:
-                                logger.info(f"✅ Data is fresh: {days_old} days old")
-                            
-                            logger.info(f"Latest 5 data points:")
-                            latest_data = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'LTP', 'VOLUME']].tail()
-                            for _, row in latest_data.iterrows():
-                                logger.info(f"  {row['DATE']}: O={row['OPEN']:.2f} H={row['HIGH']:.2f} L={row['LOW']:.2f} C={row['CLOSE']:.2f} LTP={row['LTP']:.2f} V={row['VOLUME']:,.0f}")
-                            
-                            logger.info(f"Consolidation low: {low:.2f}")
-                            logger.info(f"Consolidation high: {high2:.2f}")
-                            logger.info(f"Breakout detected at index {j}: High={df['HIGH'].iat[j]:.2f} > Base High={high2:.2f}")
-                            logger.info(f"Entry price (latest LTP): ₹{entry:.2f}")
-                            logger.info(f"Grade: {grade} (Score: {score})")
-                            
-                            if days_old > 1:
-                                logger.warning(f"🚨 OLD DATA WARNING: Using {days_old}-day-old LTP for {sym}: ₹{entry:.2f}. Verify current price before trading!")
-                            else:
-                                logger.info(f"✅ Using recent LTP for {sym}: ₹{entry:.2f}")
-            
-                        except Exception as e:
-                            entry = df["CLOSE"].iloc[-1]  # Fallback to close price
-                            logger.error(f"Error getting LTP for {sym}, using close price: {e}")
+                        # For live trading, use next day's opening price instead of stale LTP
+                        # This ensures we get a realistic entry price for next day trading
+                        entry = df["OPEN"].iloc[-1]  # Use latest opening price as proxy for next day's opening
+                        
+                        # Log detailed data for analysis
+                        logger.info(f"=== SIGNAL DATA FOR {sym} ===")
+                        logger.info(f"Pattern detected at index {j} (consolidation window: {w})")
+                        logger.info(f"Data range: {df['DATE'].min()} to {df['DATE'].max()}")
+                        
+                        # Check data freshness
+                        latest_date = df['DATE'].max()
+                        if hasattr(latest_date, 'date'):
+                            latest_date = latest_date.date()
+                        days_old = (datetime.today().date() - latest_date).days
+                        if days_old > 1:
+                            logger.warning(f"⚠️  DATA IS {days_old} DAYS OLD! Latest data: {latest_date}")
+                        else:
+                            logger.info(f"✅ Data is fresh: {days_old} days old")
+                        
+                        logger.info(f"Latest 5 data points:")
+                        latest_data = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'LTP', 'VOLUME']].tail()
+                        for _, row in latest_data.iterrows():
+                            logger.info(f"  {row['DATE']}: O={row['OPEN']:.2f} H={row['HIGH']:.2f} L={row['LOW']:.2f} C={row['CLOSE']:.2f} LTP={row['LTP']:.2f} V={row['VOLUME']:,.0f}")
+                        
+                        logger.info(f"Consolidation low: {low:.2f}")
+                        logger.info(f"Consolidation high: {high2:.2f}")
+                        logger.info(f"Breakout detected at index {j}: High={df['HIGH'].iat[j]:.2f} > Base High={high2:.2f}")
+                        logger.info(f"Entry price (next day opening): ₹{entry:.2f}")
+                        logger.info(f"Grade: {grade} (Score: {score})")
+                        
+                        if days_old > 1:
+                            logger.warning(f"🚨 OLD DATA WARNING: Using {days_old}-day-old opening price for {sym}: ₹{entry:.2f}. Verify current price before trading!")
+                        else:
+                            logger.info(f"✅ Using recent opening price for {sym}: ₹{entry:.2f}")
                         # Enhanced stop loss: 3% below entry price OR consolidation low, whichever is higher (safer)
                         # Also ensure stop loss is not more than 5% below entry (maximum risk)
                         stop_below_entry = entry * (1 - STOP_PCT)
@@ -656,11 +634,11 @@ def detect_live_patterns(symbols, listing_map):
                             "signal_id": sid,
                             "symbol": sym,
                             "signal_date": date,
-                            "entry_price": entry,
+                            "entry_price": round(entry, 2),
                             "grade": grade,
                             "score": score,
-                            "stop_loss": stop,
-                            "target_price": target,
+                            "stop_loss": round(stop, 2),
+                            "target_price": round(target, 2),
                             "status": "ACTIVE",
                             "exit_date": "",
                             "exit_price": 0,
@@ -672,11 +650,11 @@ def detect_live_patterns(symbols, listing_map):
                         new_position = {
                             "symbol": sym,
                             "entry_date": date,
-                            "entry_price": entry,
+                            "entry_price": round(entry, 2),
                             "grade": grade,
-                            "current_price": entry,
-                            "stop_loss": stop,
-                            "trailing_stop": stop,
+                            "current_price": round(entry, 2),
+                            "stop_loss": round(stop, 2),
+                            "trailing_stop": round(stop, 2),
                             "pnl_pct": 0,
                             "days_held": 0,
                             "status": "ACTIVE"
@@ -685,11 +663,34 @@ def detect_live_patterns(symbols, listing_map):
                         signals_df = pd.DataFrame([new_signal])
                         positions_df = pd.DataFrame([new_position])
                         
-                        signals_df.to_csv(SIGNALS_CSV, mode='a', header=False, index=False)
-                        positions_df.to_csv(POSITIONS_CSV, mode='a', header=False, index=False)
+                        # Append to CSV files properly
+                        try:
+                            existing_signals = pd.read_csv(SIGNALS_CSV)
+                        except (FileNotFoundError, pd.errors.EmptyDataError):
+                            existing_signals = pd.DataFrame()
                         
-                        # Send Telegram notification
-                        message = f"🎯 LIVE IPO BREAKOUT SIGNAL\n📊 Symbol: {sym}\n{'🔥' if grade in ['A+', 'B'] else '📈'} Grade: {grade}\n💰 Entry: ₹{entry:.2f}\n🛑 Stop Loss: ₹{stop:.2f}\n📈 Expected: {pt*100:.1f}% (75% win rate)\n📅 Date: {date.strftime('%Y-%m-%d')}\n⚡ LIVE PATTERN DETECTED"
+                        if existing_signals.empty:
+                            signals_df.to_csv(SIGNALS_CSV, index=False)
+                        else:
+                            pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False)
+                        
+                        try:
+                            existing_positions = pd.read_csv(POSITIONS_CSV)
+                        except (FileNotFoundError, pd.errors.EmptyDataError):
+                            existing_positions = pd.DataFrame()
+                        
+                        if existing_positions.empty:
+                            positions_df.to_csv(POSITIONS_CSV, index=False)
+                        else:
+                            pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False)
+                        
+                        # Send Telegram notification with next day trading instructions
+                        if days_old > 1:
+                            price_warning = f"⚠️ OLD DATA: {days_old} days old. Verify current price before trading!"
+                        else:
+                            price_warning = f"✅ Fresh data - Ready for next day trading"
+                        
+                        message = f"🎯 IPO BREAKOUT SIGNAL\n📊 Symbol: {sym}\n{'🔥' if grade in ['A+', 'B'] else '📈'} Grade: {grade}\n💰 Entry: ₹{entry:.2f} (Next Day Opening)\n🛑 Stop Loss: ₹{stop:.2f}\n📈 Expected: {pt*100:.1f}% (75% win rate)\n📅 Signal Date: {date.strftime('%Y-%m-%d')}\n{price_warning}\n\n📋 TRADING INSTRUCTIONS:\n• Enter at market open tomorrow\n• Use ₹{entry:.2f} as reference price\n• Set stop loss at ₹{stop:.2f}\n• Target: ₹{target:.2f}\n⚡ LIVE PATTERN DETECTED"
                         send_telegram(message)
                         
                         signals_found += 1
