@@ -1,3 +1,3 @@
 symbol,entry_date,entry_price,grade,current_price,stop_loss,trailing_stop,pnl_pct,days_held,status
-NATCAPSUQ,2025-10-01,278.0,B,272.05,264.1,264.1,-2.140287769784168,1,ACTIVE
+NATCAPSUQ,2025-10-01,278.0,B,272.05,264.1,264.1,-2.1402877697841682,1,ACTIVE
 SUPREME,2025-10-02,84.95,C,84.95,80.7,80.7,0.0,0,ACTIVE

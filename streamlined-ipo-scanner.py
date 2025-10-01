@@ -95,6 +95,34 @@ def calculate_target_price(entry_price, consolidation_low, consolidation_high, g
     target = max(target, min_target)
     
     return target
+
+def calculate_grade_based_stop_loss(entry_price, consolidation_low, grade):
+    """Calculate stop loss based on grade and IPO volatility"""
+    # Grade-based stop loss percentages (more appropriate for IPO volatility)
+    grade_stop_pcts = {
+        "A+": 0.05,  # 5% - High confidence, tighter stop
+        "A": 0.07,   # 7% - Good confidence
+        "B": 0.10,   # 10% - Medium confidence, more room for volatility
+        "C": 0.12,   # 12% - Lower confidence, more volatile
+        "D": 0.15    # 15% - High risk, very volatile
+    }
+    
+    stop_pct = grade_stop_pcts.get(grade, 0.10)  # Default 10% for unknown grades
+    
+    # Calculate stop below entry price
+    stop_below_entry = entry_price * (1 - stop_pct)
+    
+    # Calculate stop below consolidation low (safer)
+    stop_below_consolidation = consolidation_low * (1 - stop_pct)
+    
+    # Use the higher (safer) of the two
+    stop_loss = max(stop_below_entry, stop_below_consolidation)
+    
+    # Ensure stop loss is not more than 20% below entry (maximum risk)
+    max_risk_stop = entry_price * 0.80
+    stop_loss = max(stop_loss, max_risk_stop)
+    
+    return stop_loss, stop_pct
 import logging
 
 # Load environment
@@ -133,7 +161,7 @@ CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Core configuration
 IPO_YEARS_BACK = get_env_int("IPO_YEARS_BACK", 1)
-STOP_PCT = get_env_float("STOP_PCT", 0.03)
+STOP_PCT = get_env_float("STOP_PCT", 0.07)  # Default 7% for IPO volatility
 
 # Dynamic partial take per grade
 PT_A_PLUS = get_env_float("PT_A_PLUS", 0.15)
@@ -611,15 +639,8 @@ def detect_live_patterns(symbols, listing_map):
                             logger.warning(f"🚨 OLD DATA WARNING: Using {days_old}-day-old opening price for {sym}: ₹{entry:.2f}. Verify current price before trading!")
                         else:
                             logger.info(f"✅ Using recent opening price for {sym}: ₹{entry:.2f}")
-                        # Enhanced stop loss: 3% below entry price OR consolidation low, whichever is higher (safer)
-                        # Also ensure stop loss is not more than 5% below entry (maximum risk)
-                        stop_below_entry = entry * (1 - STOP_PCT)
-                        stop_below_consolidation = low * (1 - STOP_PCT)
-                        stop = max(stop_below_entry, stop_below_consolidation)
-                        
-                        # Cap maximum risk at 5% below entry
-                        max_risk_stop = entry * (1 - 0.05)
-                        stop = max(stop, max_risk_stop)
+                        # Grade-based stop loss: More appropriate for IPO volatility
+                        stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
                         date = datetime.today().date()
                         
                         # Create unique signal ID
@@ -767,9 +788,8 @@ def detect_scan(symbols, listing_map):
                                 entry = df["LTP"].iat[j]  # Fallback to historical LTP
                         except:
                             entry = df["LTP"].iat[j]  # Fallback to historical LTP
-                        # Calculate stop loss: 3% below entry price for better risk management
-                        # But ensure it's not below the consolidation low (which would be too risky)
-                        stop = max(entry * (1 - STOP_PCT), low * (1 - STOP_PCT))
+                        # Grade-based stop loss: More appropriate for IPO volatility
+                        stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
                         # For live trading, use today's date for signal entry
                         date = datetime.today().date()
                             
@@ -950,8 +970,10 @@ def stop_loss_update_scan():
             entry_price = pos["entry_price"]
             days_held = (datetime.today().date() - pos["entry_date"].date()).days
             
-            # Calculate new trailing stop
-            new_trailing = max(pos["trailing_stop"], current_price * (1 - STOP_PCT))
+            # Calculate new trailing stop using grade-based percentage
+            grade = pos.get("grade", "C")  # Default to C if grade not available
+            _, stop_pct = calculate_grade_based_stop_loss(current_price, current_price, grade)
+            new_trailing = max(pos["trailing_stop"], current_price * (1 - stop_pct))
             
             # Check for exits
             exit_reason = None
