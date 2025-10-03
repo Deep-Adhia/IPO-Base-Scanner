@@ -238,26 +238,34 @@ jobs:
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "Running scheduled workflow"
             echo "Schedule: ${{ github.schedule }}"
-            case "${{ github.schedule }}" in
-              "0 18 * * 1-5") 
-                echo "Running daily scan and stop loss update"
-                python streamlined-ipo-scanner.py scan
-                echo "Updating stop losses..."
-                python streamlined-ipo-scanner.py stop_loss_update
-                ;;
-              "30 15 * * 0") 
-                echo "Running weekly summary"
-                python streamlined-ipo-scanner.py weekly_summary 
-                ;;
-              "30 15 1 * *") 
-                echo "Running monthly review"
-                python streamlined-ipo-scanner.py monthly_review 
-                ;;
-              *) 
-                echo "Unknown schedule, running default scan"
-                python streamlined-ipo-scanner.py scan 
-                ;;
-            esac
+            echo "Current time: $(date)"
+            echo "Day of week: $(date +%u)"
+            echo "Day of month: $(date +%d)"
+            
+            # Determine schedule based on current time and day
+            current_hour=$(date +%H)
+            current_minute=$(date +%M)
+            day_of_week=$(date +%u)
+            day_of_month=$(date +%d)
+            
+            # Check for daily scan (6:00 PM IST = 12:30 PM UTC)
+            if [ "$current_hour" = "12" ] && [ "$current_minute" = "30" ] && [ "$day_of_week" -ge 1 ] && [ "$day_of_week" -le 5 ]; then
+              echo "Running daily scan and stop loss update"
+              python streamlined-ipo-scanner.py scan
+              echo "Updating stop losses..."
+              python streamlined-ipo-scanner.py stop_loss_update
+            # Check for weekly summary (Sunday 9:00 PM IST = 3:30 PM UTC)
+            elif [ "$current_hour" = "15" ] && [ "$current_minute" = "30" ] && [ "$day_of_week" = "0" ]; then
+              echo "Running weekly summary"
+              python streamlined-ipo-scanner.py weekly_summary
+            # Check for monthly review (1st of month 9:00 PM IST = 3:30 PM UTC)
+            elif [ "$current_hour" = "15" ] && [ "$current_minute" = "30" ] && [ "$day_of_month" = "01" ]; then
+              echo "Running monthly review"
+              python streamlined-ipo-scanner.py monthly_review
+            else
+              echo "Running default daily scan (fallback)"
+              python streamlined-ipo-scanner.py scan
+            fi
           else
             echo "Running default mode: scan"
             python streamlined-ipo-scanner.py scan
