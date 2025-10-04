@@ -2,7 +2,7 @@ name: IPO Scanner v2
 
 on:
   schedule:
-    - cron: '30 12 * * 1-5'   # Daily scan at 6:00 PM IST (12:30 PM UTC) - optimal time for fresh data
+    - cron: '03 08 * * *'     # TEST: Daily scan at 1:33 PM IST (8:03 AM UTC) - for testing
     - cron: '30 15 * * 0'     # Weekly summary, Sunday 9:00 PM IST (3:30 PM UTC)
     - cron: '30 15 1 * *'     # Monthly review, 1st of month 9:00 PM IST (3:30 PM UTC)
   workflow_dispatch:
@@ -250,8 +250,8 @@ jobs:
             
             echo "Time analysis: Hour=$current_hour, Minute=$current_minute, Day=$day_of_week, MonthDay=$day_of_month"
             
-            # Check for daily scan (6:00 PM IST = 12:30 PM UTC)
-            if [ "$current_hour" = "12" ] && [ "$current_minute" = "30" ] && [ "$day_of_week" -ge 1 ] && [ "$day_of_week" -le 5 ]; then
+            # Check for daily scan (1:33 PM IST = 8:03 AM UTC) - TEST SCHEDULE
+            if [ "$current_hour" = "08" ] && [ "$current_minute" = "03" ]; then
               echo "✅ Running daily scan and stop loss update"
               python streamlined-ipo-scanner.py scan
               echo "Updating stop losses..."
@@ -266,7 +266,7 @@ jobs:
               python streamlined-ipo-scanner.py monthly_review
             else
               echo "⚠️ Running default daily scan (fallback) - schedule detection failed"
-              echo "Expected: Daily=12:30 Mon-Fri, Weekly=15:30 Sun, Monthly=15:30 1st"
+              echo "Expected: Daily=08:03 (TEST), Weekly=15:30 Sun, Monthly=15:30 1st"
               python streamlined-ipo-scanner.py scan
             fi
           else
