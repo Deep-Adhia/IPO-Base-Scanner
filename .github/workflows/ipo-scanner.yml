@@ -2,7 +2,7 @@ name: IPO Scanner v2
 
 on:
   schedule:
-    - cron: '43 08 * * *'     # TEST: 2:13 PM IST (8:43 AM UTC) - for immediate testing
+    - cron: '18 09 * * *'     # TEST: 2:48 PM IST (9:18 AM UTC) - for immediate testing  
     - cron: '45 08 * * 1-5'   # Daily scan: 2:15 PM IST (8:45 AM UTC) - Weekdays only
     - cron: '15 09 * * 0'     # Weekly summary: Sunday 2:45 PM IST (9:15 AM UTC)
     - cron: '15 09 1 * *'     # Monthly review: 1st of month 2:45 PM IST (9:15 AM UTC)
@@ -57,13 +57,11 @@ jobs:
 
       - name: Install TA-Lib
         run: |
-          # Check if TA-Lib is already available
           if python -c "import talib" 2>/dev/null; then
             echo "✅ TA-Lib already available"
             exit 0
           fi
           
-          # Check if we have cached TA-Lib files
           if [ -f "/usr/local/lib/libta_lib.so" ] && [ -d "/usr/local/include/ta-lib" ]; then
             echo "✅ Found cached TA-Lib, installing Python package..."
             pip install TA-Lib
@@ -118,20 +116,8 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "🎯 Mode: ${{ github.event.inputs.mode }} (Manual Trigger)"
           elif [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "⏰ Mode: Scheduled Run"
-            current_hour=$(date -u +%H)
-            current_minute=$(date -u +%M)
-            echo "📊 Current Time: ${current_hour}:${current_minute} UTC"
-            
-            if [ "$current_hour" = "08" ] && [ "$current_minute" = "43" ]; then
-              echo "✅ TEST SCHEDULE: 2:13 PM IST"
-            elif [ "$current_hour" = "08" ] && [ "$current_minute" = "45" ]; then
-              echo "📊 DAILY SCAN: 2:15 PM IST"
-            elif [ "$current_hour" = "09" ] && [ "$current_minute" = "15" ]; then
-              echo "📊 WEEKLY/MONTHLY: 2:45 PM IST"
-            else
-              echo "📊 UNKNOWN SCHEDULE TIME"
-            fi
+            echo "⏰ Schedule that triggered: ${{ github.event.schedule }}"
+            echo "📊 Mode: Scheduled Run"
           else
             echo "🎯 Mode: Default (scan)"
           fi
@@ -216,38 +202,37 @@ jobs:
             python streamlined-ipo-scanner.py $MODE
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "⏰ Running scheduled workflow"
+            echo "📋 Schedule that triggered: ${{ github.event.schedule }}"
             
-            current_hour=$(date -u +%H)
-            current_minute=$(date -u +%M)
-            day_of_week=$(date -u +%u)  # 1=Monday, 7=Sunday
-            day_of_month=$(date -u +%d)
+            # Use the actual cron expression that triggered this run
+            SCHEDULE="${{ github.event.schedule }}"
             
-            echo "Time analysis: Hour=$current_hour, Minute=$current_minute, Day=$day_of_week, MonthDay=$day_of_month"
-            
-            # Test schedule (8:43 AM UTC = 2:13 PM IST)
-            if [ "$current_hour" = "08" ] && [ "$current_minute" = "43" ]; then
-              echo "✅ TEST SCHEDULE: Running test scan"
-              python streamlined-ipo-scanner.py scan
-              echo "Test completed - checking stop losses..."
-              python streamlined-ipo-scanner.py stop_loss_update
-            # Daily scan (8:45 AM UTC = 2:15 PM IST, Monday-Friday)
-            elif [ "$current_hour" = "08" ] && [ "$current_minute" = "45" ] && [ "$day_of_week" -le "5" ]; then
-              echo "✅ DAILY SCAN: Running weekday scan"
-              python streamlined-ipo-scanner.py scan
-              python streamlined-ipo-scanner.py stop_loss_update
-            # Weekly summary (Sunday 9:15 AM UTC = 2:45 PM IST)
-            elif [ "$current_hour" = "09" ] && [ "$current_minute" = "15" ] && [ "$day_of_week" = "7" ]; then
-              echo "✅ WEEKLY SUMMARY: Running Sunday summary"
-              python streamlined-ipo-scanner.py weekly_summary
-            # Monthly review (1st of month 9:15 AM UTC = 2:45 PM IST)
-            elif [ "$current_hour" = "09" ] && [ "$current_minute" = "15" ] && [ "$day_of_month" = "01" ]; then
-              echo "✅ MONTHLY REVIEW: Running monthly review"
-              python streamlined-ipo-scanner.py monthly_review
-            else
-              echo "⚠️ FALLBACK: Running default scan - schedule detection unclear"
-              echo "Expected: Test=08:43, Daily=08:45 (Mon-Fri), Weekly=09:15 (Sun), Monthly=09:15 (1st)"
-              python streamlined-ipo-scanner.py scan
-            fi
+            case "$SCHEDULE" in
+              "18 09 * * *")
+                echo "✅ TEST SCHEDULE: Running test scan (2:48 PM IST)"
+                python streamlined-ipo-scanner.py scan
+                echo "Test completed - checking stop losses..."
+                python streamlined-ipo-scanner.py stop_loss_update
+                ;;
+              "45 08 * * 1-5")
+                echo "✅ DAILY SCAN: Running weekday scan (2:15 PM IST)"  
+                python streamlined-ipo-scanner.py scan
+                python streamlined-ipo-scanner.py stop_loss_update
+                ;;
+              "15 09 * * 0")
+                echo "✅ WEEKLY SUMMARY: Running Sunday summary (2:45 PM IST)"
+                python streamlined-ipo-scanner.py weekly_summary
+                ;;
+              "15 09 1 * *")
+                echo "✅ MONTHLY REVIEW: Running monthly review (2:45 PM IST)"
+                python streamlined-ipo-scanner.py monthly_review
+                ;;
+              *)
+                echo "⚠️ UNKNOWN SCHEDULE: $SCHEDULE - Running default scan"
+                echo "This might be your old schedule that's still active"
+                python streamlined-ipo-scanner.py scan
+                ;;
+            esac
           else
             echo "🔄 DEFAULT: Running default mode: scan"
             python streamlined-ipo-scanner.py scan
