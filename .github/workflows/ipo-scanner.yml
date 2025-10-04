@@ -2,7 +2,7 @@ name: IPO Scanner v2
 
 on:
   schedule:
-    - cron: '0 18 * * 1-5'    # Daily scan at 6:00 PM IST (12:30 PM UTC) - optimal time for fresh data
+    - cron: '30 12 * * 1-5'   # Daily scan at 6:00 PM IST (12:30 PM UTC) - optimal time for fresh data
     - cron: '30 15 * * 0'     # Weekly summary, Sunday 9:00 PM IST (3:30 PM UTC)
     - cron: '30 15 1 * *'     # Monthly review, 1st of month 9:00 PM IST (3:30 PM UTC)
   workflow_dispatch:
@@ -248,22 +248,25 @@ jobs:
             day_of_week=$(date +%u)
             day_of_month=$(date +%d)
             
+            echo "Time analysis: Hour=$current_hour, Minute=$current_minute, Day=$day_of_week, MonthDay=$day_of_month"
+            
             # Check for daily scan (6:00 PM IST = 12:30 PM UTC)
             if [ "$current_hour" = "12" ] && [ "$current_minute" = "30" ] && [ "$day_of_week" -ge 1 ] && [ "$day_of_week" -le 5 ]; then
-              echo "Running daily scan and stop loss update"
+              echo "✅ Running daily scan and stop loss update"
               python streamlined-ipo-scanner.py scan
               echo "Updating stop losses..."
               python streamlined-ipo-scanner.py stop_loss_update
             # Check for weekly summary (Sunday 9:00 PM IST = 3:30 PM UTC)
             elif [ "$current_hour" = "15" ] && [ "$current_minute" = "30" ] && [ "$day_of_week" = "0" ]; then
-              echo "Running weekly summary"
+              echo "✅ Running weekly summary"
               python streamlined-ipo-scanner.py weekly_summary
             # Check for monthly review (1st of month 9:00 PM IST = 3:30 PM UTC)
             elif [ "$current_hour" = "15" ] && [ "$current_minute" = "30" ] && [ "$day_of_month" = "01" ]; then
-              echo "Running monthly review"
+              echo "✅ Running monthly review"
               python streamlined-ipo-scanner.py monthly_review
             else
-              echo "Running default daily scan (fallback)"
+              echo "⚠️ Running default daily scan (fallback) - schedule detection failed"
+              echo "Expected: Daily=12:30 Mon-Fri, Weekly=15:30 Sun, Monthly=15:30 1st"
               python streamlined-ipo-scanner.py scan
             fi
           else
