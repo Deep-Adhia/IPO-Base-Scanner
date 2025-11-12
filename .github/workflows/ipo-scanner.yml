@@ -40,20 +40,6 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Cache TA-Lib installation
-        id: cache-talib
-        uses: actions/cache@v4
-        with:
-          path: |
-            /usr/local/lib/libta_lib.so*
-            /usr/local/include/ta-lib
-            /usr/local/bin/ta-config
-          key: talib-Linux-v3
-          restore-keys: |
-            talib-Linux-v2
-            talib-Linux-v1
-            talib-Linux-
-
       - name: Install TA-Lib
         run: |
           if python -c "import talib" 2>/dev/null; then
@@ -61,17 +47,11 @@ jobs:
             exit 0
           fi
           
-          if [ -f "/usr/local/lib/libta_lib.so" ] && [ -d "/usr/local/include/ta-lib" ]; then
-            echo "✅ Found cached TA-Lib, installing Python package..."
-            pip install TA-Lib
-            echo "✅ Python TA-Lib package installed from cache"
-            exit 0
-          fi
-          
-          echo "TA-Lib not found, building from source..."
+          echo "Installing TA-Lib dependencies..."
           sudo apt-get update
           sudo apt-get install -y build-essential wget
           
+          echo "Downloading and building TA-Lib from source..."
           wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
           tar -xzf ta-lib-0.4.0-src.tar.gz
           cd ta-lib/
@@ -80,7 +60,10 @@ jobs:
           sudo make install
           sudo ldconfig
           
-          echo "✅ TA-Lib built and installed"
+          echo "Installing Python TA-Lib package..."
+          pip install TA-Lib
+          
+          echo "✅ TA-Lib built and installed successfully"
       
       - name: Clean up old Python caches
         run: |
