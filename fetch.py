@@ -68,9 +68,9 @@ def fetch_recent_ipo_symbols(years_back=1):
                     })
                     
                     # Save files
-                    df_symbols.to_csv("recent_ipo_symbols.csv", index=False)
+                    df_symbols.to_csv("recent_ipo_symbols.csv", index=False, encoding='utf-8')
                     
-                    with open("recent_ipo_symbols.txt", "w") as f:
+                    with open("recent_ipo_symbols.txt", "w", encoding='utf-8') as f:
                         for sym in symbols:
                             f.write(f"{sym}\n")
                     
@@ -121,7 +121,7 @@ def fetch_recent_ipo_symbols(years_back=1):
             
             df_symbols.to_csv("recent_ipo_symbols.csv", index=False)
             
-            with open("recent_ipo_symbols.txt", "w") as f:
+            with open("recent_ipo_symbols.txt", "w", encoding='utf-8') as f:
                 for sym in fallback_symbols:
                     f.write(f"{sym}\n")
             

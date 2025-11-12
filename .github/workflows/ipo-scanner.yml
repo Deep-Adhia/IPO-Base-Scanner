@@ -1,8 +1,7 @@
-name: IPO Scanner v2
+name: IPO Scanner v2 (Consolidation-Based)
 
 on:
   schedule:
-    - cron: '18 09 * * *'     # TEST: 2:48 PM IST (9:18 AM UTC) - for immediate testing  
     - cron: '45 08 * * 1-5'   # Daily scan: 2:15 PM IST (8:45 AM UTC) - Weekdays only
     - cron: '15 09 * * 0'     # Weekly summary: Sunday 2:45 PM IST (9:15 AM UTC)
     - cron: '15 09 1 * *'     # Monthly review: 1st of month 2:45 PM IST (9:15 AM UTC)
@@ -127,6 +126,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
           STOP_PCT: ${{ vars.STOP_PCT || '0.03' }}
           PT_A_PLUS: ${{ vars.PT_A_PLUS || '0.15' }}
@@ -172,10 +172,11 @@ jobs:
             echo "✅ TELEGRAM_BOT_TOKEN is set (length: ${#TELEGRAM_BOT_TOKEN})"
           fi
       
-      - name: Run scanner
+      - name: Run Consolidation-Based Scanner
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
           IPO_YEARS_BACK: ${{ secrets.IPO_YEARS_BACK }}
           STOP_PCT: ${{ vars.STOP_PCT || '0.03' }}
           PT_A_PLUS: ${{ vars.PT_A_PLUS || '0.15' }}
@@ -198,24 +199,17 @@ jobs:
             if [ -z "$MODE" ]; then
               MODE="scan"
             fi
-            echo "🎯 Running manual trigger in mode: $MODE"
+            echo "🎯 Running consolidation-based scanner in mode: $MODE"
             python streamlined-ipo-scanner.py $MODE
           elif [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "⏰ Running scheduled workflow"
+            echo "⏰ Running scheduled consolidation-based scanner"
             echo "📋 Schedule that triggered: ${{ github.event.schedule }}"
             
-            # Use the actual cron expression that triggered this run
             SCHEDULE="${{ github.event.schedule }}"
             
             case "$SCHEDULE" in
-              "18 09 * * *")
-                echo "✅ TEST SCHEDULE: Running test scan (2:48 PM IST)"
-                python streamlined-ipo-scanner.py scan
-                echo "Test completed - checking stop losses..."
-                python streamlined-ipo-scanner.py stop_loss_update
-                ;;
               "45 08 * * 1-5")
-                echo "✅ DAILY SCAN: Running weekday scan (2:15 PM IST)"  
+                echo "✅ DAILY SCAN: Running weekday consolidation scan (2:15 PM IST)"  
                 python streamlined-ipo-scanner.py scan
                 python streamlined-ipo-scanner.py stop_loss_update
                 ;;
@@ -229,7 +223,6 @@ jobs:
                 ;;
               *)
                 echo "⚠️ UNKNOWN SCHEDULE: $SCHEDULE - Running default scan"
-                echo "This might be your old schedule that's still active"
                 python streamlined-ipo-scanner.py scan
                 ;;
             esac

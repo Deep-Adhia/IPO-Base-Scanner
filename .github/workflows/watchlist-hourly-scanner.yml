@@ -1,0 +1,98 @@
+name: Watchlist Hourly Breakout Scanner
+
+on:
+  schedule:
+    # Run every hour during market hours (9:15 AM to 3:30 PM IST)
+    # IST is UTC+5:30, so:
+    # 9:15 AM IST = 3:45 AM UTC
+    # 3:30 PM IST = 10:00 AM UTC
+    - cron: '45 3-9 * * 1-5'   # Every hour from 3:45 AM to 9:45 AM UTC (9:15 AM to 3:45 PM IST) - Weekdays
+    - cron: '15 4-9 * * 1-5'    # Every hour from 4:15 AM to 9:15 AM UTC (9:45 AM to 2:45 PM IST) - Weekdays
+    - cron: '45 10 * * 1-5'     # 10:45 AM UTC (4:15 PM IST) - Weekdays
+  workflow_dispatch:
+    inputs:
+      force_scan:
+        description: 'Force scan even if watchlist is empty'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  scan-watchlist:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Check watchlist
+        id: check_watchlist
+        run: |
+          if [ -f watchlist.csv ]; then
+            ACTIVE_COUNT=$(grep -c "ACTIVE" watchlist.csv || echo "0")
+            echo "active_count=$ACTIVE_COUNT" >> $GITHUB_OUTPUT
+            if [ "$ACTIVE_COUNT" -gt "0" ]; then
+              echo "✅ Found $ACTIVE_COUNT active symbols in watchlist"
+            else
+              echo "⚠️ No active symbols in watchlist"
+            fi
+          else
+            echo "active_count=0" >> $GITHUB_OUTPUT
+            echo "⚠️ watchlist.csv not found"
+          fi
+      
+      - name: Set up environment variables
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
+        run: |
+          echo "Environment variables configured"
+      
+      - name: Run Hourly Breakout Scanner
+        if: steps.check_watchlist.outputs.active_count > 0 || github.event.inputs.force_scan == 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
+        run: |
+          echo "🚀 Starting Hourly Intraday Breakout Scanner..."
+          echo "📅 Date: $(date '+%Y-%m-%d')"
+          echo "⏰ Time: $(date '+%H:%M:%S')"
+          echo "=========================================="
+          
+          python hourly_breakout_scanner.py
+          
+          echo "✅ Scan complete"
+      
+      - name: Skip scan (no active symbols)
+        if: steps.check_watchlist.outputs.active_count == 0 && github.event.inputs.force_scan != 'true'
+        run: |
+          echo "⏭️ Skipping scan - no active symbols in watchlist"
+          echo "Add symbols to watchlist.csv with status=ACTIVE to enable scanning"
+      
+      - name: Commit and push changes
+        if: always()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Check if there are changes to commit
+          if [ -n "$(git status --porcelain)" ]; then
+            git add ipo_signals.csv ipo_positions.csv
+            git commit -m "🤖 Auto-update: Watchlist hourly scan results [$(date '+%Y-%m-%d %H:%M:%S')]" || exit 0
+            git push || exit 0
+          else
+            echo "No changes to commit"
+          fi
+

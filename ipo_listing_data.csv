@@ -1,0 +1,3 @@
+# IPO Listing Day Data
+# Format: symbol,listing_date,listing_day_high,listing_day_low,listing_day_close,listing_day_volume,status,last_updated
+symbol,listing_date,listing_day_high,listing_day_low,listing_day_close,listing_day_volume,status,last_updated

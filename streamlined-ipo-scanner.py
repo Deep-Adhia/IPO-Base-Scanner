@@ -22,7 +22,60 @@ import requests
 import time
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
-from jugaad_data.nse import stock_df
+from jugaad_data.nse.history import stock_raw
+import pandas as pd
+import threading
+
+# Global rate limiter for Upstox API
+_upstox_last_request = 0.0
+_upstox_lock = threading.Lock()
+
+def stock_df(symbol, from_date, to_date, series="EQ"):
+    """Custom stock_df function that handles column mapping correctly"""
+    try:
+        # Get raw data
+        raw = stock_raw(symbol, from_date, to_date, series)
+        
+        if not raw:
+            return pd.DataFrame()
+        
+        # Create DataFrame from raw data
+        df = pd.DataFrame(raw)
+        
+        # Map old column names to new ones
+        column_mapping = {
+            'CH_TIMESTAMP': 'DATE',
+            'CH_SERIES': 'SERIES',
+            'CH_OPENING_PRICE': 'OPEN',
+            'CH_TRADE_HIGH_PRICE': 'HIGH',
+            'CH_TRADE_LOW_PRICE': 'LOW',
+            'CH_PREVIOUS_CLS_PRICE': 'PREV. CLOSE',
+            'CH_LAST_TRADED_PRICE': 'LTP',
+            'CH_CLOSING_PRICE': 'CLOSE',
+            'VWAP': 'VWAP',
+            'CH_52WEEK_HIGH_PRICE': '52W H',
+            'CH_52WEEK_LOW_PRICE': '52W L',
+            'CH_TOT_TRADED_QTY': 'VOLUME',
+            'CH_TOT_TRADED_VAL': 'VALUE',
+            'CH_TOTAL_TRADES': 'NO OF TRADES',
+            'CH_SYMBOL': 'SYMBOL'
+        }
+        
+        # Rename columns
+        df = df.rename(columns=column_mapping)
+        
+        # Select only the columns we need
+        required_columns = ['DATE', 'SERIES', 'OPEN', 'HIGH', 'LOW', 'PREV. CLOSE', 'LTP', 'CLOSE', 'VWAP', '52W H', '52W L', 'VOLUME', 'VALUE', 'NO OF TRADES', 'SYMBOL']
+        df = df[required_columns]
+        
+        # Convert DATE to datetime
+        df['DATE'] = pd.to_datetime(df['DATE'])
+        
+        return df
+        
+    except Exception as e:
+        logger.error(f"Error in custom stock_df for {symbol}: {e}")
+        return pd.DataFrame()
 from fetch import fetch_recent_ipo_symbols
 # Import only the functions we need, not the entire module
 import sys
@@ -209,7 +262,7 @@ def send_telegram(msg):
     except Exception as e:
         logger.error(f"❌ Telegram error: {e}")
 
-def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None):
+def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None):
     """Format detailed IPO signal alert with comprehensive trading information"""
     # Calculate risk metrics
     risk_amount = entry_price - stop_loss
@@ -258,7 +311,21 @@ def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, sco
 • Breakout: ₹{breakout_price:,.2f}"""
     
     msg += f"""
-• Score: {score:.1f}/100
+• Score: {score:.1f}/100"""
+
+    # Add data source information
+    if data_source:
+        if data_source == 'Upstox API':
+            msg += f"""
+• Data Source: 🚀 Upstox API (Premium)"""
+        elif data_source == 'NSE (Fallback)':
+            msg += f"""
+• Data Source: 📊 NSE (Fallback)"""
+        else:
+            msg += f"""
+• Data Source: {data_source}"""
+
+    msg += f"""
 
 💼 <b>Position Sizing:</b>
 • Risk per trade: {risk_percentage:.1f}%
@@ -301,13 +368,13 @@ def initialize_csvs():
     if not os.path.exists(SIGNALS_CSV):
         pd.DataFrame(columns=[
             "signal_id","symbol","signal_date","entry_price","grade","score",
-            "stop_loss","target_price","status","exit_date","exit_price","pnl_pct","days_held"
-        ]).to_csv(SIGNALS_CSV, index=False)
+            "stop_loss","target_price","status","exit_date","exit_price","pnl_pct","days_held","signal_type"
+        ]).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
     if not os.path.exists(POSITIONS_CSV):
         pd.DataFrame(columns=[
             "symbol","entry_date","entry_price","grade","current_price",
             "stop_loss","trailing_stop","pnl_pct","days_held","status"
-        ]).to_csv(POSITIONS_CSV, index=False)
+        ]).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
 
 def cache_recent_ipos():
     try:
@@ -330,29 +397,201 @@ def get_symbols_and_listing():
         for _, row in ipo_df.iterrows()
     }
     try:
-        active = pd.read_csv(POSITIONS_CSV)["symbol"].unique().tolist()
+        active = pd.read_csv(POSITIONS_CSV, encoding='utf-8')["symbol"].unique().tolist()
     except:
         active = []
     return list(set(recent + active)), listing_map
 
+
+def fetch_from_upstox(symbol, start_date, end_date):
+    """Fetch historical data from Upstox API with rate limiting"""
+    import time
+    
+    try:
+        # Load IPO mappings
+        if not os.path.exists('ipo_upstox_mapping.csv'):
+            logger.warning("IPO mapping file not found")
+            return None
+        
+        mapping_df = pd.read_csv('ipo_upstox_mapping.csv', encoding='utf-8')
+        symbol_mapping = dict(zip(mapping_df['ipo_symbol'], mapping_df['instrument_key']))
+        
+        if symbol not in symbol_mapping:
+            logger.warning(f"Symbol {symbol} not found in Upstox mapping")
+            return None
+        
+        instrument_key = symbol_mapping[symbol]
+        
+        # Get Upstox credentials
+        access_token = os.getenv('UPSTOX_ACCESS_TOKEN')
+        if not access_token:
+            logger.warning("Upstox access token not found")
+            return None
+        
+        # Prepare API request
+        headers = {
+            'Accept': 'application/json',
+            'Api-Version': '2.0',
+            'Authorization': f'Bearer {access_token}'
+        }
+        
+        from_str = start_date.strftime('%Y-%m-%d')
+        to_str = end_date.strftime('%Y-%m-%d')
+        url = f"https://api.upstox.com/v2/historical-candle/{instrument_key}/day/{to_str}/{from_str}"
+        
+        # Global rate limiting: Ensure minimum 100ms between Upstox API requests
+        global _upstox_last_request
+        with _upstox_lock:
+            current_time = time.time()
+            time_since_last = current_time - _upstox_last_request
+            if time_since_last < 0.1:  # 100ms minimum delay
+                time.sleep(0.1 - time_since_last)
+            _upstox_last_request = time.time()
+        
+        logger.info(f"🔄 Trying Upstox API for {symbol}")
+        response = requests.get(url, headers=headers)
+        
+        # Handle rate limiting (429 Too Many Requests)
+        if response.status_code == 429:
+            logger.warning(f"⚠️ Rate limited for {symbol}, waiting 1 second...")
+            time.sleep(1)
+            response = requests.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if 'data' in data and 'candles' in data['data']:
+                candles = data['data']['candles']
+                if candles:
+                    # Convert to DataFrame
+                    df = pd.DataFrame(candles, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close'])
+                    
+                    # Handle timestamp conversion - try different formats
+                    try:
+                        # Try Unix timestamp first
+                        df['DATE'] = pd.to_datetime(df['timestamp'], unit='s')
+                    except:
+                        try:
+                            # Try ISO format
+                            df['DATE'] = pd.to_datetime(df['timestamp'])
+                        except:
+                            # Try string format
+                            df['DATE'] = pd.to_datetime(df['timestamp'], format='%Y-%m-%d')
+                    
+                    df.columns = ['timestamp', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME', 'IGNORE', 'DATE']
+                    
+                    # Select required columns and add LTP column (use CLOSE as LTP)
+                    df = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
+                    df['LTP'] = df['CLOSE']  # Add LTP column using CLOSE price
+                    
+                    logger.info(f"✅ Upstox API: Got {len(df)} candles for {symbol}")
+                    return df
+        
+        logger.warning(f"⚠️ Upstox API: No data for {symbol}")
+        return None
+        
+    except Exception as e:
+        logger.warning(f"⚠️ Upstox API error for {symbol}: {e}")
+        return None
+
 def fetch_data(symbol, start_date):
-    """Fetch the most recent available data for a symbol"""
+    """Fetch the most recent available data for a symbol using Upstox API with NSE fallback (jugaad-data)"""
+    import time  # Import at the top of function
+    
+    # Skip RE (Real Estate Investment Trusts) shares as they're not suitable for IPO breakout patterns
+    if symbol.endswith('-RE'):
+        logger.warning(f"Skipping RE share: {symbol}")
+        return None
+    
     try:
         today = datetime.today().date()
         
+        # Try Upstox API first (if available)
+        df = fetch_from_upstox(symbol, start_date, today)
+        if df is not None and not df.empty:
+            logger.info(f"✅ Upstox API: Got data for {symbol} ({len(df)} rows)")
+            # Add data source info to DataFrame
+            df.attrs['data_source'] = 'Upstox API'
+            return df
+        else:
+            logger.warning(f"⚠️ Upstox API: No data for {symbol}, trying NSE fallback")
+        
+        # Fallback to NSE data (existing logic)
+        
         # Try to get data for the last 30 days to find the most recent data
+        # Start from the entry date and go backwards to find the most recent data
         for days_back in range(0, 30):
-            target_date = today - timedelta(days=days_back)
-            df = stock_df(symbol,
-                from_date=start_date,
-                to_date=target_date,
-                series="EQ")
+            target_date = start_date + timedelta(days=days_back)
+            if target_date > today:
+                target_date = today
+            try:
+                # Add retry mechanism for jugaad_data calls
+                max_retries = 1  # Only 1 retry to avoid infinite loops
+                df = None
+                for retry in range(max_retries):
+                    try:
+                        # Use a date range from start_date to target_date
+                        df = stock_df(symbol,
+                            from_date=start_date,
+                            to_date=target_date,
+                            series="EQ")
+                        break  # Success, exit retry loop
+                    except Exception as retry_error:
+                        if retry == max_retries - 1:
+                            logger.warning(f"Failed to fetch data for {symbol}: {retry_error}")
+                            return None  # Return None instead of continuing
+                        else:
+                            logger.warning(f"Retry {retry + 1}/{max_retries} for {symbol}: {retry_error}")
+                            time.sleep(0.2)  # Very short wait time
+                
+                # Debug: Log what we actually received
+                if df is None:
+                    logger.warning(f"Received None for {symbol} - skipping")
+                    continue
+                elif hasattr(df, 'empty') and df.empty:
+                    logger.warning(f"Received empty DataFrame for {symbol}")
+                    continue
+                elif not hasattr(df, 'columns'):
+                    logger.warning(f"Received non-DataFrame object for {symbol}: {type(df)}")
+                    continue
+                else:
+                    logger.info(f"Received data for {symbol}: {len(df)} rows, columns: {list(df.columns)}")
+                    
+                # Check if the data looks like HTML (error page)
+                if hasattr(df, 'iloc') and len(df) > 0:
+                    first_row = df.iloc[0]
+                    if isinstance(first_row, pd.Series):
+                        # Check if any column contains HTML-like content
+                        for col in first_row.index:
+                            if isinstance(first_row[col], str) and ('<html' in str(first_row[col]).lower() or '<!doctype' in str(first_row[col]).lower()):
+                                logger.warning(f"Received HTML error page for {symbol}, skipping")
+                continue
+                
+            except Exception as e:
+                logger.warning(f"Error fetching data for {symbol}: {e}")
+                # Add more detailed error logging
+                import traceback
+                logger.warning(f"Full traceback for {symbol}: {traceback.format_exc()}")
+                continue
+            
+            # Add small delay to avoid rate limiting
+            import time
+            time.sleep(0.1)  # 100ms delay between requests
             
             if not df.empty:
                 # Check data freshness
                 latest_date = df['DATE'].max()
                 if hasattr(latest_date, 'date'):
                     latest_date = latest_date.date()
+                elif hasattr(latest_date, 'to_pydatetime'):
+                    latest_date = latest_date.to_pydatetime().date()
+                elif hasattr(latest_date, 'date'):
+                    latest_date = latest_date.date()
+                
+                # Ensure both are date objects for comparison
+                if isinstance(latest_date, pd.Timestamp):
+                    latest_date = latest_date.date()
+                if isinstance(today, pd.Timestamp):
+                    today = today.date()
                 
                 days_old = (today - latest_date).days
                 if days_old <= 1:
@@ -362,19 +601,37 @@ def fetch_data(symbol, start_date):
                 else:
                     logger.warning(f"Using old data for {symbol}: {latest_date} ({days_old} days old)")
                 
-                # Standardize column names
+                # Standardize column names - handle both old and new jugaad_data formats
                 if not df.empty:
-                    column_mapping = {
-                        'CH_TIMESTAMP': 'DATE',
-                        'CH_OPENING_PRICE': 'OPEN', 
-                        'CH_TRADE_HIGH_PRICE': 'HIGH',
-                        'CH_TRADE_LOW_PRICE': 'LOW',
-                        'CH_CLOSING_PRICE': 'CLOSE',
-                        'CH_LAST_TRADED_PRICE': 'LTP',
-                        'CH_PREV_CLS_PRICE': 'PREV_CLOSE',
-                        'CH_TOT_TRADED_QTY': 'VOLUME'
-                    }
-                    df = df.rename(columns=column_mapping)
+                    # Check which format we have
+                    if 'CH_TIMESTAMP' in df.columns:
+                        # Old format
+                        column_mapping = {
+                            'CH_TIMESTAMP': 'DATE',
+                            'CH_OPENING_PRICE': 'OPEN', 
+                            'CH_TRADE_HIGH_PRICE': 'HIGH',
+                            'CH_TRADE_LOW_PRICE': 'LOW',
+                            'CH_CLOSING_PRICE': 'CLOSE',
+                            'CH_LAST_TRADED_PRICE': 'LTP',
+                            'CH_PREV_CLS_PRICE': 'PREV_CLOSE',
+                            'CH_TOT_TRADED_QTY': 'VOLUME'
+                        }
+                    else:
+                        # New format (already has correct names)
+                        column_mapping = {
+                            'DATE': 'DATE',
+                            'OPEN': 'OPEN',
+                            'HIGH': 'HIGH', 
+                            'LOW': 'LOW',
+                            'CLOSE': 'CLOSE',
+                            'LTP': 'LTP',
+                            'PREV. CLOSE': 'PREV_CLOSE',
+                            'VOLUME': 'VOLUME'
+                        }
+                    
+                    # Only rename columns that exist in the dataframe
+                    existing_mapping = {k: v for k, v in column_mapping.items() if k in df.columns}
+                    df = df.rename(columns=existing_mapping)
                     
                     # Ensure required columns exist
                     required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'LTP', 'VOLUME']
@@ -389,19 +646,21 @@ def fetch_data(symbol, start_date):
                     # Sort by date
                     df = df.sort_values('DATE').reset_index(drop=True)
                     
+                    # Add data source info to DataFrame
+                    df.attrs['data_source'] = 'NSE (jugaad-data)'
                     return df
                 
                 break
         
         logger.warning(f"No data found for {symbol} in the last 30 days")
         return None
-        
+            
     except Exception as e:
         logger.error(f"Error fetching data for {symbol}: {e}")
         return None
     
 def update_positions():
-    df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
+    df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
     for idx, pos in df_pos[df_pos["status"]=="ACTIVE"].iterrows():
         sym = pos["symbol"]
         start = pos["entry_date"].date()
@@ -411,7 +670,14 @@ def update_positions():
         st = supertrend(df)
         trailing = max(pos["stop_loss"], st.iloc[-1])
         pnl = (price - pos["entry_price"])/pos["entry_price"]*100
-        days = (datetime.today().date()-start).days
+        # Ensure both dates are date objects for comparison
+        today_date = datetime.today().date()
+        if isinstance(start, pd.Timestamp):
+            start = start.date()
+        elif hasattr(start, 'date'):
+            start = start.date()
+        
+        days = (today_date - start).days
         
         # Enhanced exit strategies
         exit_reason = None
@@ -444,7 +710,7 @@ def update_positions():
             df_pos.loc[idx, ["current_price","trailing_stop","pnl_pct","days_held"]] = [
                 float(price), float(trailing), float(pnl), int(days)
             ]
-    df_pos.to_csv(POSITIONS_CSV, index=False)
+    df_pos.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
     logger.info("Positions updated")
 
 def compute_rsi(close, period=14):
@@ -517,7 +783,14 @@ def reject_quick_losers(df, entry_idx, w, avg_vol):
 
 def detect_live_patterns(symbols, listing_map):
     """Detect LIVE FORMING patterns using proven backtest logic"""
-    existing = pd.read_csv(SIGNALS_CSV)["signal_id"].tolist()
+    try:
+        existing_signals_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+        existing = existing_signals_df["signal_id"].tolist()
+        # Add signal_type column if it doesn't exist (for backward compatibility)
+        if 'signal_type' not in existing_signals_df.columns:
+            existing_signals_df['signal_type'] = 'UNKNOWN'
+    except:
+        existing = []
     signals_found = 0
     symbols_processed = 0
     processed_today = set()  # Track symbols processed today to prevent duplicates
@@ -527,7 +800,7 @@ def detect_live_patterns(symbols, listing_map):
         if symbols_processed % 20 == 0:
             logger.info(f"Processed {symbols_processed}/{len(symbols)} symbols...")
         
-        if sym in pd.read_csv(POSITIONS_CSV)["symbol"].tolist(): continue
+        if sym in pd.read_csv(POSITIONS_CSV, encoding='utf-8')["symbol"].tolist(): continue
         
         # Check if we already processed this symbol today
         today_key = f"{sym}_{datetime.today().strftime('%Y%m%d')}"
@@ -604,15 +877,28 @@ def detect_live_patterns(symbols, listing_map):
                             continue
 
                         # This is a LIVE pattern - generate signal
-                        # For live trading, we need to get current market price
-                        # For live trading, use next day's opening price instead of stale LTP
-                        # This ensures we get a realistic entry price for next day trading
-                        entry = df["OPEN"].iloc[-1]  # Use latest opening price as proxy for next day's opening
+                        # Use the next day's opening price after breakout (j+1) for entry
+                        # If j+1 doesn't exist, use the current day's opening (j)
+                        if j + 1 < len(df):
+                            entry = df["OPEN"].iat[j + 1]  # Next day opening after breakout
+                            entry_date = df['DATE'].iat[j + 1]
+                        else:
+                            entry = df["OPEN"].iat[j]  # Use breakout day opening if no next day
+                            entry_date = df['DATE'].iat[j]
+                        
+                        # Convert entry_date to date object if it's a Timestamp
+                        if isinstance(entry_date, pd.Timestamp):
+                            entry_date = entry_date.date()
+                        elif hasattr(entry_date, 'date'):
+                            entry_date = entry_date.date()
                         
                         # Log detailed data for analysis
                         logger.info(f"=== SIGNAL DATA FOR {sym} ===")
                         logger.info(f"Pattern detected at index {j} (consolidation window: {w})")
                         logger.info(f"Data range: {df['DATE'].min()} to {df['DATE'].max()}")
+                        logger.info(f"Breakout date: {df['DATE'].iat[j]}")
+                        logger.info(f"Entry date: {entry_date}")
+                        logger.info(f"Entry price: ₹{entry:.2f}")
                         
                         # Check data freshness
                         latest_date = df['DATE'].max()
@@ -624,28 +910,37 @@ def detect_live_patterns(symbols, listing_map):
                         else:
                             logger.info(f"✅ Data is fresh: {days_old} days old")
                         
-                        logger.info(f"Latest 5 data points:")
-                        latest_data = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'LTP', 'VOLUME']].tail()
-                        for _, row in latest_data.iterrows():
-                            logger.info(f"  {row['DATE']}: O={row['OPEN']:.2f} H={row['HIGH']:.2f} L={row['LOW']:.2f} C={row['CLOSE']:.2f} LTP={row['LTP']:.2f} V={row['VOLUME']:,.0f}")
+                        logger.info(f"Breakout day data:")
+                        breakout_row = df.iloc[j]
+                        logger.info(f"  Date: {breakout_row['DATE']}, O={breakout_row['OPEN']:.2f} H={breakout_row['HIGH']:.2f} L={breakout_row['LOW']:.2f} C={breakout_row['CLOSE']:.2f}")
+                        if j + 1 < len(df):
+                            next_row = df.iloc[j + 1]
+                            logger.info(f"Entry day data (next day):")
+                            logger.info(f"  Date: {next_row['DATE']}, O={next_row['OPEN']:.2f} H={next_row['HIGH']:.2f} L={next_row['LOW']:.2f} C={next_row['CLOSE']:.2f}")
                         
                         logger.info(f"Consolidation low: {low:.2f}")
                         logger.info(f"Consolidation high: {high2:.2f}")
                         logger.info(f"Breakout detected at index {j}: High={df['HIGH'].iat[j]:.2f} > Base High={high2:.2f}")
-                        logger.info(f"Entry price (next day opening): ₹{entry:.2f}")
                         logger.info(f"Grade: {grade} (Score: {score})")
                         
-                        if days_old > 1:
-                            logger.warning(f"🚨 OLD DATA WARNING: Using {days_old}-day-old opening price for {sym}: ₹{entry:.2f}. Verify current price before trading!")
-                        else:
-                            logger.info(f"✅ Using recent opening price for {sym}: ₹{entry:.2f}")
                         # Grade-based stop loss: More appropriate for IPO volatility
                         stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
-                        date = datetime.today().date()
+                        date = entry_date  # Use actual entry date from dataframe
                         
-                        # Create unique signal ID
-                        sid = f"{sym}_{date.strftime('%Y%m%d')}_{w}_{j}_LIVE"
+                        # Create unique signal ID with type prefix
+                        sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}_{j}_LIVE"
                         if sid in existing: continue
+                        
+                        # Check if symbol already has active position (prevent duplicates)
+                        try:
+                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+                            if not existing_positions.empty:
+                                active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
+                                if sym in active_positions['symbol'].tolist():
+                                    logger.info(f"⏭️ Skipping {sym} - already has active position")
+                                    continue
+                        except:
+                            pass
                         
                         pt = dynamic_partial_take(grade)
                         target = entry * (1 + pt)
@@ -664,7 +959,8 @@ def detect_live_patterns(symbols, listing_map):
                             "exit_date": "",
                             "exit_price": 0,
                             "pnl_pct": 0,
-                            "days_held": 0
+                            "days_held": 0,
+                            "signal_type": "CONSOLIDATION"
                         }
                         
                         # Add to positions
@@ -686,24 +982,27 @@ def detect_live_patterns(symbols, listing_map):
                         
                         # Append to CSV files properly
                         try:
-                            existing_signals = pd.read_csv(SIGNALS_CSV)
+                            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+                            # Add signal_type column if it doesn't exist (for backward compatibility)
+                            if 'signal_type' not in existing_signals.columns:
+                                existing_signals['signal_type'] = 'UNKNOWN'
                         except (FileNotFoundError, pd.errors.EmptyDataError):
                             existing_signals = pd.DataFrame()
                         
                         if existing_signals.empty:
-                            signals_df.to_csv(SIGNALS_CSV, index=False)
+                            signals_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
                         else:
-                            pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False)
+                            pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
                         
                         try:
-                            existing_positions = pd.read_csv(POSITIONS_CSV)
+                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
                         except (FileNotFoundError, pd.errors.EmptyDataError):
                             existing_positions = pd.DataFrame()
                         
                         if existing_positions.empty:
-                            positions_df.to_csv(POSITIONS_CSV, index=False)
+                            positions_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
                         else:
-                            pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False)
+                            pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
                         
                         # Send Telegram notification with next day trading instructions
                         if days_old > 1:
@@ -711,7 +1010,23 @@ def detect_live_patterns(symbols, listing_map):
                         else:
                             price_warning = f"✅ Fresh data - Ready for next day trading"
                         
-                        message = f"🎯 IPO BREAKOUT SIGNAL\n📊 Symbol: {sym}\n{'🔥' if grade in ['A+', 'B'] else '📈'} Grade: {grade}\n💰 Entry: ₹{entry:.2f} (Next Day Opening)\n🛑 Stop Loss: ₹{stop:.2f}\n📈 Expected: {pt*100:.1f}% (75% win rate)\n📅 Signal Date: {date.strftime('%Y-%m-%d')}\n{price_warning}\n\n📋 TRADING INSTRUCTIONS:\n• Enter at market open tomorrow\n• Use ₹{entry:.2f} as reference price\n• Set stop loss at ₹{stop:.2f}\n• Target: ₹{target:.2f}\n⚡ LIVE PATTERN DETECTED"
+                        message = f"""🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>
+
+📊 Symbol: <b>{sym}</b>
+📋 Signal Type: <b>Consolidation-Based Breakout</b>
+{'🔥' if grade in ['A+', 'B'] else '📈'} Grade: <b>{grade}</b>
+💰 Entry: ₹{entry:.2f} (Next Day Opening)
+🛑 Stop Loss: ₹{stop:.2f}
+📈 Target: ₹{target:.2f}
+📅 Signal Date: {date.strftime('%Y-%m-%d')}
+{price_warning}
+
+📋 <b>TRADING INSTRUCTIONS:</b>
+• Enter at market open tomorrow
+• Use ₹{entry:.2f} as reference price
+• Set stop loss at ₹{stop:.2f}
+• Target: ₹{target:.2f}
+⚡ Consolidation pattern detected"""
                         send_telegram(message)
                         
                         signals_found += 1
@@ -724,7 +1039,14 @@ def detect_live_patterns(symbols, listing_map):
     return signals_found
 
 def detect_scan(symbols, listing_map):
-    existing = pd.read_csv(SIGNALS_CSV)["signal_id"].tolist()
+    try:
+        existing_signals_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+        existing = existing_signals_df["signal_id"].tolist()
+        # Add signal_type column if it doesn't exist (for backward compatibility)
+        if 'signal_type' not in existing_signals_df.columns:
+            existing_signals_df['signal_type'] = 'UNKNOWN'
+    except:
+        existing = []
     signals_found = 0
     symbols_processed = 0
     processed_today = set()  # Track symbols processed today to prevent duplicates
@@ -734,7 +1056,7 @@ def detect_scan(symbols, listing_map):
         if symbols_processed % 20 == 0:
             logger.info(f"Processed {symbols_processed}/{len(symbols)} symbols...")
         
-        if sym in pd.read_csv(POSITIONS_CSV)["symbol"].tolist(): continue
+        if sym in pd.read_csv(POSITIONS_CSV, encoding='utf-8')["symbol"].tolist(): continue
         
         # Check if we already processed this symbol today
         today_key = f"{sym}_{datetime.today().strftime('%Y%m%d')}"
@@ -778,24 +1100,43 @@ def detect_scan(symbols, listing_map):
                         grade = assign_grade(score)
                         if grade == "D": continue
                         
-                        # For live trading, get current market price
-                        try:
-                            # Get current market data for live trading
-                            current_data = fetch_data(sym, ld)
-                            if current_data is not None and not current_data.empty:
-                                entry = current_data["LTP"].iloc[-1]  # Latest LTP for current price
-                            else:
-                                entry = df["LTP"].iat[j]  # Fallback to historical LTP
-                        except:
-                            entry = df["LTP"].iat[j]  # Fallback to historical LTP
+                        # Use the next day's opening price after breakout (j+1) for entry
+                        # If j+1 doesn't exist, use the current day's opening (j)
+                        if j + 1 < len(df):
+                            entry = df["OPEN"].iat[j + 1]  # Next day opening after breakout
+                            entry_date = df['DATE'].iat[j + 1]
+                        else:
+                            entry = df["OPEN"].iat[j]  # Use breakout day opening if no next day
+                            entry_date = df['DATE'].iat[j]
+                        
+                        # Convert entry_date to date object if it's a Timestamp
+                        if isinstance(entry_date, pd.Timestamp):
+                            entry_date = entry_date.date()
+                        elif hasattr(entry_date, 'date'):
+                            entry_date = entry_date.date()
+                        
+                        logger.info(f"Breakout detected for {sym} at index {j}, date: {df['DATE'].iat[j]}")
+                        logger.info(f"Entry date: {entry_date}, Entry price: ₹{entry:.2f}")
+                        
                         # Grade-based stop loss: More appropriate for IPO volatility
                         stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
-                        # For live trading, use today's date for signal entry
-                        date = datetime.today().date()
+                        # Use actual entry date from dataframe
+                        date = entry_date
                             
-                        # Create unique signal ID with window and time to prevent duplicates
-                        sid = f"{sym}_{date.strftime('%Y%m%d')}_{w}_{j}"
+                        # Create unique signal ID with type prefix
+                        sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}_{j}"
                         if sid in existing: continue
+                        
+                        # Check if symbol already has active position (prevent duplicates)
+                        try:
+                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+                            if not existing_positions.empty:
+                                active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
+                                if sym in active_positions['symbol'].tolist():
+                                    logger.info(f"⏭️ Skipping {sym} - already has active position")
+                                    continue
+                        except:
+                            pass
                         
                         pt = dynamic_partial_take(grade)
                         row = {
@@ -803,19 +1144,22 @@ def detect_scan(symbols, listing_map):
                             "entry_price": entry, "grade": grade, "score": score,
                             "stop_loss": stop, "target_price": entry*(1+pt),
                             "status": "ACTIVE", "exit_date": "", "exit_price": 0,
-                            "pnl_pct": 0, "days_held": 0
+                            "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION"
                         }
                         
                         # Read existing signals and append new signal
                         try:
-                            existing_signals = pd.read_csv(SIGNALS_CSV)
+                            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+                            # Add signal_type column if it doesn't exist (for backward compatibility)
+                            if 'signal_type' not in existing_signals.columns:
+                                existing_signals['signal_type'] = 'UNKNOWN'
                         except (FileNotFoundError, pd.errors.EmptyDataError):
                             existing_signals = pd.DataFrame()
                         
                         if existing_signals.empty:
-                            pd.DataFrame([row]).to_csv(SIGNALS_CSV, index=False)
+                            pd.DataFrame([row]).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
                         else:
-                            pd.concat([existing_signals, pd.DataFrame([row])], ignore_index=True).to_csv(SIGNALS_CSV, index=False)
+                            pd.concat([existing_signals, pd.DataFrame([row])], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
                         
                         pos = {
                             "symbol": sym, "entry_date": date, "entry_price": entry,
@@ -825,23 +1169,30 @@ def detect_scan(symbols, listing_map):
                         
                         # Read existing positions and append new position
                         try:
-                            existing_positions = pd.read_csv(POSITIONS_CSV)
+                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
                         except (FileNotFoundError, pd.errors.EmptyDataError):
                             existing_positions = pd.DataFrame()
                         
                         if existing_positions.empty:
-                            pd.DataFrame([pos]).to_csv(POSITIONS_CSV, index=False)
+                            pd.DataFrame([pos]).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
                         else:
-                            pd.concat([existing_positions, pd.DataFrame([pos])], ignore_index=True).to_csv(POSITIONS_CSV, index=False)
+                            pd.concat([existing_positions, pd.DataFrame([pos])], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
                         
                         # Calculate better target price based on pattern
-                        target = calculate_target_price(entry, low, high, grade)
+                        target = calculate_target_price(entry, low, high2, grade)
                         
-                        # Send detailed signal alert
+                        # Get data source from DataFrame
+                        data_source = df.attrs.get('data_source', 'Unknown')
+                        
+                        # Send detailed signal alert with type
                         signal_msg = format_signal_alert(
                             sym, grade, entry, stop, target, score, date,
-                            consolidation_low=low, consolidation_high=high, breakout_price=entry
+                            consolidation_low=low, consolidation_high=high2, breakout_price=entry,
+                            data_source=data_source
                         )
+                        # Add signal type to alert
+                        signal_msg = signal_msg.replace("🎯 <b>IPO BREAKOUT SIGNAL</b>", 
+                                                       "🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>\n\n📋 <b>Signal Type:</b> Consolidation-Based Breakout")
                         send_telegram(signal_msg)
                         signals_found += 1
                         logger.info(f"🎯 Signal found: {sym} - {grade} grade at {entry}")
@@ -863,15 +1214,15 @@ def detect_scan(symbols, listing_map):
 
 {'🎯 New signals detected! Check details above.' if signals_found > 0 else '✅ No new signals today - Market conditions normal.'}
 
-📈 <b>Active Positions:</b> {len(pd.read_csv(POSITIONS_CSV))}"""
+📈 <b>Active Positions:</b> {len(pd.read_csv(POSITIONS_CSV, encoding='utf-8'))}"""
     
     send_telegram(summary_msg)
     return signals_found
 
 def weekly_summary():
     """Generate detailed weekly summary with performance metrics"""
-    df_signals = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"])
-    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
+    df_signals = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"], encoding='utf-8')
+    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
     
     # Weekly stats
     week_start = datetime.today() - timedelta(days=7)
@@ -906,8 +1257,8 @@ def weekly_summary():
 
 def monthly_review():
     """Generate detailed monthly review with comprehensive stats"""
-    df_signals = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"])
-    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
+    df_signals = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"], encoding='utf-8')
+    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
     
     # Monthly stats
     month_start = datetime.today().replace(day=1)
@@ -941,19 +1292,84 @@ def monthly_review():
     
     send_telegram(msg)
 
+def format_position_update_alert(symbol, current_price, entry_price, old_trailing, new_trailing, pnl_pct, days_held, grade):
+    """Format position update alert"""
+    pnl_emoji = "📈" if pnl_pct >= 0 else "📉"
+    trailing_changed = "✅" if new_trailing > old_trailing else "➡️"
+    
+    msg = f"""🔄 <b>Position Update</b>
+
+📊 Symbol: <b>{symbol}</b>
+⭐ Grade: {grade}
+💰 Current Price: ₹{current_price:,.2f}
+💵 Entry Price: ₹{entry_price:,.2f}
+{pnl_emoji} P&L: {pnl_pct:+.2f}%
+📅 Days Held: {days_held}
+
+🛑 Stop Loss:
+• Old Trailing: ₹{old_trailing:,.2f}
+• New Trailing: ₹{new_trailing:,.2f} {trailing_changed}
+
+⏰ Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}"""
+    return msg
+
 def stop_loss_update_scan():
     """Dedicated scan for updating stop losses on active positions"""
     logger.info("🔄 Starting stop-loss update scan...")
     
-    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"])
+    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
     active_positions = df_positions[df_positions["status"] == "ACTIVE"]
     
     if active_positions.empty:
         send_telegram("📊 <b>Stop-Loss Update Scan</b>\n\n✅ No active positions to update.")
         return
     
+    # Send pre-scan summary showing all positions that will be updated
+    pre_scan_msg = f"""🔄 <b>Stop-Loss Update Scan Starting</b>
+
+📊 <b>Active Positions to Update: {len(active_positions)}</b>
+
+"""
+    for idx, pos in active_positions.iterrows():
+        sym = pos["symbol"]
+        entry_price = pos["entry_price"]
+        current_price = pos.get("current_price", entry_price)
+        trailing_stop = pos.get("trailing_stop", pos.get("stop_loss", entry_price * 0.95))
+        grade = pos.get("grade", "N/A")
+        
+        # Calculate days held
+        try:
+            entry_date = pos["entry_date"]
+            if isinstance(entry_date, pd.Timestamp):
+                entry_date = entry_date.date()
+            elif hasattr(entry_date, 'date'):
+                entry_date = entry_date.date()
+            today_date = datetime.today().date()
+            days_held = (today_date - entry_date).days
+        except:
+            days_held = "N/A"
+        
+        # Calculate PnL
+        try:
+            pnl = ((current_price - entry_price) / entry_price * 100) if entry_price > 0 else 0
+            pnl_emoji = "📈" if pnl >= 0 else "📉"
+        except:
+            pnl = 0
+            pnl_emoji = "➡️"
+        
+        pre_scan_msg += f"""• <b>{sym}</b> ({grade})
+  💰 Entry: ₹{entry_price:,.2f} | Current: ₹{current_price:,.2f}
+  {pnl_emoji} P&L: {pnl:+.2f}% | 🛑 Stop: ₹{trailing_stop:,.2f}
+  📅 Days: {days_held}
+
+"""
+    
+    pre_scan_msg += f"\n⏰ <b>Scan Time:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    send_telegram(pre_scan_msg)
+    
     updates_made = 0
     exits_triggered = 0
+    failed_updates = []
     
     for idx, pos in active_positions.iterrows():
         sym = pos["symbol"]
@@ -961,14 +1377,41 @@ def stop_loss_update_scan():
         
         # Get current price
         try:
-            current_data = fetch_data(sym, pos["entry_date"])
+            # Convert entry_date to date object for fetch_data
+            entry_date = pos["entry_date"]
+            if isinstance(entry_date, pd.Timestamp):
+                entry_date = entry_date.date()
+            elif hasattr(entry_date, 'date'):
+                entry_date = entry_date.date()
+            
+            current_data = fetch_data(sym, entry_date)
             if current_data is None or current_data.empty:
                 logger.warning(f"Could not fetch data for {sym}")
+                failed_updates.append(sym)
+                # Send alert for failed update
+                failed_msg = f"""⚠️ <b>Position Update Failed</b>
+
+📊 Symbol: <b>{sym}</b>
+❌ Could not fetch current data
+📅 Entry Date: {pos['entry_date']}
+💰 Last Known Price: ₹{pos.get('current_price', pos['entry_price']):,.2f}
+
+⏰ Scan Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}"""
+                send_telegram(failed_msg)
                 continue
                 
             current_price = current_data["CLOSE"].iat[-1]
             entry_price = pos["entry_price"]
-            days_held = (datetime.today().date() - pos["entry_date"].date()).days
+            old_trailing = pos["trailing_stop"]
+            # Ensure both dates are date objects for comparison
+            today_date = datetime.today().date()
+            entry_date = pos["entry_date"]
+            if isinstance(entry_date, pd.Timestamp):
+                entry_date = entry_date.date()
+            elif hasattr(entry_date, 'date'):
+                entry_date = entry_date.date()
+            
+            days_held = (today_date - entry_date).days
             
             # Calculate new trailing stop using grade-based percentage
             grade = pos.get("grade", "C")  # Default to C if grade not available
@@ -1004,31 +1447,52 @@ def stop_loss_update_scan():
                     current_price, new_trailing, pnl, days_held
                 ]
                 updates_made += 1
+                
+                # Send position update alert
+                update_msg = format_position_update_alert(
+                    sym, current_price, entry_price, old_trailing, new_trailing, pnl, days_held, grade
+                )
+                send_telegram(update_msg)
         except Exception as e:
             logger.error(f"Error updating {sym}: {e}")
+            failed_updates.append(sym)
+            # Send alert for error
+            error_msg = f"""❌ <b>Position Update Error</b>
+
+📊 Symbol: <b>{sym}</b>
+⚠️ Error: {str(e)}
+📅 Entry Date: {pos['entry_date']}
+💰 Last Known Price: ₹{pos.get('current_price', pos['entry_price']):,.2f}
+
+⏰ Scan Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}"""
+            send_telegram(error_msg)
             continue
     
     # Save updated positions
     df_positions.to_csv(POSITIONS_CSV, index=False)
     
     # Send summary
-    summary_msg = f"""🔄 <b>Stop-Loss Update Scan</b>
+    summary_msg = f"""🔄 <b>Stop-Loss Update Scan Complete</b>
     
 📊 <b>Results:</b>
-• Positions Updated: {updates_made}
-• Positions Closed: {exits_triggered}
-• Active Positions: {len(active_positions) - exits_triggered}
-
-⏰ <b>Scan Time:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}"""
+✅ Positions Updated: {updates_made}
+🚪 Positions Closed: {exits_triggered}
+⚠️ Failed Updates: {len(failed_updates)}
+📈 Active Positions: {len(active_positions) - exits_triggered}"""
+    
+    if failed_updates:
+        summary_msg += f"\n\n❌ <b>Failed Symbols:</b> {', '.join(failed_updates)}"
+    
+    summary_msg += f"\n\n⏰ <b>Scan Time:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}"
     
     send_telegram(summary_msg)
-    logger.info(f"Stop-loss update complete: {updates_made} updated, {exits_triggered} closed")
+    logger.info(f"Stop-loss update complete: {updates_made} updated, {exits_triggered} closed, {len(failed_updates)} failed")
 
 def heartbeat():
     """Send heartbeat to confirm scanner is alive"""
     logger.info("💓 Sending heartbeat...")
     try:
-        active_positions = len(pd.read_csv(POSITIONS_CSV))
+        active_positions = len(pd.read_csv(POSITIONS_CSV, encoding='utf-8'))
         message = f"💓 <b>Scanner Heartbeat</b>\n\n⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n📈 Active Positions: {active_positions}"
         logger.info(f"Heartbeat message: {message}")
         send_telegram(message)
