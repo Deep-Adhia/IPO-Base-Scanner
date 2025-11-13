@@ -1,3 +1,0 @@
-symbol,entry_date,entry_price,grade,current_price,stop_loss,trailing_stop,pnl_pct,days_held,status
-SOLEX,2025-10-08,1760.0,C,1760.0,1548.8,1548.8,0,0,ACTIVE
-JKIPL,2025-10-03,125.0,C,125.0,110.0,110.0,0,0,ACTIVE
