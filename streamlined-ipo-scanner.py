@@ -332,7 +332,7 @@ def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, sco
 • Suggested quantity: {int(position_size_amount):,} shares
 • Capital at risk: ₹{int(risk_amount * position_size_amount):,}
 
-📅 Date: {date.strftime('%Y-%m-%d')}
+📅 Signal Date: {date if isinstance(date, str) else date.strftime('%Y-%m-%d')}
 ⚠️ <b>Action Required:</b> Enter position at market open"""
     
     return msg
@@ -506,6 +506,58 @@ def fetch_from_upstox(symbol, start_date, end_date):
         
     except Exception as e:
         logger.warning(f"⚠️ Upstox API error for {symbol}: {e}")
+        return None
+
+def get_live_price_upstox(symbol):
+    """Get live price from Upstox market quote API"""
+    try:
+        # Load IPO mappings
+        if not os.path.exists('ipo_upstox_mapping.csv'):
+            return None
+        
+        mapping_df = pd.read_csv('ipo_upstox_mapping.csv', encoding='utf-8')
+        symbol_mapping = dict(zip(mapping_df['ipo_symbol'], mapping_df['instrument_key']))
+        
+        if symbol not in symbol_mapping:
+            return None
+        
+        instrument_key = symbol_mapping[symbol]
+        
+        # Get Upstox credentials
+        access_token = os.getenv('UPSTOX_ACCESS_TOKEN')
+        if not access_token:
+            return None
+        
+        # Prepare API request
+        headers = {
+            'Accept': 'application/json',
+            'Api-Version': '2.0',
+            'Authorization': f'Bearer {access_token}'
+        }
+        
+        url = f'https://api.upstox.com/v2/market-quote/quotes?instrument_key={instrument_key}'
+        
+        response = requests.get(url, headers=headers, timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if 'data' in data:
+                # Try both key formats
+                quote_key = f'NSE_EQ:{symbol}'
+                if quote_key in data['data']:
+                    quote = data['data'][quote_key]
+                    live_price = quote.get('last_price')
+                    if live_price:
+                        return float(live_price)
+                elif instrument_key in data['data']:
+                    quote = data['data'][instrument_key]
+                    live_price = quote.get('last_price')
+                    if live_price:
+                        return float(live_price)
+        
+        return None
+    except Exception as e:
+        logger.warning(f"Error fetching live price from Upstox for {symbol}: {e}")
         return None
 
 def fetch_data(symbol, start_date):
@@ -686,21 +738,48 @@ def update_positions():
     df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
     for idx, pos in df_pos[df_pos["status"]=="ACTIVE"].iterrows():
         sym = pos["symbol"]
-        start = pos["entry_date"].date()
-        df = fetch_data(sym, start)
-        if df is None or df.empty: continue
-        price = df["CLOSE"].iloc[-1]
-        st = supertrend(df)
-        trailing = max(pos["stop_loss"], st.iloc[-1])
-        pnl = (price - pos["entry_price"])/pos["entry_price"]*100
-        # Ensure both dates are date objects for comparison
-        today_date = datetime.today().date()
+        
+        # Handle entry_date - convert to date object
+        start = pos["entry_date"]
         if isinstance(start, pd.Timestamp):
             start = start.date()
+        elif isinstance(start, str):
+            start = pd.to_datetime(start).date()
         elif hasattr(start, 'date'):
             start = start.date()
+        else:
+            logger.warning(f"Could not parse entry_date for {sym}: {start}")
+            continue
         
+        df = fetch_data(sym, start)
+        if df is None or df.empty: 
+            logger.warning(f"No data available for {sym}")
+            continue
+        
+        # Get latest price and validate data freshness
+        latest_date = df['DATE'].max()
+        if isinstance(latest_date, pd.Timestamp):
+            latest_date = latest_date.date()
+        elif hasattr(latest_date, 'date'):
+            latest_date = latest_date.date()
+        
+        today_date = datetime.today().date()
+        days_old = (today_date - latest_date).days
+        
+        if days_old > 3:
+            logger.warning(f"⚠️ Data for {sym} is {days_old} days old (latest: {latest_date})")
+        
+        price = float(df["CLOSE"].iloc[-1])
+        st = supertrend(df)
+        trailing = max(float(pos["stop_loss"]), float(st.iloc[-1]))
+        pnl = (price - float(pos["entry_price"]))/float(pos["entry_price"])*100
+        
+        # Calculate days held correctly
         days = (today_date - start).days
+        
+        if days < 0:
+            logger.error(f"⚠️ Negative days for {sym}: entry_date={start}, today={today_date}")
+            days = 0
         
         # Enhanced exit strategies
         exit_reason = None
@@ -900,27 +979,50 @@ def detect_live_patterns(symbols, listing_map):
                             continue
 
                         # This is a LIVE pattern - generate signal
-                        # Use the next day's opening price after breakout (j+1) for entry
-                        # If j+1 doesn't exist, use the current day's opening (j)
-                        if j + 1 < len(df):
-                            entry = df["OPEN"].iat[j + 1]  # Next day opening after breakout
-                            entry_date = df['DATE'].iat[j + 1]
-                        else:
-                            entry = df["OPEN"].iat[j]  # Use breakout day opening if no next day
-                            entry_date = df['DATE'].iat[j]
+                        # For live signals, use TODAY's date and fetch CURRENT price
+                        today_date = datetime.today().date()
                         
-                        # Convert entry_date to date object if it's a Timestamp
-                        if isinstance(entry_date, pd.Timestamp):
-                            entry_date = entry_date.date()
-                        elif hasattr(entry_date, 'date'):
-                            entry_date = entry_date.date()
+                        # Try to get live price from Upstox API first
+                        entry = get_live_price_upstox(sym)
+                        latest_date = None
+                        price_source = "Upstox Live"
+                        
+                        if entry is None:
+                            # Fallback to historical data
+                            fresh_df = fetch_data(sym, ld)
+                            if fresh_df is None or fresh_df.empty:
+                                logger.warning(f"Could not fetch fresh data for {sym} to get current price")
+                                continue
+                            
+                            # Get the latest available price from fresh data
+                            entry = float(fresh_df["CLOSE"].iloc[-1])
+                            latest_date = fresh_df['DATE'].max()
+                            if isinstance(latest_date, pd.Timestamp):
+                                latest_date = latest_date.date()
+                            elif hasattr(latest_date, 'date'):
+                                latest_date = latest_date.date()
+                            price_source = f"Historical ({latest_date})"
+                            
+                            # Only generate signal if data is fresh (within last 2 days)
+                            days_old = (today_date - latest_date).days
+                            if days_old > 2:
+                                logger.warning(f"Skipping {sym} - data is {days_old} days old. Too old for live signal!")
+                                continue
+                        else:
+                            # Got live price from Upstox - set latest_date to today
+                            latest_date = today_date
+                        
+                        # For live signals, entry date should be today
+                        entry_date = today_date
+                        
+                        logger.info(f"Current price for {sym}: ₹{entry:.2f} (from {price_source})")
                         
                         # Log detailed data for analysis
                         logger.info(f"=== SIGNAL DATA FOR {sym} ===")
                         logger.info(f"Pattern detected at index {j} (consolidation window: {w})")
                         logger.info(f"Data range: {df['DATE'].min()} to {df['DATE'].max()}")
                         logger.info(f"Breakout date: {df['DATE'].iat[j]}")
-                        logger.info(f"Entry date: {entry_date}")
+                        logger.info(f"Entry date: {entry_date} (validated)")
                         logger.info(f"Entry price: ₹{entry:.2f}")
                         
                         # Check data freshness
@@ -950,8 +1052,16 @@ def detect_live_patterns(symbols, listing_map):
                         stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
                         date = entry_date  # Use actual entry date from dataframe
                         
+                        # Ensure date is a string in YYYY-MM-DD format for CSV
+                        if isinstance(date, pd.Timestamp):
+                            date_str = date.strftime('%Y-%m-%d')
+                        elif hasattr(date, 'strftime'):
+                            date_str = date.strftime('%Y-%m-%d')
+                        else:
+                            date_str = str(date)
+                        
                         # Create unique signal ID with type prefix
-                        sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}_{j}_LIVE"
+                        sid = f"CONSOL_{sym}_{date_str.replace('-', '')}_{w}_{j}_LIVE"
                         if sid in existing: continue
                         
                         # Check if symbol already has active position (prevent duplicates)
@@ -969,10 +1079,18 @@ def detect_live_patterns(symbols, listing_map):
                         target = entry * (1 + pt)
                         
                         # Add to signals
+                        # Ensure date is a string in YYYY-MM-DD format
+                        if isinstance(date, pd.Timestamp):
+                            date_str = date.strftime('%Y-%m-%d')
+                        elif hasattr(date, 'strftime'):
+                            date_str = date.strftime('%Y-%m-%d')
+                        else:
+                            date_str = str(date)
+                        
                         new_signal = {
                             "signal_id": sid,
                             "symbol": sym,
-                            "signal_date": date,
+                            "signal_date": date_str,
                             "entry_price": round(entry, 2),
                             "grade": grade,
                             "score": score,
@@ -989,7 +1107,7 @@ def detect_live_patterns(symbols, listing_map):
                         # Add to positions
                         new_position = {
                             "symbol": sym,
-                            "entry_date": date,
+                            "entry_date": date_str,
                             "entry_price": round(entry, 2),
                             "grade": grade,
                             "current_price": round(entry, 2),
@@ -1041,7 +1159,7 @@ def detect_live_patterns(symbols, listing_map):
 💰 Entry: ₹{entry:.2f} (Next Day Opening)
 🛑 Stop Loss: ₹{stop:.2f}
 📈 Target: ₹{target:.2f}
-📅 Signal Date: {date.strftime('%Y-%m-%d')}
+📅 Signal Date: {date_str}
 {price_warning}
 
 📋 <b>TRADING INSTRUCTIONS:</b>
@@ -1123,23 +1241,46 @@ def detect_scan(symbols, listing_map):
                         grade = assign_grade(score)
                         if grade == "D": continue
                         
-                        # Use the next day's opening price after breakout (j+1) for entry
-                        # If j+1 doesn't exist, use the current day's opening (j)
-                        if j + 1 < len(df):
-                            entry = df["OPEN"].iat[j + 1]  # Next day opening after breakout
-                            entry_date = df['DATE'].iat[j + 1]
+                        # This is a LIVE pattern - generate signal
+                        # For live signals, use TODAY's date and fetch CURRENT price
+                        today_date = datetime.today().date()
+                        
+                        # Try to get live price from Upstox API first
+                        entry = get_live_price_upstox(sym)
+                        latest_date = None
+                        price_source = "Upstox Live"
+                        
+                        if entry is None:
+                            # Fallback to historical data
+                            fresh_df = fetch_data(sym, ld)
+                            if fresh_df is None or fresh_df.empty:
+                                logger.warning(f"Could not fetch fresh data for {sym} to get current price")
+                                continue
+                            
+                            # Get the latest available price from fresh data
+                            entry = float(fresh_df["CLOSE"].iloc[-1])
+                            latest_date = fresh_df['DATE'].max()
+                            if isinstance(latest_date, pd.Timestamp):
+                                latest_date = latest_date.date()
+                            elif hasattr(latest_date, 'date'):
+                                latest_date = latest_date.date()
+                            price_source = f"Historical ({latest_date})"
+                            
+                            # Only generate signal if data is fresh (within last 2 days)
+                            days_old = (today_date - latest_date).days
+                            if days_old > 2:
+                                logger.warning(f"Skipping {sym} - data is {days_old} days old. Too old for live signal!")
+                                continue
                         else:
-                            entry = df["OPEN"].iat[j]  # Use breakout day opening if no next day
-                            entry_date = df['DATE'].iat[j]
+                            # Got live price from Upstox - set latest_date to today
+                            latest_date = today_date
                         
-                        # Convert entry_date to date object if it's a Timestamp
-                        if isinstance(entry_date, pd.Timestamp):
-                            entry_date = entry_date.date()
-                        elif hasattr(entry_date, 'date'):
-                            entry_date = entry_date.date()
+                        # For live signals, entry date should be today
+                        entry_date = today_date
                         
+                        logger.info(f"Current price for {sym}: ₹{entry:.2f} (from {price_source})")
                         logger.info(f"Breakout detected for {sym} at index {j}, date: {df['DATE'].iat[j]}")
-                        logger.info(f"Entry date: {entry_date}, Entry price: ₹{entry:.2f}")
+                        logger.info(f"Entry date: {entry_date} (validated), Entry price: ₹{entry:.2f}")
                         
                         # Grade-based stop loss: More appropriate for IPO volatility
                         stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
@@ -1162,8 +1303,16 @@ def detect_scan(symbols, listing_map):
                             pass
                         
                         pt = dynamic_partial_take(grade)
+                        # Ensure date is a string in YYYY-MM-DD format
+                        if isinstance(date, pd.Timestamp):
+                            date_str = date.strftime('%Y-%m-%d')
+                        elif hasattr(date, 'strftime'):
+                            date_str = date.strftime('%Y-%m-%d')
+                        else:
+                            date_str = str(date)
+                        
                         row = {
-                            "signal_id": sid, "symbol": sym, "signal_date": date,
+                            "signal_id": sid, "symbol": sym, "signal_date": date_str,
                             "entry_price": entry, "grade": grade, "score": score,
                             "stop_loss": stop, "target_price": entry*(1+pt),
                             "status": "ACTIVE", "exit_date": "", "exit_price": 0,
@@ -1185,7 +1334,7 @@ def detect_scan(symbols, listing_map):
                             pd.concat([existing_signals, pd.DataFrame([row])], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
                         
                         pos = {
-                            "symbol": sym, "entry_date": date, "entry_price": entry,
+                            "symbol": sym, "entry_date": date_str, "entry_price": entry,
                             "grade": grade, "current_price": entry, "stop_loss": stop,
                             "trailing_stop": stop, "pnl_pct": 0, "days_held": 0, "status": "ACTIVE"
                         }
@@ -1209,7 +1358,7 @@ def detect_scan(symbols, listing_map):
                         
                         # Send detailed signal alert with type
                         signal_msg = format_signal_alert(
-                            sym, grade, entry, stop, target, score, date,
+                            sym, grade, entry, stop, target, score, date_str,
                             consolidation_low=low, consolidation_high=high2, breakout_price=entry,
                             data_source=data_source
                         )
@@ -1431,10 +1580,16 @@ def stop_loss_update_scan():
             entry_date = pos["entry_date"]
             if isinstance(entry_date, pd.Timestamp):
                 entry_date = entry_date.date()
+            elif isinstance(entry_date, str):
+                entry_date = pd.to_datetime(entry_date).date()
             elif hasattr(entry_date, 'date'):
                 entry_date = entry_date.date()
             
             days_held = (today_date - entry_date).days
+            
+            if days_held < 0:
+                logger.error(f"⚠️ Negative days for {sym}: entry_date={entry_date}, today={today_date}")
+                days_held = 0
             
             # Calculate new trailing stop using grade-based percentage
             grade = pos.get("grade", "C")  # Default to C if grade not available
@@ -1492,7 +1647,7 @@ def stop_loss_update_scan():
             continue
     
     # Save updated positions
-    df_positions.to_csv(POSITIONS_CSV, index=False)
+    df_positions.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
     
     # Send summary
     summary_msg = f"""🔄 <b>Stop-Loss Update Scan Complete</b>
@@ -1530,13 +1685,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Show mode identification
-    print("🚀 ==========================================")
-    print("🚀 IPO Scanner Started")
-    print("🚀 ==========================================")
-    print(f"📅 Date: {datetime.now().strftime('%Y-%m-%d')}")
-    print(f"⏰ Time: {datetime.now().strftime('%H:%M:%S')}")
-    print(f"🎯 Mode: {args.mode.upper()}")
-    print("🚀 ==========================================")
+    try:
+        print("==========================================")
+        print("IPO Scanner Started")
+        print("==========================================")
+    except UnicodeEncodeError:
+        print("==========================================")
+        print("IPO Scanner Started")
+        print("==========================================")
+    
+    try:
+        print(f"Date: {datetime.now().strftime('%Y-%m-%d')}")
+        print(f"Time: {datetime.now().strftime('%H:%M:%S')}")
+        print(f"Mode: {args.mode.upper()}")
+        print("==========================================")
+    except UnicodeEncodeError:
+        print(f"Date: {datetime.now().strftime('%Y-%m-%d')}")
+        print(f"Time: {datetime.now().strftime('%H:%M:%S')}")
+        print(f"Mode: {args.mode.upper()}")
+        print("==========================================")
 
     initialize_csvs()
     update_positions()

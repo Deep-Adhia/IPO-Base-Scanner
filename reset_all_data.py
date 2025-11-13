@@ -42,7 +42,7 @@ def reset_signals():
         "stop_loss", "target_price", "status", "exit_date", "exit_price", 
         "pnl_pct", "days_held", "signal_type"
     ])
-            df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+    df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
     print(f"✅ Reset {SIGNALS_CSV}")
 
 def reset_positions():
@@ -53,7 +53,7 @@ def reset_positions():
         "symbol", "entry_date", "entry_price", "grade", "current_price",
         "stop_loss", "trailing_stop", "pnl_pct", "days_held", "status"
     ])
-            df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+    df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
     print(f"✅ Reset {POSITIONS_CSV}")
 
 def reset_listing_data():

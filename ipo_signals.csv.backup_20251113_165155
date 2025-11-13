@@ -1,0 +1,3 @@
+signal_id,symbol,signal_date,entry_price,grade,score,stop_loss,target_price,status,exit_date,exit_price,pnl_pct,days_held,signal_type
+CONSOL_SOLEX_20251008_10_23_LIVE,SOLEX,2025-10-08,1760.0,C,1,1548.8,1936.0,ACTIVE,,0,0,0,CONSOLIDATION
+CONSOL_JKIPL_20251003_20_26_LIVE,JKIPL,2025-10-03,125.0,C,1,110.0,137.5,ACTIVE,,0,0,0,CONSOLIDATION
