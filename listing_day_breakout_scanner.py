@@ -73,6 +73,11 @@ def load_listing_data():
         # Remove comment rows and empty rows
         df = df[~df['symbol'].astype(str).str.startswith('#')]
         df = df[df['symbol'].notna() & (df['symbol'] != '')]
+        
+        # Convert listing_date to date object if it exists
+        if 'listing_date' in df.columns and not df.empty:
+            df['listing_date'] = pd.to_datetime(df['listing_date']).dt.date
+        
         return df
     except Exception as e:
         logger.error(f"Error loading listing data: {e}")
@@ -90,18 +95,20 @@ def get_listing_day_data(symbol, listing_date):
     try:
         logger.info(f"📊 Fetching listing day data for {symbol} (listing date: {listing_date})")
         
+        # Convert listing_date to date object if needed (before calling fetch_data)
+        if isinstance(listing_date, str):
+            listing_date = pd.to_datetime(listing_date).date()
+        elif hasattr(listing_date, 'date'):
+            listing_date = listing_date.date()
+        elif isinstance(listing_date, pd.Timestamp):
+            listing_date = listing_date.date()
+        
         # Fetch data starting from listing date
         df = fetch_data(symbol, listing_date)
         
         if df is None or df.empty:
             logger.warning(f"⚠️ No data available for {symbol} on listing date")
             return None
-        
-        # Convert listing_date to date object if needed
-        if isinstance(listing_date, str):
-            listing_date = pd.to_datetime(listing_date).date()
-        elif hasattr(listing_date, 'date'):
-            listing_date = listing_date.date()
         
         # Find listing day data
         df['DATE'] = pd.to_datetime(df['DATE']).dt.date
@@ -207,6 +214,14 @@ def check_listing_day_breakout(symbol, listing_info):
         listing_day_high = listing_info['listing_day_high']
         listing_day_low = listing_info['listing_day_low']
         listing_date = listing_info['listing_date']
+        
+        # Convert listing_date to date object if needed (from CSV it might be string)
+        if isinstance(listing_date, str):
+            listing_date = pd.to_datetime(listing_date).date()
+        elif hasattr(listing_date, 'date'):
+            listing_date = listing_date.date()
+        elif isinstance(listing_date, pd.Timestamp):
+            listing_date = listing_date.date()
         
         # Fetch current data
         df = fetch_data(symbol, listing_date)

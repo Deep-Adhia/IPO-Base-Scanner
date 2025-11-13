@@ -408,6 +408,21 @@ def fetch_from_upstox(symbol, start_date, end_date):
     import time
     
     try:
+        # Convert dates to date objects if needed
+        if isinstance(start_date, str):
+            start_date = pd.to_datetime(start_date).date()
+        elif hasattr(start_date, 'date'):
+            start_date = start_date.date()
+        elif isinstance(start_date, pd.Timestamp):
+            start_date = start_date.date()
+            
+        if isinstance(end_date, str):
+            end_date = pd.to_datetime(end_date).date()
+        elif hasattr(end_date, 'date'):
+            end_date = end_date.date()
+        elif isinstance(end_date, pd.Timestamp):
+            end_date = end_date.date()
+        
         # Load IPO mappings
         if not os.path.exists('ipo_upstox_mapping.csv'):
             logger.warning("IPO mapping file not found")
@@ -503,6 +518,14 @@ def fetch_data(symbol, start_date):
         return None
     
     try:
+        # Convert start_date to date object if needed
+        if isinstance(start_date, str):
+            start_date = pd.to_datetime(start_date).date()
+        elif hasattr(start_date, 'date'):
+            start_date = start_date.date()
+        elif isinstance(start_date, pd.Timestamp):
+            start_date = start_date.date()
+        
         today = datetime.today().date()
         
         # Try Upstox API first (if available)
