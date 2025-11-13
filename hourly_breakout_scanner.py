@@ -72,11 +72,20 @@ def load_watchlist():
         
         df = pd.read_csv(WATCHLIST_CSV, encoding='utf-8')
         
+        # Check if DataFrame is empty or missing required columns
+        if df.empty:
+            logger.info("📋 Watchlist is empty")
+            return []
+        
+        if 'status' not in df.columns or 'symbol' not in df.columns:
+            logger.warning("📋 Watchlist missing required columns (symbol, status)")
+            return []
+        
         # Filter for active symbols only
         active_symbols = df[df['status'] == 'ACTIVE']['symbol'].tolist()
         
         # Remove comments and empty lines
-        active_symbols = [s for s in active_symbols if not str(s).startswith('#') and str(s).strip()]
+        active_symbols = [s for s in active_symbols if not str(s).startswith('#') and str(s).strip() and pd.notna(s)]
         
         logger.info(f"📋 Loaded {len(active_symbols)} active symbols from watchlist")
         return active_symbols

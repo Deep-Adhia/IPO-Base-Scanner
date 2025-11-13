@@ -39,7 +39,12 @@ jobs:
         id: check_watchlist
         run: |
           if [ -f watchlist.csv ]; then
-            ACTIVE_COUNT=$(grep -c "ACTIVE" watchlist.csv || echo "0")
+            # Count lines with ACTIVE status (excluding header and comments)
+            ACTIVE_COUNT=$(grep -v "^#" watchlist.csv | grep -v "^symbol" | grep -c ",ACTIVE" || echo "0")
+            # Ensure it's a valid number
+            if ! [[ "$ACTIVE_COUNT" =~ ^[0-9]+$ ]]; then
+              ACTIVE_COUNT=0
+            fi
             echo "active_count=$ACTIVE_COUNT" >> $GITHUB_OUTPUT
             if [ "$ACTIVE_COUNT" -gt "0" ]; then
               echo "✅ Found $ACTIVE_COUNT active symbols in watchlist"
