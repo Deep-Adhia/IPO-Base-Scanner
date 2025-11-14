@@ -26,9 +26,19 @@ from jugaad_data.nse.history import stock_raw
 import pandas as pd
 import threading
 
-# Global rate limiter for Upstox API
+# Try to import yfinance, fallback if not available
+try:
+    import yfinance as yf
+    YFINANCE_AVAILABLE = True
+except ImportError:
+    YFINANCE_AVAILABLE = False
+
+# Global rate limiters for APIs
 _upstox_last_request = 0.0
 _upstox_lock = threading.Lock()
+_yfinance_last_request = 0.0
+_yfinance_lock = threading.Lock()
+_yfinance_min_delay = 0.2  # 200ms minimum delay between yfinance requests
 
 def stock_df(symbol, from_date, to_date, series="EQ"):
     """Custom stock_df function that handles column mapping correctly"""
@@ -61,12 +71,31 @@ def stock_df(symbol, from_date, to_date, series="EQ"):
             'CH_SYMBOL': 'SYMBOL'
         }
         
-        # Rename columns
-        df = df.rename(columns=column_mapping)
+        # Rename columns (only rename columns that exist)
+        existing_mapping = {k: v for k, v in column_mapping.items() if k in df.columns}
+        df = df.rename(columns=existing_mapping)
         
-        # Select only the columns we need
+        # Select only the columns we need (only if they exist)
         required_columns = ['DATE', 'SERIES', 'OPEN', 'HIGH', 'LOW', 'PREV. CLOSE', 'LTP', 'CLOSE', 'VWAP', '52W H', '52W L', 'VOLUME', 'VALUE', 'NO OF TRADES', 'SYMBOL']
-        df = df[required_columns]
+        available_columns = [col for col in required_columns if col in df.columns]
+        
+        # Ensure we have at least the essential columns
+        essential_columns = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE']
+        missing_essential = [col for col in essential_columns if col not in df.columns]
+        if missing_essential:
+            logger.error(f"Missing essential columns in stock_df for {symbol}: {missing_essential}")
+            return pd.DataFrame()
+        
+        # Select available columns
+        df = df[available_columns]
+        
+        # Add LTP if missing (use CLOSE as fallback)
+        if 'LTP' not in df.columns and 'CLOSE' in df.columns:
+            df['LTP'] = df['CLOSE']
+        
+        # Add VOLUME if missing (set to 0)
+        if 'VOLUME' not in df.columns:
+            df['VOLUME'] = 0
         
         # Convert DATE to datetime
         df['DATE'] = pd.to_datetime(df['DATE'])
@@ -238,6 +267,10 @@ HEARTBEAT_RUNS = get_env_int("HEARTBEAT_RUNS", 0)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# Log yfinance availability after logger is initialized
+if not YFINANCE_AVAILABLE:
+    logger.warning("yfinance not available. Install with: pip install yfinance")
+
 def send_telegram(msg):
     if not BOT_TOKEN or not CHAT_ID:
         logger.warning(f"[Telegram disabled] BOT_TOKEN: {'SET' if BOT_TOKEN else 'MISSING'}, CHAT_ID: {'SET' if CHAT_ID else 'MISSING'}")
@@ -262,7 +295,7 @@ def send_telegram(msg):
     except Exception as e:
         logger.error(f"❌ Telegram error: {e}")
 
-def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None):
+def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None, current_price=None, price_source=None):
     """Format detailed IPO signal alert with comprehensive trading information"""
     # Calculate risk metrics
     risk_amount = entry_price - stop_loss
@@ -289,11 +322,21 @@ def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, sco
     confidence = info["confidence"]
     emoji = info["emoji"]
     
+    # Format current price information
+    price_info_section = ""
+    if current_price is not None:
+        price_info_section = f"""
+💰 <b>Price Information:</b>
+• Current/Live Price: ₹{current_price:,.2f}
+• Entry Reference: ₹{entry_price:,.2f}"""
+        if price_source:
+            price_info_section += f"\n• Price Source: {price_source}"
+    
     # Format the alert message with comprehensive information
     msg = f"""🎯 <b>IPO BREAKOUT SIGNAL</b>
 
 📊 Symbol: <b>{symbol}</b>
-{emoji} Grade: <b>{grade}</b> ({confidence} Confidence)
+{emoji} Grade: <b>{grade}</b> ({confidence} Confidence){price_info_section}
 💰 Entry Price: ₹{entry_price:,.2f}
 🛑 Stop Loss: ₹{stop_loss:,.2f} ({risk_percentage:.1f}% risk)
 🎯 Target: ₹{target_price:,.2f} ({reward_percentage:.1f}% reward)
@@ -498,6 +541,13 @@ def fetch_from_upstox(symbol, start_date, end_date):
                     df = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
                     df['LTP'] = df['CLOSE']  # Add LTP column using CLOSE price
                     
+                    # Ensure DATE is datetime (should already be, but verify for consistency)
+                    if not pd.api.types.is_datetime64_any_dtype(df['DATE']):
+                        df['DATE'] = pd.to_datetime(df['DATE'])
+                    
+                    # Sort by date ascending (oldest to newest) to ensure consistent ordering
+                    df = df.sort_values('DATE').reset_index(drop=True)
+                    
                     logger.info(f"✅ Upstox API: Got {len(df)} candles for {symbol}")
                     return df
         
@@ -559,6 +609,118 @@ def get_live_price_upstox(symbol):
     except Exception as e:
         logger.warning(f"Error fetching live price from Upstox for {symbol}: {e}")
         return None
+
+def get_live_price_yfinance(symbol):
+    """Get live price from yfinance API with rate limiting"""
+    if not YFINANCE_AVAILABLE:
+        return None
+    
+    global _yfinance_last_request
+    try:
+        # Rate limiting: Ensure minimum delay between requests
+        with _yfinance_lock:
+            current_time = time.time()
+            time_since_last = current_time - _yfinance_last_request
+            if time_since_last < _yfinance_min_delay:
+                time.sleep(_yfinance_min_delay - time_since_last)
+            _yfinance_last_request = time.time()
+        
+        # NSE symbols need .NS suffix for yfinance
+        ticker_symbol = f"{symbol}.NS"
+        ticker = yf.Ticker(ticker_symbol)
+        
+        # Get current info (fastest method)
+        info = ticker.fast_info
+        if hasattr(info, 'lastPrice') and info.lastPrice:
+            return float(info.lastPrice)
+        
+        # Fallback: Get latest quote
+        data = ticker.history(period="1d", interval="1m")
+        if not data.empty:
+            return float(data['Close'].iloc[-1])
+        
+        return None
+    except Exception as e:
+        logger.warning(f"Error fetching live price from yfinance for {symbol}: {e}")
+        return None
+
+def get_live_price_jugaad(symbol):
+    """Get live price from jugaad-data (NSE) with rate limiting"""
+    try:
+        # Rate limiting: jugaad-data can be slow, add delay
+        time.sleep(0.3)  # 300ms delay for jugaad-data
+        
+        # Get latest data (last 1 day)
+        today = datetime.today().date()
+        yesterday = today - timedelta(days=1)
+        
+        # Use stock_raw to get latest data
+        raw = stock_raw(symbol, yesterday, today, series="EQ")
+        if not raw:
+            return None
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(raw)
+        
+        # Map columns
+        if 'CH_LAST_TRADED_PRICE' in df.columns:
+            latest_price = df['CH_LAST_TRADED_PRICE'].iloc[-1]
+        elif 'CH_CLOSING_PRICE' in df.columns:
+            latest_price = df['CH_CLOSING_PRICE'].iloc[-1]
+        else:
+            return None
+        
+        if pd.notna(latest_price):
+            return float(latest_price)
+        
+        return None
+    except Exception as e:
+        logger.warning(f"Error fetching live price from jugaad-data for {symbol}: {e}")
+        return None
+
+def get_live_price(symbol, prefer_source=None):
+    """
+    Get live price from multiple sources with fallback chain:
+    1. Upstox API (if prefer_source='upstox' or None)
+    2. yfinance (primary fallback - most reliable)
+    3. jugaad-data (last resort only - not accurate, use sparingly)
+    
+    Returns: (price, source_name) or (None, None) if all fail
+    """
+    sources = []
+    
+    # Determine source priority - yfinance is preferred over jugaad-data
+    if prefer_source == 'yfinance':
+        sources = [('yfinance', get_live_price_yfinance), ('upstox', get_live_price_upstox)]
+    elif prefer_source == 'jugaad':
+        sources = [('jugaad', get_live_price_jugaad), ('yfinance', get_live_price_yfinance), ('upstox', get_live_price_upstox)]
+    else:
+        # Default: Try Upstox first, then yfinance (most reliable), skip jugaad-data
+        # Only use jugaad-data as absolute last resort if yfinance also fails
+        sources = [('upstox', get_live_price_upstox), ('yfinance', get_live_price_yfinance)]
+    
+    for source_name, fetch_func in sources:
+        try:
+            price = fetch_func(symbol)
+            if price is not None and price > 0:
+                logger.info(f"✅ Got live price for {symbol} from {source_name}: ₹{price:.2f}")
+                return price, source_name
+        except Exception as e:
+            logger.debug(f"Failed to get price from {source_name} for {symbol}: {e}")
+            continue
+    
+    # Only try jugaad-data as absolute last resort (not accurate, but better than nothing)
+    logger.warning(f"⚠️ Upstox and yfinance failed, trying jugaad-data as last resort for {symbol}...")
+    try:
+        price = get_live_price_jugaad(symbol)
+        if price is not None and price > 0:
+            logger.warning(f"⚠️ Using jugaad-data price for {symbol} (may not be accurate): ₹{price:.2f}")
+            return price, 'jugaad'
+    except Exception as e:
+        logger.debug(f"jugaad-data also failed for {symbol}: {e}")
+    
+    logger.warning(f"⚠️ Could not fetch live price for {symbol} from any source")
+    return None, None
 
 def fetch_data(symbol, start_date):
     """Fetch the most recent available data for a symbol using Upstox API with NSE fallback (jugaad-data)"""
@@ -676,53 +838,33 @@ def fetch_data(symbol, start_date):
                 else:
                     logger.warning(f"Using old data for {symbol}: {latest_date} ({days_old} days old)")
                 
-                # Standardize column names - handle both old and new jugaad_data formats
+                # stock_df already handles column mapping, but verify we have required columns
                 if not df.empty:
-                    # Check which format we have
-                    if 'CH_TIMESTAMP' in df.columns:
-                        # Old format
-                        column_mapping = {
-                            'CH_TIMESTAMP': 'DATE',
-                            'CH_OPENING_PRICE': 'OPEN', 
-                            'CH_TRADE_HIGH_PRICE': 'HIGH',
-                            'CH_TRADE_LOW_PRICE': 'LOW',
-                            'CH_CLOSING_PRICE': 'CLOSE',
-                            'CH_LAST_TRADED_PRICE': 'LTP',
-                            'CH_PREV_CLS_PRICE': 'PREV_CLOSE',
-                            'CH_TOT_TRADED_QTY': 'VOLUME'
-                        }
-                    else:
-                        # New format (already has correct names)
-                        column_mapping = {
-                            'DATE': 'DATE',
-                            'OPEN': 'OPEN',
-                            'HIGH': 'HIGH', 
-                            'LOW': 'LOW',
-                            'CLOSE': 'CLOSE',
-                            'LTP': 'LTP',
-                            'PREV. CLOSE': 'PREV_CLOSE',
-                            'VOLUME': 'VOLUME'
-                        }
-                    
-                    # Only rename columns that exist in the dataframe
-                    existing_mapping = {k: v for k, v in column_mapping.items() if k in df.columns}
-                    df = df.rename(columns=existing_mapping)
-                    
-                    # Ensure required columns exist
-                    required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'LTP', 'VOLUME']
+                    # Ensure required columns exist (stock_df should have already standardized them)
+                    required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE']
                     missing_cols = [col for col in required_cols if col not in df.columns]
                     if missing_cols:
-                        logger.warning(f"Missing columns for {symbol}: {missing_cols}")
-                        return None
+                        logger.error(f"Missing required columns for {symbol} after stock_df: {missing_cols}. Available columns: {list(df.columns)}")
+                        continue  # Try next date
                     
-                    # Convert DATE to datetime
-                    df['DATE'] = pd.to_datetime(df['DATE'])
+                    # Add LTP if missing (use CLOSE as fallback)
+                    if 'LTP' not in df.columns:
+                        df['LTP'] = df['CLOSE']
                     
-                    # Sort by date
+                    # Add VOLUME if missing (set to 0)
+                    if 'VOLUME' not in df.columns:
+                        df['VOLUME'] = 0
+                    
+                    # Ensure DATE is datetime (stock_df should have done this, but double-check)
+                    if not pd.api.types.is_datetime64_any_dtype(df['DATE']):
+                        df['DATE'] = pd.to_datetime(df['DATE'])
+                    
+                    # Sort by date (ascending - oldest to newest)
                     df = df.sort_values('DATE').reset_index(drop=True)
                     
                     # Add data source info to DataFrame
                     df.attrs['data_source'] = 'NSE (jugaad-data)'
+                    logger.info(f"✅ NSE (jugaad-data): Got data for {symbol} ({len(df)} rows, columns: {list(df.columns)})")
                     return df
                 
                 break
@@ -751,30 +893,71 @@ def update_positions():
             logger.warning(f"Could not parse entry_date for {sym}: {start}")
             continue
         
-        df = fetch_data(sym, start)
-        if df is None or df.empty: 
-            logger.warning(f"No data available for {sym}")
-            continue
+        # Get current price - prefer LIVE price, fallback to latest historical close
+        current_price = None
+        price_source = "Historical Close"
         
-        # Get latest price and validate data freshness
-        latest_date = df['DATE'].max()
-        if isinstance(latest_date, pd.Timestamp):
-            latest_date = latest_date.date()
-        elif hasattr(latest_date, 'date'):
-            latest_date = latest_date.date()
+        # Try to get live price first (more accurate for exit decisions)
+        try:
+            live_price, live_source = get_live_price(sym)
+            if live_price is not None and live_price > 0:
+                current_price = live_price
+                price_source = f"Live ({live_source})"
+                logger.info(f"✅ Using live price for {sym}: ₹{current_price:.2f} from {live_source}")
+        except Exception as e:
+            logger.debug(f"Could not get live price for {sym}: {e}")
         
-        today_date = datetime.today().date()
-        days_old = (today_date - latest_date).days
+        # Fallback to historical data if live price unavailable
+        if current_price is None:
+            df = fetch_data(sym, start)
+            if df is None or df.empty: 
+                logger.warning(f"No data available for {sym}")
+                continue
+            
+            # Get latest date from historical data
+            latest_date = df['DATE'].max()
+            if isinstance(latest_date, pd.Timestamp):
+                latest_date = latest_date.date()
+            elif hasattr(latest_date, 'date'):
+                latest_date = latest_date.date()
+            else:
+                latest_date = pd.to_datetime(latest_date).date()
+            
+            # CRITICAL: Validate data is from today (or at most yesterday if market closed)
+            # Do NOT use stale data for exit decisions
+            today_date = datetime.today().date()
+            days_old = (today_date - latest_date).days
+            
+            if days_old > 1:
+                # Data is more than 1 day old - too stale for exit decisions
+                logger.error(f"❌ STALE DATA for {sym}: Latest data is {days_old} days old ({latest_date}). Cannot make exit decision with stale data!")
+                continue
+            
+            # Data is fresh (today or yesterday) - safe to use
+            current_price = float(df["CLOSE"].iloc[-1])
+            latest_date_str = latest_date.strftime('%Y-%m-%d')
+            price_source = f"Historical Close ({latest_date_str})"
+            
+            if days_old == 0:
+                logger.info(f"✅ Using today's historical close for {sym}: ₹{current_price:.2f}")
+            else:
+                logger.warning(f"⚠️ Using yesterday's close for {sym}: ₹{current_price:.2f} (market may be closed)")
         
-        if days_old > 3:
-            logger.warning(f"⚠️ Data for {sym} is {days_old} days old (latest: {latest_date})")
+        # Calculate supertrend for trailing stop (need fresh data)
+        # Only fetch if we don't already have df from above
+        if current_price is None or 'df' not in locals():
+            df = fetch_data(sym, start)
+        if df is None or df.empty:
+            logger.warning(f"Could not fetch data for supertrend calculation for {sym}")
+            trailing = float(pos["stop_loss"])  # Fallback to original stop loss
+        else:
+            st = supertrend(df)
+            trailing = max(float(pos["stop_loss"]), float(st.iloc[-1]))
         
-        price = float(df["CLOSE"].iloc[-1])
-        st = supertrend(df)
-        trailing = max(float(pos["stop_loss"]), float(st.iloc[-1]))
-        pnl = (price - float(pos["entry_price"]))/float(pos["entry_price"])*100
+        pnl = (current_price - float(pos["entry_price"]))/float(pos["entry_price"])*100
         
         # Calculate days held correctly
+        today_date = datetime.today().date()
         days = (today_date - start).days
         
         if days < 0:
@@ -787,30 +970,30 @@ def update_positions():
         # Early Base-Break Exit (0-10 days) - need to get base low from original signal
         if days <= 10:
             # For now, use a simple approach - if price drops below entry * 0.95 in first 10 days
-            if price < pos["entry_price"] * 0.95:
+            if current_price < pos["entry_price"] * 0.95:
                 exit_reason = "Early Base Break"
         
         # Tiered Time-Based Stops
-        if days > 30 and price < pos["entry_price"] * 0.95:
+        if days > 30 and current_price < pos["entry_price"] * 0.95:
             exit_reason = "Time Stop -5%"
-        elif days > 60 and price < pos["entry_price"] * 0.92:
+        elif days > 60 and current_price < pos["entry_price"] * 0.92:
             exit_reason = "Time Stop -8%"
         
         # Traditional stop loss
-        if price <= trailing:
+        if current_price <= trailing:
             exit_reason = "Stop Loss"
         
         if exit_reason:
             df_pos.loc[idx, ["status","exit_date","exit_price","pnl_pct","days_held"]] = [
                 "CLOSED", datetime.today().strftime("%Y-%m-%d"),
-                float(price), float(pnl), int(days)
+                float(current_price), float(pnl), int(days)
             ]
             # Send detailed exit alert
-            exit_msg = format_exit_alert(sym, exit_reason, price, pnl, days, pos["entry_price"])
+            exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days, pos["entry_price"])
             send_telegram(exit_msg)
         else:
             df_pos.loc[idx, ["current_price","trailing_stop","pnl_pct","days_held"]] = [
-                float(price), float(trailing), float(pnl), int(days)
+                float(current_price), float(trailing), float(pnl), int(days)
             ]
     df_pos.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
     logger.info("Positions updated")
@@ -979,43 +1162,64 @@ def detect_live_patterns(symbols, listing_map):
                             continue
 
                         # This is a LIVE pattern - generate signal
-                        # For live signals, use TODAY's date and fetch CURRENT price
-                        today_date = datetime.today().date()
+                        # Get the latest available data date (not system date to avoid future date issues)
+                        latest_data_date = df['DATE'].max()
+                        if isinstance(latest_data_date, pd.Timestamp):
+                            latest_data_date = latest_data_date.date()
+                        elif hasattr(latest_data_date, 'date'):
+                            latest_data_date = latest_data_date.date()
                         
-                        # Try to get live price from Upstox API first
-                        entry = get_live_price_upstox(sym)
-                        latest_date = None
-                        price_source = "Upstox Live"
+                        # Use latest data date as entry date (not system date to avoid future dates)
+                        system_date = datetime.today().date()
+                        entry_date = latest_data_date
                         
-                        if entry is None:
-                            # Fallback to historical data
-                            fresh_df = fetch_data(sym, ld)
-                            if fresh_df is None or fresh_df.empty:
-                                logger.warning(f"Could not fetch fresh data for {sym} to get current price")
-                                continue
-                            
-                            # Get the latest available price from fresh data
-                            entry = float(fresh_df["CLOSE"].iloc[-1])
-                            latest_date = fresh_df['DATE'].max()
-                            if isinstance(latest_date, pd.Timestamp):
-                                latest_date = latest_date.date()
-                            elif hasattr(latest_date, 'date'):
-                                latest_date = latest_date.date()
-                            price_source = f"Historical ({latest_date})"
-                            
-                            # Only generate signal if data is fresh (within last 2 days)
-                            days_old = (today_date - latest_date).days
-                            if days_old > 2:
-                                logger.warning(f"Skipping {sym} - data is {days_old} days old. Too old for live signal!")
-                                continue
+                        # Validate entry_date is not in the future
+                        if entry_date > system_date:
+                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
+                            entry_date = latest_data_date
+                        
+                        # For live signals, ALWAYS use CURRENT market price as entry price
+                        # This ensures entry price matches what user would actually pay NOW
+                        # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
+                        live_price, price_source_name = get_live_price(sym)
+                        if live_price is not None:
+                            entry = live_price
+                            source_emojis = {
+                                'upstox': '🚀',
+                                'yfinance': '📈',
+                                'jugaad': '📊'
+                            }
+                            emoji = source_emojis.get(price_source_name, '💰')
+                            price_source = f"{emoji} {price_source_name.title()} Live Price"
+                            logger.info(f"✅ Using LIVE price from {price_source_name}: ₹{entry:.2f}")
                         else:
-                            # Got live price from Upstox - set latest_date to today
-                            latest_date = today_date
+                            # Fallback to latest available close price from historical data
+                            entry = float(df["CLOSE"].iloc[-1])
+                            latest_date = df['DATE'].iloc[-1]
+                            if isinstance(latest_date, pd.Timestamp):
+                                latest_date_str = latest_date.strftime('%Y-%m-%d')
+                            else:
+                                latest_date_str = str(latest_date)
+                            price_source = f"📊 Latest Close ({latest_date_str})"
+                            logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
                         
-                        # For live signals, entry date should be today
-                        entry_date = today_date
+                        # Entry date should be the next trading day after breakout
+                        if j + 1 < len(df):
+                            entry_date = df['DATE'].iat[j + 1]
+                            if isinstance(entry_date, pd.Timestamp):
+                                entry_date = entry_date.date()
+                            elif hasattr(entry_date, 'date'):
+                                entry_date = entry_date.date()
+                        else:
+                            # If no next day data, use latest available date
+                            entry_date = latest_data_date
                         
-                        logger.info(f"Current price for {sym}: ₹{entry:.2f} (from {price_source})")
+                        # Final validation: ensure entry_date is not in the future
+                        if entry_date > system_date:
+                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
+                            entry_date = latest_data_date
+                        
+                        logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
                         
                         # Log detailed data for analysis
                         logger.info(f"=== SIGNAL DATA FOR {sym} ===")
@@ -1075,8 +1279,8 @@ def detect_live_patterns(symbols, listing_map):
                         except:
                             pass
                         
-                        pt = dynamic_partial_take(grade)
-                        target = entry * (1 + pt)
+                        # Calculate target price using proper function based on consolidation pattern
+                        target = calculate_target_price(entry, low, high2, grade)
                         
                         # Add to signals
                         # Ensure date is a string in YYYY-MM-DD format
@@ -1151,12 +1355,35 @@ def detect_live_patterns(symbols, listing_map):
                         else:
                             price_warning = f"✅ Fresh data - Ready for next day trading"
                         
+                        # Get current/live price for verification (try to get fresh price)
+                        current_price_display = entry  # Entry price is the current/reference price
+                        try:
+                            live_check, live_source = get_live_price(sym)
+                            if live_check is not None:
+                                current_price_display = live_check
+                                source_emojis = {
+                                    'upstox': '🚀',
+                                    'yfinance': '📈',
+                                    'jugaad': '📊'
+                                }
+                                emoji = source_emojis.get(live_source, '💰')
+                                price_source_display = f"{emoji} Live: ₹{live_check:.2f} | Reference: ₹{entry:.2f}"
+                            else:
+                                price_source_display = f"📊 {price_source} | Reference: ₹{entry:.2f}"
+                        except:
+                            price_source_display = f"📊 {price_source} | Reference: ₹{entry:.2f}"
+                        
                         message = f"""🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>
 
 📊 Symbol: <b>{sym}</b>
 📋 Signal Type: <b>Consolidation-Based Breakout</b>
 {'🔥' if grade in ['A+', 'B'] else '📈'} Grade: <b>{grade}</b>
-💰 Entry: ₹{entry:.2f} (Next Day Opening)
+
+💰 <b>Price Information:</b>
+• Current/Live Price: ₹{current_price_display:.2f}
+• Entry Reference: ₹{entry:.2f} (Next Day Opening)
+• Price Source: {price_source_display}
+
 🛑 Stop Loss: ₹{stop:.2f}
 📈 Target: ₹{target:.2f}
 📅 Signal Date: {date_str}
@@ -1242,43 +1469,64 @@ def detect_scan(symbols, listing_map):
                         if grade == "D": continue
                         
                         # This is a LIVE pattern - generate signal
-                        # For live signals, use TODAY's date and fetch CURRENT price
-                        today_date = datetime.today().date()
+                        # Get the latest available data date (not system date to avoid future date issues)
+                        latest_data_date = df['DATE'].max()
+                        if isinstance(latest_data_date, pd.Timestamp):
+                            latest_data_date = latest_data_date.date()
+                        elif hasattr(latest_data_date, 'date'):
+                            latest_data_date = latest_data_date.date()
                         
-                        # Try to get live price from Upstox API first
-                        entry = get_live_price_upstox(sym)
-                        latest_date = None
-                        price_source = "Upstox Live"
+                        # Use latest data date as entry date (not system date to avoid future dates)
+                        system_date = datetime.today().date()
+                        entry_date = latest_data_date
                         
-                        if entry is None:
-                            # Fallback to historical data
-                            fresh_df = fetch_data(sym, ld)
-                            if fresh_df is None or fresh_df.empty:
-                                logger.warning(f"Could not fetch fresh data for {sym} to get current price")
-                                continue
-                            
-                            # Get the latest available price from fresh data
-                            entry = float(fresh_df["CLOSE"].iloc[-1])
-                            latest_date = fresh_df['DATE'].max()
-                            if isinstance(latest_date, pd.Timestamp):
-                                latest_date = latest_date.date()
-                            elif hasattr(latest_date, 'date'):
-                                latest_date = latest_date.date()
-                            price_source = f"Historical ({latest_date})"
-                            
-                            # Only generate signal if data is fresh (within last 2 days)
-                            days_old = (today_date - latest_date).days
-                            if days_old > 2:
-                                logger.warning(f"Skipping {sym} - data is {days_old} days old. Too old for live signal!")
-                                continue
+                        # Validate entry_date is not in the future
+                        if entry_date > system_date:
+                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
+                            entry_date = latest_data_date
+                        
+                        # For live signals, ALWAYS use CURRENT market price as entry price
+                        # This ensures entry price matches what user would actually pay NOW
+                        # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
+                        live_price, price_source_name = get_live_price(sym)
+                        if live_price is not None:
+                            entry = live_price
+                            source_emojis = {
+                                'upstox': '🚀',
+                                'yfinance': '📈',
+                                'jugaad': '📊'
+                            }
+                            emoji = source_emojis.get(price_source_name, '💰')
+                            price_source = f"{emoji} {price_source_name.title()} Live Price"
+                            logger.info(f"✅ Using LIVE price from {price_source_name}: ₹{entry:.2f}")
                         else:
-                            # Got live price from Upstox - set latest_date to today
-                            latest_date = today_date
+                            # Fallback to latest available close price from historical data
+                            entry = float(df["CLOSE"].iloc[-1])
+                            latest_date = df['DATE'].iloc[-1]
+                            if isinstance(latest_date, pd.Timestamp):
+                                latest_date_str = latest_date.strftime('%Y-%m-%d')
+                            else:
+                                latest_date_str = str(latest_date)
+                            price_source = f"📊 Latest Close ({latest_date_str})"
+                            logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
                         
-                        # For live signals, entry date should be today
-                        entry_date = today_date
+                        # Entry date should be the next trading day after breakout
+                        if j + 1 < len(df):
+                            entry_date = df['DATE'].iat[j + 1]
+                            if isinstance(entry_date, pd.Timestamp):
+                                entry_date = entry_date.date()
+                            elif hasattr(entry_date, 'date'):
+                                entry_date = entry_date.date()
+                        else:
+                            # If no next day data, use latest available date
+                            entry_date = latest_data_date
                         
-                        logger.info(f"Current price for {sym}: ₹{entry:.2f} (from {price_source})")
+                        # Final validation: ensure entry_date is not in the future
+                        if entry_date > system_date:
+                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
+                            entry_date = latest_data_date
+                        
+                        logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
                         logger.info(f"Breakout detected for {sym} at index {j}, date: {df['DATE'].iat[j]}")
                         logger.info(f"Entry date: {entry_date} (validated), Entry price: ₹{entry:.2f}")
                         
@@ -1302,7 +1550,9 @@ def detect_scan(symbols, listing_map):
                         except:
                             pass
                         
-                        pt = dynamic_partial_take(grade)
+                        # Calculate target price using proper function based on consolidation pattern
+                        target = calculate_target_price(entry, low, high2, grade)
+                        
                         # Ensure date is a string in YYYY-MM-DD format
                         if isinstance(date, pd.Timestamp):
                             date_str = date.strftime('%Y-%m-%d')
@@ -1314,7 +1564,7 @@ def detect_scan(symbols, listing_map):
                         row = {
                             "signal_id": sid, "symbol": sym, "signal_date": date_str,
                             "entry_price": entry, "grade": grade, "score": score,
-                            "stop_loss": stop, "target_price": entry*(1+pt),
+                            "stop_loss": stop, "target_price": target,
                             "status": "ACTIVE", "exit_date": "", "exit_price": 0,
                             "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION"
                         }
@@ -1356,11 +1606,28 @@ def detect_scan(symbols, listing_map):
                         # Get data source from DataFrame
                         data_source = df.attrs.get('data_source', 'Unknown')
                         
+                        # Get current/live price for verification (try to get fresh price)
+                        current_price_display = entry
+                        price_source_display = price_source
+                        try:
+                            live_check, live_source = get_live_price(sym)
+                            if live_check is not None:
+                                current_price_display = live_check
+                                source_emojis = {
+                                    'upstox': '🚀',
+                                    'yfinance': '📈',
+                                    'jugaad': '📊'
+                                }
+                                emoji = source_emojis.get(live_source, '💰')
+                                price_source_display = f"{emoji} Live: ₹{live_check:.2f} | {price_source}"
+                        except:
+                            pass
+                        
                         # Send detailed signal alert with type
                         signal_msg = format_signal_alert(
                             sym, grade, entry, stop, target, score, date_str,
                             consolidation_low=low, consolidation_high=high2, breakout_price=entry,
-                            data_source=data_source
+                            data_source=data_source, current_price=current_price_display, price_source=price_source_display
                         )
                         # Add signal type to alert
                         signal_msg = signal_msg.replace("🎯 <b>IPO BREAKOUT SIGNAL</b>", 
@@ -1545,18 +1812,71 @@ def stop_loss_update_scan():
     
     for idx, pos in active_positions.iterrows():
         sym = pos["symbol"]
+        
+        # Calculate days held first to skip 0-day positions
+        try:
+            entry_date = pos["entry_date"]
+            if isinstance(entry_date, pd.Timestamp):
+                entry_date = entry_date.date()
+            elif isinstance(entry_date, str):
+                entry_date = pd.to_datetime(entry_date).date()
+            elif hasattr(entry_date, 'date'):
+                entry_date = entry_date.date()
+            
+            today_date = datetime.today().date()
+            days_held = (today_date - entry_date).days
+            
+            # Skip positions with 0 days held (just added today)
+            if days_held <= 0:
+                logger.info(f"⏭️ Skipping {sym} - position just added (0 days held). Will update tomorrow.")
+                continue
+        except Exception as e:
+            logger.warning(f"Could not calculate days held for {sym}: {e}")
+            # Continue anyway, but log the issue
+        
         logger.info(f"Updating stop-loss for {sym}...")
         
         # Get current price
         try:
-            # Convert entry_date to date object for fetch_data
-            entry_date = pos["entry_date"]
-            if isinstance(entry_date, pd.Timestamp):
-                entry_date = entry_date.date()
-            elif hasattr(entry_date, 'date'):
-                entry_date = entry_date.date()
+            # Use listing date as fallback if entry_date is invalid
+            try:
+                ipo_df = cache_recent_ipos()
+                listing_map = {
+                    row["symbol"]: pd.to_datetime(row["listing_date"]).date()
+                    for _, row in ipo_df.iterrows()
+                }
+                listing_date = listing_map.get(sym)
+            except:
+                listing_date = None
             
-            current_data = fetch_data(sym, entry_date)
+            # Use listing date if entry_date is in the future or invalid
+            fetch_start_date = entry_date
+            if entry_date > today_date or entry_date is None:
+                if listing_date:
+                    fetch_start_date = listing_date
+                    logger.warning(f"⚠️ Entry date {entry_date} is invalid for {sym}, using listing date {listing_date}")
+                else:
+                    logger.error(f"❌ Cannot determine valid start date for {sym}")
+                    failed_updates.append(sym)
+                    continue
+            
+            # Get current price - prefer LIVE price, fallback to latest historical close
+            current_price = None
+            price_source = "Historical Close"
+            
+            # Try to get live price first (more accurate for exit decisions)
+            try:
+                live_price, live_source = get_live_price(sym)
+                if live_price is not None and live_price > 0:
+                    current_price = live_price
+                    price_source = f"Live ({live_source})"
+                    logger.info(f"✅ Using live price for {sym}: ₹{current_price:.2f} from {live_source}")
+            except Exception as e:
+                logger.debug(f"Could not get live price for {sym}: {e}")
+            
+            # Fallback to historical data if live price unavailable
+            if current_price is None:
+                current_data = fetch_data(sym, fetch_start_date)
             if current_data is None or current_data.empty:
                 logger.warning(f"Could not fetch data for {sym}")
                 failed_updates.append(sym)
@@ -1572,43 +1892,78 @@ def stop_loss_update_scan():
                 send_telegram(failed_msg)
                 continue
                 
-            current_price = current_data["CLOSE"].iat[-1]
+                # Get latest date from historical data
+                latest_date = current_data['DATE'].iloc[-1]
+                if isinstance(latest_date, pd.Timestamp):
+                    latest_date = latest_date.date()
+                elif hasattr(latest_date, 'date'):
+                    latest_date = latest_date.date()
+                else:
+                    latest_date = pd.to_datetime(latest_date).date()
+                
+                # CRITICAL: Validate data is from today (or at most yesterday if market closed)
+                # Do NOT use stale data for exit decisions
+                today_date = datetime.today().date()
+                days_old = (today_date - latest_date).days
+                
+                if days_old > 1:
+                    # Data is more than 1 day old - too stale for exit decisions
+                    logger.error(f"❌ STALE DATA for {sym}: Latest data is {days_old} days old ({latest_date}). Cannot make exit decision with stale data!")
+                    failed_updates.append(sym)
+                    stale_msg = f"""⚠️ <b>Position Update Skipped - Stale Data</b>
+
+📊 Symbol: <b>{sym}</b>
+❌ Latest data is {days_old} days old ({latest_date})
+⚠️ Cannot make exit decision with stale data
+💰 Last Known Price: ₹{pos.get('current_price', pos['entry_price']):,.2f}
+📅 Entry Date: {pos['entry_date']}
+
+⏰ Scan Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+💡 Will retry when live price or fresh data is available"""
+                    send_telegram(stale_msg)
+                    continue
+                
+                # Data is fresh (today or yesterday) - safe to use
+                current_price = current_data["CLOSE"].iat[-1]
+                latest_date_str = latest_date.strftime('%Y-%m-%d')
+                price_source = f"Historical Close ({latest_date_str})"
+                
+                if days_old == 0:
+                    logger.info(f"✅ Using today's historical close for {sym}: ₹{current_price:.2f}")
+                else:
+                    logger.warning(f"⚠️ Using yesterday's close for {sym}: ₹{current_price:.2f} (market may be closed)")
+            
             entry_price = pos["entry_price"]
             old_trailing = pos["trailing_stop"]
-            # Ensure both dates are date objects for comparison
-            today_date = datetime.today().date()
-            entry_date = pos["entry_date"]
-            if isinstance(entry_date, pd.Timestamp):
-                entry_date = entry_date.date()
-            elif isinstance(entry_date, str):
-                entry_date = pd.to_datetime(entry_date).date()
-            elif hasattr(entry_date, 'date'):
-                entry_date = entry_date.date()
             
-            days_held = (today_date - entry_date).days
-            
+            # Days held already calculated above, reuse it
+            # But recalculate if entry_date was adjusted
             if days_held < 0:
                 logger.error(f"⚠️ Negative days for {sym}: entry_date={entry_date}, today={today_date}")
                 days_held = 0
             
             # Calculate new trailing stop using grade-based percentage
+            # Use the PREVIOUS trailing stop as base, not current price (to avoid immediate exits)
             grade = pos.get("grade", "C")  # Default to C if grade not available
-            _, stop_pct = calculate_grade_based_stop_loss(current_price, current_price, grade)
-            new_trailing = max(pos["trailing_stop"], current_price * (1 - stop_pct))
+            _, stop_pct = calculate_grade_based_stop_loss(entry_price, entry_price, grade)
             
-            # Check for exits
+            # Trailing stop should only move UP, never down
+            # It's the maximum of: previous trailing stop, or current price minus stop percentage
+            new_trailing = max(float(old_trailing), current_price * (1 - stop_pct))
+            
+            # Check for exits - use current price for exit decisions
             exit_reason = None
-            if current_price <= new_trailing:
+            if current_price <= old_trailing:  # Use OLD trailing stop for exit check, not new one
                 exit_reason = "Stop Loss"
-            elif days_held <= 10 and current_price < pos["entry_price"] * 0.95:
+            elif days_held <= 10 and current_price < entry_price * 0.95:
                 exit_reason = "Early Base Break"
-            elif days_held > 30 and current_price < pos["entry_price"] * 0.95:
+            elif days_held > 30 and current_price < entry_price * 0.95:
                 exit_reason = "Time Stop -5%"
-            elif days_held > 60 and current_price < pos["entry_price"] * 0.92:
+            elif days_held > 60 and current_price < entry_price * 0.92:
                 exit_reason = "Time Stop -8%"
             
             if exit_reason:
-                # Close position
+                # Close position - use current price (live or historical)
                 pnl = (current_price - entry_price) / entry_price * 100
                 df_positions.loc[idx, ["status", "exit_date", "exit_price", "pnl_pct", "days_held"]] = [
                     "CLOSED", datetime.today().strftime("%Y-%m-%d"), current_price, pnl, days_held

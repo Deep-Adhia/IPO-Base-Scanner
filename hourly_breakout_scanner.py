@@ -94,6 +94,62 @@ def load_watchlist():
         logger.error(f"Error loading watchlist: {e}")
         return []
 
+# Try to import yfinance for intraday data
+try:
+    import yfinance as yf
+    YFINANCE_AVAILABLE = True
+except ImportError:
+    YFINANCE_AVAILABLE = False
+
+def fetch_intraday_data_yfinance(symbol, interval=INTRADAY_INTERVAL):
+    """Fetch intraday data from yfinance API with rate limiting"""
+    if not YFINANCE_AVAILABLE:
+        return None
+    
+    try:
+        # Rate limiting: 200ms minimum delay
+        time.sleep(0.2)
+        
+        # Map interval to yfinance format
+        interval_map = {
+            '1minute': '1m',
+            '5minute': '5m',
+            '15minute': '15m',
+            '30minute': '30m',
+            '60minute': '1h'
+        }
+        yf_interval = interval_map.get(interval, '5m')
+        
+        # NSE symbols need .NS suffix
+        ticker_symbol = f"{symbol}.NS"
+        ticker = yf.Ticker(ticker_symbol)
+        
+        # Fetch intraday data (max 7 days for intraday)
+        period = min(LOOKBACK_DAYS, 7)
+        df = ticker.history(period=f"{period}d", interval=yf_interval)
+        
+        if df.empty:
+            return None
+        
+        # Rename columns to match expected format
+        df = df.reset_index()
+        df.columns = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']
+        df['LTP'] = df['CLOSE']
+        
+        # Ensure DATE is datetime (should already be from yfinance, but verify)
+        if not pd.api.types.is_datetime64_any_dtype(df['DATE']):
+            df['DATE'] = pd.to_datetime(df['DATE'])
+        
+        # Sort by date (ascending - oldest to newest)
+        df = df.sort_values('DATE').reset_index(drop=True)
+        
+        logger.info(f"✅ Got {len(df)} intraday candles from yfinance for {symbol}")
+        return df
+        
+    except Exception as e:
+        logger.warning(f"⚠️ yfinance error for {symbol}: {e}")
+        return None
+
 def fetch_intraday_data_upstox(symbol, interval=INTRADAY_INTERVAL):
     """Fetch intraday data from Upstox API"""
     try:
@@ -165,7 +221,11 @@ def fetch_intraday_data_upstox(symbol, interval=INTRADAY_INTERVAL):
                     df = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
                     df['LTP'] = df['CLOSE']
                     
-                    # Sort by date
+                    # Ensure DATE is datetime (should already be, but verify for consistency)
+                    if not pd.api.types.is_datetime64_any_dtype(df['DATE']):
+                        df['DATE'] = pd.to_datetime(df['DATE'])
+                    
+                    # Sort by date (ascending - oldest to newest)
                     df = df.sort_values('DATE').reset_index(drop=True)
                     
                     logger.info(f"✅ Got {len(df)} intraday candles for {symbol}")
@@ -177,6 +237,28 @@ def fetch_intraday_data_upstox(symbol, interval=INTRADAY_INTERVAL):
     except Exception as e:
         logger.warning(f"⚠️ Upstox API error for {symbol}: {e}")
         return None
+
+def fetch_intraday_data(symbol, interval=INTRADAY_INTERVAL):
+    """
+    Fetch intraday data from multiple sources with fallback:
+    1. Upstox API (if available)
+    2. yfinance (fallback)
+    
+    Returns DataFrame or None
+    """
+    # Try Upstox first
+    df = fetch_intraday_data_upstox(symbol, interval)
+    if df is not None and not df.empty:
+        return df
+    
+    # Fallback to yfinance
+    logger.info(f"⚠️ Upstox failed, trying yfinance for {symbol}...")
+    df = fetch_intraday_data_yfinance(symbol, interval)
+    if df is not None and not df.empty:
+        return df
+    
+    logger.warning(f"⚠️ Could not fetch intraday data for {symbol} from any source")
+    return None
 
 def compute_rsi(close, period=14):
     """Calculate RSI"""
@@ -385,8 +467,8 @@ def scan_watchlist():
         logger.info(f"\n[{i}/{len(symbols)}] Scanning {symbol}...")
         
         try:
-            # Fetch intraday data
-            df = fetch_intraday_data_upstox(symbol)
+            # Fetch intraday data (tries Upstox first, then yfinance)
+            df = fetch_intraday_data(symbol)
             
             if df is None or df.empty:
                 logger.warning(f"⚠️ No data for {symbol}")

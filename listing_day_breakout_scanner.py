@@ -32,6 +32,7 @@ spec.loader.exec_module(scanner_module)
 fetch_data = scanner_module.fetch_data
 send_telegram = scanner_module.send_telegram
 logger = scanner_module.logger
+get_live_price = scanner_module.get_live_price
 
 # Load environment
 load_dotenv()
@@ -213,7 +214,9 @@ def check_listing_day_breakout(symbol, listing_info):
     try:
         listing_day_high = listing_info['listing_day_high']
         listing_day_low = listing_info['listing_day_low']
+        listing_day_close = listing_info.get('listing_day_close', listing_day_high)  # Fallback to high if close not available
         listing_date = listing_info['listing_date']
+        last_updated = listing_info.get('last_updated', 'N/A')  # When listing data was captured
         
         # Convert listing_date to date object if needed (from CSV it might be string)
         if isinstance(listing_date, str):
@@ -229,12 +232,56 @@ def check_listing_day_breakout(symbol, listing_info):
         if df is None or df.empty:
             return None
         
-        # Get latest data
+        # Get latest data from historical
         latest = df.iloc[-1]
-        current_price = float(latest['CLOSE'])
         current_high = float(latest['HIGH'])
         current_volume = float(latest['VOLUME'])
         current_date = latest['DATE']
+        
+        # Validate data freshness - check if latest data is from today
+        latest_date = latest['DATE']
+        if isinstance(latest_date, pd.Timestamp):
+            latest_date = latest_date.date()
+        elif hasattr(latest_date, 'date'):
+            latest_date = latest_date.date()
+        else:
+            latest_date = pd.to_datetime(latest_date).date()
+        
+        today_date = datetime.today().date()
+        days_old = (today_date - latest_date).days
+        
+        # Try to get live price first (more accurate for breakout detection)
+        current_price = None
+        price_source = "Historical Close"
+        
+        try:
+            live_price, live_source = get_live_price(symbol)
+            if live_price is not None and live_price > 0:
+                current_price = live_price
+                price_source = f"Live ({live_source})"
+                logger.info(f"✅ Using live price for {symbol}: ₹{current_price:.2f} from {live_source}")
+        except Exception as e:
+            logger.debug(f"Could not get live price for {symbol}: {e}")
+        
+        # Fallback to historical close if live price unavailable
+        if current_price is None:
+            current_price = float(latest['CLOSE'])
+            price_source = f"Historical Close ({latest_date.strftime('%Y-%m-%d')})"
+            
+            # Warn if data is stale
+            if days_old > 1:
+                logger.warning(f"⚠️ Using stale data for {symbol}: {days_old} days old ({latest_date})")
+            elif days_old == 0:
+                logger.info(f"✅ Using today's historical close for {symbol}: ₹{current_price:.2f}")
+            else:
+                logger.info(f"⚠️ Using yesterday's close for {symbol}: ₹{current_price:.2f} (market may be closed)")
+        
+        # For breakout detection, also check live high if available
+        # Use the higher of historical high or live price (if live price > historical high)
+        if current_price is not None and current_price > current_high:
+            # Live price is higher than historical high, use it for breakout check
+            current_high = current_price
+            logger.info(f"📈 Live price ({current_price:.2f}) is higher than historical high ({float(latest['HIGH']):.2f}), using live price for breakout check")
         
         # Calculate average volume (last 10 days excluding listing day)
         if len(df) > 1:
@@ -271,11 +318,26 @@ def check_listing_day_breakout(symbol, listing_info):
             reward = target_price - entry_price
             risk_reward = reward / risk if risk > 0 else 0
             
+            # Calculate days since listing
+            today_date = datetime.today().date()
+            if isinstance(listing_date, str):
+                listing_date_obj = pd.to_datetime(listing_date).date()
+            elif hasattr(listing_date, 'date'):
+                listing_date_obj = listing_date.date()
+            else:
+                listing_date_obj = listing_date
+            
+            days_since_listing = (today_date - listing_date_obj).days
+            
+            # Calculate gain from listing day close
+            gain_from_listing_close = ((current_price - listing_day_close) / listing_day_close * 100) if listing_day_close > 0 else 0
+            
             return {
                 'symbol': symbol,
                 'listing_date': listing_date,
                 'listing_day_high': listing_day_high,
                 'listing_day_low': listing_day_low,
+                'listing_day_close': listing_day_close,
                 'current_price': current_price,
                 'current_high': current_high,
                 'entry_price': round(entry_price, 2),
@@ -284,7 +346,11 @@ def check_listing_day_breakout(symbol, listing_info):
                 'volume_spike': round(current_volume / avg_volume, 2),
                 'risk_reward': round(risk_reward, 2),
                 'breakout_date': current_date,
-                'breakout_conditions': ' | '.join(breakout_conditions)
+                'breakout_conditions': ' | '.join(breakout_conditions),
+                'price_source': price_source,
+                'days_since_listing': days_since_listing,
+                'gain_from_listing_close': round(gain_from_listing_close, 2),
+                'last_updated': last_updated
             }
         
         return None
@@ -301,19 +367,43 @@ def format_listing_breakout_alert(breakout_data):
     target = breakout_data['target_price']
     listing_high = breakout_data['listing_day_high']
     listing_low = breakout_data['listing_day_low']
+    listing_close = breakout_data.get('listing_day_close', listing_high)
     current_high = breakout_data['current_high']
+    current_price = breakout_data['current_price']
     vol_spike = breakout_data['volume_spike']
     rr = breakout_data['risk_reward']
     conditions = breakout_data['breakout_conditions']
+    days_since_listing = breakout_data.get('days_since_listing', 0)
+    gain_from_listing = breakout_data.get('gain_from_listing_close', 0)
+    price_source = breakout_data.get('price_source', 'Historical Close')
+    last_updated = breakout_data.get('last_updated', 'N/A')
+    breakout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Format listing date
+    listing_date = breakout_data['listing_date']
+    if isinstance(listing_date, str):
+        listing_date_str = listing_date
+    elif hasattr(listing_date, 'strftime'):
+        listing_date_str = listing_date.strftime('%Y-%m-%d')
+    else:
+        listing_date_str = str(listing_date)
+    
+    # Gain emoji
+    gain_emoji = "📈" if gain_from_listing >= 0 else "📉"
     
     msg = f"""🎯 <b>LISTING DAY HIGH BREAKOUT!</b>
 
 📊 Symbol: <b>{symbol}</b>
 📋 Signal Type: <b>Listing Day Breakout</b>
-📅 Listing Date: {breakout_data['listing_date']}
+
+⏰ <b>Timing Information:</b>
+• Listing Date: {listing_date_str}
+• Days Since Listing: {days_since_listing} days
+• Base Time (Data Captured): {last_updated}
+• Breakout Detected: {breakout_time}
 
 💰 <b>Entry Details:</b>
-• Current Price: ₹{breakout_data['current_price']:,.2f}
+• Current Price: ₹{current_price:,.2f} ({price_source})
 • Entry: ₹{entry:,.2f}
 • Stop Loss: ₹{stop:,.2f} (Listing Day Low)
 • Target: ₹{target:,.2f}
@@ -322,13 +412,13 @@ def format_listing_breakout_alert(breakout_data):
 📈 <b>Listing Day Metrics:</b>
 • Listing Day High: ₹{listing_high:,.2f}
 • Listing Day Low: ₹{listing_low:,.2f}
+• Listing Day Close: ₹{listing_close:,.2f}
 • Current High: ₹{current_high:,.2f} ✅ BROKEN!
+• {gain_emoji} Gain from Listing Close: {gain_from_listing:+.2f}%
 
 📊 <b>Breakout Confirmation:</b>
 • Volume Spike: {vol_spike:.1f}x
 • {conditions}
-
-⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 ⚠️ <b>Action Required:</b> Enter position - Listing day high broken with volume!"""
     

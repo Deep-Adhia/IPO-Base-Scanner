@@ -96,6 +96,13 @@ def fetch_from_upstox(symbol, start_date, end_date):
                     df = df[['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']]
                     df['LTP'] = df['CLOSE']  # Add LTP column using CLOSE price
                     
+                    # Ensure DATE is datetime (should already be, but verify for consistency)
+                    if not pd.api.types.is_datetime64_any_dtype(df['DATE']):
+                        df['DATE'] = pd.to_datetime(df['DATE'])
+                    
+                    # Sort by date ascending (oldest to newest) to ensure consistent ordering
+                    df = df.sort_values('DATE').reset_index(drop=True)
+                    
                     logger.info(f"✅ Upstox API: Got {len(df)} candles for {symbol}")
                     return df
         
