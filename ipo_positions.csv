@@ -1,3 +1,1 @@
 symbol,entry_date,entry_price,grade,current_price,stop_loss,trailing_stop,pnl_pct,days_held,status,exit_date,exit_price
-BORANA,2025-11-13,272.7,C,267.54,239.98,239.98,-1.8921892189218807,1,ACTIVE,,
-GCSL,2025-11-13,382.5,B,382.5,344.25,344.25,-7.377777777777784,1,CLOSED,2025-11-14,354.28

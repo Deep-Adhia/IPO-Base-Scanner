@@ -269,7 +269,7 @@ def compute_rsi(close, period=14):
     return 100 - (100 / (1 + rs))
 
 def detect_intraday_breakout(df, symbol):
-    """Detect intraday breakout patterns"""
+    """Detect intraday breakout patterns using LIVE prices for accurate detection"""
     if df is None or len(df) < 20:
         return None
     
@@ -281,34 +281,62 @@ def detect_intraday_breakout(df, symbol):
         if len(recent_df) < 20:
             return None
         
-        # Calculate recent high and low
-        recent_high = recent_df['HIGH'].max()
-        recent_low = recent_df['LOW'].min()
-        recent_range = recent_high - recent_low
+        # Calculate consolidation levels from historical data (exclude last candle for accurate range)
+        historical_df = recent_df.iloc[:-1] if len(recent_df) > 1 else recent_df
         
-        # Current price
-        current_price = recent_df['CLOSE'].iloc[-1]
-        current_high = recent_df['HIGH'].iloc[-1]
+        # Calculate recent high and low from historical data (excluding current candle)
+        recent_high = historical_df['HIGH'].max() if len(historical_df) > 0 else recent_df['HIGH'].max()
+        recent_low = historical_df['LOW'].min() if len(historical_df) > 0 else recent_df['LOW'].min()
+        
+        # Calculate consolidation range (last 50 candles, excluding current)
+        consolidation_df = historical_df.tail(50) if len(historical_df) >= 50 else historical_df
+        consolidation_low = consolidation_df['LOW'].min() if len(consolidation_df) > 0 else recent_low
+        consolidation_high = consolidation_df['HIGH'].max() if len(consolidation_df) > 0 else recent_high
+        
+        # Get historical data for volume/RSI calculations
         current_volume = recent_df['VOLUME'].iloc[-1]
+        avg_volume = historical_df['VOLUME'].mean() if len(historical_df) > 0 else current_volume
         
-        # Average volume
-        avg_volume = recent_df['VOLUME'].mean()
+        # CRITICAL: Get LIVE price for accurate breakout detection
+        live_price = None
+        live_source = "Historical"
+        try:
+            # Import get_live_price from main scanner
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanner.py")
+            scanner_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(scanner_module)
+            get_live_price = scanner_module.get_live_price
+            
+            live_price, live_source = get_live_price(symbol)
+            if live_price is not None and live_price > 0:
+                logger.info(f"✅ Using live price for {symbol} breakout detection: ₹{live_price:.2f} ({live_source})")
+        except Exception as e:
+            logger.debug(f"Could not get live price for {symbol}: {e}")
         
-        # Check for breakout above recent high
-        breakout_threshold = recent_high * 0.995  # 0.5% below recent high to catch breakouts
+        # Use live price if available, otherwise use latest historical close
+        if live_price is not None:
+            current_price = live_price
+            current_high = live_price  # For breakout detection, use live price as current high
+        else:
+            current_price = float(recent_df['CLOSE'].iloc[-1])
+            current_high = float(recent_df['HIGH'].iloc[-1])
+            logger.warning(f"⚠️ Using historical price for {symbol}: ₹{current_price:.2f}")
         
         # Breakout conditions:
-        # 1. Current high breaks above recent high
+        # 1. Current price/high breaks above recent high (using LIVE price if available)
         # 2. Volume spike (at least 1.5x average)
-        # 3. Price is above recent high
+        # 3. RSI momentum confirmation
         is_breakout = False
         breakout_strength = 0
         
+        # Check if price breaks above recent high
         if current_high > recent_high:
             is_breakout = True
             breakout_strength += 1
-            logger.info(f"🔥 {symbol}: Price broke above recent high! ({current_high:.2f} > {recent_high:.2f})")
+            logger.info(f"🔥 {symbol}: Price broke above recent high! ({current_high:.2f} > {recent_high:.2f}) [Using: {live_source}]")
         
+        # Volume confirmation
         if current_volume >= avg_volume * MIN_VOLUME_MULTIPLIER:
             breakout_strength += 1
             logger.info(f"📊 {symbol}: Volume spike detected! ({current_volume:,.0f} vs avg {avg_volume:,.0f})")
@@ -322,24 +350,32 @@ def detect_intraday_breakout(df, symbol):
         
         # Only trigger if we have a clear breakout
         if is_breakout and breakout_strength >= 2:
-            # Calculate consolidation range
-            consolidation_low = recent_df['LOW'].tail(50).min()  # Last 50 candles
-            consolidation_high = recent_df['HIGH'].tail(50).max()
             consolidation_range = consolidation_high - consolidation_low
             
-            # Entry price (current price or next candle open)
+            # Entry price: Use LIVE price if available, otherwise current price
             entry_price = current_price
             
-            # Stop loss (below consolidation low)
-            stop_loss = consolidation_low * 0.98  # 2% below consolidation low
+            # Stop loss (below consolidation low) - use proper calculation
+            # Use the lower (more conservative) stop loss: 2% below consolidation low OR 5% of range below, whichever is LOWER
+            stop_loss_1 = consolidation_low * 0.98  # 2% below consolidation low
+            stop_loss_2 = consolidation_low - (consolidation_range * 0.05)  # 5% of range below
+            stop_loss = min(stop_loss_1, stop_loss_2)  # Use the lower (more conservative) stop
             
-            # Target (based on consolidation range)
-            target_price = consolidation_high + (consolidation_range * 0.5)  # 50% above consolidation high
+            # Target (based on consolidation range) - add 50% of range above consolidation high
+            target_price = consolidation_high + (consolidation_range * 0.5)
             
             # Risk/Reward
             risk = entry_price - stop_loss
             reward = target_price - entry_price
             risk_reward = reward / risk if risk > 0 else 0
+            
+            logger.info(f"📊 {symbol} Breakout Levels:")
+            logger.info(f"   Consolidation: ₹{consolidation_low:.2f} - ₹{consolidation_high:.2f}")
+            logger.info(f"   Recent High: ₹{recent_high:.2f}")
+            logger.info(f"   Entry: ₹{entry_price:.2f} ({live_source})")
+            logger.info(f"   Stop Loss: ₹{stop_loss:.2f}")
+            logger.info(f"   Target: ₹{target_price:.2f}")
+            logger.info(f"   Risk:Reward: 1:{risk_reward:.2f}")
             
             return {
                 'symbol': symbol,
@@ -354,6 +390,7 @@ def detect_intraday_breakout(df, symbol):
                 'rsi': round(current_rsi, 2),
                 'risk_reward': round(risk_reward, 2),
                 'breakout_strength': breakout_strength,
+                'price_source': live_source,
                 'timestamp': datetime.now()
             }
         

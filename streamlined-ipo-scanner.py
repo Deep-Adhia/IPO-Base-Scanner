@@ -1118,262 +1118,297 @@ def detect_live_patterns(symbols, listing_map):
                 perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
                 if not (0.08 <= -perf <= 0.35): continue
                 
-                low, high2 = df["LOW"][:i+1].tail(w).min(), df["HIGH"][:i+1].tail(w).max()
+                # CRITICAL FIX: For breakout detection, calculate consolidation from HISTORICAL data
+                # Exclude the current candle (i) to get accurate consolidation levels
+                # This ensures we're comparing current price against historical consolidation, not including it
+                historical_end = i  # Exclude candle i from consolidation calculation
+                if historical_end < w:
+                    continue  # Not enough historical data
+                
+                # Calculate consolidation from historical data (excluding current candle i)
+                low, high2 = df["LOW"][:historical_end].tail(w).min(), df["HIGH"][:historical_end].tail(w).max()
                 prng = (high2 - low) / low * 100
                 if prng > 60: continue
                 
-                avgv = df["VOLUME"][:i+1].tail(w).mean()
+                # Calculate average volume from historical data (excluding current candle)
+                avgv = df["VOLUME"][:historical_end].tail(w).mean()
                 vol_ok = ((df["VOLUME"].iat[i] >= 2.5*avgv and df["VOLUME"].iloc[i-2:i+1].sum() >= 4*avgv) or
                          df["VOLUME"].iat[i]/avgv >= VOL_MULT or
                          (df["VOLUME"].iloc[i-2:i+1].sum() * df["CLOSE"].iat[i]) >= ABS_VOL_MIN)
                 if not vol_ok: continue
                 
                 # Check if this is a LIVE breakout (happening now or very recently)
-                for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
-                    if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
-                        # Follow-through filter: next day close > base high and volume ≥110% of breakout day
-                        if j + 1 < len(df):
-                            breakout_close = df["CLOSE"].iat[j]
-                            breakout_volume = df["VOLUME"].iat[j]
-                            next_day_close = df["CLOSE"].iat[j + 1]
-                            next_day_volume = df["VOLUME"].iat[j + 1]
-                            base_high = df["HIGH"][j-w+1:j+1].max()
+                # For the last candle (i == len(df)-1), check LIVE price against consolidation
+                # For earlier candles, check future candles (j) for breakout confirmation
+                is_live_breakout = False
+                breakout_candle_idx = None
+                
+                if i == len(df) - 1:
+                    # This is the latest candle - check LIVE price for breakout
+                    live_price, _ = get_live_price(sym)
+                    if live_price is not None and live_price > max(high2, lhigh*0.97):
+                        is_live_breakout = True
+                        breakout_candle_idx = i
+                        logger.info(f"🔥 LIVE breakout detected for {sym}: Live price ₹{live_price:.2f} > consolidation high ₹{high2:.2f}")
+                else:
+                    # Check future candles for breakout confirmation
+                    for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
+                        if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
+                            is_live_breakout = True
+                            breakout_candle_idx = j
+                            break
+                
+                if not is_live_breakout:
+                    continue
+                
+                j = breakout_candle_idx
+                if j is None:
+                    continue
+                
+                # Continue with breakout validation
+                # Follow-through filter: next day close > base high and volume ≥110% of breakout day
+                if j + 1 < len(df):
+                    breakout_close = df["CLOSE"].iat[j]
+                    breakout_volume = df["VOLUME"].iat[j]
+                    next_day_close = df["CLOSE"].iat[j + 1]
+                    next_day_volume = df["VOLUME"].iat[j + 1]
+                    base_high = df["HIGH"][j-w+1:j+1].max()
 
-                            if next_day_close <= base_high:
-                                continue
-                            if next_day_volume < 1.1 * breakout_volume:
-                                continue
+                    if next_day_close <= base_high:
+                        continue
+                    if next_day_volume < 1.1 * breakout_volume:
+                        continue
 
-                        # Apply your proven filters
-                        if reject_quick_losers(df, j, w, avgv):
+                # Apply your proven filters
+                if reject_quick_losers(df, j, w, avgv):
+                    continue
+
+                score = compute_grade_hybrid(df, j, w, avgv)
+                grade = assign_grade(score)
+
+                # Enhanced B-grade filters with RSI and MACD
+                if grade == 'B' and not smart_b_filters(df, j, avgv):
+                    continue
+
+                if grade == 'C' and not smart_c_filters(df, j, df["OPEN"].iat[j], w, avgv):
+                    continue
+
+                if grade == 'D':
+                    continue
+
+                # This is a LIVE pattern - generate signal
+                # Get the latest available data date (not system date to avoid future date issues)
+                latest_data_date = df['DATE'].max()
+                if isinstance(latest_data_date, pd.Timestamp):
+                    latest_data_date = latest_data_date.date()
+                elif hasattr(latest_data_date, 'date'):
+                    latest_data_date = latest_data_date.date()
+                
+                # Use latest data date as entry date (not system date to avoid future dates)
+                system_date = datetime.today().date()
+                entry_date = latest_data_date
+                
+                # Validate entry_date is not in the future
+                if entry_date > system_date:
+                    logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
+                    entry_date = latest_data_date
+                
+                # For live signals, ALWAYS use CURRENT market price as entry price
+                # This ensures entry price matches what user would actually pay NOW
+                # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
+                live_price, price_source_name = get_live_price(sym)
+                if live_price is not None:
+                    entry = live_price
+                    source_emojis = {
+                        'upstox': '🚀',
+                        'yfinance': '📈',
+                        'jugaad': '📊'
+                    }
+                    emoji = source_emojis.get(price_source_name, '💰')
+                    price_source = f"{emoji} {price_source_name.title()} Live Price"
+                    logger.info(f"✅ Using LIVE price from {price_source_name}: ₹{entry:.2f}")
+                else:
+                    # Fallback to latest available close price from historical data
+                    entry = float(df["CLOSE"].iloc[-1])
+                    latest_date = df['DATE'].iloc[-1]
+                    if isinstance(latest_date, pd.Timestamp):
+                        latest_date_str = latest_date.strftime('%Y-%m-%d')
+                    else:
+                        latest_date_str = str(latest_date)
+                    price_source = f"📊 Latest Close ({latest_date_str})"
+                    logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
+                
+                # Entry date should be the next trading day after breakout
+                if j + 1 < len(df):
+                    entry_date = df['DATE'].iat[j + 1]
+                    if isinstance(entry_date, pd.Timestamp):
+                        entry_date = entry_date.date()
+                    elif hasattr(entry_date, 'date'):
+                        entry_date = entry_date.date()
+                else:
+                    # If no next day data, use latest available date
+                    entry_date = latest_data_date
+                
+                # Final validation: ensure entry_date is not in the future
+                if entry_date > system_date:
+                    logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
+                    entry_date = latest_data_date
+                
+                logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
+                
+                # Log detailed data for analysis
+                logger.info(f"=== SIGNAL DATA FOR {sym} ===")
+                logger.info(f"Pattern detected at index {j} (consolidation window: {w})")
+                logger.info(f"Data range: {df['DATE'].min()} to {df['DATE'].max()}")
+                logger.info(f"Breakout date: {df['DATE'].iat[j]}")
+                logger.info(f"Entry date: {entry_date} (validated)")
+                logger.info(f"Entry price: ₹{entry:.2f}")
+                
+                # Check data freshness
+                latest_date = df['DATE'].max()
+                if hasattr(latest_date, 'date'):
+                    latest_date = latest_date.date()
+                days_old = (datetime.today().date() - latest_date).days
+                if days_old > 1:
+                    logger.warning(f"⚠️  DATA IS {days_old} DAYS OLD! Latest data: {latest_date}")
+                else:
+                    logger.info(f"✅ Data is fresh: {days_old} days old")
+                
+                logger.info(f"Breakout day data:")
+                breakout_row = df.iloc[j]
+                logger.info(f"  Date: {breakout_row['DATE']}, O={breakout_row['OPEN']:.2f} H={breakout_row['HIGH']:.2f} L={breakout_row['LOW']:.2f} C={breakout_row['CLOSE']:.2f}")
+                if j + 1 < len(df):
+                    next_row = df.iloc[j + 1]
+                    logger.info(f"Entry day data (next day):")
+                    logger.info(f"  Date: {next_row['DATE']}, O={next_row['OPEN']:.2f} H={next_row['HIGH']:.2f} L={next_row['LOW']:.2f} C={next_row['CLOSE']:.2f}")
+                
+                logger.info(f"Consolidation low: {low:.2f}")
+                logger.info(f"Consolidation high: {high2:.2f}")
+                logger.info(f"Breakout detected at index {j}: High={df['HIGH'].iat[j]:.2f} > Base High={high2:.2f}")
+                logger.info(f"Grade: {grade} (Score: {score})")
+                
+                # Grade-based stop loss: More appropriate for IPO volatility
+                stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
+                date = entry_date  # Use actual entry date from dataframe
+                
+                # Ensure date is a string in YYYY-MM-DD format for CSV
+                if isinstance(date, pd.Timestamp):
+                    date_str = date.strftime('%Y-%m-%d')
+                elif hasattr(date, 'strftime'):
+                    date_str = date.strftime('%Y-%m-%d')
+                else:
+                    date_str = str(date)
+                
+                # Create unique signal ID with type prefix
+                sid = f"CONSOL_{sym}_{date_str.replace('-', '')}_{w}_{j}_LIVE"
+                if sid in existing: continue
+                
+                # Check if symbol already has active position (prevent duplicates)
+                try:
+                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+                    if not existing_positions.empty:
+                        active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
+                        if sym in active_positions['symbol'].tolist():
+                            logger.info(f"⏭️ Skipping {sym} - already has active position")
                             continue
-
-                        score = compute_grade_hybrid(df, j, w, avgv)
-                        grade = assign_grade(score)
-
-                        # Enhanced B-grade filters with RSI and MACD
-                        if grade == 'B' and not smart_b_filters(df, j, avgv):
-                            continue
-
-                        if grade == 'C' and not smart_c_filters(df, j, df["OPEN"].iat[j], w, avgv):
-                            continue
-
-                        if grade == 'D':
-                            continue
-
-                        # This is a LIVE pattern - generate signal
-                        # Get the latest available data date (not system date to avoid future date issues)
-                        latest_data_date = df['DATE'].max()
-                        if isinstance(latest_data_date, pd.Timestamp):
-                            latest_data_date = latest_data_date.date()
-                        elif hasattr(latest_data_date, 'date'):
-                            latest_data_date = latest_data_date.date()
-                        
-                        # Use latest data date as entry date (not system date to avoid future dates)
-                        system_date = datetime.today().date()
-                        entry_date = latest_data_date
-                        
-                        # Validate entry_date is not in the future
-                        if entry_date > system_date:
-                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
-                            entry_date = latest_data_date
-                        
-                        # For live signals, ALWAYS use CURRENT market price as entry price
-                        # This ensures entry price matches what user would actually pay NOW
-                        # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
-                        live_price, price_source_name = get_live_price(sym)
-                        if live_price is not None:
-                            entry = live_price
-                            source_emojis = {
-                                'upstox': '🚀',
-                                'yfinance': '📈',
-                                'jugaad': '📊'
-                            }
-                            emoji = source_emojis.get(price_source_name, '💰')
-                            price_source = f"{emoji} {price_source_name.title()} Live Price"
-                            logger.info(f"✅ Using LIVE price from {price_source_name}: ₹{entry:.2f}")
-                        else:
-                            # Fallback to latest available close price from historical data
-                            entry = float(df["CLOSE"].iloc[-1])
-                            latest_date = df['DATE'].iloc[-1]
-                            if isinstance(latest_date, pd.Timestamp):
-                                latest_date_str = latest_date.strftime('%Y-%m-%d')
-                            else:
-                                latest_date_str = str(latest_date)
-                            price_source = f"📊 Latest Close ({latest_date_str})"
-                            logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
-                        
-                        # Entry date should be the next trading day after breakout
-                        if j + 1 < len(df):
-                            entry_date = df['DATE'].iat[j + 1]
-                            if isinstance(entry_date, pd.Timestamp):
-                                entry_date = entry_date.date()
-                            elif hasattr(entry_date, 'date'):
-                                entry_date = entry_date.date()
-                        else:
-                            # If no next day data, use latest available date
-                            entry_date = latest_data_date
-                        
-                        # Final validation: ensure entry_date is not in the future
-                        if entry_date > system_date:
-                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
-                            entry_date = latest_data_date
-                        
-                        logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
-                        
-                        # Log detailed data for analysis
-                        logger.info(f"=== SIGNAL DATA FOR {sym} ===")
-                        logger.info(f"Pattern detected at index {j} (consolidation window: {w})")
-                        logger.info(f"Data range: {df['DATE'].min()} to {df['DATE'].max()}")
-                        logger.info(f"Breakout date: {df['DATE'].iat[j]}")
-                        logger.info(f"Entry date: {entry_date} (validated)")
-                        logger.info(f"Entry price: ₹{entry:.2f}")
-                        
-                        # Check data freshness
-                        latest_date = df['DATE'].max()
-                        if hasattr(latest_date, 'date'):
-                            latest_date = latest_date.date()
-                        days_old = (datetime.today().date() - latest_date).days
-                        if days_old > 1:
-                            logger.warning(f"⚠️  DATA IS {days_old} DAYS OLD! Latest data: {latest_date}")
-                        else:
-                            logger.info(f"✅ Data is fresh: {days_old} days old")
-                        
-                        logger.info(f"Breakout day data:")
-                        breakout_row = df.iloc[j]
-                        logger.info(f"  Date: {breakout_row['DATE']}, O={breakout_row['OPEN']:.2f} H={breakout_row['HIGH']:.2f} L={breakout_row['LOW']:.2f} C={breakout_row['CLOSE']:.2f}")
-                        if j + 1 < len(df):
-                            next_row = df.iloc[j + 1]
-                            logger.info(f"Entry day data (next day):")
-                            logger.info(f"  Date: {next_row['DATE']}, O={next_row['OPEN']:.2f} H={next_row['HIGH']:.2f} L={next_row['LOW']:.2f} C={next_row['CLOSE']:.2f}")
-                        
-                        logger.info(f"Consolidation low: {low:.2f}")
-                        logger.info(f"Consolidation high: {high2:.2f}")
-                        logger.info(f"Breakout detected at index {j}: High={df['HIGH'].iat[j]:.2f} > Base High={high2:.2f}")
-                        logger.info(f"Grade: {grade} (Score: {score})")
-                        
-                        # Grade-based stop loss: More appropriate for IPO volatility
-                        stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
-                        date = entry_date  # Use actual entry date from dataframe
-                        
-                        # Ensure date is a string in YYYY-MM-DD format for CSV
-                        if isinstance(date, pd.Timestamp):
-                            date_str = date.strftime('%Y-%m-%d')
-                        elif hasattr(date, 'strftime'):
-                            date_str = date.strftime('%Y-%m-%d')
-                        else:
-                            date_str = str(date)
-                        
-                        # Create unique signal ID with type prefix
-                        sid = f"CONSOL_{sym}_{date_str.replace('-', '')}_{w}_{j}_LIVE"
-                        if sid in existing: continue
-                        
-                        # Check if symbol already has active position (prevent duplicates)
-                        try:
-                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                            if not existing_positions.empty:
-                                active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-                                if sym in active_positions['symbol'].tolist():
-                                    logger.info(f"⏭️ Skipping {sym} - already has active position")
-                                    continue
-                        except:
-                            pass
-                        
-                        # Calculate target price using proper function based on consolidation pattern
-                        target = calculate_target_price(entry, low, high2, grade)
-                        
-                        # Add to signals
-                        # Ensure date is a string in YYYY-MM-DD format
-                        if isinstance(date, pd.Timestamp):
-                            date_str = date.strftime('%Y-%m-%d')
-                        elif hasattr(date, 'strftime'):
-                            date_str = date.strftime('%Y-%m-%d')
-                        else:
-                            date_str = str(date)
-                        
-                        new_signal = {
-                            "signal_id": sid,
-                            "symbol": sym,
-                            "signal_date": date_str,
-                            "entry_price": round(entry, 2),
-                            "grade": grade,
-                            "score": score,
-                            "stop_loss": round(stop, 2),
-                            "target_price": round(target, 2),
-                            "status": "ACTIVE",
-                            "exit_date": "",
-                            "exit_price": 0,
-                            "pnl_pct": 0,
-                            "days_held": 0,
-                            "signal_type": "CONSOLIDATION"
+                except:
+                    pass
+                
+                # Calculate target price using proper function based on consolidation pattern
+                target = calculate_target_price(entry, low, high2, grade)
+                
+                # Add to signals
+                # Ensure date is a string in YYYY-MM-DD format
+                if isinstance(date, pd.Timestamp):
+                    date_str = date.strftime('%Y-%m-%d')
+                elif hasattr(date, 'strftime'):
+                    date_str = date.strftime('%Y-%m-%d')
+                else:
+                    date_str = str(date)
+                
+                new_signal = {
+                    "signal_id": sid,
+                    "symbol": sym,
+                    "signal_date": date_str,
+                    "entry_price": round(entry, 2),
+                    "grade": grade,
+                    "score": score,
+                    "stop_loss": round(stop, 2),
+                    "target_price": round(target, 2),
+                    "status": "ACTIVE",
+                    "exit_date": "",
+                    "exit_price": 0,
+                    "pnl_pct": 0,
+                    "days_held": 0,
+                    "signal_type": "CONSOLIDATION"
+                }
+                
+                # Add to positions
+                new_position = {
+                    "symbol": sym,
+                    "entry_date": date_str,
+                    "entry_price": round(entry, 2),
+                    "grade": grade,
+                    "current_price": round(entry, 2),
+                    "stop_loss": round(stop, 2),
+                    "trailing_stop": round(stop, 2),
+                    "pnl_pct": 0,
+                    "days_held": 0,
+                    "status": "ACTIVE"
+                }
+                
+                signals_df = pd.DataFrame([new_signal])
+                positions_df = pd.DataFrame([new_position])
+                
+                # Append to CSV files properly
+                try:
+                    existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+                    # Add signal_type column if it doesn't exist (for backward compatibility)
+                    if 'signal_type' not in existing_signals.columns:
+                        existing_signals['signal_type'] = 'UNKNOWN'
+                except (FileNotFoundError, pd.errors.EmptyDataError):
+                    existing_signals = pd.DataFrame()
+                
+                if existing_signals.empty:
+                    signals_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+                else:
+                    pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+                
+                try:
+                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+                except (FileNotFoundError, pd.errors.EmptyDataError):
+                    existing_positions = pd.DataFrame()
+                
+                if existing_positions.empty:
+                    positions_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+                else:
+                    pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+                
+                # Send Telegram notification with next day trading instructions
+                if days_old > 1:
+                    price_warning = f"⚠️ OLD DATA: {days_old} days old. Verify current price before trading!"
+                else:
+                    price_warning = f"✅ Fresh data - Ready for next day trading"
+                
+                # Get current/live price for verification (try to get fresh price)
+                current_price_display = entry  # Entry price is the current/reference price
+                try:
+                    live_check, live_source = get_live_price(sym)
+                    if live_check is not None:
+                        current_price_display = live_check
+                        source_emojis = {
+                            'upstox': '🚀',
+                            'yfinance': '📈',
+                            'jugaad': '📊'
                         }
-                        
-                        # Add to positions
-                        new_position = {
-                            "symbol": sym,
-                            "entry_date": date_str,
-                            "entry_price": round(entry, 2),
-                            "grade": grade,
-                            "current_price": round(entry, 2),
-                            "stop_loss": round(stop, 2),
-                            "trailing_stop": round(stop, 2),
-                            "pnl_pct": 0,
-                            "days_held": 0,
-                            "status": "ACTIVE"
-                        }
-                        
-                        signals_df = pd.DataFrame([new_signal])
-                        positions_df = pd.DataFrame([new_position])
-                        
-                        # Append to CSV files properly
-                        try:
-                            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-                            # Add signal_type column if it doesn't exist (for backward compatibility)
-                            if 'signal_type' not in existing_signals.columns:
-                                existing_signals['signal_type'] = 'UNKNOWN'
-                        except (FileNotFoundError, pd.errors.EmptyDataError):
-                            existing_signals = pd.DataFrame()
-                        
-                        if existing_signals.empty:
-                            signals_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                        else:
-                            pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                        
-                        try:
-                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                        except (FileNotFoundError, pd.errors.EmptyDataError):
-                            existing_positions = pd.DataFrame()
-                        
-                        if existing_positions.empty:
-                            positions_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                        else:
-                            pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                        
-                        # Send Telegram notification with next day trading instructions
-                        if days_old > 1:
-                            price_warning = f"⚠️ OLD DATA: {days_old} days old. Verify current price before trading!"
-                        else:
-                            price_warning = f"✅ Fresh data - Ready for next day trading"
-                        
-                        # Get current/live price for verification (try to get fresh price)
-                        current_price_display = entry  # Entry price is the current/reference price
-                        try:
-                            live_check, live_source = get_live_price(sym)
-                            if live_check is not None:
-                                current_price_display = live_check
-                                source_emojis = {
-                                    'upstox': '🚀',
-                                    'yfinance': '📈',
-                                    'jugaad': '📊'
-                                }
-                                emoji = source_emojis.get(live_source, '💰')
-                                price_source_display = f"{emoji} Live: ₹{live_check:.2f} | Reference: ₹{entry:.2f}"
-                            else:
-                                price_source_display = f"📊 {price_source} | Reference: ₹{entry:.2f}"
-                        except:
-                            price_source_display = f"📊 {price_source} | Reference: ₹{entry:.2f}"
-                        
-                        message = f"""🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>
+                        emoji = source_emojis.get(live_source, '💰')
+                        price_source_display = f"{emoji} Live: ₹{live_check:.2f} | Reference: ₹{entry:.2f}"
+                    else:
+                        price_source_display = f"📊 {price_source} | Reference: ₹{entry:.2f}"
+                except:
+                    price_source_display = f"📊 {price_source} | Reference: ₹{entry:.2f}"
+                
+                message = f"""🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>
 
 📊 Symbol: <b>{sym}</b>
 📋 Signal Type: <b>Consolidation-Based Breakout</b>
@@ -1395,13 +1430,13 @@ def detect_live_patterns(symbols, listing_map):
 • Set stop loss at ₹{stop:.2f}
 • Target: ₹{target:.2f}
 ⚡ Consolidation pattern detected"""
-                        send_telegram(message)
-                        
-                        signals_found += 1
-                        processed_today.add(today_key)
-                        break
-                if signals_found > 0: break
+                send_telegram(message)
+                
+                signals_found += 1
+                processed_today.add(today_key)
+                break
             if signals_found > 0: break
+        if signals_found > 0: break
     
     logger.info(f"Live pattern scan complete: {signals_found} signals found from {symbols_processed} symbols")
     return signals_found
@@ -1441,205 +1476,244 @@ def detect_scan(symbols, listing_map):
             for i in range(w, min(len(df), MAX_DAYS)):
                 perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
                 if not (0.08 <= -perf <= 0.35): continue
-                low, high2 = df["LOW"][:i+1].tail(w).min(), df["HIGH"][:i+1].tail(w).max()
+                
+                # CRITICAL FIX: For breakout detection, calculate consolidation from HISTORICAL data
+                # Exclude the current candle (i) to get accurate consolidation levels
+                # This ensures we're comparing current price against historical consolidation, not including it
+                historical_end = i  # Exclude candle i from consolidation calculation
+                if historical_end < w:
+                    continue  # Not enough historical data
+                
+                # Calculate consolidation from historical data (excluding current candle i)
+                low, high2 = df["LOW"][:historical_end].tail(w).min(), df["HIGH"][:historical_end].tail(w).max()
                 prng = (high2 - low) / low * 100
                 if prng > 60: continue
-                avgv = df["VOLUME"][:i+1].tail(w).mean()
+                
+                # Calculate average volume from historical data (excluding current candle)
+                avgv = df["VOLUME"][:historical_end].tail(w).mean()
                 vol_ok = ((df["VOLUME"].iat[i] >= 2.5*avgv and df["VOLUME"].iloc[i-2:i+1].sum() >= 4*avgv) or
                          df["VOLUME"].iat[i]/avgv >= VOL_MULT or
                          (df["VOLUME"].iloc[i-2:i+1].sum() * df["CLOSE"].iat[i]) >= ABS_VOL_MIN)
                 if not vol_ok: continue
-                for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
-                    if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
-                        # Follow-through filter: next day close > base high and volume ≥110% of breakout day
-                        if j + 1 < len(df):
-                            breakout_close = df["CLOSE"].iat[j]
-                            breakout_volume = df["VOLUME"].iat[j]
-                            next_day_close = df["CLOSE"].iat[j + 1]
-                            next_day_volume = df["VOLUME"].iat[j + 1]
-                            base_high = df["HIGH"][j-w+1:j+1].max()
+                
+                # Check if this is a LIVE breakout (happening now or very recently)
+                # For the last candle (i == len(df)-1), check LIVE price against consolidation
+                # For earlier candles, check future candles (j) for breakout confirmation
+                is_live_breakout = False
+                breakout_candle_idx = None
+                
+                if i == len(df) - 1:
+                    # This is the latest candle - check LIVE price for breakout
+                    live_price, _ = get_live_price(sym)
+                    if live_price is not None and live_price > max(high2, lhigh*0.97):
+                        is_live_breakout = True
+                        breakout_candle_idx = i
+                        logger.info(f"🔥 LIVE breakout detected for {sym}: Live price ₹{live_price:.2f} > consolidation high ₹{high2:.2f}")
+                else:
+                    # Check future candles for breakout confirmation
+                    for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
+                        if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
+                            is_live_breakout = True
+                            breakout_candle_idx = j
+                            break
+                
+                if not is_live_breakout:
+                    continue
+                
+                j = breakout_candle_idx
+                if j is None:
+                    continue
+                
+                # Continue with breakout validation
+                # Follow-through filter: next day close > base high and volume ≥110% of breakout day
+                if j + 1 < len(df):
+                    breakout_close = df["CLOSE"].iat[j]
+                    breakout_volume = df["VOLUME"].iat[j]
+                    next_day_close = df["CLOSE"].iat[j + 1]
+                    next_day_volume = df["VOLUME"].iat[j + 1]
+                    base_high = df["HIGH"][j-w+1:j+1].max()
 
-                            if next_day_close <= base_high:
-                                continue
-                            if next_day_volume < 1.1 * breakout_volume:
-                                continue
+                    if next_day_close <= base_high:
+                        continue
+                    if next_day_volume < 1.1 * breakout_volume:
+                        continue
 
-                        score = compute_grade_hybrid(df, j, w, avgv)
-                        grade = assign_grade(score)
-                        if grade == "D": continue
-                        
-                        # This is a LIVE pattern - generate signal
-                        # Get the latest available data date (not system date to avoid future date issues)
-                        latest_data_date = df['DATE'].max()
-                        if isinstance(latest_data_date, pd.Timestamp):
-                            latest_data_date = latest_data_date.date()
-                        elif hasattr(latest_data_date, 'date'):
-                            latest_data_date = latest_data_date.date()
-                        
-                        # Use latest data date as entry date (not system date to avoid future dates)
-                        system_date = datetime.today().date()
-                        entry_date = latest_data_date
-                        
-                        # Validate entry_date is not in the future
-                        if entry_date > system_date:
-                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
-                            entry_date = latest_data_date
-                        
-                        # For live signals, ALWAYS use CURRENT market price as entry price
-                        # This ensures entry price matches what user would actually pay NOW
-                        # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
-                        live_price, price_source_name = get_live_price(sym)
-                        if live_price is not None:
-                            entry = live_price
-                            source_emojis = {
-                                'upstox': '🚀',
-                                'yfinance': '📈',
-                                'jugaad': '📊'
-                            }
-                            emoji = source_emojis.get(price_source_name, '💰')
-                            price_source = f"{emoji} {price_source_name.title()} Live Price"
-                            logger.info(f"✅ Using LIVE price from {price_source_name}: ₹{entry:.2f}")
-                        else:
-                            # Fallback to latest available close price from historical data
-                            entry = float(df["CLOSE"].iloc[-1])
-                            latest_date = df['DATE'].iloc[-1]
-                            if isinstance(latest_date, pd.Timestamp):
-                                latest_date_str = latest_date.strftime('%Y-%m-%d')
-                            else:
-                                latest_date_str = str(latest_date)
-                            price_source = f"📊 Latest Close ({latest_date_str})"
-                            logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
-                        
-                        # Entry date should be the next trading day after breakout
-                        if j + 1 < len(df):
-                            entry_date = df['DATE'].iat[j + 1]
-                            if isinstance(entry_date, pd.Timestamp):
-                                entry_date = entry_date.date()
-                            elif hasattr(entry_date, 'date'):
-                                entry_date = entry_date.date()
-                        else:
-                            # If no next day data, use latest available date
-                            entry_date = latest_data_date
-                        
-                        # Final validation: ensure entry_date is not in the future
-                        if entry_date > system_date:
-                            logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
-                            entry_date = latest_data_date
-                        
-                        logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
-                        logger.info(f"Breakout detected for {sym} at index {j}, date: {df['DATE'].iat[j]}")
-                        logger.info(f"Entry date: {entry_date} (validated), Entry price: ₹{entry:.2f}")
-                        
-                        # Grade-based stop loss: More appropriate for IPO volatility
-                        stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
-                        # Use actual entry date from dataframe
-                        date = entry_date
-                            
-                        # Create unique signal ID with type prefix
-                        sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}_{j}"
-                        if sid in existing: continue
-                        
-                        # Check if symbol already has active position (prevent duplicates)
-                        try:
-                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                            if not existing_positions.empty:
-                                active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-                                if sym in active_positions['symbol'].tolist():
-                                    logger.info(f"⏭️ Skipping {sym} - already has active position")
-                                    continue
-                        except:
-                            pass
-                        
-                        # Calculate target price using proper function based on consolidation pattern
-                        target = calculate_target_price(entry, low, high2, grade)
-                        
-                        # Ensure date is a string in YYYY-MM-DD format
-                        if isinstance(date, pd.Timestamp):
-                            date_str = date.strftime('%Y-%m-%d')
-                        elif hasattr(date, 'strftime'):
-                            date_str = date.strftime('%Y-%m-%d')
-                        else:
-                            date_str = str(date)
-                        
-                        row = {
-                            "signal_id": sid, "symbol": sym, "signal_date": date_str,
-                            "entry_price": entry, "grade": grade, "score": score,
-                            "stop_loss": stop, "target_price": target,
-                            "status": "ACTIVE", "exit_date": "", "exit_price": 0,
-                            "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION"
+                score = compute_grade_hybrid(df, j, w, avgv)
+                grade = assign_grade(score)
+                if grade == "D": continue
+                
+                # This is a LIVE pattern - generate signal
+                # Get the latest available data date (not system date to avoid future date issues)
+                latest_data_date = df['DATE'].max()
+                if isinstance(latest_data_date, pd.Timestamp):
+                    latest_data_date = latest_data_date.date()
+                elif hasattr(latest_data_date, 'date'):
+                    latest_data_date = latest_data_date.date()
+                
+                # Use latest data date as entry date (not system date to avoid future dates)
+                system_date = datetime.today().date()
+                entry_date = latest_data_date
+                
+                # Validate entry_date is not in the future
+                if entry_date > system_date:
+                    logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
+                    entry_date = latest_data_date
+                
+                # For live signals, ALWAYS use CURRENT market price as entry price
+                # This ensures entry price matches what user would actually pay NOW
+                # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
+                live_price, price_source_name = get_live_price(sym)
+                if live_price is not None:
+                    entry = live_price
+                    source_emojis = {
+                        'upstox': '🚀',
+                        'yfinance': '📈',
+                        'jugaad': '📊'
+                    }
+                    emoji = source_emojis.get(price_source_name, '💰')
+                    price_source = f"{emoji} {price_source_name.title()} Live Price"
+                    logger.info(f"✅ Using LIVE price from {price_source_name}: ₹{entry:.2f}")
+                else:
+                    # Fallback to latest available close price from historical data
+                    entry = float(df["CLOSE"].iloc[-1])
+                    latest_date = df['DATE'].iloc[-1]
+                    if isinstance(latest_date, pd.Timestamp):
+                        latest_date_str = latest_date.strftime('%Y-%m-%d')
+                    else:
+                        latest_date_str = str(latest_date)
+                    price_source = f"📊 Latest Close ({latest_date_str})"
+                    logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
+                
+                # Entry date should be the next trading day after breakout
+                if j + 1 < len(df):
+                    entry_date = df['DATE'].iat[j + 1]
+                    if isinstance(entry_date, pd.Timestamp):
+                        entry_date = entry_date.date()
+                    elif hasattr(entry_date, 'date'):
+                        entry_date = entry_date.date()
+                else:
+                    # If no next day data, use latest available date
+                    entry_date = latest_data_date
+                
+                # Final validation: ensure entry_date is not in the future
+                if entry_date > system_date:
+                    logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
+                    entry_date = latest_data_date
+                
+                logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
+                logger.info(f"Breakout detected for {sym} at index {j}, date: {df['DATE'].iat[j]}")
+                logger.info(f"Entry date: {entry_date} (validated), Entry price: ₹{entry:.2f}")
+                
+                # Grade-based stop loss: More appropriate for IPO volatility
+                stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
+                # Use actual entry date from dataframe
+                date = entry_date
+                
+                # Create unique signal ID with type prefix
+                sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}_{j}"
+                if sid in existing: continue
+                
+                # Check if symbol already has active position (prevent duplicates)
+                try:
+                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+                    if not existing_positions.empty:
+                        active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
+                        if sym in active_positions['symbol'].tolist():
+                            logger.info(f"⏭️ Skipping {sym} - already has active position")
+                            continue
+                except:
+                    pass
+                
+                # Calculate target price using proper function based on consolidation pattern
+                target = calculate_target_price(entry, low, high2, grade)
+                
+                # Ensure date is a string in YYYY-MM-DD format
+                if isinstance(date, pd.Timestamp):
+                    date_str = date.strftime('%Y-%m-%d')
+                elif hasattr(date, 'strftime'):
+                    date_str = date.strftime('%Y-%m-%d')
+                else:
+                    date_str = str(date)
+                
+                row = {
+                    "signal_id": sid, "symbol": sym, "signal_date": date_str,
+                    "entry_price": entry, "grade": grade, "score": score,
+                    "stop_loss": stop, "target_price": target,
+                    "status": "ACTIVE", "exit_date": "", "exit_price": 0,
+                    "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION"
+                }
+                
+                # Read existing signals and append new signal
+                try:
+                    existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+                    # Add signal_type column if it doesn't exist (for backward compatibility)
+                    if 'signal_type' not in existing_signals.columns:
+                        existing_signals['signal_type'] = 'UNKNOWN'
+                except (FileNotFoundError, pd.errors.EmptyDataError):
+                    existing_signals = pd.DataFrame()
+                
+                if existing_signals.empty:
+                    pd.DataFrame([row]).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+                else:
+                    pd.concat([existing_signals, pd.DataFrame([row])], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+                
+                pos = {
+                    "symbol": sym, "entry_date": date_str, "entry_price": entry,
+                    "grade": grade, "current_price": entry, "stop_loss": stop,
+                    "trailing_stop": stop, "pnl_pct": 0, "days_held": 0, "status": "ACTIVE"
+                }
+                
+                # Read existing positions and append new position
+                try:
+                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+                except (FileNotFoundError, pd.errors.EmptyDataError):
+                    existing_positions = pd.DataFrame()
+                
+                if existing_positions.empty:
+                    pd.DataFrame([pos]).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+                else:
+                    pd.concat([existing_positions, pd.DataFrame([pos])], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+                
+                # Calculate better target price based on pattern
+                target = calculate_target_price(entry, low, high2, grade)
+                
+                # Get data source from DataFrame
+                data_source = df.attrs.get('data_source', 'Unknown')
+                
+                # Get current/live price for verification (try to get fresh price)
+                current_price_display = entry
+                price_source_display = price_source
+                try:
+                    live_check, live_source = get_live_price(sym)
+                    if live_check is not None:
+                        current_price_display = live_check
+                        source_emojis = {
+                            'upstox': '🚀',
+                            'yfinance': '📈',
+                            'jugaad': '📊'
                         }
-                        
-                        # Read existing signals and append new signal
-                        try:
-                            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-                            # Add signal_type column if it doesn't exist (for backward compatibility)
-                            if 'signal_type' not in existing_signals.columns:
-                                existing_signals['signal_type'] = 'UNKNOWN'
-                        except (FileNotFoundError, pd.errors.EmptyDataError):
-                            existing_signals = pd.DataFrame()
-                        
-                        if existing_signals.empty:
-                            pd.DataFrame([row]).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                        else:
-                            pd.concat([existing_signals, pd.DataFrame([row])], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                        
-                        pos = {
-                            "symbol": sym, "entry_date": date_str, "entry_price": entry,
-                            "grade": grade, "current_price": entry, "stop_loss": stop,
-                            "trailing_stop": stop, "pnl_pct": 0, "days_held": 0, "status": "ACTIVE"
-                        }
-                        
-                        # Read existing positions and append new position
-                        try:
-                            existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                        except (FileNotFoundError, pd.errors.EmptyDataError):
-                            existing_positions = pd.DataFrame()
-                        
-                        if existing_positions.empty:
-                            pd.DataFrame([pos]).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                        else:
-                            pd.concat([existing_positions, pd.DataFrame([pos])], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                        
-                        # Calculate better target price based on pattern
-                        target = calculate_target_price(entry, low, high2, grade)
-                        
-                        # Get data source from DataFrame
-                        data_source = df.attrs.get('data_source', 'Unknown')
-                        
-                        # Get current/live price for verification (try to get fresh price)
-                        current_price_display = entry
-                        price_source_display = price_source
-                        try:
-                            live_check, live_source = get_live_price(sym)
-                            if live_check is not None:
-                                current_price_display = live_check
-                                source_emojis = {
-                                    'upstox': '🚀',
-                                    'yfinance': '📈',
-                                    'jugaad': '📊'
-                                }
-                                emoji = source_emojis.get(live_source, '💰')
-                                price_source_display = f"{emoji} Live: ₹{live_check:.2f} | {price_source}"
-                        except:
-                            pass
-                        
-                        # Send detailed signal alert with type
-                        signal_msg = format_signal_alert(
-                            sym, grade, entry, stop, target, score, date_str,
-                            consolidation_low=low, consolidation_high=high2, breakout_price=entry,
-                            data_source=data_source, current_price=current_price_display, price_source=price_source_display
-                        )
-                        # Add signal type to alert
-                        signal_msg = signal_msg.replace("🎯 <b>IPO BREAKOUT SIGNAL</b>", 
-                                                       "🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>\n\n📋 <b>Signal Type:</b> Consolidation-Based Breakout")
-                        send_telegram(signal_msg)
-                        signals_found += 1
-                        logger.info(f"🎯 Signal found: {sym} - {grade} grade at {entry}")
-                        
-                        # Mark this symbol as processed today to prevent duplicates
-                        processed_today.add(today_key)
-                        break
+                        emoji = source_emojis.get(live_source, '💰')
+                        price_source_display = f"{emoji} Live: ₹{live_check:.2f} | {price_source}"
+                except:
+                    pass
+                
+                # Send detailed signal alert with type
+                signal_msg = format_signal_alert(
+                    sym, grade, entry, stop, target, score, date_str,
+                    consolidation_low=low, consolidation_high=high2, breakout_price=entry,
+                    data_source=data_source, current_price=current_price_display, price_source=price_source_display
+                )
+                # Add signal type to alert
+                signal_msg = signal_msg.replace("🎯 <b>IPO BREAKOUT SIGNAL</b>", 
+                                               "🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>\n\n📋 <b>Signal Type:</b> Consolidation-Based Breakout")
+                send_telegram(signal_msg)
+                signals_found += 1
+                logger.info(f"🎯 Signal found: {sym} - {grade} grade at {entry}")
+                
+                # Mark this symbol as processed today to prevent duplicates
+                processed_today.add(today_key)
                 break
+            break
     
     logger.info(f"📊 Scan complete: {signals_found} signals found from {symbols_processed} symbols processed")
     

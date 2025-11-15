@@ -1,3 +1,1 @@
 signal_id,symbol,signal_date,entry_price,grade,score,stop_loss,target_price,status,exit_date,exit_price,pnl_pct,days_held,signal_type
-CONSOL_BORANA_20251113_40_117_LIVE,BORANA,2025-11-13,272.7,C,1,239.98,299.97,ACTIVE,,0,0,0,CONSOLIDATION
-CONSOL_GCSL_20251113_40_47_LIVE,GCSL,2025-11-13,382.5,B,2,344.25,489.5,ACTIVE,,0,0,0,CONSOLIDATION

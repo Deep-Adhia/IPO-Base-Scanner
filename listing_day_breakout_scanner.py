@@ -234,7 +234,7 @@ def check_listing_day_breakout(symbol, listing_info):
         
         # Get latest data from historical
         latest = df.iloc[-1]
-        current_high = float(latest['HIGH'])
+        historical_high = float(latest['HIGH'])
         current_volume = float(latest['VOLUME'])
         current_date = latest['DATE']
         
@@ -250,22 +250,25 @@ def check_listing_day_breakout(symbol, listing_info):
         today_date = datetime.today().date()
         days_old = (today_date - latest_date).days
         
-        # Try to get live price first (more accurate for breakout detection)
+        # CRITICAL: Get LIVE price FIRST for accurate breakout detection
         current_price = None
+        current_high = None
         price_source = "Historical Close"
         
         try:
             live_price, live_source = get_live_price(symbol)
             if live_price is not None and live_price > 0:
                 current_price = live_price
+                current_high = live_price  # Use live price as current high for breakout detection
                 price_source = f"Live ({live_source})"
-                logger.info(f"✅ Using live price for {symbol}: ₹{current_price:.2f} from {live_source}")
+                logger.info(f"✅ Using live price for {symbol} breakout detection: ₹{current_price:.2f} from {live_source}")
         except Exception as e:
             logger.debug(f"Could not get live price for {symbol}: {e}")
         
-        # Fallback to historical close if live price unavailable
+        # Fallback to historical data if live price unavailable
         if current_price is None:
             current_price = float(latest['CLOSE'])
+            current_high = historical_high  # Use historical high
             price_source = f"Historical Close ({latest_date.strftime('%Y-%m-%d')})"
             
             # Warn if data is stale
@@ -276,12 +279,11 @@ def check_listing_day_breakout(symbol, listing_info):
             else:
                 logger.info(f"⚠️ Using yesterday's close for {symbol}: ₹{current_price:.2f} (market may be closed)")
         
-        # For breakout detection, also check live high if available
-        # Use the higher of historical high or live price (if live price > historical high)
-        if current_price is not None and current_price > current_high:
-            # Live price is higher than historical high, use it for breakout check
-            current_high = current_price
-            logger.info(f"📈 Live price ({current_price:.2f}) is higher than historical high ({float(latest['HIGH']):.2f}), using live price for breakout check")
+        # Log breakout level comparison
+        logger.info(f"📊 {symbol} Breakout Level Check:")
+        logger.info(f"   Listing Day High: ₹{listing_day_high:.2f}")
+        logger.info(f"   Current High: ₹{current_high:.2f} ({price_source})")
+        logger.info(f"   Breakout Required: Current High > ₹{listing_day_high:.2f}")
         
         # Calculate average volume (last 10 days excluding listing day)
         if len(df) > 1:
