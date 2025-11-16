@@ -61,9 +61,17 @@ jobs:
           python -m pip install --upgrade pip
           # Clear pip cache to ensure fresh dependency resolution
           pip cache purge || true
+          # Install beautifulsoup4 first to satisfy both jugaad-data and yfinance
+          echo "📦 Installing beautifulsoup4==4.9.3 first..."
+          pip install beautifulsoup4==4.9.3
+          # Install main dependencies
+          echo "📦 Installing main dependencies..."
           pip install -r requirements.txt
+          # Install jugaad-data separately to avoid dependency resolver conflicts
+          echo "📦 Installing jugaad-data..."
+          pip install "jugaad-data>=0.27,<0.28"
           echo "✅ Dependencies installed - NO TA-Lib (removed from requirements.txt)"
-          echo "✅ beautifulsoup4==4.9.3 explicitly specified to resolve dependency conflict"
+          echo "✅ beautifulsoup4==4.9.3 installed first to resolve dependency conflict"
       
       - name: Show workflow mode and timing
         run: |
