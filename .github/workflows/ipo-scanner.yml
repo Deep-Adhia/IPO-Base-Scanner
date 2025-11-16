@@ -40,31 +40,6 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Install TA-Lib
-        run: |
-          if python -c "import talib" 2>/dev/null; then
-            echo "✅ TA-Lib already available"
-            exit 0
-          fi
-          
-          echo "Installing TA-Lib dependencies..."
-          sudo apt-get update
-          sudo apt-get install -y build-essential wget
-          
-          echo "Downloading and building TA-Lib from source..."
-          wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-          tar -xzf ta-lib-0.4.0-src.tar.gz
-          cd ta-lib/
-          ./configure --prefix=/usr/local
-          make
-          sudo make install
-          sudo ldconfig
-          
-          echo "Installing Python TA-Lib package..."
-          pip install TA-Lib
-          
-          echo "✅ TA-Lib built and installed successfully"
-      
       - name: Clean up old Python caches
         run: |
           echo "Cleaning up old Python cache directories..."
