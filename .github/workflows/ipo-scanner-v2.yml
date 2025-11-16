@@ -1,7 +1,7 @@
-name: IPO Scanner v2 (Consolidation-Based)
+name: IPO Scanner v2 (Consolidation-Based) - TEST
 
 on:
-  # COMMENTED OUT - TESTING NEW WORKFLOW FILE (ipo-scanner-v2.yml)
+  # COMMENTED OUT OLD SCHEDULE - TESTING NEW FILE
   # schedule:
   #   - cron: '45 08 * * 1-5'   # Daily scan: 2:15 PM IST (8:45 AM UTC) - Weekdays only
   #   - cron: '15 09 * * 0'     # Weekly summary: Sunday 2:45 PM IST (9:15 AM UTC)
@@ -30,7 +30,7 @@ on:
           - development
 
 jobs:
-  run-scanner:
+  run-scanner-v2:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || 'production' }}
     steps:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: pip-${{ runner.os }}-v1-${{ hashFiles('requirements.txt') }}
+          key: pip-${{ runner.os }}-v2-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             pip-${{ runner.os }}-
       
@@ -60,11 +60,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          echo "✅ Dependencies installed - NO TA-Lib (removed from requirements.txt)"
       
       - name: Show workflow mode and timing
         run: |
           echo "🚀 =========================================="
-          echo "🚀 IPO Scanner Workflow Started"
+          echo "🚀 IPO Scanner Workflow v2 Started (TEST)"
           echo "🚀 =========================================="
           echo "📅 Current UTC: $(date -u +%Y-%m-%d\ %H:%M:%S)"
           echo "📅 Current IST: $(TZ='Asia/Kolkata' date +%Y-%m-%d\ %H:%M:%S)"
@@ -194,7 +195,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ipo-data-${{ github.run_number }}
+          name: ipo-data-v2-${{ github.run_number }}
           path: |
             ipo_signals.csv
             ipo_positions.csv
@@ -223,9 +224,10 @@ jobs:
             if git diff --staged --quiet; then
               echo "No changes to commit"
             else
-              git commit -m "Update IPO data - ${{ github.run_number }} [skip ci]"
+              git commit -m "Update IPO data v2 - ${{ github.run_number }} [skip ci]"
               git push
             fi
           else
             echo "No CSV files found to commit"
           fi
+
