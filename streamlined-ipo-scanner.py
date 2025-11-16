@@ -1937,6 +1937,7 @@ def stop_loss_update_scan():
             # Get current price - prefer LIVE price, fallback to latest historical close
             current_price = None
             price_source = "Historical Close"
+            current_data = None
             
             # Try to get live price first (more accurate for exit decisions)
             try:
@@ -1951,11 +1952,11 @@ def stop_loss_update_scan():
             # Fallback to historical data if live price unavailable
             if current_price is None:
                 current_data = fetch_data(sym, fetch_start_date)
-            if current_data is None or current_data.empty:
-                logger.warning(f"Could not fetch data for {sym}")
-                failed_updates.append(sym)
-                # Send alert for failed update
-                failed_msg = f"""⚠️ <b>Position Update Failed</b>
+                if current_data is None or current_data.empty:
+                    logger.warning(f"Could not fetch data for {sym}")
+                    failed_updates.append(sym)
+                    # Send alert for failed update
+                    failed_msg = f"""⚠️ <b>Position Update Failed</b>
 
 📊 Symbol: <b>{sym}</b>
 ❌ Could not fetch current data
@@ -1963,8 +1964,8 @@ def stop_loss_update_scan():
 💰 Last Known Price: ₹{pos.get('current_price', pos['entry_price']):,.2f}
 
 ⏰ Scan Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}"""
-                send_telegram(failed_msg)
-                continue
+                    send_telegram(failed_msg)
+                    continue
                 
                 # Get latest date from historical data
                 latest_date = current_data['DATE'].iloc[-1]

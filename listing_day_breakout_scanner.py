@@ -43,6 +43,10 @@ SIGNALS_CSV = "ipo_signals.csv"
 POSITIONS_CSV = "ipo_positions.csv"
 RECENT_IPO_CSV = "recent_ipo_symbols.csv"
 MIN_VOLUME_MULTIPLIER = 1.5  # Minimum volume spike for breakout confirmation
+MAX_ENTRY_ABOVE_HIGH_PCT = 5.0  # Maximum % above listing high for entry (prevents late entries - stricter)
+MIN_RISK_REWARD = 1.0  # Minimum risk/reward ratio (1:1 minimum)
+STOP_LOSS_PCT = 8.0  # Fixed stop loss % below entry (8%)
+MIN_VOLUME_VS_LISTING_DAY = 1.2  # Minimum current volume vs listing day volume (1.2x = 20% higher)
 
 def initialize_listing_data_csv():
     """Initialize listing data CSV if it doesn't exist"""
@@ -309,18 +313,27 @@ def check_listing_day_breakout(symbol, listing_info):
         if is_breakout and volume_spike:
             # Calculate entry, stop loss, and target
             entry_price = current_price  # Use current price as entry
-            stop_loss = listing_day_low  # Listing day low as stop loss
             
-            # Target: Based on listing day range
+            # CRITICAL FIX: Calculate target based on ENTRY price, not listing day high
+            # This ensures target is always above entry price
             listing_range = listing_day_high - listing_day_low
-            target_price = listing_day_high + (listing_range * 0.5)  # 50% above listing day high
+            listing_range_pct = (listing_range / listing_day_high * 100) if listing_day_high > 0 else 0
             
-            # Risk/Reward
-            risk = entry_price - stop_loss
-            reward = target_price - entry_price
-            risk_reward = reward / risk if risk > 0 else 0
+            # Note: Listing day range is not used for rejection - listing day low is last support level
+            # Stop loss is purely percentage-based (8% below entry), not based on listing day low
             
-            # Calculate days since listing
+            # Calculate how far above listing high the entry is
+            entry_above_high = entry_price - listing_day_high
+            entry_above_high_pct = (entry_above_high / listing_day_high * 100) if listing_day_high > 0 else 0
+            
+            # FILTER 2: Only generate signals if entry is within reasonable distance of listing high
+            # This prevents generating signals when breakout happened long ago
+            if entry_above_high_pct > MAX_ENTRY_ABOVE_HIGH_PCT:
+                logger.info(f"⏭️ Skipping {symbol}: Entry (₹{entry_price:.2f}) is {entry_above_high_pct:.1f}% above listing high (₹{listing_day_high:.2f}) - too far from breakout level, no point entering now")
+                return None
+            
+            # Calculate days since listing (for display/information only - no filter)
+            # Some IPOs correct for months before breaking listing day high - this is still valid
             today_date = datetime.today().date()
             if isinstance(listing_date, str):
                 listing_date_obj = pd.to_datetime(listing_date).date()
@@ -330,6 +343,63 @@ def check_listing_day_breakout(symbol, listing_info):
                 listing_date_obj = listing_date
             
             days_since_listing = (today_date - listing_date_obj).days
+            # No time filter - IPOs that correct for months and then break listing day high are valid
+            
+            # FILTER 3: Volume confirmation - current volume should be elevated vs listing day
+            volume_vs_listing_day = current_volume / listing_day_volume if listing_day_volume > 0 else 0
+            if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
+                logger.info(f"⏭️ Skipping {symbol}: Current volume ({current_volume:,.0f}) is only {volume_vs_listing_day:.1f}x listing day volume (min: {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - insufficient volume confirmation")
+                return None
+            
+            # CRITICAL FIX: Stop loss is 8% below entry (fixed percentage, NOT based on listing day low)
+            # Listing day low is the last support level (reference only), but stop loss is purely entry-based
+            # Always use 8% below entry regardless of entry distance from listing high
+            stop_loss_pct = 0.08  # Fixed 8% below entry
+            
+            # Calculate stop loss purely based on entry price percentage
+            stop_loss = entry_price * (1 - stop_loss_pct)
+            stop_loss_pct_below_entry = stop_loss_pct * 100
+            
+            logger.info(f"📊 {symbol} Stop Loss: Using 8% below entry (₹{stop_loss:.2f})")
+            logger.info(f"   Entry: ₹{entry_price:.2f}")
+            logger.info(f"   Listing Day High: ₹{listing_day_high:.2f} (Entry is {entry_above_high_pct:.1f}% above)")
+            logger.info(f"   Listing Day Low: ₹{listing_day_low:.2f} (Last support level - reference only)")
+            logger.info(f"   Listing Day Range: {listing_range_pct:.1f}% (High-Low spread)")
+            logger.info(f"   Selected Stop: ₹{stop_loss:.2f} (8% below entry)")
+            logger.info(f"   Days Since Listing: {days_since_listing} days ({'Fresh' if days_since_listing <= 5 else 'Moderate' if days_since_listing <= 15 else 'Mature'})")
+            logger.info(f"   Volume Confirmation: {volume_vs_listing_day:.1f}x listing day volume ✅")
+            
+            # Target calculation: Use entry price + percentage of listing range
+            # This ensures target is always above entry
+            # Use 50-100% of listing range as target, depending on how close entry is to listing high
+            if entry_above_high_pct <= 2.0:
+                # Entry is very close to listing high - use larger target (100% of range)
+                target_multiplier = 1.0
+            elif entry_above_high_pct <= 5.0:
+                # Entry is moderately above - use medium target (75% of range)
+                target_multiplier = 0.75
+            else:
+                # Entry is further above - use smaller target (50% of range)
+                target_multiplier = 0.5
+            
+            target_price = entry_price + (listing_range * target_multiplier)
+            
+            # Risk/Reward
+            risk = entry_price - stop_loss
+            reward = target_price - entry_price
+            risk_reward = reward / risk if risk > 0 else 0
+            
+            # FILTER: Minimum risk/reward ratio (reward must be at least equal to risk)
+            if risk_reward < MIN_RISK_REWARD:
+                logger.info(f"⏭️ Skipping {symbol}: Risk/Reward ratio ({risk_reward:.2f}) is below minimum ({MIN_RISK_REWARD:.1f})")
+                return None
+            
+            # Validation: Risk should be exactly 8% (since stop loss is fixed at 8%)
+            risk_pct = (risk / entry_price * 100) if entry_price > 0 else 0
+            if abs(risk_pct - STOP_LOSS_PCT) > 0.1:  # Allow small floating point differences
+                logger.warning(f"⚠️ {symbol}: Risk ({risk_pct:.1f}%) doesn't match expected stop loss ({STOP_LOSS_PCT:.1f}%) - unexpected")
+            
+            # Days since listing already calculated above
             
             # Calculate gain from listing day close
             gain_from_listing_close = ((current_price - listing_day_close) / listing_day_close * 100) if listing_day_close > 0 else 0
@@ -346,12 +416,16 @@ def check_listing_day_breakout(symbol, listing_info):
                 'stop_loss': round(stop_loss, 2),
                 'target_price': round(target_price, 2),
                 'volume_spike': round(current_volume / avg_volume, 2),
+                'volume_vs_listing_day': round(volume_vs_listing_day, 2),
+                'listing_range_pct': round(listing_range_pct, 2),
                 'risk_reward': round(risk_reward, 2),
                 'breakout_date': current_date,
                 'breakout_conditions': ' | '.join(breakout_conditions),
                 'price_source': price_source,
                 'days_since_listing': days_since_listing,
                 'gain_from_listing_close': round(gain_from_listing_close, 2),
+                'entry_above_high_pct': round(entry_above_high_pct, 2),
+                'target_multiplier': round(target_multiplier, 2),
                 'last_updated': last_updated
             }
         
@@ -378,8 +452,26 @@ def format_listing_breakout_alert(breakout_data):
     days_since_listing = breakout_data.get('days_since_listing', 0)
     gain_from_listing = breakout_data.get('gain_from_listing_close', 0)
     price_source = breakout_data.get('price_source', 'Historical Close')
+    entry_above_high_pct = breakout_data.get('entry_above_high_pct', 0)
+    target_multiplier = breakout_data.get('target_multiplier', 0.5)
+    volume_vs_listing_day = breakout_data.get('volume_vs_listing_day', 0)
+    listing_range_pct = breakout_data.get('listing_range_pct', 0)
     last_updated = breakout_data.get('last_updated', 'N/A')
     breakout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Determine freshness based on days since listing
+    if days_since_listing <= 5:
+        freshness = "🟢 Very Fresh"
+        freshness_desc = "Fresh breakout - early stage"
+    elif days_since_listing <= 30:
+        freshness = "🟡 Moderate"
+        freshness_desc = "Moderate - correction phase"
+    elif days_since_listing <= 90:
+        freshness = "🟠 Mature"
+        freshness_desc = "Mature - extended correction"
+    else:
+        freshness = "🔴 Extended"
+        freshness_desc = "Extended correction - breaking out after months"
     
     # Format listing date
     listing_date = breakout_data['listing_date']
@@ -400,16 +492,17 @@ def format_listing_breakout_alert(breakout_data):
 
 ⏰ <b>Timing Information:</b>
 • Listing Date: {listing_date_str}
-• Days Since Listing: {days_since_listing} days
+• Days Since Listing: {days_since_listing} days {freshness}
+• Freshness: {freshness_desc}
 • Base Time (Data Captured): {last_updated}
 • Breakout Detected: {breakout_time}
 
 💰 <b>Entry Details:</b>
 • Current Price: ₹{current_price:,.2f} ({price_source})
-• Entry: ₹{entry:,.2f}
-• Stop Loss: ₹{stop:,.2f} (Listing Day Low)
-• Target: ₹{target:,.2f}
-• Risk:Reward: 1:{rr:.1f}
+• Entry: ₹{entry:,.2f} ({entry_above_high_pct:+.1f}% above listing high)
+• Stop Loss: ₹{stop:,.2f} (8% below entry)
+• Target: ₹{target:,.2f} (Entry + {target_multiplier*100:.0f}% of listing range)
+• Risk:Reward: 1:{rr:.1f} ✅
 
 📈 <b>Listing Day Metrics:</b>
 • Listing Day High: ₹{listing_high:,.2f}
@@ -419,7 +512,9 @@ def format_listing_breakout_alert(breakout_data):
 • {gain_emoji} Gain from Listing Close: {gain_from_listing:+.2f}%
 
 📊 <b>Breakout Confirmation:</b>
-• Volume Spike: {vol_spike:.1f}x
+• Volume Spike: {vol_spike:.1f}x (vs recent average)
+• Volume vs Listing Day: {volume_vs_listing_day:.1f}x ✅
+• Listing Day Range: {listing_range_pct:.1f}% (High-Low spread)
 • {conditions}
 
 ⚠️ <b>Action Required:</b> Enter position - Listing day high broken with volume!"""

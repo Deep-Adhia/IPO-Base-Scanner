@@ -1,1 +1,2 @@
 signal_id,symbol,signal_date,entry_price,grade,score,stop_loss,target_price,status,exit_date,exit_price,pnl_pct,days_held,signal_type
+CONSOL_MIDWESTLTD_20251114_5_14_LIVE,MIDWESTLTD,2025-11-14,1160.0,C,1,1020.8,1293.42,ACTIVE,,0,0,0,CONSOLIDATION

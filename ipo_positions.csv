@@ -1,1 +1,2 @@
-symbol,entry_date,entry_price,grade,current_price,stop_loss,trailing_stop,pnl_pct,days_held,status,exit_date,exit_price
+symbol,entry_date,entry_price,grade,current_price,stop_loss,trailing_stop,pnl_pct,days_held,status
+MIDWESTLTD,2025-11-14,1160.0,C,1160.0,1020.8,1020.8,0,2,ACTIVE
