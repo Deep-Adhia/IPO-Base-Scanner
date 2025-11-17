@@ -258,7 +258,7 @@ def fetch_intraday_data(symbol, interval=INTRADAY_INTERVAL):
         return df
     
     logger.warning(f"⚠️ Could not fetch intraday data for {symbol} from any source")
-    return None
+        return None
 
 def compute_rsi(close, period=14):
     """Calculate RSI"""
@@ -321,6 +321,7 @@ def detect_intraday_breakout(df, symbol):
         else:
             current_price = float(recent_df['CLOSE'].iloc[-1])
             current_high = float(recent_df['HIGH'].iloc[-1])
+            live_source = "Historical"  # Ensure source is set to Historical when using historical data
             logger.warning(f"⚠️ Using historical price for {symbol}: ₹{current_price:.2f}")
         
         # Breakout conditions:
@@ -411,11 +412,21 @@ def format_intraday_alert(breakout_data):
     vol_spike = breakout_data['volume_spike']
     rr = breakout_data['risk_reward']
     strength = breakout_data['breakout_strength']
+    price_source = breakout_data.get('price_source', 'Historical')
+    
+    # Add emoji for price source
+    source_emojis = {
+        'upstox': '🚀',
+        'yfinance': '📈',
+        'jugaad': '📊',
+        'Historical': '📊'
+    }
+    emoji = source_emojis.get(price_source.lower(), '💰')
     
     msg = f"""⚡ <b>INTRADAY BREAKOUT DETECTED</b>
 
 📊 Symbol: <b>{symbol}</b>
-💰 Current Price: ₹{current:,.2f}
+💰 Current Price: ₹{current:,.2f} ({emoji} {price_source})
 🎯 Entry: ₹{entry:,.2f}
 🛑 Stop Loss: ₹{stop:,.2f}
 📈 Target: ₹{target:,.2f}
