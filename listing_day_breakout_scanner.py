@@ -299,16 +299,22 @@ def check_listing_day_breakout(symbol, listing_info):
         # Check for breakout
         is_breakout = False
         breakout_conditions = []
+        rejection_reason = None
         
         # Condition 1: Price breaks listing day high
         if current_high > listing_day_high:
             is_breakout = True
             breakout_conditions.append(f"Price broke listing day high ({current_high:.2f} > {listing_day_high:.2f})")
+        else:
+            rejection_reason = f"Price ({current_high:.2f}) below listing day high ({listing_day_high:.2f})"
         
         # Condition 2: Volume confirmation
         volume_spike = current_volume >= avg_volume * MIN_VOLUME_MULTIPLIER
         if volume_spike:
             breakout_conditions.append(f"Volume spike ({current_volume:,.0f} vs avg {avg_volume:,.0f})")
+        elif is_breakout:
+            # Price broke but volume insufficient
+            rejection_reason = f"Price broke high but volume insufficient ({current_volume:,.0f} vs avg {avg_volume:,.0f}, need {MIN_VOLUME_MULTIPLIER}x)"
         
         if is_breakout and volume_spike:
             # Calculate entry, stop loss, and target
@@ -329,7 +335,8 @@ def check_listing_day_breakout(symbol, listing_info):
             # FILTER 2: Only generate signals if entry is within reasonable distance of listing high
             # This prevents generating signals when breakout happened long ago
             if entry_above_high_pct > MAX_ENTRY_ABOVE_HIGH_PCT:
-                logger.info(f"⏭️ Skipping {symbol}: Entry (₹{entry_price:.2f}) is {entry_above_high_pct:.1f}% above listing high (₹{listing_day_high:.2f}) - too far from breakout level, no point entering now")
+                rejection_reason = f"Entry ({entry_price:.2f}) is {entry_above_high_pct:.1f}% above listing high ({listing_day_high:.2f}) - too far from breakout level"
+                logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
                 return None
             
             # Calculate days since listing (for display/information only - no filter)
@@ -348,6 +355,7 @@ def check_listing_day_breakout(symbol, listing_info):
             # FILTER 3: Volume confirmation - current volume should be elevated vs listing day
             volume_vs_listing_day = current_volume / listing_day_volume if listing_day_volume > 0 else 0
             if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
+                rejection_reason = f"Volume vs listing day insufficient ({volume_vs_listing_day:.1f}x, need {MIN_VOLUME_VS_LISTING_DAY:.1f}x)"
                 logger.info(f"⏭️ Skipping {symbol}: Current volume ({current_volume:,.0f}) is only {volume_vs_listing_day:.1f}x listing day volume (min: {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - insufficient volume confirmation")
                 return None
             
@@ -391,6 +399,7 @@ def check_listing_day_breakout(symbol, listing_info):
             
             # FILTER: Minimum risk/reward ratio (reward must be at least equal to risk)
             if risk_reward < MIN_RISK_REWARD:
+                rejection_reason = f"Risk/Reward ratio ({risk_reward:.2f}) below minimum ({MIN_RISK_REWARD:.1f})"
                 logger.info(f"⏭️ Skipping {symbol}: Risk/Reward ratio ({risk_reward:.2f}) is below minimum ({MIN_RISK_REWARD:.1f})")
                 return None
             
@@ -428,6 +437,10 @@ def check_listing_day_breakout(symbol, listing_info):
                 'target_multiplier': round(target_multiplier, 2),
                 'last_updated': last_updated
             }
+        
+        # Log rejection reason if available
+        if rejection_reason:
+            logger.info(f"⏭️ {symbol}: Breakout rejected - {rejection_reason}")
         
         return None
     
@@ -720,7 +733,8 @@ def scan_listing_day_breakouts():
                 # Small delay
                 time.sleep(0.5)
             else:
-                logger.info(f"✅ {symbol}: No breakout yet (Current price below listing day high)")
+                # Breakout was checked but not confirmed - rejection reason already logged in check_listing_day_breakout
+                pass
             
             # Rate limiting
             time.sleep(0.3)
