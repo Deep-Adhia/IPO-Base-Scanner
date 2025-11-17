@@ -300,6 +300,7 @@ def check_listing_day_breakout(symbol, listing_info):
         is_breakout = False
         breakout_conditions = []
         rejection_reason = None
+        volume_warnings = []  # Track volume-related warnings
         
         # Condition 1: Price breaks listing day high
         if current_high > listing_day_high:
@@ -308,15 +309,16 @@ def check_listing_day_breakout(symbol, listing_info):
         else:
             rejection_reason = f"Price ({current_high:.2f}) below listing day high ({listing_day_high:.2f})"
         
-        # Condition 2: Volume confirmation
+        # Condition 2: Volume confirmation (now a warning, not a rejection)
         volume_spike = current_volume >= avg_volume * MIN_VOLUME_MULTIPLIER
         if volume_spike:
             breakout_conditions.append(f"Volume spike ({current_volume:,.0f} vs avg {avg_volume:,.0f})")
         elif is_breakout:
-            # Price broke but volume insufficient
-            rejection_reason = f"Price broke high but volume insufficient ({current_volume:,.0f} vs avg {avg_volume:,.0f}, need {MIN_VOLUME_MULTIPLIER}x)"
+            # Price broke but volume insufficient - add warning instead of rejecting
+            volume_warnings.append(f"Low volume spike: {current_volume:,.0f} vs avg {avg_volume:,.0f} (need {MIN_VOLUME_MULTIPLIER}x)")
         
-        if is_breakout and volume_spike:
+        # Proceed if price broke listing day high (regardless of volume)
+        if is_breakout:
             # Calculate entry, stop loss, and target
             entry_price = current_price  # Use current price as entry
             
@@ -352,12 +354,12 @@ def check_listing_day_breakout(symbol, listing_info):
             days_since_listing = (today_date - listing_date_obj).days
             # No time filter - IPOs that correct for months and then break listing day high are valid
             
-            # FILTER 3: Volume confirmation - current volume should be elevated vs listing day
+            # Check volume vs listing day (now a warning, not a rejection)
             volume_vs_listing_day = current_volume / listing_day_volume if listing_day_volume > 0 else 0
             if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
-                rejection_reason = f"Volume vs listing day insufficient ({volume_vs_listing_day:.1f}x, need {MIN_VOLUME_VS_LISTING_DAY:.1f}x)"
-                logger.info(f"⏭️ Skipping {symbol}: Current volume ({current_volume:,.0f}) is only {volume_vs_listing_day:.1f}x listing day volume (min: {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - insufficient volume confirmation")
-                return None
+                # Add warning instead of rejecting
+                volume_warnings.append(f"Low volume vs listing day: {volume_vs_listing_day:.1f}x (need {MIN_VOLUME_VS_LISTING_DAY:.1f}x)")
+                logger.warning(f"⚠️ {symbol}: Low volume vs listing day ({volume_vs_listing_day:.1f}x, need {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - sending signal with caution")
             
             # CRITICAL FIX: Stop loss is 8% below entry (fixed percentage, NOT based on listing day low)
             # Listing day low is the last support level (reference only), but stop loss is purely entry-based
@@ -375,7 +377,10 @@ def check_listing_day_breakout(symbol, listing_info):
             logger.info(f"   Listing Day Range: {listing_range_pct:.1f}% (High-Low spread)")
             logger.info(f"   Selected Stop: ₹{stop_loss:.2f} (8% below entry)")
             logger.info(f"   Days Since Listing: {days_since_listing} days ({'Fresh' if days_since_listing <= 5 else 'Moderate' if days_since_listing <= 15 else 'Mature'})")
-            logger.info(f"   Volume Confirmation: {volume_vs_listing_day:.1f}x listing day volume ✅")
+            if volume_warnings:
+                logger.warning(f"   ⚠️ Volume Warnings: {'; '.join(volume_warnings)}")
+            else:
+                logger.info(f"   Volume Confirmation: {volume_vs_listing_day:.1f}x listing day volume ✅")
             
             # Target calculation: Use entry price + percentage of listing range
             # This ensures target is always above entry
@@ -435,7 +440,9 @@ def check_listing_day_breakout(symbol, listing_info):
                 'gain_from_listing_close': round(gain_from_listing_close, 2),
                 'entry_above_high_pct': round(entry_above_high_pct, 2),
                 'target_multiplier': round(target_multiplier, 2),
-                'last_updated': last_updated
+                'last_updated': last_updated,
+                'volume_warnings': volume_warnings,  # Add volume warnings to breakout data
+                'has_volume_caution': len(volume_warnings) > 0  # Flag for easy checking
             }
         
         # Log rejection reason if available
@@ -471,6 +478,8 @@ def format_listing_breakout_alert(breakout_data):
     listing_range_pct = breakout_data.get('listing_range_pct', 0)
     last_updated = breakout_data.get('last_updated', 'N/A')
     breakout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    volume_warnings = breakout_data.get('volume_warnings', [])
+    has_volume_caution = breakout_data.get('has_volume_caution', False)
     
     # Determine freshness based on days since listing
     if days_since_listing <= 5:
@@ -526,11 +535,22 @@ def format_listing_breakout_alert(breakout_data):
 
 📊 <b>Breakout Confirmation:</b>
 • Volume Spike: {vol_spike:.1f}x (vs recent average)
-• Volume vs Listing Day: {volume_vs_listing_day:.1f}x ✅
+• Volume vs Listing Day: {volume_vs_listing_day:.1f}x {'✅' if not has_volume_caution else '⚠️'}
 • Listing Day Range: {listing_range_pct:.1f}% (High-Low spread)
-• {conditions}
+• {conditions}"""
 
-⚠️ <b>Action Required:</b> Enter position - Listing day high broken with volume!"""
+    # Add volume caution section if warnings exist
+    if has_volume_caution and volume_warnings:
+        msg += f"""
+
+⚠️ <b>VOLUME CAUTION:</b>
+• {' | '.join(volume_warnings)}
+• Signal sent for tracking - volume filters disabled for analysis
+• Review performance after 1-2 months to validate volume filter effectiveness"""
+
+    msg += f"""
+
+⚠️ <b>Action Required:</b> Enter position - Listing day high broken!"""
     
     return msg
 
@@ -546,6 +566,9 @@ def save_breakout_signal(breakout_data):
             # Add signal_type column if it doesn't exist (for backward compatibility)
             if 'signal_type' not in existing_signals.columns:
                 existing_signals['signal_type'] = 'UNKNOWN'
+            # Add notes column if it doesn't exist
+            if 'notes' not in existing_signals.columns:
+                existing_signals['notes'] = ''
             # Check if we already have a listing day breakout signal for this symbol today
             today_signals = existing_signals[
                 (existing_signals['symbol'] == breakout_data['symbol']) &
@@ -571,13 +594,19 @@ def save_breakout_signal(breakout_data):
             pass
         
         # Create new signal
+        # Add note about volume caution if applicable
+        volume_note = ""
+        if breakout_data.get('has_volume_caution', False):
+            volume_warnings = breakout_data.get('volume_warnings', [])
+            volume_note = f"VOLUME_CAUTION: {'; '.join(volume_warnings)}"
+        
         new_signal = {
             "signal_id": signal_id,
             "symbol": breakout_data['symbol'],
             "signal_date": today,
             "entry_price": breakout_data['entry_price'],
-            "grade": "LISTING_BREAKOUT",
-            "score": 100,  # High score for listing day breakout
+            "grade": "LISTING_BREAKOUT" + ("_LOW_VOL" if breakout_data.get('has_volume_caution', False) else ""),
+            "score": 100 if not breakout_data.get('has_volume_caution', False) else 80,  # Lower score for low volume
             "stop_loss": breakout_data['stop_loss'],
             "target_price": breakout_data['target_price'],
             "status": "ACTIVE",
@@ -585,7 +614,8 @@ def save_breakout_signal(breakout_data):
             "exit_price": 0,
             "pnl_pct": 0,
             "days_held": 0,
-            "signal_type": "LISTING_DAY_BREAKOUT"
+            "signal_type": "LISTING_DAY_BREAKOUT",
+            "notes": volume_note  # Track volume caution for analysis
         }
         
         # Append to CSV
@@ -593,9 +623,11 @@ def save_breakout_signal(breakout_data):
         if existing_signals.empty:
             new_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
         else:
-            # Ensure signal_type column exists in existing_signals
+            # Ensure signal_type and notes columns exist in existing_signals
             if 'signal_type' not in existing_signals.columns:
                 existing_signals['signal_type'] = 'UNKNOWN'
+            if 'notes' not in existing_signals.columns:
+                existing_signals['notes'] = ''
             pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
         
         logger.info(f"✅ Saved breakout signal for {breakout_data['symbol']}")
