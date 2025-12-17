@@ -62,6 +62,10 @@ jobs:
           UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
           IPO_YEARS_BACK: ${{ vars.IPO_YEARS_BACK || '1' }}
         run: |
+          echo "🔄 Updating IPO symbol list..."
+          python -c "from fetch import fetch_recent_ipo_symbols; fetch_recent_ipo_symbols(years_back=int(os.environ.get('IPO_YEARS_BACK', 1)))"
+          echo "✅ IPO list updated"
+          
           echo "🚀 Starting Listing Day Breakout Scanner..."
           echo "📅 Date: $(date '+%Y-%m-%d')"
           echo "⏰ Time: $(date '+%H:%M:%S')"
