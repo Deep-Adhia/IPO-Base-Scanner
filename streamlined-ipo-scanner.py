@@ -801,7 +801,7 @@ def fetch_data(symbol, start_date):
                         for col in first_row.index:
                             if isinstance(first_row[col], str) and ('<html' in str(first_row[col]).lower() or '<!doctype' in str(first_row[col]).lower()):
                                 logger.warning(f"Received HTML error page for {symbol}, skipping")
-                continue
+                                raise ValueError("HTML error page received")
                 
             except Exception as e:
                 logger.warning(f"Error fetching data for {symbol}: {e}")
