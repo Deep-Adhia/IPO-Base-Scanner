@@ -302,10 +302,16 @@ def check_listing_day_breakout(symbol, listing_info):
         rejection_reason = None
         volume_warnings = []  # Track volume-related warnings
         
-        # Condition 1: Price breaks listing day high
         if current_high > listing_day_high:
             is_breakout = True
+            signal_type = 'BREAKOUT'
             breakout_conditions.append(f"Price broke listing day high ({current_high:.2f} > {listing_day_high:.2f})")
+        elif current_high >= listing_day_high * 0.95:
+            # Watchlist condition: Within 5% of listing high
+            is_breakout = True  # We set this to True to proceed with calculations, but mark type as WATCHLIST
+            signal_type = 'WATCHLIST'
+            breakout_conditions.append(f"Near Breakout: {current_high:.2f} is within 5% of {listing_day_high:.2f}")
+            logger.info(f"👀 {symbol}: Detected as WATCHLIST candidate (High: {current_high:.2f}, Trigger: {listing_day_high:.2f})")
         else:
             rejection_reason = f"Price ({current_high:.2f}) below listing day high ({listing_day_high:.2f})"
         
@@ -317,10 +323,14 @@ def check_listing_day_breakout(symbol, listing_info):
             # Price broke but volume insufficient - add warning instead of rejecting
             volume_warnings.append(f"Low volume spike: {current_volume:,.0f} vs avg {avg_volume:,.0f} (need {MIN_VOLUME_MULTIPLIER}x)")
         
-        # Proceed if price broke listing day high (regardless of volume)
+        # Proceed if price broke listing day high OR is watchlist
         if is_breakout:
             # Calculate entry, stop loss, and target
-            entry_price = current_price  # Use current price as entry
+            # For Watchlist, use Listing High as the hypothetical entry price
+            if signal_type == 'WATCHLIST':
+                entry_price = listing_day_high
+            else:
+                entry_price = current_price  # For confirmed breakout, use current price
             
             # CRITICAL FIX: Calculate target based on ENTRY price, not listing day high
             # This ensures target is always above entry price
@@ -336,13 +346,13 @@ def check_listing_day_breakout(symbol, listing_info):
             
             # FILTER 2: Only generate signals if entry is within reasonable distance of listing high
             # This prevents generating signals when breakout happened long ago
-            if entry_above_high_pct > MAX_ENTRY_ABOVE_HIGH_PCT:
+            # Only apply for actual BREAKOUTs, not WATCHLIST
+            if signal_type == 'BREAKOUT' and entry_above_high_pct > MAX_ENTRY_ABOVE_HIGH_PCT:
                 rejection_reason = f"Entry ({entry_price:.2f}) is {entry_above_high_pct:.1f}% above listing high ({listing_day_high:.2f}) - too far from breakout level"
                 logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
                 return None
             
             # Calculate days since listing (for display/information only - no filter)
-            # Some IPOs correct for months before breaking listing day high - this is still valid
             today_date = datetime.today().date()
             if isinstance(listing_date, str):
                 listing_date_obj = pd.to_datetime(listing_date).date()
@@ -352,47 +362,27 @@ def check_listing_day_breakout(symbol, listing_info):
                 listing_date_obj = listing_date
             
             days_since_listing = (today_date - listing_date_obj).days
-            # No time filter - IPOs that correct for months and then break listing day high are valid
             
             # Check volume vs listing day (now a warning, not a rejection)
             volume_vs_listing_day = current_volume / listing_day_volume if listing_day_volume > 0 else 0
             if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
                 # Add warning instead of rejecting
                 volume_warnings.append(f"Low volume vs listing day: {volume_vs_listing_day:.1f}x (need {MIN_VOLUME_VS_LISTING_DAY:.1f}x)")
-                logger.warning(f"⚠️ {symbol}: Low volume vs listing day ({volume_vs_listing_day:.1f}x, need {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - sending signal with caution")
+                if signal_type == 'BREAKOUT':
+                    logger.warning(f"⚠️ {symbol}: Low volume vs listing day ({volume_vs_listing_day:.1f}x, need {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - sending signal with caution")
             
             # CRITICAL FIX: Stop loss is 8% below entry (fixed percentage, NOT based on listing day low)
-            # Listing day low is the last support level (reference only), but stop loss is purely entry-based
-            # Always use 8% below entry regardless of entry distance from listing high
             stop_loss_pct = 0.08  # Fixed 8% below entry
             
             # Calculate stop loss purely based on entry price percentage
             stop_loss = entry_price * (1 - stop_loss_pct)
-            stop_loss_pct_below_entry = stop_loss_pct * 100
-            
-            logger.info(f"📊 {symbol} Stop Loss: Using 8% below entry (₹{stop_loss:.2f})")
-            logger.info(f"   Entry: ₹{entry_price:.2f}")
-            logger.info(f"   Listing Day High: ₹{listing_day_high:.2f} (Entry is {entry_above_high_pct:.1f}% above)")
-            logger.info(f"   Listing Day Low: ₹{listing_day_low:.2f} (Last support level - reference only)")
-            logger.info(f"   Listing Day Range: {listing_range_pct:.1f}% (High-Low spread)")
-            logger.info(f"   Selected Stop: ₹{stop_loss:.2f} (8% below entry)")
-            logger.info(f"   Days Since Listing: {days_since_listing} days ({'Fresh' if days_since_listing <= 5 else 'Moderate' if days_since_listing <= 15 else 'Mature'})")
-            if volume_warnings:
-                logger.warning(f"   ⚠️ Volume Warnings: {'; '.join(volume_warnings)}")
-            else:
-                logger.info(f"   Volume Confirmation: {volume_vs_listing_day:.1f}x listing day volume ✅")
             
             # Target calculation: Use entry price + percentage of listing range
-            # This ensures target is always above entry
-            # Use 50-100% of listing range as target, depending on how close entry is to listing high
             if entry_above_high_pct <= 2.0:
-                # Entry is very close to listing high - use larger target (100% of range)
                 target_multiplier = 1.0
             elif entry_above_high_pct <= 5.0:
-                # Entry is moderately above - use medium target (75% of range)
                 target_multiplier = 0.75
             else:
-                # Entry is further above - use smaller target (50% of range)
                 target_multiplier = 0.5
             
             target_price = entry_price + (listing_range * target_multiplier)
@@ -407,13 +397,6 @@ def check_listing_day_breakout(symbol, listing_info):
                 rejection_reason = f"Risk/Reward ratio ({risk_reward:.2f}) below minimum ({MIN_RISK_REWARD:.1f})"
                 logger.info(f"⏭️ Skipping {symbol}: Risk/Reward ratio ({risk_reward:.2f}) is below minimum ({MIN_RISK_REWARD:.1f})")
                 return None
-            
-            # Validation: Risk should be exactly 8% (since stop loss is fixed at 8%)
-            risk_pct = (risk / entry_price * 100) if entry_price > 0 else 0
-            if abs(risk_pct - STOP_LOSS_PCT) > 0.1:  # Allow small floating point differences
-                logger.warning(f"⚠️ {symbol}: Risk ({risk_pct:.1f}%) doesn't match expected stop loss ({STOP_LOSS_PCT:.1f}%) - unexpected")
-            
-            # Days since listing already calculated above
             
             # Calculate gain from listing day close
             gain_from_listing_close = ((current_price - listing_day_close) / listing_day_close * 100) if listing_day_close > 0 else 0
@@ -441,8 +424,9 @@ def check_listing_day_breakout(symbol, listing_info):
                 'entry_above_high_pct': round(entry_above_high_pct, 2),
                 'target_multiplier': round(target_multiplier, 2),
                 'last_updated': last_updated,
-                'volume_warnings': volume_warnings,  # Add volume warnings to breakout data
-                'has_volume_caution': len(volume_warnings) > 0  # Flag for easy checking
+                'volume_warnings': volume_warnings,
+                'has_volume_caution': len(volume_warnings) > 0,
+                'type': signal_type  # 'BREAKOUT' or 'WATCHLIST'
             }
         
         # Log rejection reason if available
@@ -554,6 +538,54 @@ def format_listing_breakout_alert(breakout_data):
     
     return msg
 
+def format_watchlist_alert(breakout_data):
+    """Format watchlist alert for near-breakout candidates"""
+    symbol = breakout_data['symbol']
+    current_price = breakout_data['current_price']
+    listing_high = breakout_data['listing_day_high']
+    listing_date = breakout_data['listing_date']
+    price_source = breakout_data.get('price_source', 'Live')
+    days_since = breakout_data.get('days_since_listing', 0)
+    vol_spike = breakout_data.get('volume_spike', 0)
+    
+    # Calculate distance to breakout
+    distance_amt = listing_high - current_price
+    distance_pct = (distance_amt / listing_high * 100)
+    
+    # Format listing date
+    if hasattr(listing_date, 'strftime'):
+        listing_date_str = listing_date.strftime('%Y-%m-%d')
+    else:
+        listing_date_str = str(listing_date)
+    
+    # Volume trend assessment
+    vol_status = "Building Up 🟢" if vol_spike > 1.0 else "Normal 🟡"
+    if vol_spike > 2.0:
+        vol_status = "Very High 💥"
+    
+    msg = f"""👀 <b>WATCHLIST ALERT: {symbol}</b>
+    
+🚀 <b>Approaching Breakout Level!</b>
+The stock is within <b>{distance_pct:.1f}%</b> of its Listing Day High.
+
+📊 <b>Status:</b>
+• Current Price: ₹{current_price:,.2f} ({price_source})
+• Breakout Level: ₹{listing_high:,.2f}
+• Distance: {distance_pct:.1f}% away
+
+📉 <b>Volume Trend:</b>
+• Volume: {vol_spike:.1f}x avg ({vol_status})
+• Pre-breakout buildup detected
+
+📅 <b>Listing Context:</b>
+• Listed on: {listing_date_str}
+• Age: {days_since} days old
+
+💡 <b>Actionable Advice:</b>
+Keep {symbol} on your radar. A close above ₹{listing_high:.2f} with volume triggers a valid entry.
+"""
+    return msg
+
 def save_breakout_signal(breakout_data):
     """Save breakout signal to signals CSV"""
     try:
@@ -635,6 +667,56 @@ def save_breakout_signal(breakout_data):
     
     except Exception as e:
         logger.error(f"Error saving signal: {e}")
+        return False
+
+def save_watchlist_signal(breakout_data):
+    """Save watchlist signal to prevent duplicate alerts"""
+    try:
+        today = datetime.now().date()
+        # Use WATCHLIST prefix to distinguish from actual breakouts
+        signal_id = f"WATCHLIST_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}"
+        
+        # Check if signal already exists
+        if os.path.exists(SIGNALS_CSV):
+            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+            if 'signal_id' in existing_signals.columns:
+                # Check for same signal ID
+                if signal_id in existing_signals['signal_id'].tolist():
+                    logger.info(f"Watchlist alert already sent for {breakout_data['symbol']} today")
+                    return False
+        else:
+            existing_signals = pd.DataFrame()
+            
+        # Create new signal record (simplified for watchlist)
+        new_signal = {
+            "signal_id": signal_id,
+            "symbol": breakout_data['symbol'],
+            "signal_date": today,
+            "entry_price": 0, # No entry yet
+            "grade": "WATCHLIST",
+            "score": 0,
+            "stop_loss": 0,
+            "target_price": breakout_data['listing_day_high'], # Target is the breakout level
+            "status": "WATCH",
+            "exit_date": "",
+            "exit_price": 0,
+            "pnl_pct": 0,
+            "days_held": 0,
+            "signal_type": "WATCHLIST",
+            "notes": f"Within 5% of listing high"
+        }
+        
+        new_df = pd.DataFrame([new_signal])
+        if existing_signals.empty:
+            new_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+        else:
+            pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+            
+        logger.info(f"✅ Saved watchlist signal for {breakout_data['symbol']}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error saving watchlist signal: {e}")
         return False
 
 def add_position(breakout_data):
@@ -743,24 +825,34 @@ def scan_listing_day_breakouts():
             breakout = check_listing_day_breakout(symbol, listing_info)
             
             if breakout:
-                logger.info(f"🎯 BREAKOUT DETECTED for {symbol}!")
-                logger.info(f"   Entry: ₹{breakout['entry_price']:.2f}")
-                logger.info(f"   Stop Loss: ₹{breakout['stop_loss']:.2f}")
-                logger.info(f"   Target: ₹{breakout['target_price']:.2f}")
+                signal_type = breakout.get('type', 'BREAKOUT')
                 
-                # Save signal
-                if save_breakout_signal(breakout):
-                    # Add position
-                    add_position(breakout)
+                if signal_type == 'BREAKOUT':
+                    logger.info(f"🎯 BREAKOUT DETECTED for {symbol}!")
+                    logger.info(f"   Entry: ₹{breakout['entry_price']:.2f}")
+                    logger.info(f"   Stop Loss: ₹{breakout['stop_loss']:.2f}")
+                    logger.info(f"   Target: ₹{breakout['target_price']:.2f}")
                     
-                    # Update listing status
-                    update_listing_status(symbol, 'BREAKOUT')
-                    
-                    # Send alert
-                    alert_msg = format_listing_breakout_alert(breakout)
-                    send_telegram(alert_msg)
-                    
-                    breakouts_found += 1
+                    # Save signal
+                    if save_breakout_signal(breakout):
+                        # Add position
+                        add_position(breakout)
+                        
+                        # Update listing status
+                        update_listing_status(symbol, 'BREAKOUT')
+                        
+                        # Send alert
+                        alert_msg = format_listing_breakout_alert(breakout)
+                        send_telegram(alert_msg)
+                        
+                        breakouts_found += 1
+                        
+                elif signal_type == 'WATCHLIST':
+                    # Save watchlist signal (returns False if duplicate)
+                    if save_watchlist_signal(breakout):
+                        logger.info(f"👀 Sending WATCHLIST alert for {symbol}")
+                        alert_msg = format_watchlist_alert(breakout)
+                        send_telegram(alert_msg)
                 
                 # Small delay
                 time.sleep(0.5)

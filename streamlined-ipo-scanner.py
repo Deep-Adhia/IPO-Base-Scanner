@@ -754,12 +754,25 @@ def fetch_data(symbol, start_date):
         
         # Fallback to NSE data (existing logic)
         
-        # Try to get data for the last 30 days to find the most recent data
+        # CRITICAL OPTIMIZATION: If start_date is today, do not attempt fallback
+        # NSE fallback uses historical archives which are only updated EOD.
+        # Requesting today's data from archives will fail or hang.
+        if start_date >= today:
+             logger.warning(f"⚠️ {symbol} listing is today ({start_date}) - Skipping NSE fallback (Archives update EOD)")
+             return None
+
+        # Try to get data for the last 7 days to find the most recent data
         # Start from the entry date and go backwards to find the most recent data
-        for days_back in range(0, 30):
+        # Try to get data for the last 7 days (reduced from 30) to find the most recent data
+        # Start from the entry date and go forward
+        for days_back in range(0, 7):
             target_date = start_date + timedelta(days=days_back)
+            
+            # CRITICAL FIX: Do not attempt to fetch data for future dates
             if target_date > today:
-                target_date = today
+                logger.debug(f"Target date {target_date} is in the future, stopping fallback search")
+                break
+            
             try:
                 # Add retry mechanism for jugaad_data calls
                 max_retries = 1  # Only 1 retry to avoid infinite loops
@@ -775,7 +788,9 @@ def fetch_data(symbol, start_date):
                     except Exception as retry_error:
                         if retry == max_retries - 1:
                             logger.warning(f"Failed to fetch data for {symbol}: {retry_error}")
-                            return None  # Return None instead of continuing
+                            # return None  # Don't return None here, let the loop continue or break naturally
+                            # If we return None, we abort all attempts. Instead, just break the retry loop
+                            break
                         else:
                             logger.warning(f"Retry {retry + 1}/{max_retries} for {symbol}: {retry_error}")
                             time.sleep(0.2)  # Very short wait time
