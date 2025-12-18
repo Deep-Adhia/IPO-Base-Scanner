@@ -727,8 +727,9 @@ def fetch_data(symbol, start_date):
     import time  # Import at the top of function
     
     # Skip RE (Real Estate Investment Trusts) shares as they're not suitable for IPO breakout patterns
-    if symbol.endswith('-RE'):
-        logger.warning(f"Skipping RE share: {symbol}")
+    # Optimization: Ignore Rights Entitlements (-RE) and SME (-SM) segments
+    if '-RE' in symbol or symbol.endswith('-SM') or 'RE1' in symbol:
+        logger.warning(f"Skipping RE/SME share: {symbol}")
         return None
     
     try:
@@ -761,8 +762,6 @@ def fetch_data(symbol, start_date):
              logger.warning(f"⚠️ {symbol} listing is today ({start_date}) - Skipping NSE fallback (Archives update EOD)")
              return None
 
-        # Try to get data for the last 7 days to find the most recent data
-        # Start from the entry date and go backwards to find the most recent data
         # Try to get data for the last 7 days (reduced from 30) to find the most recent data
         # Start from the entry date and go forward
         for days_back in range(0, 7):
