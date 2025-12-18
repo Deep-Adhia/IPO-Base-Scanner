@@ -62,7 +62,7 @@ jobs:
           UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
           IPO_YEARS_BACK: ${{ vars.IPO_YEARS_BACK || '1' }}
         run: |
-          python -c "from fetch import fetch_recent_ipo_symbols; fetch_recent_ipo_symbols(years_back=int(os.environ.get('IPO_YEARS_BACK', 1)))"
+          python -c "import os; from fetch import fetch_recent_ipo_symbols; fetch_recent_ipo_symbols(years_back=int(os.environ.get('IPO_YEARS_BACK', 1)))"
           echo "✅ IPO list updated"
 
           echo "🔄 Updating Upstox ID Mappings..."
