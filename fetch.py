@@ -50,7 +50,8 @@ def fetch_recent_ipo_symbols(years_back=1):
                     recent_ipos = df[recent_mask]
                     
                     # Remove suspicious companies
-                    suspicious_patterns = ['RELIANCE', 'TCS', 'INFY', 'HDFC', 'ICICI', 'SBI', 'BHARTI', 'ITC', 'LT', 'RNBDENIMS']
+                    # Remove suspicious companies
+                    suspicious_patterns = ['RNBDENIMS'] # Kept one for example, but removed major groups to allow subsidiaries
                     if name_col:
                         suspicious_mask = recent_ipos[name_col].str.contains('|'.join(suspicious_patterns), case=False, na=False)
                         recent_ipos = recent_ipos[~suspicious_mask]

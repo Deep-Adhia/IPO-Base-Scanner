@@ -710,14 +710,16 @@ def get_live_price(symbol, prefer_source=None):
             continue
     
     # Only try jugaad-data as absolute last resort (not accurate, but better than nothing)
-    logger.warning(f"⚠️ Upstox and yfinance failed, trying jugaad-data as last resort for {symbol}...")
-    try:
-        price = get_live_price_jugaad(symbol)
-        if price is not None and price > 0:
-            logger.warning(f"⚠️ Using jugaad-data price for {symbol} (may not be accurate): ₹{price:.2f}")
-            return price, 'jugaad'
-    except Exception as e:
-        logger.debug(f"jugaad-data also failed for {symbol}: {e}")
+    # DISABLE JUGAAD-DATA FALLBACK FOR LIVE PRICE: It causes major hangs (2-4 mins per symbol) and often fails anyway.
+    # Better to fail fast and fallback to historical data (yesterday's close).
+    # logger.warning(f"⚠️ Upstox and yfinance failed, trying jugaad-data as last resort for {symbol}...")
+    # try:
+    #     price = get_live_price_jugaad(symbol)
+    #     if price is not None and price > 0:
+    #         logger.warning(f"⚠️ Using jugaad-data price for {symbol} (may not be accurate): ₹{price:.2f}")
+    #         return price, 'jugaad'
+    # except Exception as e:
+    #     logger.debug(f"jugaad-data also failed for {symbol}: {e}")
     
     logger.warning(f"⚠️ Could not fetch live price for {symbol} from any source")
     return None, None
