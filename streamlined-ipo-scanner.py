@@ -153,6 +153,17 @@ def assign_grade(score):
     if score>=1: return 'C'
     return 'D'
 
+# Helper for live-grade filtering
+GRADE_ORDER = ["D", "C", "B", "A", "A+"]
+
+def is_live_grade_allowed(grade: str) -> bool:
+    """Return True if grade meets MIN_LIVE_GRADE threshold for LIVE signals."""
+    try:
+        return GRADE_ORDER.index(grade) >= GRADE_ORDER.index(MIN_LIVE_GRADE)
+    except ValueError:
+        # Unknown grade: be conservative and reject
+        return False
+
 def calculate_target_price(entry_price, consolidation_low, consolidation_high, grade):
     """Calculate target price based on pattern and grade"""
     # Calculate consolidation range
@@ -255,6 +266,20 @@ VOL_MULT = get_env_float("VOL_MULT", 1.2)
 ABS_VOL_MIN = get_env_int("ABS_VOL_MIN", 3000000)
 LOOKAHEAD = get_env_int("LOOKAHEAD", 80)
 MAX_DAYS = get_env_int("MAX_DAYS", 200)
+
+# Risk / reward and trailing configuration (tunable via .env)
+# - MAX_ENTRY_ABOVE_BREAKOUT_PCT: max % above breakout/high we'll accept as entry
+# - MIN_RISK_REWARD: minimum acceptable reward:risk ratio
+# - MIN_PNL_FOR_TRAIL: minimum open P&L % before we start trailing the stop
+# - MIN_TRAIL_MOVE_PCT: minimum % of entry price by which stop must improve to send an update
+# - MIN_DAYS_BETWEEN_SIGNALS: cooldown between new signals for same symbol
+# - MIN_LIVE_GRADE: minimum grade allowed for LIVE signals (D < C < B < A < A+)
+MAX_ENTRY_ABOVE_BREAKOUT_PCT = get_env_float("MAX_ENTRY_ABOVE_BREAKOUT_PCT", 8.0)
+MIN_RISK_REWARD = get_env_float("MIN_RISK_REWARD", 1.3)
+MIN_PNL_FOR_TRAIL = get_env_float("MIN_PNL_FOR_TRAIL", 5.0)
+MIN_TRAIL_MOVE_PCT = get_env_float("MIN_TRAIL_MOVE_PCT", 1.0)
+MIN_DAYS_BETWEEN_SIGNALS = get_env_int("MIN_DAYS_BETWEEN_SIGNALS", 10)
+MIN_LIVE_GRADE = os.getenv("MIN_LIVE_GRADE", "C")
 # File paths
 CACHE_FILE = os.getenv("CACHE_FILE", "ipo_cache.pkl")
 SIGNALS_CSV = os.getenv("SIGNALS_CSV", "ipo_signals.csv")
@@ -1202,6 +1227,11 @@ def detect_live_patterns(symbols, listing_map):
                 score = compute_grade_hybrid(df, j, w, avgv)
                 grade = assign_grade(score)
 
+                # Enforce minimum grade for LIVE signals
+                if not is_live_grade_allowed(grade):
+                    logger.info(f"⏭️ Skipping {sym} - grade {grade} below live threshold {MIN_LIVE_GRADE}")
+                    continue
+
                 # Enhanced B-grade filters with RSI and MACD
                 if grade == 'B' and not smart_b_filters(df, j, avgv):
                     continue
@@ -1229,6 +1259,22 @@ def detect_live_patterns(symbols, listing_map):
                     logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date instead.")
                     entry_date = latest_data_date
                 
+                # Cooldown: avoid spamming multiple signals for the same symbol in short time
+                try:
+                    if 'existing_signals_df' in locals():
+                        sym_signals = existing_signals_df[existing_signals_df['symbol'] == sym]
+                        if not sym_signals.empty:
+                            last_signal_date = pd.to_datetime(sym_signals['signal_date']).dt.date.max()
+                            gap_days = (entry_date - last_signal_date).days
+                            if gap_days < MIN_DAYS_BETWEEN_SIGNALS:
+                                logger.info(
+                                    f"⏭️ Skipping {sym} - last signal {gap_days} days ago "
+                                    f"(< cooldown {MIN_DAYS_BETWEEN_SIGNALS} days)"
+                                )
+                                continue
+                except Exception as e:
+                    logger.warning(f"Cooldown check failed for {sym}: {e}")
+
                 # For live signals, ALWAYS use CURRENT market price as entry price
                 # This ensures entry price matches what user would actually pay NOW
                 # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
@@ -1332,6 +1378,54 @@ def detect_live_patterns(symbols, listing_map):
                 
                 # Calculate target price using proper function based on consolidation pattern
                 target = calculate_target_price(entry, low, high2, grade)
+
+                # Validate reward:risk and extension above breakout level
+                risk_amount = entry - stop
+                reward_amount = target - entry
+                if risk_amount <= 0 or reward_amount <= 0:
+                    logger.info(f"⏭️ Skipping {sym} - invalid risk/reward (risk={risk_amount:.2f}, reward={reward_amount:.2f})")
+                    continue
+                risk_reward_ratio = reward_amount / risk_amount
+
+                # Reject trades with poor risk/reward
+                if risk_reward_ratio < MIN_RISK_REWARD:
+                    logger.info(f"⏭️ Skipping {sym} - poor risk/reward 1:{risk_reward_ratio:.2f} (< {MIN_RISK_REWARD})")
+                    continue
+
+                # Reject entries that are too extended above breakout level
+                breakout_level = high2
+                if breakout_level > 0:
+                    distance_above = (entry / breakout_level - 1.0) * 100.0
+                    if distance_above > MAX_ENTRY_ABOVE_BREAKOUT_PCT:
+                        logger.info(
+                            f"⏭️ Skipping {sym} - entry {distance_above:.2f}% above breakout "
+                            f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
+                        )
+                        continue
+
+                # Validate reward:risk and extension above breakout level for LIVE signals
+                risk_amount = entry - stop
+                reward_amount = target - entry
+                if risk_amount <= 0 or reward_amount <= 0:
+                    logger.info(f"⏭️ Skipping {sym} - invalid risk/reward (risk={risk_amount:.2f}, reward={reward_amount:.2f})")
+                    continue
+                risk_reward_ratio = reward_amount / risk_amount
+
+                # Reject trades with poor risk/reward
+                if risk_reward_ratio < MIN_RISK_REWARD:
+                    logger.info(f"⏭️ Skipping {sym} - poor risk/reward 1:{risk_reward_ratio:.2f} (< {MIN_RISK_REWARD})")
+                    continue
+
+                # Reject entries that are too extended above breakout level
+                breakout_level = high2
+                if breakout_level > 0:
+                    distance_above = (entry / breakout_level - 1.0) * 100.0
+                    if distance_above > MAX_ENTRY_ABOVE_BREAKOUT_PCT:
+                        logger.info(
+                            f"⏭️ Skipping {sym} - entry {distance_above:.2f}% above breakout "
+                            f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
+                        )
+                        continue
                 
                 # Add to signals
                 # Ensure date is a string in YYYY-MM-DD format
@@ -2033,15 +2127,6 @@ def stop_loss_update_scan():
                 logger.error(f"⚠️ Negative days for {sym}: entry_date={entry_date}, today={today_date}")
                 days_held = 0
             
-            # Calculate new trailing stop using grade-based percentage
-            # Use the PREVIOUS trailing stop as base, not current price (to avoid immediate exits)
-            grade = pos.get("grade", "C")  # Default to C if grade not available
-            _, stop_pct = calculate_grade_based_stop_loss(entry_price, entry_price, grade)
-            
-            # Trailing stop should only move UP, never down
-            # It's the maximum of: previous trailing stop, or current price minus stop percentage
-            new_trailing = max(float(old_trailing), current_price * (1 - stop_pct))
-            
             # Check for exits - use current price for exit decisions
             exit_reason = None
             if current_price <= old_trailing:  # Use OLD trailing stop for exit check, not new one
@@ -2065,18 +2150,40 @@ def stop_loss_update_scan():
                 exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days_held, entry_price)
                 send_telegram(exit_msg)
             else:
-                # Update position
+                # Update position and (optionally) trail stop-loss
                 pnl = (current_price - entry_price) / entry_price * 100
+
+                # Default: no change in trailing stop
+                new_trailing = float(old_trailing)
+
+                # Only start trailing once we have a reasonable profit cushion
+                if pnl >= MIN_PNL_FOR_TRAIL:
+                    # Calculate new candidate trailing stop from grade-based percentage
+                    grade = pos.get("grade", "C")  # Default to C if grade not available
+                    _, stop_pct = calculate_grade_based_stop_loss(entry_price, entry_price, grade)
+
+                    candidate_trailing = current_price * (1 - stop_pct)
+
+                    # Minimum absolute improvement required (as % of entry)
+                    min_trail_move_abs = entry_price * (MIN_TRAIL_MOVE_PCT / 100.0)
+
+                    if candidate_trailing > new_trailing and (candidate_trailing - new_trailing) >= min_trail_move_abs:
+                        new_trailing = candidate_trailing
+
+                # Persist updated position
                 df_positions.loc[idx, ["current_price", "trailing_stop", "pnl_pct", "days_held"]] = [
                     current_price, new_trailing, pnl, days_held
                 ]
-                updates_made += 1
-                
-                # Send position update alert
-                update_msg = format_position_update_alert(
-                    sym, current_price, entry_price, old_trailing, new_trailing, pnl, days_held, grade
-                )
-                send_telegram(update_msg)
+
+                # Count only real trailing-stop improvements as "updates"
+                if new_trailing > old_trailing:
+                    updates_made += 1
+
+                    # Send position update alert only when stop-loss actually moves
+                    update_msg = format_position_update_alert(
+                        sym, current_price, entry_price, old_trailing, new_trailing, pnl, days_held, grade
+                    )
+                    send_telegram(update_msg)
         except Exception as e:
             logger.error(f"Error updating {sym}: {e}")
             failed_updates.append(sym)
