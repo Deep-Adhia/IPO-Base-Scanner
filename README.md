@@ -12,10 +12,12 @@ This scanner implements multiple strategies to identify IPO breakout opportuniti
 
 ### **Key Features**
 - 🔍 **Automated IPO Detection** - Daily scanning of newly listed stocks
-- 📱 **Telegram Alerts** - Real-time signal notifications
+- 📱 **Telegram Alerts** - Real-time notifications with detailed price references
+- 🧠 **Smart Freshness Filter** - Intelligent handling of mature breakouts vs. fresh ones
+- 🛠️ **Parameter Tuning Logs** - Tracks mathematically exactly *why* a trade was rejected
 - 📊 **Multiple Strategies** - Consolidation-based and listing day breakout detection
 - ⚡ **Manual Execution** - Generates signals for manual review (compliance-friendly)
-- 📈 **Simple Tracking** - Clean CSV-based portfolio management
+- 📉 **Clean Tracking** - Daily `logs/` directory and CSV-based portfolio management
 
 ## 🛠️ **Quick Setup**
 
@@ -87,8 +89,10 @@ The scanners will start automatically and run:
 
 ## 🎯 **How It Works**
 
-### **Strategy 1: Consolidation-Based Detection Algorithm**
-- **Pattern Detection:** Identifies consolidation patterns with price and volume analysis
+### **Strategy 1: Consolidation-Based Detection Algorithm (v2.1.0)**
+- **Pattern Detection:** Identifies consolidation patterns with strict price and volume analysis
+- **Candle Quality:** Breakout candle must CLOSE strictly above resistance and be a bullish green candle.
+- **Smart Freshness:** Rejects breakouts older than 10 days; requires holding above base for 4-10 day old breakouts.
 - **Signal Type:** "Consolidation-Based Breakout" (marked in alerts and CSV)
 - **Grading System:**
   - **Grade A+**: Perfect setup, highest allocation
@@ -165,10 +169,13 @@ ipo-breakout-scanner/
 ```
 ├── recent_ipo_symbols.csv          # List of recent IPOs with listing dates
 ├── ipo_listing_data.csv            # Listing day high/low for each IPO
-├── ipo_signals.csv                 # All generated signals
+├── ipo_signals.csv                 # All generated signals (tracked with v2.1.0 versioning)
 ├── ipo_positions.csv               # Active and closed positions
 ├── ipo_upstox_mapping.csv          # IPO symbol to Upstox instrument mapping
-└── watchlist.csv                   # Symbols to monitor for intraday breakouts
+├── watchlist.csv                   # Symbols to monitor for intraday breakouts
+└── logs/                           # Daily structured JSONL logs for parameter tuning
+    └── YYYY-MM-DD/
+        └── consolidation.jsonl     # Detailed logs of every SIGNAL_GENERATED and REJECTED_BREAKOUT
 ```
 
 ### **Automation Workflows**
@@ -354,12 +361,18 @@ NATCAPSUQ,2025-11-12,IPO breakout candidate,ACTIVE
 SUPREME,2025-11-12,High volume pattern,ACTIVE
 ```
 
-### **4. Monitor Results**
+### **4. Monitor Results & Tune Parameters**
 
 - **Signals:** Check `ipo_signals.csv`
 - **Positions:** Check `ipo_positions.csv`
-- **Listing Data:** Check `ipo_listing_data.csv`
+- **Tuning Logs:** Check the `logs/YYYY-MM-DD/consolidation.jsonl` files. These track `REJECTED_BREAKOUT` events with exact mathematical metrics (e.g., `ratio: 1.15` when `MIN_RISK_REWARD: 1.5`), so you can easily tune parameters over time.
 - **Alerts:** Telegram notifications (if configured)
+
+### **5. Verify System Logic**
+Run the verification script anytime after making code changes to ensure all core logic properties safely remain intact:
+```bash
+python verify_scanner_logic.py
+```
 
 ## 🔧 **Local Development**
 

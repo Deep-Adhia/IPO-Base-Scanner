@@ -1280,6 +1280,7 @@ def detect_live_patterns(symbols, listing_map):
                     close_holds = next_day_close > base_high * 0.98  # Allow 2% pullback
                     volume_confirms = next_day_volume >= 0.8 * breakout_volume  # 80% volume ok
                     if not close_holds and not volume_confirms:
+                        write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "failed_follow_through", "close_holds": bool(close_holds), "volume_confirms": bool(volume_confirms)})
                         continue
 
                 # Apply your proven filters
@@ -1292,16 +1293,20 @@ def detect_live_patterns(symbols, listing_map):
                 # Enforce minimum grade for LIVE signals
                 if not is_live_grade_allowed(grade):
                     logger.info(f"⏭️ Skipping {sym} - grade {grade} below live threshold {MIN_LIVE_GRADE}")
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "low_grade", "grade": grade, "min_required": MIN_LIVE_GRADE})
                     continue
 
                 # Enhanced B-grade filters with RSI and MACD
                 if grade == 'B' and not smart_b_filters(df, j, avgv):
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "failed_b_filters", "grade": grade})
                     continue
 
                 if grade == 'C' and not smart_c_filters(df, j, df["OPEN"].iat[j], w, avgv):
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "failed_c_filters", "grade": grade})
                     continue
 
                 if grade == 'D':
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "grade_d", "grade": grade})
                     continue
 
                 # This is a LIVE pattern - generate signal
@@ -1333,6 +1338,7 @@ def detect_live_patterns(symbols, listing_map):
                                     f"⏭️ Skipping {sym} - last signal {gap_days} days ago "
                                     f"(< cooldown {MIN_DAYS_BETWEEN_SIGNALS} days)"
                                 )
+                                write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "cooldown", "gap_days": gap_days})
                                 continue
                 except Exception as e:
                     logger.warning(f"Cooldown check failed for {sym}: {e}")
@@ -1446,12 +1452,14 @@ def detect_live_patterns(symbols, listing_map):
                 reward_amount = target - entry
                 if risk_amount <= 0 or reward_amount <= 0:
                     logger.info(f"⏭️ Skipping {sym} - invalid risk/reward (risk={risk_amount:.2f}, reward={reward_amount:.2f})")
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "invalid_risk_reward", "risk": round(risk_amount, 2), "reward": round(reward_amount, 2)})
                     continue
                 risk_reward_ratio = reward_amount / risk_amount
 
                 # Reject trades with poor risk/reward
                 if risk_reward_ratio < MIN_RISK_REWARD:
                     logger.info(f"⏭️ Skipping {sym} - poor risk/reward 1:{risk_reward_ratio:.2f} (< {MIN_RISK_REWARD})")
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "poor_risk_reward", "ratio": round(risk_reward_ratio, 2), "min_required": MIN_RISK_REWARD})
                     continue
 
                 # Reject entries that are too extended above breakout level
@@ -1463,6 +1471,7 @@ def detect_live_patterns(symbols, listing_map):
                             f"⏭️ Skipping {sym} - entry {distance_above:.2f}% above breakout "
                             f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
                         )
+                        write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "too_extended", "distance_pct": round(distance_above, 2), "max_allowed": MAX_ENTRY_ABOVE_BREAKOUT_PCT})
                         continue
                 
                 # Smart freshness filter: allow if stock is holding the breakout level
@@ -1478,11 +1487,13 @@ def detect_live_patterns(symbols, listing_map):
                 
                 if days_since_breakout > 10:
                     logger.info(f"⏭️ Skipping {sym} - breakout is {days_since_breakout} days old (>10 days, too stale)")
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "stale_breakout", "days_old": days_since_breakout})
                     continue
                 elif days_since_breakout > 3:
                     # Allow only if price is still holding above breakout level
                     if entry < high2:
                         logger.info(f"⏭️ Skipping {sym} - breakout {days_since_breakout} days old and price ₹{entry:.2f} has fallen below breakout level ₹{high2:.2f}")
+                        write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "stale_and_fallen", "days_old": days_since_breakout, "entry": round(entry, 2), "breakout_level": round(high2, 2)})
                         continue
                     else:
                         logger.info(f"✅ {sym} - breakout {days_since_breakout} days old but price ₹{entry:.2f} still holding above ₹{high2:.2f}")
@@ -1723,11 +1734,14 @@ def detect_scan(symbols, listing_map):
                     close_holds = next_day_close > base_high * 0.98  # Allow 2% pullback
                     volume_confirms = next_day_volume >= 0.8 * breakout_volume  # 80% volume ok
                     if not close_holds and not volume_confirms:
+                        write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "failed_follow_through", "close_holds": bool(close_holds), "volume_confirms": bool(volume_confirms)})
                         continue
 
                 score = compute_grade_hybrid(df, j, w, avgv)
                 grade = assign_grade(score)
-                if grade == "D": continue
+                if grade == "D":
+                    write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "grade_d", "grade": grade, "mode": "scan"})
+                    continue
                 
                 # This is a LIVE pattern - generate signal
                 # Get the latest available data date (not system date to avoid future date issues)
@@ -1807,6 +1821,7 @@ def detect_scan(symbols, listing_map):
                         active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
                         if sym in active_positions['symbol'].tolist():
                             logger.info(f"⏭️ Skipping {sym} - already has active position")
+                            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", {"reason": "active_position", "mode": "scan"})
                             continue
                 except:
                     pass
@@ -1836,7 +1851,7 @@ def detect_scan(symbols, listing_map):
                 write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
-                    "consolidation_window": w, "mode": "scan"
+                    "consolidation_window": w, "mode": "scan", "price_source": price_source
                 })
                 
                 # Read existing signals and append new signal
