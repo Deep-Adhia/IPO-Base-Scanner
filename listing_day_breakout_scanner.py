@@ -29,6 +29,10 @@ spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanne
 scanner_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(scanner_module)
 
+# Import version and logging utilities from main scanner
+SCANNER_VERSION = getattr(scanner_module, 'SCANNER_VERSION', '2.1.0')
+write_daily_log = getattr(scanner_module, 'write_daily_log', lambda *a, **k: None)
+
 fetch_data = scanner_module.fetch_data
 send_telegram = scanner_module.send_telegram
 logger = scanner_module.logger
@@ -219,6 +223,7 @@ def check_listing_day_breakout(symbol, listing_info):
         listing_day_high = listing_info['listing_day_high']
         listing_day_low = listing_info['listing_day_low']
         listing_day_close = listing_info.get('listing_day_close', listing_day_high)  # Fallback to high if close not available
+        listing_day_volume = float(listing_info.get('listing_day_volume', 0))  # CRITICAL: was missing, caused NameError
         listing_date = listing_info['listing_date']
         last_updated = listing_info.get('last_updated', 'N/A')  # When listing data was captured
         
@@ -534,7 +539,9 @@ def format_listing_breakout_alert(breakout_data):
 
     msg += f"""
 
-⚠️ <b>Action Required:</b> Enter position - Listing day high broken!"""
+⚠️ <b>Action Required:</b> Enter position - Listing day high broken!
+
+🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}"""
     
     return msg
 
@@ -583,6 +590,8 @@ The stock is within <b>{distance_pct:.1f}%</b> of its Listing Day High.
 
 💡 <b>Actionable Advice:</b>
 Keep {symbol} on your radar. A close above ₹{listing_high:.2f} with volume triggers a valid entry.
+
+🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}
 """
     return msg
 
@@ -636,6 +645,7 @@ def save_breakout_signal(breakout_data):
             "signal_id": signal_id,
             "symbol": breakout_data['symbol'],
             "signal_date": today,
+            "signal_time": datetime.now().strftime("%H:%M:%S"),
             "entry_price": breakout_data['entry_price'],
             "grade": "LISTING_BREAKOUT" + ("_LOW_VOL" if breakout_data.get('has_volume_caution', False) else ""),
             "score": 100 if not breakout_data.get('has_volume_caution', False) else 80,  # Lower score for low volume
@@ -647,8 +657,19 @@ def save_breakout_signal(breakout_data):
             "pnl_pct": 0,
             "days_held": 0,
             "signal_type": "LISTING_DAY_BREAKOUT",
-            "notes": volume_note  # Track volume caution for analysis
+            "notes": volume_note,
+            "version": SCANNER_VERSION,
+            "scanner": "listing_day"
         }
+        
+        # Write to daily log
+        write_daily_log("listing_day", breakout_data['symbol'], "BREAKOUT_SIGNAL", {
+            "entry": breakout_data['entry_price'],
+            "stop_loss": breakout_data['stop_loss'],
+            "target": breakout_data['target_price'],
+            "listing_high": breakout_data.get('listing_day_high', 0),
+            "volume_caution": breakout_data.get('has_volume_caution', False)
+        })
         
         # Append to CSV
         new_df = pd.DataFrame([new_signal])

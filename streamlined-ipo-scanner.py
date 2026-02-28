@@ -12,6 +12,8 @@ Optimized IPO breakout scanner:
 - Dry-run and heartbeat modes
 """
 
+SCANNER_VERSION = "2.1.0"  # Tracks logic version for signal bifurcation
+
 import os
 import sys
 import argparse
@@ -164,6 +166,23 @@ def is_live_grade_allowed(grade: str) -> bool:
         # Unknown grade: be conservative and reject
         return False
 
+def is_market_hours() -> bool:
+    """Check if current IST time is within Indian market hours (9:15 AM - 3:30 PM IST).
+    Returns True if within market hours, False otherwise."""
+    try:
+        from datetime import timezone, timedelta as td
+        ist = timezone(td(hours=5, minutes=30))
+        now_ist = datetime.now(ist)
+        market_open = now_ist.replace(hour=9, minute=15, second=0, microsecond=0)
+        market_close = now_ist.replace(hour=15, minute=30, second=0, microsecond=0)
+        # Also check weekday (0=Monday, 6=Sunday)
+        if now_ist.weekday() >= 5:  # Saturday or Sunday
+            return False
+        return market_open <= now_ist <= market_close
+    except Exception:
+        # If timezone calculation fails, assume market is open (fail-open)
+        return True
+
 def calculate_target_price(entry_price, consolidation_low, consolidation_high, grade):
     """Calculate target price based on pattern and grade"""
     # Calculate consolidation range
@@ -295,6 +314,38 @@ logger = logging.getLogger(__name__)
 # Log yfinance availability after logger is initialized
 if not YFINANCE_AVAILABLE:
     logger.warning("yfinance not available. Install with: pip install yfinance")
+
+import json
+
+def write_daily_log(scanner_name, symbol, action, details=None):
+    """Write a structured daily log entry to logs/YYYY-MM-DD/scanner_name.log
+    
+    Creates daily log files per scanner in a date-organized folder structure.
+    Each entry is a JSON line for easy parsing.
+    """
+    try:
+        from datetime import timezone, timedelta as td
+        ist = timezone(td(hours=5, minutes=30))
+        now_ist = datetime.now(ist)
+        
+        log_dir = os.path.join("logs", now_ist.strftime("%Y-%m-%d"))
+        os.makedirs(log_dir, exist_ok=True)
+        
+        log_file = os.path.join(log_dir, f"{scanner_name}.jsonl")
+        
+        entry = {
+            "timestamp": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
+            "version": SCANNER_VERSION,
+            "scanner": scanner_name,
+            "symbol": symbol,
+            "action": action,
+            "details": details or {}
+        }
+        
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, default=str) + "\n")
+    except Exception as e:
+        logger.debug(f"Could not write daily log: {e}")
 
 def send_telegram(msg):
     if not BOT_TOKEN or not CHAT_ID:
@@ -1184,17 +1235,27 @@ def detect_live_patterns(symbols, listing_map):
                 is_live_breakout = False
                 breakout_candle_idx = None
                 
+                # Use tighter LOOKAHEAD for live signals (max 5 days, not the global 80)
+                LIVE_LOOKAHEAD = 5
+                
                 if i == len(df) - 1:
                     # This is the latest candle - check LIVE price for breakout
-                    live_price, _ = get_live_price(sym)
+                    # Only use live price during market hours
+                    if is_market_hours():
+                        live_price, _ = get_live_price(sym)
+                    else:
+                        live_price = float(df["CLOSE"].iloc[-1])
+                        logger.debug(f"Outside market hours - using last close for {sym}: ₹{live_price:.2f}")
                     if live_price is not None and live_price > max(high2, lhigh*0.97):
                         is_live_breakout = True
                         breakout_candle_idx = i
                         logger.info(f"🔥 LIVE breakout detected for {sym}: Live price ₹{live_price:.2f} > consolidation high ₹{high2:.2f}")
                 else:
-                    # Check future candles for breakout confirmation
-                    for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
-                        if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
+                    # Check future candles for breakout confirmation (tighter window for live)
+                    for j in range(i+1, min(i+1+LIVE_LOOKAHEAD, len(df))):
+                        # QUALITY CHECK: Breakout candle must CLOSE above consolidation high
+                        # (not just wick above - failed breakouts wick above then close below)
+                        if df["CLOSE"].iat[j] > max(high2, lhigh*0.97) and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
                             is_live_breakout = True
                             breakout_candle_idx = j
                             break
@@ -1207,7 +1268,8 @@ def detect_live_patterns(symbols, listing_map):
                     continue
                 
                 # Continue with breakout validation
-                # Follow-through filter: next day close > base high and volume ≥110% of breakout day
+                # Follow-through filter (relaxed): next day should show conviction
+                # Require EITHER close holds near base high OR decent volume continuation
                 if j + 1 < len(df):
                     breakout_close = df["CLOSE"].iat[j]
                     breakout_volume = df["VOLUME"].iat[j]
@@ -1215,9 +1277,9 @@ def detect_live_patterns(symbols, listing_map):
                     next_day_volume = df["VOLUME"].iat[j + 1]
                     base_high = df["HIGH"][j-w+1:j+1].max()
 
-                    if next_day_close <= base_high:
-                        continue
-                    if next_day_volume < 1.1 * breakout_volume:
+                    close_holds = next_day_close > base_high * 0.98  # Allow 2% pullback
+                    volume_confirms = next_day_volume >= 0.8 * breakout_volume  # 80% volume ok
+                    if not close_holds and not volume_confirms:
                         continue
 
                 # Apply your proven filters
@@ -1402,30 +1464,28 @@ def detect_live_patterns(symbols, listing_map):
                             f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
                         )
                         continue
-
-                # Validate reward:risk and extension above breakout level for LIVE signals
-                risk_amount = entry - stop
-                reward_amount = target - entry
-                if risk_amount <= 0 or reward_amount <= 0:
-                    logger.info(f"⏭️ Skipping {sym} - invalid risk/reward (risk={risk_amount:.2f}, reward={reward_amount:.2f})")
+                
+                # Smart freshness filter: allow if stock is holding the breakout level
+                # - Within 3 days: always allow
+                # - 4-10 days: allow only if current price is still above breakout level
+                # - >10 days: too old, skip
+                breakout_date = df['DATE'].iat[j]
+                if isinstance(breakout_date, pd.Timestamp):
+                    breakout_date = breakout_date.date()
+                elif hasattr(breakout_date, 'date'):
+                    breakout_date = breakout_date.date()
+                days_since_breakout = (datetime.today().date() - breakout_date).days
+                
+                if days_since_breakout > 10:
+                    logger.info(f"⏭️ Skipping {sym} - breakout is {days_since_breakout} days old (>10 days, too stale)")
                     continue
-                risk_reward_ratio = reward_amount / risk_amount
-
-                # Reject trades with poor risk/reward
-                if risk_reward_ratio < MIN_RISK_REWARD:
-                    logger.info(f"⏭️ Skipping {sym} - poor risk/reward 1:{risk_reward_ratio:.2f} (< {MIN_RISK_REWARD})")
-                    continue
-
-                # Reject entries that are too extended above breakout level
-                breakout_level = high2
-                if breakout_level > 0:
-                    distance_above = (entry / breakout_level - 1.0) * 100.0
-                    if distance_above > MAX_ENTRY_ABOVE_BREAKOUT_PCT:
-                        logger.info(
-                            f"⏭️ Skipping {sym} - entry {distance_above:.2f}% above breakout "
-                            f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
-                        )
+                elif days_since_breakout > 3:
+                    # Allow only if price is still holding above breakout level
+                    if entry < high2:
+                        logger.info(f"⏭️ Skipping {sym} - breakout {days_since_breakout} days old and price ₹{entry:.2f} has fallen below breakout level ₹{high2:.2f}")
                         continue
+                    else:
+                        logger.info(f"✅ {sym} - breakout {days_since_breakout} days old but price ₹{entry:.2f} still holding above ₹{high2:.2f}")
                 
                 # Add to signals
                 # Ensure date is a string in YYYY-MM-DD format
@@ -1440,6 +1500,7 @@ def detect_live_patterns(symbols, listing_map):
                     "signal_id": sid,
                     "symbol": sym,
                     "signal_date": date_str,
+                    "signal_time": datetime.now().strftime("%H:%M:%S"),
                     "entry_price": round(entry, 2),
                     "grade": grade,
                     "score": score,
@@ -1450,8 +1511,17 @@ def detect_live_patterns(symbols, listing_map):
                     "exit_price": 0,
                     "pnl_pct": 0,
                     "days_held": 0,
-                    "signal_type": "CONSOLIDATION"
+                    "signal_type": "CONSOLIDATION",
+                    "version": SCANNER_VERSION,
+                    "scanner": "consolidation_live"
                 }
+                
+                # Write to daily log
+                write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
+                    "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
+                    "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
+                    "consolidation_window": w, "price_source": price_source
+                })
                 
                 # Add to positions
                 new_position = {
@@ -1539,14 +1609,16 @@ def detect_live_patterns(symbols, listing_map):
 • Use ₹{entry:.2f} as reference price
 • Set stop loss at ₹{stop:.2f}
 • Target: ₹{target:.2f}
-⚡ Consolidation pattern detected"""
+⚡ Consolidation pattern detected
+
+🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}"""
                 send_telegram(message)
                 
                 signals_found += 1
                 processed_today.add(today_key)
-                break
-            if signals_found > 0: break
-        if signals_found > 0: break
+                break  # break inner loop (over i) - found signal for this symbol
+            if sym in processed_today or any(f"{sym}_" in k for k in processed_today): break  # break window loop for this symbol
+        # DO NOT break the symbol loop — continue scanning other symbols
     
     logger.info(f"Live pattern scan complete: {signals_found} signals found from {symbols_processed} symbols")
     return signals_found
@@ -1614,7 +1686,11 @@ def detect_scan(symbols, listing_map):
                 
                 if i == len(df) - 1:
                     # This is the latest candle - check LIVE price for breakout
-                    live_price, _ = get_live_price(sym)
+                    # Only use live price during market hours
+                    if is_market_hours():
+                        live_price, _ = get_live_price(sym)
+                    else:
+                        live_price = float(df["CLOSE"].iloc[-1])
                     if live_price is not None and live_price > max(high2, lhigh*0.97):
                         is_live_breakout = True
                         breakout_candle_idx = i
@@ -1622,7 +1698,8 @@ def detect_scan(symbols, listing_map):
                 else:
                     # Check future candles for breakout confirmation
                     for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
-                        if df["HIGH"].iat[j] > max(high2, lhigh*0.97):
+                        # QUALITY CHECK: Breakout candle must CLOSE above consolidation high
+                        if df["CLOSE"].iat[j] > max(high2, lhigh*0.97) and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
                             is_live_breakout = True
                             breakout_candle_idx = j
                             break
@@ -1635,7 +1712,7 @@ def detect_scan(symbols, listing_map):
                     continue
                 
                 # Continue with breakout validation
-                # Follow-through filter: next day close > base high and volume ≥110% of breakout day
+                # Follow-through filter (relaxed): next day should show conviction
                 if j + 1 < len(df):
                     breakout_close = df["CLOSE"].iat[j]
                     breakout_volume = df["VOLUME"].iat[j]
@@ -1643,9 +1720,9 @@ def detect_scan(symbols, listing_map):
                     next_day_volume = df["VOLUME"].iat[j + 1]
                     base_high = df["HIGH"][j-w+1:j+1].max()
 
-                    if next_day_close <= base_high:
-                        continue
-                    if next_day_volume < 1.1 * breakout_volume:
+                    close_holds = next_day_close > base_high * 0.98  # Allow 2% pullback
+                    volume_confirms = next_day_volume >= 0.8 * breakout_volume  # 80% volume ok
+                    if not close_holds and not volume_confirms:
                         continue
 
                 score = compute_grade_hybrid(df, j, w, avgv)
@@ -1747,11 +1824,20 @@ def detect_scan(symbols, listing_map):
                 
                 row = {
                     "signal_id": sid, "symbol": sym, "signal_date": date_str,
+                    "signal_time": datetime.now().strftime("%H:%M:%S"),
                     "entry_price": entry, "grade": grade, "score": score,
                     "stop_loss": stop, "target_price": target,
                     "status": "ACTIVE", "exit_date": "", "exit_price": 0,
-                    "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION"
+                    "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION",
+                    "version": SCANNER_VERSION, "scanner": "consolidation_scan"
                 }
+                
+                # Write to daily log
+                write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
+                    "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
+                    "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
+                    "consolidation_window": w, "mode": "scan"
+                })
                 
                 # Read existing signals and append new signal
                 try:
@@ -1813,17 +1899,19 @@ def detect_scan(symbols, listing_map):
                     consolidation_low=low, consolidation_high=high2, breakout_price=entry,
                     data_source=data_source, current_price=current_price_display, price_source=price_source_display
                 )
-                # Add signal type to alert
+                # Add signal type and version to alert
                 signal_msg = signal_msg.replace("🎯 <b>IPO BREAKOUT SIGNAL</b>", 
                                                "🎯 <b>CONSOLIDATION BREAKOUT SIGNAL</b>\n\n📋 <b>Signal Type:</b> Consolidation-Based Breakout")
+                signal_msg += f"\n\n🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}"
                 send_telegram(signal_msg)
                 signals_found += 1
                 logger.info(f"🎯 Signal found: {sym} - {grade} grade at {entry}")
                 
                 # Mark this symbol as processed today to prevent duplicates
                 processed_today.add(today_key)
-                break
-            break
+                break  # break inner loop (over i) - found signal for this symbol
+            if sym in processed_today or any(f"{sym}_" in k for k in processed_today): break  # break window loop for this symbol
+        # DO NOT break the symbol loop — continue scanning other symbols
     
     logger.info(f"📊 Scan complete: {signals_found} signals found from {symbols_processed} symbols processed")
     

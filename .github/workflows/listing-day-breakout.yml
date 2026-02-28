@@ -14,7 +14,7 @@ on:
       check_new_ipos:
         description: 'Update listing data for new IPOs first'
         required: false
-        default: 'true'
+        default: true
         type: boolean
 
 jobs:
@@ -86,7 +86,8 @@ jobs:
           
           # Check if there are changes to commit
           if [ -n "$(git status --porcelain)" ]; then
-            git add ipo_listing_data.csv ipo_signals.csv ipo_positions.csv
+            git add ipo_listing_data.csv ipo_signals.csv ipo_positions.csv logs/ 2>/dev/null || true
+            git add
             git commit -m "🤖 Auto-update: Listing day breakout scan results [$(date '+%Y-%m-%d %H:%M:%S')]" || exit 0
             git push || exit 0
           else
