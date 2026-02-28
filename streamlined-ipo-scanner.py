@@ -105,7 +105,10 @@ def stock_df(symbol, from_date, to_date, series="EQ"):
         return df
         
     except Exception as e:
-        logger.error(f"Error in custom stock_df for {symbol}: {e}")
+        error_msg = str(e)
+        logger.error(f"Error in custom stock_df for {symbol}: {error_msg}")
+        if "Expecting value" in error_msg or "Max retries exceeded" in error_msg:
+            return "FATAL_API_ERROR"
         return pd.DataFrame()
 from fetch import fetch_recent_ipo_symbols
 # Import only the functions we need, not the entire module
@@ -873,7 +876,10 @@ def fetch_data(symbol, start_date):
                             time.sleep(0.2)  # Very short wait time
                 
                 # Debug: Log what we actually received
-                if df is None:
+                if isinstance(df, str) and df == "FATAL_API_ERROR":
+                    logger.warning(f"⚠️ Fatal API error for {symbol} - symbol likely invalid or missing on NSE. Aborting fallback.")
+                    break
+                elif df is None:
                     logger.warning(f"Received None for {symbol} - skipping")
                     continue
                 elif hasattr(df, 'empty') and df.empty:

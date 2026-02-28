@@ -50,11 +50,15 @@ def fetch_recent_ipo_symbols(years_back=1):
                     recent_ipos = df[recent_mask]
                     
                     # Remove suspicious companies
-                    # Remove suspicious companies
                     suspicious_patterns = ['RNBDENIMS'] # Kept one for example, but removed major groups to allow subsidiaries
                     if name_col:
                         suspicious_mask = recent_ipos[name_col].str.contains('|'.join(suspicious_patterns), case=False, na=False)
                         recent_ipos = recent_ipos[~suspicious_mask]
+                        
+                    # Remove RE and SME shares
+                    if symbol_col:
+                        re_sme_mask = recent_ipos[symbol_col].str.contains('-RE|-SM|RE1', case=False, na=False)
+                        recent_ipos = recent_ipos[~re_sme_mask]
                     
                     symbols = recent_ipos[symbol_col].tolist()
                     companies = recent_ipos[name_col].tolist() if name_col else symbols
@@ -108,7 +112,7 @@ def fetch_recent_ipo_symbols(years_back=1):
             
             # Method 3: Create minimal fallback
             fallback_symbols = [
-                'SWIGGY', 'BLACKBUCK', 'STALLION', 'BHARATSE', 'KMEW', 
+                'SWIGGY', 'BLACKBUCK', 'STALLION', 'BHARATSE', 
                 'NATCAPSUQ', 'MOSCHIP', 'TRAVELFOOD', 'OCCLLTD', 'GARUDA',
                 'CEWATER', 'RACLGEAR', 'ORCHASP', 'OSWALPUMPS', 'IGIL',
                 'VIKRAN', 'AFCONS', 'MOBIKWIK', 'MASTERTR', 'JAINREC'

@@ -185,6 +185,15 @@ def update_listing_data_for_new_ipos():
             symbol = row['symbol']
             listing_date = row['listing_date']
             
+            # Skip RE/SME right away to avoid noise
+            if '-RE' in symbol or symbol.endswith('-SM') or 'RE1' in symbol:
+                continue
+                
+            # Skip if listing date is today or in the future
+            # NSE archives only update EOD, so we wait until tomorrow to fetch listing data
+            if listing_date >= datetime.now().date():
+                continue
+            
             # Skip if already exists
             if symbol in existing_symbols:
                 continue
