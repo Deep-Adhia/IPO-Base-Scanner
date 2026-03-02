@@ -1,2 +1,6 @@
-signal_id,symbol,signal_date,entry_price,grade,score,stop_loss,target_price,status,exit_date,exit_price,pnl_pct,days_held,signal_type
-CONSOL_MIDWESTLTD_20251114_5_14_LIVE,MIDWESTLTD,2025-11-14,1160.0,C,1,1020.8,1293.42,ACTIVE,,0,0,0,CONSOLIDATION
+signal_id,symbol,signal_date,entry_price,grade,score,stop_loss,target_price,status,exit_date,exit_price,pnl_pct,days_held,signal_type,notes,signal_time,version,scanner
+CONSOL_MIDWESTLTD_20251114_5_14_LIVE,MIDWESTLTD,2025-11-14,1160.0,C,1,1020.8,1293.42,ACTIVE,,0,0,0,CONSOLIDATION,,,,
+LISTING_ENRIN_20260302_0507,ENRIN,2026-03-02,2985.0,LISTING_BREAKOUT_LOW_VOL,80,2746.2,3269.0,ACTIVE,,0,0,0,LISTING_DAY_BREAKOUT,"VOLUME_CAUTION: Low volume spike: 680,155 vs avg 477,945 (need 1.5x); Low volume vs listing day: 0.2x (need 1.2x)",05:07:30,2.1.0,listing_day
+WATCHLIST_MWL_20260302,MWL,2026-03-02,0.0,WATCHLIST,0,0.0,265.0,WATCH,,0,0,0,WATCHLIST,Within 5% of listing high,,,
+WATCHLIST_SANATHAN_20260302,SANATHAN,2026-03-02,0.0,WATCHLIST,0,0.0,423.0,WATCH,,0,0,0,WATCHLIST,Within 5% of listing high,,,
+LISTING_SHADOWFAX_20260302_0512,SHADOWFAX,2026-03-02,120.04,LISTING_BREAKOUT_LOW_VOL,80,110.44,130.71,ACTIVE,,0,0,0,LISTING_DAY_BREAKOUT,"VOLUME_CAUTION: Low volume spike: 535,621 vs avg 1,583,493 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",05:12:36,2.1.0,listing_day

@@ -1,0 +1,2 @@
+{"timestamp": "2026-03-02 10:37:30 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "ENRIN", "action": "BREAKOUT_SIGNAL", "details": {"entry": 2985.0, "stop_loss": 2746.2, "target": 3269.0, "listing_high": 2982.0, "volume_caution": true}}
+{"timestamp": "2026-03-02 10:42:36 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "SHADOWFAX", "action": "BREAKOUT_SIGNAL", "details": {"entry": 120.04, "stop_loss": 110.44, "target": 130.71, "listing_high": 119.67, "volume_caution": true}}
