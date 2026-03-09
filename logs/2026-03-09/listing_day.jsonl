@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-09 10:45:03 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "RNBDENIMS", "action": "BREAKOUT_SIGNAL", "details": {"entry": 132.19, "stop_loss": 121.61, "target": 153.62, "listing_high": 128.98, "volume_caution": true}}
