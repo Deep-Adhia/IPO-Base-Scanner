@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-13 14:31:40 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "AMAGI", "action": "BREAKOUT_SIGNAL", "details": {"entry": 364.7, "stop_loss": 335.52, "target": 393.91, "listing_high": 356.95, "volume_caution": true}}
