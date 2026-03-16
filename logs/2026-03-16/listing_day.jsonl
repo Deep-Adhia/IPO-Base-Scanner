@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-16 12:34:29 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "AGARWALEYE", "action": "BREAKOUT_SIGNAL", "details": {"entry": 418.15, "stop_loss": 384.7, "target": 460.85, "listing_high": 412.9, "volume_caution": true}}
