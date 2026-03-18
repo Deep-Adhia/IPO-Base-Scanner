@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-18 10:53:51 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "OMNI", "action": "BREAKOUT_SIGNAL", "details": {"entry": 226.18, "stop_loss": 208.09, "target": 248.88, "listing_high": 224.7, "volume_caution": true}}
