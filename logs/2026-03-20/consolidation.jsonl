@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-20 15:14:37 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "WAAREERTL", "action": "REJECTED_BREAKOUT", "details": {"reason": "failed_follow_through", "close_holds": false, "volume_confirms": false}}
