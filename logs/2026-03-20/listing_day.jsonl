@@ -1,0 +1,1 @@
+{"timestamp": "2026-03-20 10:56:12 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "KOTYARK", "action": "BREAKOUT_SIGNAL", "details": {"entry": 369.05, "stop_loss": 339.53, "target": 421.05, "listing_high": 368.0, "volume_caution": true}}
