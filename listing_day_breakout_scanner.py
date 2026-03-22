@@ -41,16 +41,57 @@ get_live_price = scanner_module.get_live_price
 # Load environment
 load_dotenv()
 
-# Configuration
+
+def _env_bool(key: str, default: bool) -> bool:
+    v = os.getenv(key)
+    if v is None:
+        return default
+    return str(v).strip().lower() in ("1", "true", "yes", "on")
+
+
+def _env_float(key: str, default: float) -> float:
+    try:
+        return float(os.getenv(key, str(default)))
+    except (TypeError, ValueError):
+        return default
+
+
+def _env_int(key: str, default: int) -> int:
+    try:
+        return int(os.getenv(key, str(default)))
+    except (TypeError, ValueError):
+        return default
+
+
+# Quality mode: strict = only trades with full volume + freshness (default ON — "good trades only")
+LISTING_STRICT_QUALITY = _env_bool("LISTING_STRICT_QUALITY", True)
+
+# Configuration (stricter defaults when LISTING_STRICT_QUALITY is True)
 LISTING_DATA_CSV = "ipo_listing_data.csv"
 SIGNALS_CSV = "ipo_signals.csv"
 POSITIONS_CSV = "ipo_positions.csv"
 RECENT_IPO_CSV = "recent_ipo_symbols.csv"
-MIN_VOLUME_MULTIPLIER = 1.5  # Minimum volume spike for breakout confirmation
-MAX_ENTRY_ABOVE_HIGH_PCT = 5.0  # Maximum % above listing high for entry (prevents late entries - stricter)
-MIN_RISK_REWARD = 1.0  # Minimum risk/reward ratio (1:1 minimum)
-STOP_LOSS_PCT = 8.0  # Fixed stop loss % below entry (8%)
-MIN_VOLUME_VS_LISTING_DAY = 1.2  # Minimum current volume vs listing day volume (1.2x = 20% higher)
+MIN_VOLUME_MULTIPLIER = _env_float(
+    "LISTING_MIN_VOLUME_MULT", 1.8 if LISTING_STRICT_QUALITY else 1.5
+)
+MAX_ENTRY_ABOVE_HIGH_PCT = _env_float(
+    "LISTING_MAX_ENTRY_ABOVE_HIGH_PCT", 3.5 if LISTING_STRICT_QUALITY else 5.0
+)
+MIN_RISK_REWARD = _env_float(
+    "LISTING_MIN_RISK_REWARD", 1.25 if LISTING_STRICT_QUALITY else 1.0
+)
+STOP_LOSS_PCT = _env_float("LISTING_STOP_LOSS_PCT", 8.0)
+MIN_VOLUME_VS_LISTING_DAY = _env_float(
+    "LISTING_MIN_VOL_VS_LISTING", 1.0 if LISTING_STRICT_QUALITY else 1.2
+)
+# Reject listing-high breakouts when IPO is too old (strategy is "listing day" edge)
+MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT = _env_int(
+    "LISTING_MAX_DAYS_SINCE_LISTING", 60 if LISTING_STRICT_QUALITY else 365
+)
+# If listing-day volume in CSV is 0 / missing, require this multiple of recent avg volume
+MIN_VOL_MULT_WHEN_NO_LISTING_VOL = _env_float(
+    "LISTING_MIN_VOL_MULT_WHEN_NO_LISTING_VOL", 2.0 if LISTING_STRICT_QUALITY else 1.5
+)
 
 def initialize_listing_data_csv():
     """Initialize listing data CSV if it doesn't exist"""
@@ -377,16 +418,46 @@ def check_listing_day_breakout(symbol, listing_info):
             
             days_since_listing = (today_date - listing_date_obj).days
             
-            # Check volume vs listing day (now a warning, not a rejection)
+            # Check volume vs listing day (warning in relaxed mode; strict mode enforces below)
             volume_vs_listing_day = current_volume / listing_day_volume if listing_day_volume > 0 else 0
             if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
-                # Add warning instead of rejecting
                 volume_warnings.append(f"Low volume vs listing day: {volume_vs_listing_day:.1f}x (need {MIN_VOLUME_VS_LISTING_DAY:.1f}x)")
-                if signal_type == 'BREAKOUT':
+                if signal_type == 'BREAKOUT' and not LISTING_STRICT_QUALITY:
                     logger.warning(f"⚠️ {symbol}: Low volume vs listing day ({volume_vs_listing_day:.1f}x, need {MIN_VOLUME_VS_LISTING_DAY:.1f}x) - sending signal with caution")
+
+            # --- Strict quality gate (default): only persist / alert full-quality breakouts ---
+            if LISTING_STRICT_QUALITY and signal_type == 'BREAKOUT':
+                if days_since_listing > MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT:
+                    rejection_reason = (
+                        f"Strict: {days_since_listing}d since listing (max {MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT}d)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                if not volume_spike:
+                    rejection_reason = (
+                        f"Strict: volume spike required (current {current_volume:,.0f} vs avg {avg_volume:,.0f}, need {MIN_VOLUME_MULTIPLIER}x)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                if listing_day_volume > 0:
+                    if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
+                        rejection_reason = (
+                            f"Strict: volume vs listing day {volume_vs_listing_day:.2f}x < {MIN_VOLUME_VS_LISTING_DAY}x"
+                        )
+                        logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                        return None
+                else:
+                    if current_volume < avg_volume * MIN_VOL_MULT_WHEN_NO_LISTING_VOL:
+                        rejection_reason = (
+                            f"Strict: listing day volume missing/0 — need current vol ≥ {MIN_VOL_MULT_WHEN_NO_LISTING_VOL}x avg ({avg_volume:,.0f})"
+                        )
+                        logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                        return None
+                # Passed strict checks — treat as high-quality (no LOW_VOL grade)
+                volume_warnings = []
             
-            # CRITICAL FIX: Stop loss is 8% below entry (fixed percentage, NOT based on listing day low)
-            stop_loss_pct = 0.08  # Fixed 8% below entry
+            # Stop loss % below entry (configurable via LISTING_STOP_LOSS_PCT)
+            stop_loss_pct = STOP_LOSS_PCT / 100.0
             
             # Calculate stop loss purely based on entry price percentage
             stop_loss = entry_price * (1 - stop_loss_pct)
@@ -520,7 +591,7 @@ def format_listing_breakout_alert(breakout_data):
 💰 <b>Entry Details:</b>
 • Current Price: ₹{current_price:,.2f} ({price_source})
 • Entry: ₹{entry:,.2f} ({entry_above_high_pct:+.1f}% above listing high)
-• Stop Loss: ₹{stop:,.2f} (8% below entry)
+• Stop Loss: ₹{stop:,.2f} ({STOP_LOSS_PCT:.0f}% below entry)
 • Target: ₹{target:,.2f} (Entry + {target_multiplier*100:.0f}% of listing range)
 • Risk:Reward: 1:{rr:.1f} ✅
 
@@ -818,6 +889,13 @@ def update_listing_status(symbol, status):
 def scan_listing_day_breakouts():
     """Main function to scan for listing day breakouts"""
     logger.info("🚀 Starting Listing Day Breakout Scan...")
+    if LISTING_STRICT_QUALITY:
+        logger.info(
+            f"⚙️ Quality: STRICT — full volume + freshness, min R:R {MIN_RISK_REWARD}, "
+            f"max {MAX_ENTRY_ABOVE_HIGH_PCT}% above listing high, max {MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT}d since listing"
+        )
+    else:
+        logger.info("⚙️ Quality: RELAXED — low-vol breakouts may be sent with caution")
     logger.info("=" * 60)
     
     # Initialize CSV

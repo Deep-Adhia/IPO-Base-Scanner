@@ -1,5 +1,22 @@
 # Listing Day Breakout Scanner - Logic Summary
 
+## Strict quality mode (default — “good trades only”)
+
+Set `LISTING_STRICT_QUALITY=true` (default). Then a **BREAKOUT** is saved to CSV / positions **only if**:
+
+| Check | Default (strict) |
+|--------|------------------|
+| Days since listing | ≤ `LISTING_MAX_DAYS_SINCE_LISTING` (60) |
+| Volume vs 10d avg | ≥ `LISTING_MIN_VOLUME_MULT` (1.8×) |
+| Volume vs listing day | ≥ `LISTING_MIN_VOL_VS_LISTING` (1.0×) when listing-day volume > 0 |
+| Listing vol missing/0 | Today's vol ≥ `LISTING_MIN_VOL_MULT_WHEN_NO_LISTING_VOL` (2×) avg |
+| Entry above listing high | ≤ `LISTING_MAX_ENTRY_ABOVE_HIGH_PCT` (3.5%) |
+| Min R:R | ≥ `LISTING_MIN_RISK_REWARD` (1.25) |
+
+Set `LISTING_STRICT_QUALITY=false` to restore **low-volume cautions** (`LISTING_BREAKOUT_LOW_VOL`) without hard rejection.
+
+---
+
 ## Requirements (Final Implementation):
 1. ✅ Detect shares near listing day high (within 5% limit)
 2. ✅ Listing day high and listing day low are important levels (reference)
