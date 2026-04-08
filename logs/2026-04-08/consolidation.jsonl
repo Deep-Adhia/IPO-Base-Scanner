@@ -1,0 +1,3 @@
+{"timestamp": "2026-04-08 15:24:02 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "KNAGRI", "action": "REJECTED_BREAKOUT", "details": {"reason": "low_grade", "grade": "D", "min_required": "C"}}
+{"timestamp": "2026-04-08 15:27:16 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "SAMBHV", "action": "REJECTED_BREAKOUT", "details": {"reason": "cooldown", "gap_days": 0}}
+{"timestamp": "2026-04-08 15:27:16 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "SAMBHV", "action": "REJECTED_BREAKOUT", "details": {"reason": "low_grade", "grade": "D", "min_required": "C"}}
