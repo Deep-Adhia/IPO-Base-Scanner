@@ -234,3 +234,8 @@ hybrid_checkpoint.pkl
 # Temporary files
 temp_*
 tmp_*
+
+# Generated analysis artifacts
+combined_logs_for_ai.jsonl
+combined_logs_for_ai.jsonl.summary.json
+monthly_system_report.json

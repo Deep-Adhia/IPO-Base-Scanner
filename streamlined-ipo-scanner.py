@@ -485,6 +485,50 @@ def format_exit_alert(symbol, exit_reason, exit_price, pnl_pct, days_held, entry
 
 {datetime.now().strftime('%Y-%m-%d %H:%M')}"""
     return msg
+
+
+def close_active_signal(symbol, exit_price, pnl_pct, days_held, exit_reason):
+    """Mark the latest ACTIVE signal for symbol as CLOSED for lifecycle consistency."""
+    try:
+        if not os.path.exists(SIGNALS_CSV):
+            return
+        df_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+        if df_signals.empty:
+            return
+        if 'status' not in df_signals.columns:
+            return
+        # Keep backward compatibility for optional columns
+        if 'exit_date' not in df_signals.columns:
+            df_signals['exit_date'] = ""
+        if 'exit_price' not in df_signals.columns:
+            df_signals['exit_price'] = 0.0
+        if 'pnl_pct' not in df_signals.columns:
+            df_signals['pnl_pct'] = 0.0
+        if 'days_held' not in df_signals.columns:
+            df_signals['days_held'] = 0
+        if 'notes' not in df_signals.columns:
+            df_signals['notes'] = ""
+
+        active_idx = df_signals.index[
+            (df_signals['symbol'] == symbol) & (df_signals['status'] == 'ACTIVE')
+        ].tolist()
+        if not active_idx:
+            return
+
+        # Close the latest active signal (last row index)
+        idx = active_idx[-1]
+        df_signals.loc[idx, 'status'] = 'CLOSED'
+        df_signals.loc[idx, 'exit_date'] = datetime.today().strftime("%Y-%m-%d")
+        df_signals.loc[idx, 'exit_price'] = float(exit_price)
+        df_signals.loc[idx, 'pnl_pct'] = float(pnl_pct)
+        df_signals.loc[idx, 'days_held'] = int(days_held)
+        notes = str(df_signals.loc[idx, 'notes']) if pd.notna(df_signals.loc[idx, 'notes']) else ""
+        reason_note = f"EXIT_REASON={exit_reason}"
+        df_signals.loc[idx, 'notes'] = f"{notes} | {reason_note}".strip(" |")
+
+        df_signals.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+    except Exception as e:
+        logger.error(f"Error syncing signal close for {symbol}: {e}")
     
 def initialize_csvs():
     if not os.path.exists(SIGNALS_CSV):
@@ -1086,6 +1130,7 @@ def update_positions():
                 "CLOSED", datetime.today().strftime("%Y-%m-%d"),
                 float(current_price), float(pnl), int(days)
             ]
+            close_active_signal(sym, current_price, pnl, days, exit_reason)
             # Send detailed exit alert
             exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days, pos["entry_price"])
             send_telegram(exit_msg)
@@ -2273,6 +2318,7 @@ def stop_loss_update_scan():
                 df_positions.loc[idx, ["status", "exit_date", "exit_price", "pnl_pct", "days_held"]] = [
                     "CLOSED", datetime.today().strftime("%Y-%m-%d"), current_price, pnl, days_held
                 ]
+                close_active_signal(sym, current_price, pnl, days_held, exit_reason)
                 exits_triggered += 1
                 
                 # Send exit alert

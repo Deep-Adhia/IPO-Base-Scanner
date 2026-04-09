@@ -12,6 +12,7 @@ IPO Listing Day Breakout Scanner:
 
 import os
 import sys
+import json
 import pandas as pd
 import numpy as np
 import requests
@@ -19,6 +20,13 @@ import time
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import logging
+from datetime import time as dt_time
+
+try:
+    import yfinance as yf
+    YFINANCE_AVAILABLE = True
+except Exception:
+    YFINANCE_AVAILABLE = False
 
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -70,7 +78,9 @@ LISTING_STRICT_QUALITY = _env_bool("LISTING_STRICT_QUALITY", True)
 LISTING_DATA_CSV = "ipo_listing_data.csv"
 SIGNALS_CSV = "ipo_signals.csv"
 POSITIONS_CSV = "ipo_positions.csv"
+WATCHLIST_SIGNALS_CSV = "ipo_watchlist_signals.csv"
 RECENT_IPO_CSV = "recent_ipo_symbols.csv"
+PENDING_BREAKOUTS_FILE = "listing_pending_breakouts.json"
 MIN_VOLUME_MULTIPLIER = _env_float(
     "LISTING_MIN_VOLUME_MULT", 1.8 if LISTING_STRICT_QUALITY else 1.5
 )
@@ -91,6 +101,12 @@ MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT = _env_int(
 # If listing-day volume in CSV is 0 / missing, require this multiple of recent avg volume
 MIN_VOL_MULT_WHEN_NO_LISTING_VOL = _env_float(
     "LISTING_MIN_VOL_MULT_WHEN_NO_LISTING_VOL", 2.0 if LISTING_STRICT_QUALITY else 1.5
+)
+LISTING_CONFIRMATION_MINUTES = _env_int(
+    "LISTING_CONFIRMATION_MINUTES", 60
+)
+LISTING_MIN_LEADER_SCORE = _env_int(
+    "LISTING_MIN_LEADER_SCORE", 5
 )
 
 def initialize_listing_data_csv():
@@ -139,6 +155,102 @@ def save_listing_data(df):
         df.to_csv(LISTING_DATA_CSV, index=False, encoding='utf-8')
     except Exception as e:
         logger.error(f"Error saving listing data: {e}")
+
+
+def initialize_watchlist_data_csv():
+    """Initialize dedicated watchlist CSV if it doesn't exist."""
+    if not os.path.exists(WATCHLIST_SIGNALS_CSV):
+        pd.DataFrame(columns=[
+            "signal_id", "symbol", "signal_date", "signal_time", "status",
+            "watch_level", "current_price", "distance_pct", "notes", "version", "scanner"
+        ]).to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
+
+
+def load_pending_breakouts():
+    """Load pending breakout confirmation state from disk."""
+    if not os.path.exists(PENDING_BREAKOUTS_FILE):
+        return {}
+    try:
+        with open(PENDING_BREAKOUTS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            return data
+    except Exception:
+        pass
+    return {}
+
+
+def save_pending_breakouts(data):
+    """Persist pending breakout confirmation state."""
+    try:
+        with open(PENDING_BREAKOUTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.warning(f"Could not save pending breakouts: {e}")
+
+
+def _now_ist():
+    # Keep one IST source for consistent timestamps
+    return datetime.utcnow() + timedelta(hours=5, minutes=30)
+
+
+def _market_is_open_ist():
+    now = _now_ist()
+    if now.weekday() >= 5:
+        return False
+    t = now.time()
+    return dt_time(9, 15) <= t <= dt_time(15, 30)
+
+
+def _get_intraday_bars(symbol, interval="5m", period="1d"):
+    """Fetch intraday bars from yfinance for confirmation logic."""
+    if not YFINANCE_AVAILABLE:
+        return pd.DataFrame()
+    try:
+        df = yf.Ticker(f"{symbol}.NS").history(period=period, interval=interval)
+        if df is None or df.empty:
+            return pd.DataFrame()
+        # Normalize columns to expected shape
+        out = df.reset_index().rename(columns={
+            "Datetime": "DATE", "Open": "OPEN", "High": "HIGH", "Low": "LOW", "Close": "CLOSE", "Volume": "VOLUME"
+        })
+        cols = [c for c in ["DATE", "OPEN", "HIGH", "LOW", "CLOSE", "VOLUME"] if c in out.columns]
+        return out[cols]
+    except Exception:
+        return pd.DataFrame()
+
+
+def _leader_score(entry_above_high_pct, volume_spike, risk_reward, current_price, listing_high, listing_range_pct):
+    """
+    Simple leader score (0-8 with extension penalty) for selection quality.
+    """
+    score = 0
+    # Volume strength (0-2)
+    if volume_spike >= 2.0:
+        score += 2
+    elif volume_spike >= 1.5:
+        score += 1
+    # Breakout strength (0-2)
+    if current_price >= listing_high * 1.01:
+        score += 2
+    elif current_price >= listing_high:
+        score += 1
+    # Structure quality proxy (0-2) tighter range preferred
+    if listing_range_pct <= 18:
+        score += 2
+    elif listing_range_pct <= 28:
+        score += 1
+    # Close/risk quality (0-2)
+    if risk_reward >= 1.8:
+        score += 2
+    elif risk_reward >= 1.25:
+        score += 1
+    # Extension penalty (-2 to 0)
+    if entry_above_high_pct > 4.0:
+        score -= 2
+    elif entry_above_high_pct > 2.5:
+        score -= 1
+    return score
 
 def get_listing_day_data(symbol, listing_date):
     """Fetch and extract listing day high/low from historical data"""
@@ -267,7 +379,7 @@ def update_listing_data_for_new_ipos():
     except Exception as e:
         logger.error(f"Error updating listing data: {e}")
 
-def check_listing_day_breakout(symbol, listing_info):
+def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
     """Check if symbol has broken listing day high with volume"""
     try:
         listing_day_high = listing_info['listing_day_high']
@@ -482,6 +594,91 @@ def check_listing_day_breakout(symbol, listing_info):
                 rejection_reason = f"Risk/Reward ratio ({risk_reward:.2f}) below minimum ({MIN_RISK_REWARD:.1f})"
                 logger.info(f"⏭️ Skipping {symbol}: Risk/Reward ratio ({risk_reward:.2f}) is below minimum ({MIN_RISK_REWARD:.1f})")
                 return None
+
+            # Leader score gate (selection quality)
+            leader_score = _leader_score(
+                entry_above_high_pct=entry_above_high_pct,
+                volume_spike=(current_volume / avg_volume) if avg_volume > 0 else 0,
+                risk_reward=risk_reward,
+                current_price=current_price,
+                listing_high=listing_day_high,
+                listing_range_pct=listing_range_pct
+            )
+            if signal_type == 'BREAKOUT' and leader_score < LISTING_MIN_LEADER_SCORE:
+                logger.info(f"⏭️ Skipping {symbol}: Leader score {leader_score} < {LISTING_MIN_LEADER_SCORE}")
+                return None
+
+            # Intraday confirmation engine: PENDING -> CONFIRMED -> ENTER
+            if signal_type == 'BREAKOUT' and LISTING_CONFIRMATION_MINUTES > 0 and _market_is_open_ist():
+                if pending_breakouts is None:
+                    pending_breakouts = {}
+                state = pending_breakouts.get(symbol)
+                now_ts = _now_ist()
+                now_iso = now_ts.isoformat()
+                if not state:
+                    pending_breakouts[symbol] = {
+                        "started_at": now_iso,
+                        "breakout_level": float(listing_day_high),
+                        "max_price_seen": float(current_price),
+                        "last_price": float(current_price)
+                    }
+                    logger.info(f"⏳ {symbol}: breakout moved to PENDING for {LISTING_CONFIRMATION_MINUTES}m confirmation")
+                    write_daily_log("listing_day", symbol, "PENDING_STARTED", {
+                        "breakout_level": float(listing_day_high),
+                        "confirm_minutes": LISTING_CONFIRMATION_MINUTES,
+                        "price": round(float(current_price), 2),
+                        "leader_score": int(leader_score),
+                    })
+                    return {
+                        "symbol": symbol,
+                        "type": "PENDING",
+                        "current_price": round(current_price, 2),
+                        "listing_day_high": listing_day_high,
+                        "confirm_minutes": LISTING_CONFIRMATION_MINUTES,
+                    }
+                # update state
+                started = datetime.fromisoformat(state["started_at"])
+                state["max_price_seen"] = max(float(state.get("max_price_seen", current_price)), float(current_price))
+                state["last_price"] = float(current_price)
+                pending_breakouts[symbol] = state
+
+                # rejection filter during observation
+                max_seen = float(state["max_price_seen"])
+                rejection_pct = ((max_seen - current_price) / max_seen * 100) if max_seen > 0 else 0
+                if current_price < listing_day_high or rejection_pct > 2.5:
+                    rej_reason = "below_breakout" if current_price < listing_day_high else "rejection_from_high"
+                    pending_breakouts.pop(symbol, None)
+                    logger.info(f"⏭️ {symbol}: pending confirmation rejected (price hold/rejection failed)")
+                    write_daily_log("listing_day", symbol, "PENDING_REJECTED", {
+                        "reason": rej_reason,
+                        "current_price": round(float(current_price), 2),
+                        "breakout_level": float(listing_day_high),
+                        "rejection_pct": round(float(rejection_pct), 2),
+                        "max_price_seen": round(float(max_seen), 2),
+                        "elapsed_minutes": int((now_ts - started).total_seconds() // 60),
+                    })
+                    return None
+
+                elapsed_min = int((now_ts - started).total_seconds() // 60)
+                if elapsed_min < LISTING_CONFIRMATION_MINUTES:
+                    logger.info(f"⏳ {symbol}: pending {elapsed_min}/{LISTING_CONFIRMATION_MINUTES}m confirmed hold")
+                    return {
+                        "symbol": symbol,
+                        "type": "PENDING",
+                        "current_price": round(current_price, 2),
+                        "listing_day_high": listing_day_high,
+                        "confirm_minutes": LISTING_CONFIRMATION_MINUTES,
+                    }
+                # Confirmed
+                pending_breakouts.pop(symbol, None)
+                breakout_conditions.append(f"Confirmed hold {LISTING_CONFIRMATION_MINUTES}m above breakout")
+                write_daily_log("listing_day", symbol, "PENDING_CONFIRMED", {
+                    "breakout_level": float(listing_day_high),
+                    "confirm_minutes": LISTING_CONFIRMATION_MINUTES,
+                    "entry_reference": round(float(current_price), 2),
+                    "leader_score": int(leader_score),
+                    "elapsed_minutes": elapsed_min,
+                })
             
             # Calculate gain from listing day close
             gain_from_listing_close = ((current_price - listing_day_close) / listing_day_close * 100) if listing_day_close > 0 else 0
@@ -511,6 +708,7 @@ def check_listing_day_breakout(symbol, listing_info):
                 'last_updated': last_updated,
                 'volume_warnings': volume_warnings,
                 'has_volume_caution': len(volume_warnings) > 0,
+                'leader_score': int(leader_score),
                 'type': signal_type  # 'BREAKOUT' or 'WATCHLIST'
             }
         
@@ -739,7 +937,8 @@ def save_breakout_signal(breakout_data):
             "signal_type": "LISTING_DAY_BREAKOUT",
             "notes": volume_note,
             "version": SCANNER_VERSION,
-            "scanner": "listing_day"
+            "scanner": "listing_day",
+            "leader_score": int(breakout_data.get("leader_score", 0))
         }
         
         # Write to daily log
@@ -778,8 +977,9 @@ def save_watchlist_signal(breakout_data):
         signal_id = f"WATCHLIST_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}"
         
         # Check if signal already exists
-        if os.path.exists(SIGNALS_CSV):
-            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+        initialize_watchlist_data_csv()
+        if os.path.exists(WATCHLIST_SIGNALS_CSV):
+            existing_signals = pd.read_csv(WATCHLIST_SIGNALS_CSV, encoding='utf-8')
             if 'signal_id' in existing_signals.columns:
                 # Check for same signal ID
                 if signal_id in existing_signals['signal_id'].tolist():
@@ -788,30 +988,28 @@ def save_watchlist_signal(breakout_data):
         else:
             existing_signals = pd.DataFrame()
             
-        # Create new signal record (simplified for watchlist)
+        distance_pct = ((breakout_data['listing_day_high'] - breakout_data['current_price']) / breakout_data['listing_day_high'] * 100) if breakout_data['listing_day_high'] > 0 else 0
+
+        # Create new signal record (watchlist-only storage)
         new_signal = {
             "signal_id": signal_id,
             "symbol": breakout_data['symbol'],
             "signal_date": today,
-            "entry_price": 0, # No entry yet
-            "grade": "WATCHLIST",
-            "score": 0,
-            "stop_loss": 0,
-            "target_price": breakout_data['listing_day_high'], # Target is the breakout level
+            "signal_time": _now_ist().strftime("%H:%M:%S"),
             "status": "WATCH",
-            "exit_date": "",
-            "exit_price": 0,
-            "pnl_pct": 0,
-            "days_held": 0,
-            "signal_type": "WATCHLIST",
-            "notes": f"Within 5% of listing high"
+            "watch_level": breakout_data['listing_day_high'],
+            "current_price": breakout_data['current_price'],
+            "distance_pct": round(distance_pct, 2),
+            "notes": "Within 5% of listing high",
+            "version": SCANNER_VERSION,
+            "scanner": "listing_day"
         }
         
         new_df = pd.DataFrame([new_signal])
         if existing_signals.empty:
-            new_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+            new_df.to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
         else:
-            pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+            pd.concat([existing_signals, new_df], ignore_index=True).to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
             
         logger.info(f"✅ Saved watchlist signal for {breakout_data['symbol']}")
         return True
@@ -900,6 +1098,7 @@ def scan_listing_day_breakouts():
     
     # Initialize CSV
     initialize_listing_data_csv()
+    initialize_watchlist_data_csv()
     
     # Update listing data for new IPOs
     logger.info("📊 Step 1: Updating listing data for new IPOs...")
@@ -923,6 +1122,7 @@ def scan_listing_day_breakouts():
     logger.info(f"📋 Monitoring {len(active_listings)} active listings...")
     
     breakouts_found = 0
+    pending_breakouts = load_pending_breakouts()
     
     for idx, listing_info in active_listings.iterrows():
         symbol = listing_info['symbol']
@@ -930,7 +1130,7 @@ def scan_listing_day_breakouts():
         
         try:
             # Check for breakout
-            breakout = check_listing_day_breakout(symbol, listing_info)
+            breakout = check_listing_day_breakout(symbol, listing_info, pending_breakouts)
             
             if breakout:
                 signal_type = breakout.get('type', 'BREAKOUT')
@@ -961,6 +1161,8 @@ def scan_listing_day_breakouts():
                         logger.info(f"👀 Sending WATCHLIST alert for {symbol}")
                         alert_msg = format_watchlist_alert(breakout)
                         send_telegram(alert_msg)
+                elif signal_type == 'PENDING':
+                    logger.info(f"⏳ {symbol}: pending confirmation in progress")
                 
                 # Small delay
                 time.sleep(0.5)
@@ -977,6 +1179,7 @@ def scan_listing_day_breakouts():
     
     logger.info(f"\n{'='*60}")
     logger.info(f"✅ Scan complete: {breakouts_found} breakouts found")
+    save_pending_breakouts(pending_breakouts)
     
     # Send summary
     if breakouts_found > 0:
