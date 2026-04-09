@@ -1,0 +1,4 @@
+{"timestamp": "2026-04-09 15:36:08 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "SAMBHV", "action": "REJECTED_BREAKOUT", "details": {"reason": "cooldown", "gap_days": 1}}
+{"timestamp": "2026-04-09 15:36:08 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "SAMBHV", "action": "REJECTED_BREAKOUT", "details": {"reason": "low_grade", "grade": "D", "min_required": "C"}}
+{"timestamp": "2026-04-09 15:41:16 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "KNAGRI", "action": "REJECTED_BREAKOUT", "details": {"reason": "poor_risk_reward", "ratio": 0.83, "min_required": 1.3}}
+{"timestamp": "2026-04-09 15:50:33 IST", "version": "2.1.0", "scanner": "consolidation", "symbol": "ARSSBL", "action": "REJECTED_BREAKOUT", "details": {"reason": "poor_risk_reward", "ratio": 0.83, "min_required": 1.3}}
