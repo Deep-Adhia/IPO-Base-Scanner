@@ -1,0 +1,1 @@
+{"timestamp": "2026-04-09 11:08:16 IST", "version": "2.1.0", "scanner": "listing_day", "symbol": "AEPL", "action": "BREAKOUT_SIGNAL", "details": {"entry": 19.1, "stop_loss": 17.57, "target": 21.12, "listing_high": 18.98, "volume_caution": false}}
