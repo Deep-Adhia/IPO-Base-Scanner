@@ -42,6 +42,45 @@ _yfinance_last_request = 0.0
 _yfinance_lock = threading.Lock()
 _yfinance_min_delay = 0.2  # 200ms minimum delay between yfinance requests
 
+def auto_refresh_upstox_token():
+    """Automatically refresh Upstox token before the scan runs if refresh token is present."""
+    refresh_token = os.getenv('UPSTOX_REFRESH_TOKEN')
+    client_id = os.getenv('UPSTOX_API_KEY') or os.getenv('UPSTOX_CLIENT_ID')
+    client_secret = os.getenv('UPSTOX_API_SECRET') or os.getenv('UPSTOX_CLIENT_SECRET')
+    redirect_uri = os.getenv('UPSTOX_REDIRECT_URI', 'https://127.0.0.1')
+    
+    if not refresh_token or not client_id or not client_secret:
+        return
+        
+    url = 'https://api.upstox.com/v2/login/authorization/token'
+    headers = {
+        'accept': 'application/json',
+        'Api-Version': '2.0',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    data = {
+        'code': '',
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'redirect_uri': redirect_uri,
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, data=data)
+        if response.status_code == 200:
+            token_data = response.json()
+            new_access_token = token_data.get('access_token')
+            if new_access_token:
+                # Update environment variable for the current process
+                os.environ['UPSTOX_ACCESS_TOKEN'] = new_access_token
+                logger.info("✅ Successfully refreshed Upstox access token")
+        else:
+            logger.error(f"❌ Failed to refresh Upstox token: {response.status_code} {response.text}")
+    except Exception as e:
+        logger.error(f"❌ Error refreshing Upstox token: {e}")
+
 def stock_df(symbol, from_date, to_date, series="EQ"):
     """Custom stock_df function that handles column mapping correctly"""
     try:
@@ -710,6 +749,15 @@ def get_live_price_upstox(symbol):
         
         url = f'https://api.upstox.com/v2/market-quote/quotes?instrument_key={instrument_key}'
         
+        import time
+        global _upstox_last_request
+        with _upstox_lock:
+            current_time = time.time()
+            time_since_last = current_time - _upstox_last_request
+            if time_since_last < 0.2:  # 200ms minimum delay
+                time.sleep(0.2 - time_since_last)
+            _upstox_last_request = time.time()
+            
         response = requests.get(url, headers=headers, timeout=10)
         
         if response.status_code == 200:
@@ -2433,6 +2481,7 @@ if __name__ == "__main__":
         print(f"Mode: {args.mode.upper()}")
         print("==========================================")
 
+    auto_refresh_upstox_token()
     initialize_csvs()
     update_positions()
     symbols, listing_map = get_symbols_and_listing()

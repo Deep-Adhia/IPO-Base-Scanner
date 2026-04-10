@@ -49,6 +49,34 @@ get_live_price = scanner_module.get_live_price
 # Load environment
 load_dotenv()
 
+REJECTIONS_CSV = "ipo_rejections.csv"
+
+def log_rejected_signal(symbol, current_price, listing_high, days_since, vol_ratio, reason):
+    try:
+        import os, pandas as pd
+        from datetime import datetime
+        
+        if not os.path.exists(REJECTIONS_CSV):
+            pd.DataFrame(columns=[
+                "symbol","date","price","listing_high","age_days","volume_mult","reason"
+            ]).to_csv(REJECTIONS_CSV, index=False, encoding='utf-8')
+            
+        new_row = pd.DataFrame([{
+            "symbol": symbol,
+            "date": datetime.today().strftime('%Y-%m-%d'),
+            "price": round(current_price, 2),
+            "listing_high": round(listing_high, 2),
+            "age_days": days_since,
+            "volume_mult": round(vol_ratio, 2),
+            "reason": reason
+        }])
+        
+        existing = pd.read_csv(REJECTIONS_CSV, encoding='utf-8') if os.path.exists(REJECTIONS_CSV) else pd.DataFrame()
+        pd.concat([existing, new_row], ignore_index=True).to_csv(REJECTIONS_CSV, index=False, encoding='utf-8')
+    except Exception as e:
+        logger.error(f"Failed to log rejection for {symbol}: {e}")
+
+
 
 def _env_bool(key: str, default: bool) -> bool:
     v = os.getenv(key)
@@ -108,6 +136,435 @@ LISTING_CONFIRMATION_MINUTES = _env_int(
 LISTING_MIN_LEADER_SCORE = _env_int(
     "LISTING_MIN_LEADER_SCORE", 5
 )
+# Watchlist = attention layer only; in strict mode use same strategy lens as breakouts (fresh IPO + real volume).
+LISTING_WATCHLIST_MAX_DAYS_SINCE_LISTING = _env_int(
+    "LISTING_WATCHLIST_MAX_DAYS_SINCE_LISTING", 90 if LISTING_STRICT_QUALITY else 365
+)
+# Hard cap: beyond this, not an “IPO base” setup at all (normal stock)
+LISTING_WATCHLIST_ABSOLUTE_MAX_AGE_DAYS = _env_int(
+    "LISTING_WATCHLIST_ABSOLUTE_MAX_AGE_DAYS", 120 if LISTING_STRICT_QUALITY else 365
+)
+# 0 = disabled. Use with base-quality filter: dry-up is allowed when structure is tight.
+LISTING_WATCHLIST_MIN_VOLUME_MULT = _env_float(
+    "LISTING_WATCHLIST_MIN_VOLUME_MULT", 0.0
+)
+# 0 = disabled. E.g. 1.05 = current vol must be ≤ 1.05× recent avg (dry-up cap).
+LISTING_WATCHLIST_MAX_VOL_VS_AVG = _env_float(
+    "LISTING_WATCHLIST_MAX_VOL_VS_AVG", 0.0
+)
+LISTING_WATCHLIST_MIN_LEADER_SCORE = _env_int(
+    "LISTING_WATCHLIST_MIN_LEADER_SCORE", LISTING_MIN_LEADER_SCORE
+)
+# Structured base (strict watchlist): volume dry-up only counts if price is tight, not “dead chop”
+LISTING_WATCHLIST_BASE_LOOKBACK = _env_int(
+    "LISTING_WATCHLIST_BASE_LOOKBACK", 7 if LISTING_STRICT_QUALITY else 5
+)
+LISTING_WATCHLIST_MAX_BASE_RANGE_PCT = _env_float(
+    "LISTING_WATCHLIST_MAX_BASE_RANGE_PCT", 9.0 if LISTING_STRICT_QUALITY else 20.0
+)
+LISTING_WATCHLIST_AUTO_REJECT_WIDE_RANGE_PCT = _env_float(
+    "LISTING_WATCHLIST_AUTO_REJECT_WIDE_RANGE_PCT", 12.0 if LISTING_STRICT_QUALITY else 100.0
+)
+LISTING_WATCHLIST_MIN_CLOSE_IN_RANGE_PCT = _env_float(
+    "LISTING_WATCHLIST_MIN_CLOSE_IN_RANGE_PCT", 45.0 if LISTING_STRICT_QUALITY else 0.0
+)
+LISTING_WATCHLIST_REQUIRE_RANGE_CONTRACTION = _env_bool(
+    "LISTING_WATCHLIST_REQUIRE_RANGE_CONTRACTION", LISTING_STRICT_QUALITY
+)
+# Proximity band (listing high): max distance already implied by near-breakout rule (~5%)
+LISTING_WATCHLIST_MIN_DISTANCE_FROM_HIGH_PCT = _env_float(
+    "LISTING_WATCHLIST_MIN_DISTANCE_FROM_HIGH_PCT", 0.0 if not LISTING_STRICT_QUALITY else 3.0
+)
+LISTING_WATCHLIST_MAX_DISTANCE_FROM_HIGH_PCT = _env_float(
+    "LISTING_WATCHLIST_MAX_DISTANCE_FROM_HIGH_PCT", 5.0
+)
+# Volume dry-up: recent avg vol vs prior window (only after tight base checks)
+LISTING_WATCHLIST_VOL_DRYUP_RECENT_DAYS = _env_int(
+    "LISTING_WATCHLIST_VOL_DRYUP_RECENT_DAYS", 5 if LISTING_STRICT_QUALITY else 5
+)
+LISTING_WATCHLIST_VOL_DRYUP_PRIOR_DAYS = _env_int(
+    "LISTING_WATCHLIST_VOL_DRYUP_PRIOR_DAYS", 10 if LISTING_STRICT_QUALITY else 10
+)
+LISTING_WATCHLIST_VOL_DRYUP_MAX_RATIO = _env_float(
+    "LISTING_WATCHLIST_VOL_DRYUP_MAX_RATIO", 0.8 if LISTING_STRICT_QUALITY else 1.0
+)
+LISTING_WATCHLIST_REQUIRE_VOL_DRYUP = _env_bool(
+    "LISTING_WATCHLIST_REQUIRE_VOL_DRYUP", LISTING_STRICT_QUALITY
+)
+# Support: lows tagging bottom of the lookback range
+LISTING_WATCHLIST_MIN_SUPPORT_TOUCHES = _env_int(
+    "LISTING_WATCHLIST_MIN_SUPPORT_TOUCHES", 2 if LISTING_STRICT_QUALITY else 0
+)
+LISTING_WATCHLIST_SUPPORT_TOUCH_TOLERANCE_PCT_OF_RANGE = _env_float(
+    "LISTING_WATCHLIST_SUPPORT_TOUCH_TOLERANCE_PCT_OF_RANGE", 1.5 if LISTING_STRICT_QUALITY else 0.0
+)
+# Upper wicks / supply at highs
+LISTING_WATCHLIST_MAX_UPPER_WICK_OF_HIGH_PCT = _env_float(
+    "LISTING_WATCHLIST_MAX_UPPER_WICK_OF_HIGH_PCT", 4.0 if LISTING_STRICT_QUALITY else 100.0
+)
+LISTING_WATCHLIST_MAX_UPPER_WICK_OF_BAR_FRAC = _env_float(
+    "LISTING_WATCHLIST_MAX_UPPER_WICK_OF_BAR_FRAC", 0.55 if LISTING_STRICT_QUALITY else 1.0
+)
+# Repeated intraday rejection when trading near listing high
+LISTING_WATCHLIST_NEAR_HIGH_ZONE_PCT = _env_float(
+    "LISTING_WATCHLIST_NEAR_HIGH_ZONE_PCT", 1.5 if LISTING_STRICT_QUALITY else 0.0
+)
+LISTING_WATCHLIST_NEAR_HIGH_DUMP_PCT = _env_float(
+    "LISTING_WATCHLIST_NEAR_HIGH_DUMP_PCT", 3.5 if LISTING_STRICT_QUALITY else 100.0
+)
+LISTING_WATCHLIST_MAX_NEAR_HIGH_DUMP_DAYS = _env_int(
+    "LISTING_WATCHLIST_MAX_NEAR_HIGH_DUMP_DAYS", 2 if LISTING_STRICT_QUALITY else 99
+)
+# Auto-reject: weak price + weak volume together
+LISTING_WATCHLIST_REJECT_FALLING_VOL_AND_PRICE = _env_bool(
+    "LISTING_WATCHLIST_REJECT_FALLING_VOL_AND_PRICE", LISTING_STRICT_QUALITY
+)
+# Choppy structure: too many direction changes
+LISTING_WATCHLIST_MAX_SIGN_FLIPS = _env_int(
+    "LISTING_WATCHLIST_MAX_SIGN_FLIPS", 4 if LISTING_STRICT_QUALITY else 99
+)
+
+# ---------------------------------------------------------------------------
+# Tiered strategy: A+ / A / B / controlled-fallback A / Reject
+# ---------------------------------------------------------------------------
+# Tier A+: perfect base + listing high breakout + volume + fresh IPO → 100% size
+LISTING_TIER_APLUS_MIN_VOLUME_MULT  = _env_float("LISTING_TIER_APLUS_MIN_VOLUME_MULT", 1.8)
+LISTING_TIER_APLUS_MAX_AGE_DAYS     = _env_int("LISTING_TIER_APLUS_MAX_AGE_DAYS", 60)
+
+# Tier A: pure momentum — strong volume, no base required, NOT perfect base → 60% size
+LISTING_TIER_A_MIN_VOLUME_MULT = _env_float("LISTING_TIER_A_MIN_VOLUME_MULT", 2.0)
+LISTING_TIER_A_MAX_AGE_DAYS    = _env_int("LISTING_TIER_A_MAX_AGE_DAYS", 45)
+
+# Tier A — controlled fallback: outside A windows but still valid → 50% size
+LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS       = _env_int("LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS", 75)
+LISTING_TIER_A_FALLBACK_POSITION_SIZE_PCT  = _env_int("LISTING_TIER_A_FALLBACK_POSITION_SIZE_PCT", 50)
+
+# Tier B: base breakout below listing high (accumulation-driven) → 40% size
+LISTING_TIER_B_ENABLED                    = _env_bool("LISTING_TIER_B_ENABLED", True)
+LISTING_TIER_B_MAX_DISTANCE_FROM_HIGH_PCT = _env_float("LISTING_TIER_B_MAX_DISTANCE_FROM_HIGH_PCT", 20.0)
+LISTING_TIER_B_MAX_AGE_DAYS               = _env_int("LISTING_TIER_B_MAX_AGE_DAYS", 90)
+LISTING_TIER_B_POSITION_SIZE_PCT          = _env_int("LISTING_TIER_B_POSITION_SIZE_PCT", 40)
+
+# Post-confirm move: minimum % above breakout reference after confirmation (kills dead trades)
+LISTING_MIN_POST_CONFIRM_MOVE_PCT = _env_float("LISTING_MIN_POST_CONFIRM_MOVE_PCT", 1.5)
+
+
+def _evaluate_watchlist_perfect_base(
+    df: pd.DataFrame,
+    lookback: int,
+    listing_day_high: float,
+    current_high: float,
+    proximity_check: bool = True,
+) -> tuple[bool, str, dict]:
+    """
+    IPO “perfect base” checklist for strict watchlist (quiet tight base near listing high).
+    Returns (ok, rejection_reason, checklist dict).
+    """
+    checklist: dict = {}
+    if df is None or df.empty or lookback < 3:
+        return False, "Strict watchlist: insufficient history for base checklist", checklist
+
+    need = max(
+        lookback,
+        LISTING_WATCHLIST_VOL_DRYUP_RECENT_DAYS + LISTING_WATCHLIST_VOL_DRYUP_PRIOR_DAYS + 1
+        if LISTING_WATCHLIST_REQUIRE_VOL_DRYUP
+        else lookback,
+    )
+    if len(df) < need:
+        return False, f"Strict watchlist: need ≥{need} bars for base checklist", checklist
+
+    tail = df.tail(lookback).copy()
+    cols = ["HIGH", "LOW", "CLOSE"]
+    if "OPEN" not in df.columns:
+        tail["OPEN"] = tail["CLOSE"]
+    else:
+        cols.append("OPEN")
+    if "VOLUME" not in df.columns:
+        return False, "Strict watchlist: missing VOLUME for base checklist", checklist
+    cols.append("VOLUME")
+    for col in cols:
+        if col in tail.columns:
+            tail[col] = pd.to_numeric(tail[col], errors="coerce")
+    tail = tail.dropna(subset=["HIGH", "LOW", "CLOSE", "VOLUME"])
+    if len(tail) < lookback:
+        return False, "Strict watchlist: insufficient clean bars for base checklist", checklist
+
+    rh = float(tail["HIGH"].max())
+    rl = float(tail["LOW"].min())
+    avg_c = float(tail["CLOSE"].mean())
+    if avg_c <= 0 or rh <= 0 or listing_day_high <= 0:
+        return False, "Strict watchlist: invalid prices for base checklist", checklist
+
+    base_range_pct = (rh - rl) / avg_c * 100.0
+    span = rh - rl if rh > rl else 1e-9
+    last_close = float(tail["CLOSE"].iloc[-1])
+    close_pct_in_range = (last_close - rl) / span * 100.0
+
+    checklist["tight_range_pct"] = round(base_range_pct, 2)
+    checklist["close_pct_up_from_range_low"] = round(close_pct_in_range, 2)
+
+    if base_range_pct >= LISTING_WATCHLIST_AUTO_REJECT_WIDE_RANGE_PCT:
+        return (
+            False,
+            f"Strict watchlist: auto-reject wide chop (range {base_range_pct:.1f}% ≥ {LISTING_WATCHLIST_AUTO_REJECT_WIDE_RANGE_PCT}%)",
+            checklist,
+        )
+
+    if base_range_pct > LISTING_WATCHLIST_MAX_BASE_RANGE_PCT:
+        return (
+            False,
+            f"Strict watchlist: base too loose ({base_range_pct:.1f}% > max {LISTING_WATCHLIST_MAX_BASE_RANGE_PCT}%)",
+            checklist,
+        )
+
+    dist_from_high_pct = (listing_day_high - current_high) / listing_day_high * 100.0
+    checklist["distance_from_listing_high_pct"] = round(dist_from_high_pct, 2)
+    if proximity_check:
+        if LISTING_WATCHLIST_MAX_DISTANCE_FROM_HIGH_PCT > 0:
+            if dist_from_high_pct > LISTING_WATCHLIST_MAX_DISTANCE_FROM_HIGH_PCT + 1e-6:
+                return (
+                    False,
+                    f"Strict watchlist: too far below listing high ({dist_from_high_pct:.1f}% > {LISTING_WATCHLIST_MAX_DISTANCE_FROM_HIGH_PCT}%)",
+                    checklist,
+                )
+        if LISTING_WATCHLIST_MIN_DISTANCE_FROM_HIGH_PCT > 0:
+            if dist_from_high_pct < LISTING_WATCHLIST_MIN_DISTANCE_FROM_HIGH_PCT - 1e-6:
+                return (
+                    False,
+                    f"Strict watchlist: too tight to listing high ({dist_from_high_pct:.1f}% < min {LISTING_WATCHLIST_MIN_DISTANCE_FROM_HIGH_PCT}% band)",
+                    checklist,
+                )
+
+    if LISTING_WATCHLIST_MIN_CLOSE_IN_RANGE_PCT > 0 and close_pct_in_range < LISTING_WATCHLIST_MIN_CLOSE_IN_RANGE_PCT:
+        return (
+            False,
+            f"Strict watchlist: not upper-base ({close_pct_in_range:.0f}% up from range low, need ≥{LISTING_WATCHLIST_MIN_CLOSE_IN_RANGE_PCT}%)",
+            checklist,
+        )
+
+    # Support touches: lows near bottom of the same tight range
+    tol = span * (LISTING_WATCHLIST_SUPPORT_TOUCH_TOLERANCE_PCT_OF_RANGE / 100.0)
+    support_line = rl
+    touches = int((tail["LOW"] <= support_line + tol).sum())
+    checklist["support_touches"] = touches
+    if LISTING_WATCHLIST_MIN_SUPPORT_TOUCHES > 0 and touches < LISTING_WATCHLIST_MIN_SUPPORT_TOUCHES:
+        return (
+            False,
+            f"Strict watchlist: support not held ({touches} touches at range low, need ≥{LISTING_WATCHLIST_MIN_SUPPORT_TOUCHES})",
+            checklist,
+        )
+
+    # Upper wicks / supply
+    bad_wick_bar = False
+    max_uw_high = 0.0
+    for _, row in tail.iterrows():
+        h = float(row["HIGH"])
+        l = float(row["LOW"])
+        o = float(row["OPEN"])
+        c = float(row["CLOSE"])
+        body_top = max(o, c)
+        upper = max(0.0, h - body_top)
+        if h > 0:
+            uw_pct = upper / h * 100.0
+            max_uw_high = max(max_uw_high, uw_pct)
+            if uw_pct > LISTING_WATCHLIST_MAX_UPPER_WICK_OF_HIGH_PCT:
+                bad_wick_bar = True
+                break
+        bar_rng = h - l
+        if bar_rng > 1e-9 and upper / bar_rng > LISTING_WATCHLIST_MAX_UPPER_WICK_OF_BAR_FRAC:
+            bad_wick_bar = True
+            break
+    checklist["max_upper_wick_pct_of_high"] = round(max_uw_high, 2)
+    checklist["clean_upper_wicks"] = not bad_wick_bar
+    if bad_wick_bar:
+        return (
+            False,
+            "Strict watchlist: heavy upper wicks / supply near highs",
+            checklist,
+        )
+
+    # Near listing high: repeated close well off the high
+    if LISTING_WATCHLIST_NEAR_HIGH_ZONE_PCT > 0 and LISTING_WATCHLIST_MAX_NEAR_HIGH_DUMP_DAYS < 90:
+        zone_low = listing_day_high * (1.0 - LISTING_WATCHLIST_NEAR_HIGH_ZONE_PCT / 100.0)
+        dump_days = 0
+        for _, row in tail.iterrows():
+            h = float(row["HIGH"])
+            c = float(row["CLOSE"])
+            if h >= zone_low and h > 0:
+                dump_pct = (h - c) / h * 100.0
+                if dump_pct > LISTING_WATCHLIST_NEAR_HIGH_DUMP_PCT:
+                    dump_days += 1
+        checklist["near_high_dump_days"] = dump_days
+        if dump_days >= LISTING_WATCHLIST_MAX_NEAR_HIGH_DUMP_DAYS:
+            return (
+                False,
+                f"Strict watchlist: repeated rejection near highs ({dump_days} days)",
+                checklist,
+            )
+
+    # Volatility contraction (first vs second half of window)
+    half = max(2, lookback // 2)
+    first = tail.iloc[:half]
+    second = tail.iloc[half:]
+
+    def _mean_daily_range_pct(block: pd.DataFrame) -> float | None:
+        if block.empty or len(block) < 1:
+            return None
+        close_safe = block["CLOSE"].replace(0, np.nan)
+        r = ((block["HIGH"] - block["LOW"]) / close_safe * 100.0).mean()
+        return float(r) if pd.notna(r) else None
+
+    r_prior = _mean_daily_range_pct(first)
+    r_recent = _mean_daily_range_pct(second)
+    contraction_ok: bool | None = None
+    if r_prior is not None and r_recent is not None and r_prior > 0:
+        contraction_ok = r_recent <= r_prior
+    checklist["prior_half_avg_range_pct"] = round(r_prior, 2) if r_prior is not None else None
+    checklist["recent_half_avg_range_pct"] = round(r_recent, 2) if r_recent is not None else None
+    checklist["volatility_contraction"] = contraction_ok
+
+    if LISTING_WATCHLIST_REQUIRE_RANGE_CONTRACTION:
+        if contraction_ok is None:
+            return False, "Strict watchlist: could not measure volatility contraction", checklist
+        if not contraction_ok:
+            return (
+                False,
+                "Strict watchlist: no volatility contraction",
+                checklist,
+            )
+
+    # Volume dry-up vs prior window
+    if LISTING_WATCHLIST_REQUIRE_VOL_DRYUP:
+        r_d = LISTING_WATCHLIST_VOL_DRYUP_RECENT_DAYS
+        p_d = LISTING_WATCHLIST_VOL_DRYUP_PRIOR_DAYS
+        vol_all = pd.to_numeric(df["VOLUME"], errors="coerce")
+        recent_mean = float(vol_all.tail(r_d).mean())
+        prior_slice = vol_all.iloc[-(r_d + p_d) : -r_d]
+        prior_mean = float(prior_slice.mean()) if len(prior_slice) > 0 else 0.0
+        ratio = (recent_mean / prior_mean) if prior_mean > 0 else None
+        checklist["vol_dryup_ratio_recent_vs_prior"] = round(ratio, 3) if ratio is not None else None
+        if ratio is None or prior_mean <= 0:
+            return False, "Strict watchlist: cannot measure volume dry-up (prior volume)", checklist
+        if ratio > LISTING_WATCHLIST_VOL_DRYUP_MAX_RATIO:
+            return (
+                False,
+                f"Strict watchlist: no volume dry-up ({ratio:.2f} > max {LISTING_WATCHLIST_VOL_DRYUP_MAX_RATIO} recent vs prior)",
+                checklist,
+            )
+
+    # Falling price + falling volume together
+    if LISTING_WATCHLIST_REJECT_FALLING_VOL_AND_PRICE and len(tail) >= 5:
+        closes = tail["CLOSE"].astype(float)
+        vols = tail["VOLUME"].astype(float)
+        p_weak = closes.iloc[-1] < closes.iloc[0] and closes.iloc[-3:].mean() < closes.iloc[:3].mean()
+        v_weak = vols.iloc[-1] < vols.iloc[0] and vols.iloc[-3:].mean() < vols.iloc[:3].mean()
+        checklist["falling_price_and_volume"] = bool(p_weak and v_weak)
+        if p_weak and v_weak:
+            return (
+                False,
+                "Strict watchlist: falling price with falling volume (distribution)",
+                checklist,
+            )
+    else:
+        checklist["falling_price_and_volume"] = False
+
+    # Choppy structure
+    chg = tail["CLOSE"].pct_change().dropna()
+    if len(chg) >= 2:
+        signs = np.sign(chg.to_numpy(dtype=float))
+        flips = int((np.abs(np.diff(signs)) > 0).sum())
+        checklist["direction_flips"] = flips
+        if flips > LISTING_WATCHLIST_MAX_SIGN_FLIPS:
+            return (
+                False,
+                f"Strict watchlist: choppy structure ({flips} direction flips, max {LISTING_WATCHLIST_MAX_SIGN_FLIPS})",
+                checklist,
+            )
+
+    checklist["perfect_base"] = True
+    return True, "", checklist
+
+
+def _assign_breakout_tier(
+    signal_type: str,
+    confirmed: bool,
+    perfect_base: bool,
+    volume_ratio: float,
+    days_since_listing: int,
+    post_confirm_move_pct: float = 0.0,
+) -> tuple:
+    """
+    Assign quality tier + position size to a confirmed breakout signal.
+    Returns (tier, position_size_pct, rationale).
+    Returns (None, None, reason) when no tier qualifies — caller must reject.
+
+    Tier rules (mutually exclusive, evaluated top-down):
+        A+          → perfect base + listing-high breakout + vol ≥ 1.8× + age ≤ 60d  → 100%
+        A           → pure momentum, vol ≥ 2.0×, age ≤ 45d, NOT perfect base         → 60%
+        B           → BASE_BREAKOUT type only                                          → 40%
+        Fallback A  → vol ≥ 1.8×, age ≤ 75d (controlled edge-extender)               → 50%
+        Reject      → anything else, or unconfirmed, or post-confirm move too small
+
+    WATCHLIST is never a trade: returns (None, None, ...) always.
+    """
+    if not confirmed:
+        return None, None, "No tier: signal not yet confirmed (PENDING state)"
+
+    # Post-confirm weak-move filter: kills slow/dead breakouts
+    if LISTING_MIN_POST_CONFIRM_MOVE_PCT > 0 and post_confirm_move_pct < LISTING_MIN_POST_CONFIRM_MOVE_PCT:
+        return (
+            None, None,
+            f"Weak breakout: post-confirm move {post_confirm_move_pct:.2f}% "
+            f"< required {LISTING_MIN_POST_CONFIRM_MOVE_PCT}%"
+        )
+
+    if signal_type == "BREAKOUT":
+        # ── A+: perfect structure + listing-high breakout + volume + fresh ────────
+        if (
+            perfect_base
+            and volume_ratio >= LISTING_TIER_APLUS_MIN_VOLUME_MULT
+            and days_since_listing <= LISTING_TIER_APLUS_MAX_AGE_DAYS
+        ):
+            return (
+                "A+", 100,
+                "Perfect base + listing-high breakout + volume — trail aggressively, hold longer"
+            )
+
+        # ── A: pure momentum — strong volume, explicitly NOT perfect base ─────────
+        if (
+            not perfect_base
+            and volume_ratio >= LISTING_TIER_A_MIN_VOLUME_MULT
+            and days_since_listing <= LISTING_TIER_A_MAX_AGE_DAYS
+        ):
+            return (
+                "A", 60,
+                "Pure momentum breakout — smaller position, faster exit, don't expect long trend"
+            )
+
+        # ── B: base breakout below listing high ───────────────────────────────────
+        # (handled below via signal_type == "BASE_BREAKOUT" branch)
+
+        # ── Controlled fallback A: valid breakout outside primary tier windows ────
+        if (
+            volume_ratio >= LISTING_TIER_APLUS_MIN_VOLUME_MULT   # minimum 1.8× bar
+            and days_since_listing <= LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS
+        ):
+            return (
+                "A", LISTING_TIER_A_FALLBACK_POSITION_SIZE_PCT,
+                f"Controlled fallback breakout (age {days_since_listing}d ≤ {LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS}d) — opportunistic, reduced size"
+            )
+
+        return None, None, "Breakout confirmed but outside all tier age/volume windows — no trade"
+
+    if signal_type == "BASE_BREAKOUT":
+        return (
+            "B", LISTING_TIER_B_POSITION_SIZE_PCT,
+            "Accumulation base breakout below listing high — medium conviction, normal swing trade"
+        )
+
+    # WATCHLIST is never a trade
+    return None, None, f"Signal type '{signal_type}' does not qualify for tier assignment"
+
 
 def initialize_listing_data_csv():
     """Initialize listing data CSV if it doesn't exist"""
@@ -479,6 +936,11 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
             signal_type = 'WATCHLIST'
             breakout_conditions.append(f"Near Breakout: {current_high:.2f} is within 5% of {listing_day_high:.2f}")
             logger.info(f"👀 {symbol}: Detected as WATCHLIST candidate (High: {current_high:.2f}, Trigger: {listing_day_high:.2f})")
+        elif LISTING_TIER_B_ENABLED:
+            # Tier B candidate: > 5% below listing high — validate tight base below
+            is_breakout = True
+            signal_type = 'BASE_BREAKOUT'
+            logger.info(f"📦 {symbol}: Checking Tier B base breakout (live high {current_high:.2f}, listing high {listing_day_high:.2f})")
         else:
             rejection_reason = f"Price ({current_high:.2f}) below listing day high ({listing_day_high:.2f})"
         
@@ -492,6 +954,10 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
         
         # Proceed if price broke listing day high OR is watchlist
         if is_breakout:
+            # Tracking vars for tier classification (populated below per path)
+            base_range_high: float = 0.0
+            perfect_base_ok: bool = False
+
             # Calculate entry, stop loss, and target
             # For Watchlist, use Listing High as the hypothetical entry price
             if signal_type == 'WATCHLIST':
@@ -519,7 +985,7 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
                 return None
             
-            # Calculate days since listing (for display/information only - no filter)
+            # Days since listing (used for display + strict watchlist / breakout gates)
             today_date = datetime.today().date()
             if isinstance(listing_date, str):
                 listing_date_obj = pd.to_datetime(listing_date).date()
@@ -529,8 +995,108 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 listing_date_obj = listing_date
             
             days_since_listing = (today_date - listing_date_obj).days
-            
-            # Check volume vs listing day (warning in relaxed mode; strict mode enforces below)
+            vol_vs_avg = (current_volume / avg_volume) if avg_volume > 0 else 0.0
+
+            # --- Strict watchlist gate: same strategic lens as IPO momentum (no stale / dead-volume radar) ---
+            if LISTING_STRICT_QUALITY and signal_type == 'WATCHLIST':
+                if days_since_listing > LISTING_WATCHLIST_ABSOLUTE_MAX_AGE_DAYS:
+                    rejection_reason = (
+                        f"Strict watchlist: IPO age {days_since_listing}d > absolute max "
+                        f"{LISTING_WATCHLIST_ABSOLUTE_MAX_AGE_DAYS}d (not IPO-base regime)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                if days_since_listing > LISTING_WATCHLIST_MAX_DAYS_SINCE_LISTING:
+                    rejection_reason = (
+                        f"Strict watchlist: {days_since_listing}d since listing "
+                        f"(max {LISTING_WATCHLIST_MAX_DAYS_SINCE_LISTING}d)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                if LISTING_WATCHLIST_MIN_VOLUME_MULT > 0 and vol_vs_avg < LISTING_WATCHLIST_MIN_VOLUME_MULT:
+                    rejection_reason = (
+                        f"Strict watchlist: volume {vol_vs_avg:.2f}x avg "
+                        f"(need ≥{LISTING_WATCHLIST_MIN_VOLUME_MULT}x)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                if LISTING_WATCHLIST_MAX_VOL_VS_AVG > 0 and vol_vs_avg > LISTING_WATCHLIST_MAX_VOL_VS_AVG:
+                    rejection_reason = (
+                        f"Strict watchlist: volume {vol_vs_avg:.2f}x avg "
+                        f"(need ≤{LISTING_WATCHLIST_MAX_VOL_VS_AVG}x for dry-up)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+
+                base_ok, base_reason, base_metrics = _evaluate_watchlist_perfect_base(
+                    df,
+                    LISTING_WATCHLIST_BASE_LOOKBACK,
+                    float(listing_day_high),
+                    float(current_high),
+                )
+                if not base_ok:
+                    rejection_reason = base_reason
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason} {base_metrics}")
+                    return None
+                perfect_base_ok = True  # watchlist passed — track for debug (WATCHLIST is not a trade)
+
+            # --- Tier B gate: validate base breakout below listing high ---
+            if signal_type == 'BASE_BREAKOUT':
+                dist_below_high_pct = (
+                    (listing_day_high - current_high) / listing_day_high * 100.0
+                    if listing_day_high > 0 else 0.0
+                )
+                if days_since_listing > LISTING_TIER_B_MAX_AGE_DAYS:
+                    rejection_reason = (
+                        f"Tier B: IPO age {days_since_listing}d > max {LISTING_TIER_B_MAX_AGE_DAYS}d"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                if dist_below_high_pct > LISTING_TIER_B_MAX_DISTANCE_FROM_HIGH_PCT:
+                    rejection_reason = (
+                        f"Tier B: {dist_below_high_pct:.1f}% below listing high "
+                        f"(max {LISTING_TIER_B_MAX_DISTANCE_FROM_HIGH_PCT}%)"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                # Base quality (skip proximity — intentionally below listing high)
+                base_ok_b, base_reason_b, _ = _evaluate_watchlist_perfect_base(
+                    df,
+                    LISTING_WATCHLIST_BASE_LOOKBACK,
+                    float(listing_day_high),
+                    float(current_high),
+                    proximity_check=False,
+                )
+                if not base_ok_b:
+                    rejection_reason = f"Tier B base check: {base_reason_b}"
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                # Confirm current_high actually broke above the recent base range high
+                _tail_b = df.tail(LISTING_WATCHLIST_BASE_LOOKBACK).copy()
+                _tail_b["HIGH"] = pd.to_numeric(_tail_b["HIGH"], errors="coerce")
+                _tail_b = _tail_b.dropna(subset=["HIGH"])
+                # exclude today's bar when computing historical base high
+                base_range_high = (
+                    float(_tail_b["HIGH"].iloc[:-1].max())
+                    if len(_tail_b) > 1
+                    else float(_tail_b["HIGH"].max())
+                )
+                if current_high <= base_range_high:
+                    rejection_reason = (
+                        f"Tier B: current high {current_high:.2f} ≤ base high {base_range_high:.2f}"
+                    )
+                    logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                    return None
+                perfect_base_ok = True
+                breakout_conditions.append(
+                    f"Base breakout: high {current_high:.2f} > base range high {base_range_high:.2f} "
+                    f"({dist_below_high_pct:.1f}% below listing high)"
+                )
+                logger.info(
+                    f"✅ {symbol}: Tier B BASE_BREAKOUT validated "
+                    f"(base {base_range_high:.2f} → {current_high:.2f}, listing high {listing_day_high:.2f})"
+                )
+
             volume_vs_listing_day = current_volume / listing_day_volume if listing_day_volume > 0 else 0
             if volume_vs_listing_day < MIN_VOLUME_VS_LISTING_DAY:
                 volume_warnings.append(f"Low volume vs listing day: {volume_vs_listing_day:.1f}x (need {MIN_VOLUME_VS_LISTING_DAY:.1f}x)")
@@ -604,9 +1170,31 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 listing_high=listing_day_high,
                 listing_range_pct=listing_range_pct
             )
-            if signal_type == 'BREAKOUT' and leader_score < LISTING_MIN_LEADER_SCORE:
-                logger.info(f"⏭️ Skipping {symbol}: Leader score {leader_score} < {LISTING_MIN_LEADER_SCORE}")
+            min_leader_for_signal = None
+            if signal_type == 'BREAKOUT':
+                min_leader_for_signal = LISTING_MIN_LEADER_SCORE
+            elif LISTING_STRICT_QUALITY and signal_type == 'WATCHLIST':
+                min_leader_for_signal = LISTING_WATCHLIST_MIN_LEADER_SCORE
+            if min_leader_for_signal is not None and leader_score < min_leader_for_signal:
+                logger.info(
+                    f"⏭️ Skipping {symbol}: Leader score {leader_score} < {min_leader_for_signal} "
+                    f"({'breakout' if signal_type == 'BREAKOUT' else 'watchlist'})"
+                )
                 return None
+
+            # --- Detect perfect base for BREAKOUT signals (used for A+ tier eligibility) ---
+            if signal_type == 'BREAKOUT':
+                _pb_ok, _, _pb_metrics = _evaluate_watchlist_perfect_base(
+                    df,
+                    LISTING_WATCHLIST_BASE_LOOKBACK,
+                    float(listing_day_high),
+                    float(current_high),
+                    proximity_check=False,  # price is above listing high — proximity irrelevant
+                )
+                perfect_base_ok = _pb_ok
+                if _pb_ok:
+                    logger.info(f"✅ {symbol}: BREAKOUT has tight base — A+ tier eligible")
+                    write_daily_log("listing_day", symbol, "PERFECT_BASE_DETECTED", _pb_metrics)
 
             # Intraday confirmation engine: PENDING -> CONFIRMED -> ENTER
             if signal_type == 'BREAKOUT' and LISTING_CONFIRMATION_MINUTES > 0 and _market_is_open_ist():
@@ -681,8 +1269,38 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 })
             
             # Calculate gain from listing day close
-            gain_from_listing_close = ((current_price - listing_day_close) / listing_day_close * 100) if listing_day_close > 0 else 0
-            
+            gain_from_listing_close = (
+                (current_price - listing_day_close) / listing_day_close * 100
+            ) if listing_day_close > 0 else 0
+
+            # Post-confirm move: % price has moved beyond its breakout reference level
+            if signal_type == 'BASE_BREAKOUT':
+                post_confirm_move_pct = (
+                    (current_high - base_range_high) / base_range_high * 100.0
+                    if base_range_high > 0 else 0.0
+                )
+                # Target for BASE_BREAKOUT: the listing high is the natural objective
+                if listing_day_high > entry_price:
+                    target_price = listing_day_high
+                    reward = target_price - entry_price
+                    risk_reward = reward / risk if risk > 0 else 0
+            else:
+                post_confirm_move_pct = float(entry_above_high_pct)
+
+            # --- Tier assignment (WATCHLIST always returns None — never a trade) ---
+            vol_ratio_for_tier = (current_volume / avg_volume) if avg_volume > 0 else 0.0
+            tier, position_size_pct, tier_rationale = _assign_breakout_tier(
+                signal_type=signal_type,
+                confirmed=True,  # PENDING returns early above; here we are always confirmed
+                perfect_base=perfect_base_ok,
+                volume_ratio=vol_ratio_for_tier,
+                days_since_listing=days_since_listing,
+                post_confirm_move_pct=post_confirm_move_pct,
+            )
+            if tier is None and signal_type != 'WATCHLIST':
+                logger.info(f"⏭️ {symbol}: No tier assigned — {tier_rationale}")
+                return None
+
             return {
                 'symbol': symbol,
                 'listing_date': listing_date,
@@ -709,8 +1327,16 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 'volume_warnings': volume_warnings,
                 'has_volume_caution': len(volume_warnings) > 0,
                 'leader_score': int(leader_score),
-                'type': signal_type  # 'BREAKOUT' or 'WATCHLIST'
+                'type': signal_type,
+                # --- Tier fields ---
+                'tier': tier,
+                'position_size_pct': position_size_pct,
+                'tier_rationale': tier_rationale,
+                'perfect_base': perfect_base_ok,
+                'post_confirm_move_pct': round(post_confirm_move_pct, 2),
+                'base_range_high': round(base_range_high, 2) if base_range_high > 0 else None,
             }
+
         
         # Log rejection reason if available
         if rejection_reason:
@@ -729,8 +1355,6 @@ def format_listing_breakout_alert(breakout_data):
     stop = breakout_data['stop_loss']
     target = breakout_data['target_price']
     listing_high = breakout_data['listing_day_high']
-    listing_low = breakout_data['listing_day_low']
-    listing_close = breakout_data.get('listing_day_close', listing_high)
     current_high = breakout_data['current_high']
     current_price = breakout_data['current_price']
     vol_spike = breakout_data['volume_spike']
@@ -742,86 +1366,104 @@ def format_listing_breakout_alert(breakout_data):
     entry_above_high_pct = breakout_data.get('entry_above_high_pct', 0)
     target_multiplier = breakout_data.get('target_multiplier', 0.5)
     volume_vs_listing_day = breakout_data.get('volume_vs_listing_day', 0)
-    listing_range_pct = breakout_data.get('listing_range_pct', 0)
-    last_updated = breakout_data.get('last_updated', 'N/A')
-    breakout_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    volume_warnings = breakout_data.get('volume_warnings', [])
     has_volume_caution = breakout_data.get('has_volume_caution', False)
-    
-    # Determine freshness based on days since listing
-    if days_since_listing <= 5:
-        freshness = "🟢 Very Fresh"
-        freshness_desc = "Fresh breakout - early stage"
-    elif days_since_listing <= 30:
-        freshness = "🟡 Moderate"
-        freshness_desc = "Moderate - correction phase"
-    elif days_since_listing <= 90:
-        freshness = "🟠 Mature"
-        freshness_desc = "Mature - extended correction"
-    else:
-        freshness = "🔴 Extended"
-        freshness_desc = "Extended correction - breaking out after months"
-    
-    # Format listing date
-    listing_date = breakout_data['listing_date']
-    if isinstance(listing_date, str):
-        listing_date_str = listing_date
-    elif hasattr(listing_date, 'strftime'):
-        listing_date_str = listing_date.strftime('%Y-%m-%d')
-    else:
-        listing_date_str = str(listing_date)
-    
-    # Gain emoji
-    gain_emoji = "📈" if gain_from_listing >= 0 else "📉"
     
     msg = f"""🎯 <b>LISTING DAY HIGH BREAKOUT!</b>
 
-📊 Symbol: <b>{symbol}</b>
-📋 Signal Type: <b>Listing Day Breakout</b>
+📊 <b>{symbol}</b>
+📋 Signal Type: Listing Day Breakout
 
-⏰ <b>Timing Information:</b>
-• Listing Date: {listing_date_str}
-• Days Since Listing: {days_since_listing} days {freshness}
-• Freshness: {freshness_desc}
-• Base Time (Data Captured): {last_updated}
-• Breakout Detected: {breakout_time}
+🏆 <b>TIER: {breakout_data.get('tier', 'A')}  |  💰 Position Size: {breakout_data.get('position_size_pct', 60)}%</b>
+📌 <i>{breakout_data.get('tier_rationale', '')}</i>
 
-💰 <b>Entry Details:</b>
-• Current Price: ₹{current_price:,.2f} ({price_source})
-• Entry: ₹{entry:,.2f} ({entry_above_high_pct:+.1f}% above listing high)
-• Stop Loss: ₹{stop:,.2f} ({STOP_LOSS_PCT:.0f}% below entry)
-• Target: ₹{target:,.2f} (Entry + {target_multiplier*100:.0f}% of listing range)
-• Risk:Reward: 1:{rr:.1f} ✅
+⏰ <b>Context & Timing:</b>
+• Age: {days_since_listing} days old
+• Post-Confirm Move: {breakout_data.get('post_confirm_move_pct', 0):+.2f}%
+{'• <b>✅ Perfect Base Detected</b>' if breakout_data.get('perfect_base') else ''}
 
-📈 <b>Listing Day Metrics:</b>
-• Listing Day High: ₹{listing_high:,.2f}
-• Listing Day Low: ₹{listing_low:,.2f}
-• Listing Day Close: ₹{listing_close:,.2f}
-• Current High: ₹{current_high:,.2f} ✅ BROKEN!
-• {gain_emoji} Gain from Listing Close: {gain_from_listing:+.2f}%
+💰 <b>Trade Details:</b>
+• Current Price: ₹{current_price:,.2f} <i>({price_source})</i>
+• Entry Target: ₹{entry:,.2f}
+• Stop Loss: ₹{stop:,.2f} (-{STOP_LOSS_PCT:.0f}%)
+• Target Obj: ₹{target:,.2f}
+• Risk:Reward: 1:{rr:.1f}
 
-📊 <b>Breakout Confirmation:</b>
-• Volume Spike: {vol_spike:.1f}x (vs recent average)
-• Volume vs Listing Day: {volume_vs_listing_day:.1f}x {'✅' if not has_volume_caution else '⚠️'}
-• Listing Day Range: {listing_range_pct:.1f}% (High-Low spread)
+📈 <b>Metrics:</b>
+• Listing Day High: ₹{listing_high:,.2f} (<b>BROKEN!</b>)
+• Base High: ₹{breakout_data.get('base_range_high', listing_high):,.2f}
+
+📊 <b>Confirmation:</b>
+• Volume Spike: {vol_spike:.1f}x avg
+• Vol vs Listing: {volume_vs_listing_day:.1f}x {'✅' if not has_volume_caution else '⚠️'}
 • {conditions}"""
 
-    # Add volume caution section if warnings exist
-    if has_volume_caution and volume_warnings:
+    if has_volume_caution:
         msg += f"""
 
 ⚠️ <b>VOLUME CAUTION:</b>
-• {' | '.join(volume_warnings)}
-• Signal sent for tracking - volume filters disabled for analysis
-• Review performance after 1-2 months to validate volume filter effectiveness"""
+• Signal sent for tracking - volume filters disabled
+• Review performance later to validate filters"""
 
     msg += f"""
 
-⚠️ <b>Action Required:</b> Enter position - Listing day high broken!
+⚡ <b>Action Required:</b> Consider entry based on tier size.
 
-🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}"""
-    
+🤖 <i>Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%H:%M IST')}</i>"""
     return msg
+
+
+def format_base_breakout_alert(breakout_data):
+    """Format Tier B base breakout alert (actionable trade, distinct from WATCHLIST)."""
+    symbol = breakout_data['symbol']
+    entry = breakout_data['entry_price']
+    stop = breakout_data['stop_loss']
+    target = breakout_data['target_price']
+    listing_high = breakout_data['listing_day_high']
+    current_price = breakout_data['current_price']
+    vol_spike = breakout_data.get('volume_spike', 0)
+    rr = breakout_data['risk_reward']
+    days_since = breakout_data.get('days_since_listing', 0)
+    base_range_high = breakout_data.get('base_range_high') or 0
+    dist_below_high = ((listing_high - current_price) / listing_high * 100) if listing_high > 0 else 0
+    post_move = breakout_data.get('post_confirm_move_pct', 0)
+    position_size = breakout_data.get('position_size_pct', 40)
+    tier_rationale = breakout_data.get('tier_rationale', '')
+    price_source = breakout_data.get('price_source', 'Live')
+    conditions = breakout_data.get('breakout_conditions', '')
+
+    listing_date = breakout_data['listing_date']
+    listing_date_str = (
+        listing_date.strftime('%Y-%m-%d')
+        if hasattr(listing_date, 'strftime') else str(listing_date)
+    )
+
+    return f"""📦 <b>TIER B — BASE BREAKOUT: {symbol}</b>
+
+{'='*35}
+🥉 <b>TIER: B  |  💰 Position Size: {position_size}%</b>
+📌 {tier_rationale}
+{'='*35}
+
+🎯 <b>Setup:</b> Stock broke above its accumulation base while still
+   <b>{dist_below_high:.1f}% below</b> listing high — next stop: listing high.
+
+💰 <b>Trade Plan:</b>
+• Entry: ₹{entry:,.2f}  ({price_source})
+• Stop Loss: ₹{stop:,.2f}  ({STOP_LOSS_PCT:.0f}% below entry)
+• Target: ₹{target:,.2f}  (Listing Day High = natural target)
+• Risk:Reward: 1:{rr:.1f}
+• Post-Breakout Move: {post_move:+.2f}% above base high
+
+📈 <b>Context:</b>
+• Base High Broken: ₹{base_range_high:,.2f}
+• Listing Day High (target): ₹{listing_high:,.2f}
+• Volume Spike: {vol_spike:.1f}x avg
+• IPO Age: {days_since}d  |  Listed: {listing_date_str}
+• {conditions}
+
+🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}
+"""
+
 
 def format_watchlist_alert(breakout_data):
     """Format watchlist alert for near-breakout candidates"""
@@ -926,7 +1568,7 @@ def save_breakout_signal(breakout_data):
             "signal_time": datetime.now().strftime("%H:%M:%S"),
             "entry_price": breakout_data['entry_price'],
             "grade": "LISTING_BREAKOUT" + ("_LOW_VOL" if breakout_data.get('has_volume_caution', False) else ""),
-            "score": 100 if not breakout_data.get('has_volume_caution', False) else 80,  # Lower score for low volume
+            "score": 100 if not breakout_data.get('has_volume_caution', False) else 80,
             "stop_loss": breakout_data['stop_loss'],
             "target_price": breakout_data['target_price'],
             "status": "ACTIVE",
@@ -938,7 +1580,11 @@ def save_breakout_signal(breakout_data):
             "notes": volume_note,
             "version": SCANNER_VERSION,
             "scanner": "listing_day",
-            "leader_score": int(breakout_data.get("leader_score", 0))
+            "leader_score": int(breakout_data.get("leader_score", 0)),
+            # --- Tier fields (additive, backward-compatible) ---
+            "tier": breakout_data.get("tier", ""),
+            "position_size_pct": breakout_data.get("position_size_pct", ""),
+            "tier_rationale": breakout_data.get("tier_rationale", ""),
         }
         
         # Write to daily log
@@ -947,7 +1593,12 @@ def save_breakout_signal(breakout_data):
             "stop_loss": breakout_data['stop_loss'],
             "target": breakout_data['target_price'],
             "listing_high": breakout_data.get('listing_day_high', 0),
-            "volume_caution": breakout_data.get('has_volume_caution', False)
+            "volume_caution": breakout_data.get('has_volume_caution', False),
+            "tier": breakout_data.get('tier', ''),
+            "position_size_pct": breakout_data.get('position_size_pct', ''),
+            "tier_rationale": breakout_data.get('tier_rationale', ''),
+            "perfect_base": breakout_data.get('perfect_base', False),
+            "post_confirm_move_pct": breakout_data.get('post_confirm_move_pct', 0),
         })
         
         # Append to CSV
@@ -1090,7 +1741,14 @@ def scan_listing_day_breakouts():
     if LISTING_STRICT_QUALITY:
         logger.info(
             f"⚙️ Quality: STRICT — full volume + freshness, min R:R {MIN_RISK_REWARD}, "
-            f"max {MAX_ENTRY_ABOVE_HIGH_PCT}% above listing high, max {MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT}d since listing"
+            f"max {MAX_ENTRY_ABOVE_HIGH_PCT}% above listing high, breakout max {MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT}d since listing; "
+            f"watchlist age ≤{LISTING_WATCHLIST_MAX_DAYS_SINCE_LISTING}d (abs ≤{LISTING_WATCHLIST_ABSOLUTE_MAX_AGE_DAYS}d), "
+            f"vol vs avg: min {LISTING_WATCHLIST_MIN_VOLUME_MULT or '—'}× / max {LISTING_WATCHLIST_MAX_VOL_VS_AVG or '—'}×, "
+            f"perfect-base {LISTING_WATCHLIST_BASE_LOOKBACK}d: range≤{LISTING_WATCHLIST_MAX_BASE_RANGE_PCT}% "
+            f"(auto-reject ≥{LISTING_WATCHLIST_AUTO_REJECT_WIDE_RANGE_PCT}%), "
+            f"dist {LISTING_WATCHLIST_MIN_DISTANCE_FROM_HIGH_PCT or '—'}–{LISTING_WATCHLIST_MAX_DISTANCE_FROM_HIGH_PCT}%, "
+            f"vol dry-up ≤{LISTING_WATCHLIST_VOL_DRYUP_MAX_RATIO}, "
+            f"watchlist leader ≥{LISTING_WATCHLIST_MIN_LEADER_SCORE}"
         )
     else:
         logger.info("⚙️ Quality: RELAXED — low-vol breakouts may be sent with caution")
@@ -1136,25 +1794,37 @@ def scan_listing_day_breakouts():
                 signal_type = breakout.get('type', 'BREAKOUT')
                 
                 if signal_type == 'BREAKOUT':
-                    logger.info(f"🎯 BREAKOUT DETECTED for {symbol}!")
+                    logger.info(f"🎯 BREAKOUT DETECTED for {symbol}! [Tier {breakout.get('tier', '?')} | {breakout.get('position_size_pct', '?')}% size]")
                     logger.info(f"   Entry: ₹{breakout['entry_price']:.2f}")
                     logger.info(f"   Stop Loss: ₹{breakout['stop_loss']:.2f}")
                     logger.info(f"   Target: ₹{breakout['target_price']:.2f}")
-                    
+                    logger.info(f"   Tier rationale: {breakout.get('tier_rationale', '')}")
+
                     # Save signal
                     if save_breakout_signal(breakout):
                         # Add position
                         add_position(breakout)
-                        
+
                         # Update listing status
                         update_listing_status(symbol, 'BREAKOUT')
-                        
+
                         # Send alert
                         alert_msg = format_listing_breakout_alert(breakout)
                         send_telegram(alert_msg)
-                        
+
                         breakouts_found += 1
-                        
+
+                elif signal_type == 'BASE_BREAKOUT':
+                    logger.info(f"📦 TIER B BASE BREAKOUT for {symbol}! [{breakout.get('position_size_pct', 40)}% size]")
+                    logger.info(f"   Entry: ₹{breakout['entry_price']:.2f}  Target (listing high): ₹{breakout['target_price']:.2f}")
+
+                    if save_breakout_signal(breakout):
+                        add_position(breakout)
+                        update_listing_status(symbol, 'BASE_BREAKOUT')
+                        alert_msg = format_base_breakout_alert(breakout)
+                        send_telegram(alert_msg)
+                        breakouts_found += 1
+
                 elif signal_type == 'WATCHLIST':
                     # Save watchlist signal (returns False if duplicate)
                     if save_watchlist_signal(breakout):
@@ -1163,6 +1833,7 @@ def scan_listing_day_breakouts():
                         send_telegram(alert_msg)
                 elif signal_type == 'PENDING':
                     logger.info(f"⏳ {symbol}: pending confirmation in progress")
+
                 
                 # Small delay
                 time.sleep(0.5)

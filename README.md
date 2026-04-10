@@ -1,468 +1,156 @@
-# 🚀 IPO Breakout Scanner
+# 🚀 IPO Breakout Qualification Engine
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Automated](https://img.shields.io/badge/automation-GitHub%20Actions-green.svg)](https://github.com/features/actions)
 
-An intelligent, automated IPO breakout detection system for Indian markets using systematic signal generation.
+This is **not** a simple breakout scanner.
 
-## 🎯 **System Overview**
+It is a behavior-driven IPO momentum qualification system that trades **only confirmed breakouts** with structural and volume validation. The system ruthlessly filters out market noise, grading high-quality setups while explicitly tracking its own rejections to continuously refine its edge.
 
-This scanner implements multiple strategies to identify IPO breakout opportunities based on price action and volume analysis.
+## 🧭 **Strategy Philosophy**
 
-### **Key Features**
-- 🔍 **Automated IPO Detection** - Daily scanning of newly listed stocks
-- 📱 **Telegram Alerts** - Real-time notifications with detailed price references
-- 🧠 **Smart Freshness Filter** - Intelligent handling of mature breakouts vs. fresh ones
-- 🛠️ **Parameter Tuning Logs** - Tracks mathematically exactly *why* a trade was rejected
-- 📊 **Multiple Strategies** - Consolidation-based and listing day breakout detection
-- ⚡ **Manual Execution** - Generates signals for manual review (compliance-friendly)
-- 📉 **Clean Tracking** - Daily `logs/` directory and CSV-based portfolio management
+This system **does not predict breakouts — it validates them**. 
 
-## 🛠️ **Quick Setup**
+It only participates in moves where demand is already proven through sustained price behavior and volume expansion. By forcing the market to show its hand first, we eliminate the false signals that plague generic scanners.
 
-### **1. Create Your Repository**
+## 🎯 **System Overview & Edge**
+
+### 🧠 **Confirmation Engine (Core Edge)**
+Breakouts are *never* traded immediately upon crossing a line.
+
+**Flow:**
+1. **Breakout Detected** → Symbol enters `PENDING` state.
+2. **Behavior Observation** → The system observes the price action for 45–60 minutes.
+3. **Rejection** → Fails instantly if the price falls back below the breakout level or if the rejection tail exceeds the mathematical threshold.
+4. **Execution** → Only mathematically `CONFIRMED` breakouts generate actionable trade signals.
+
+*This eliminates the vast majority of false breakouts and intraday traps.*
+
+### 🚫 **Rejection Logic (Critical Filters)**
+The system rejects aggressively. It is built to avoid weak setups. A setup is terminated if:
+- **IPO Age is too high** (loss of momentum).
+- **Volume is insufficient** (lacks institutional footprints).
+- **Base structure is loose** (high-volatility chop rather than accumulation).
+- **Breakout fails confirmation** (inability to hold the high).
+- **Time Decay Filter**: If a confirmed breakout fails to push ≥1.5% away from the breakout level within a defined time window (e.g., 60–90 minutes), it is treated as a "dead breakout" and rejected. (Post-confirm momentum failure).
+
+*Most signals are rejected — only the absolute highest-quality trades survive to the Execution stage.*
+
+### 🔁 **Learning & Feedback Loop**
+The system continuously improves its own configurations through:
+- **Rejection Audits (`ipo_rejections.csv`)**: A strict log tracking exactly *why* a trade was filtered (e.g., "Volume was 1.7x, needed 1.8x").
+- **Trade Outcome Tracking**: Position and result history logged to `ipo_positions.csv`.
+- **Data-driven refinement**: You can review the rejection logs 30 days later to see if you missed massive runners because your rules were too tight, enabling continuous optimization of your strategy parameters.
+
+---
+
+## 🏗️ **Tiered Decision Architecture**
+
+The scanner relies on a strict capital allocation engine that sizes positions directly according to the structural quality of the base and breakout metrics.
+
+- **Tier A+ (`100% Size`)**: The perfect storm. IPO age ≤ 60d + tight structural base + massive volume spike (≥ 1.8x).
+- **Tier A (`60% Size`)**: Pure momentum. Excellent volume (≥ 2.0x) + extreme youth (IPO age ≤ 45d).
+- **Tier B (`40% Size`)**: Highly structured accumulation base breakout, catching the move *before* it hits the listing high.
+- **Controlled Fallback (`50% Size`)**: Used sparingly for valid momentum setups that miss ideal A/A+ conditions. These trades are explicitly marked as lower-conviction and should be managed more aggressively.
+
+**Note:**
+- `WATCHLIST` signals are NOT trades. They simply prime the system.
+- Tier assignment and sizing calculation occurs ONLY after the confirmation engine validates the breakout.
+- Unconfirmed signals are ignored entirely.
+
+---
+
+## 🛠️ **Installation & Configuration**
+
+### **1. Setup Environment**
 ```bash
 git clone https://github.com/yourusername/ipo-breakout-scanner.git
 cd ipo-breakout-scanner
+pip install -r requirements.txt
+cp .env.template .env
 ```
 
-### **2. Set Up Telegram Bot (Optional)**
-1. Message [@BotFather](https://t.me/botfather) on Telegram
-2. Send `/newbot` and follow instructions
-3. Save your bot token
-4. Start a chat with your bot and send any message
-5. Visit: `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
-6. Find your chat ID in the response
+### **2. Configure Data Sources**
+⚠️ **IMPORTANT:** The Upstox API is **REQUIRED** for accurate intraday confirmation and volume validation. Fallback sources (NSE/YFinance) are **NOT** suitable for real-time decision-making and are strictly for non-critical/historical use out of market hours.
 
-**Note**: Scanner works without Telegram - notifications will appear in logs instead
-
-### **3. Configure Environment Variables (Optional)**
-
-Create a `.env` file in the project root (copy from `.env.example`):
-
+In your `.env` file:
 ```bash
-# Copy example file
-cp .env.example .env
-# Edit .env with your values
+# Get this by creating an "Analytics App" in the Upstox Developer Dashboard 
+# (Permanent 1-year token. No 2FA or daily logins required!)
+UPSTOX_ACCESS_TOKEN=your_analytics_token_here
+
+# Telegram Alerts (Optional)
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_CHAT_ID=your_chat_id
 ```
 
-**Required for local development:**
-- None (system works without any tokens, uses NSE fallback)
+### **3. Automation Deployment**
+To deploy to GitHub Actions for fully automated cloud processing:
+1. Add `UPSTOX_ACCESS_TOKEN`, `TELEGRAM_BOT_TOKEN`, and `TELEGRAM_CHAT_ID` to your GitHub Repository Secrets.
+2. Push to the `main` branch.
+3. The system will automatically spawn scanning jobs based on the cron schedules in `.github/workflows/`.
 
-**Optional (for better performance):**
-- `UPSTOX_ACCESS_TOKEN` - Upstox API token for faster data fetching
-  - Get from: https://account.upstox.com/developer/apps
-  - Without this: System uses NSE (jugaad-data) which is slower but works fine
-- `TELEGRAM_BOT_TOKEN` - Telegram bot token for alerts
-- `TELEGRAM_CHAT_ID` - Your Telegram chat ID
+---
 
-**For GitHub Actions:**
-Go to **Settings > Secrets and variables > Actions** and add:
+## 📂 **Data Infrastructure Flow**
 
-| Secret Name | Description | Example | Required |
-|-------------|-------------|---------|----------|
-| `TELEGRAM_BOT_TOKEN` | Your bot token from BotFather | `1234567890:ABCdef...` | Optional |
-| `TELEGRAM_CHAT_ID` | Your Telegram chat ID | `987654321` | Optional |
-| `UPSTOX_ACCESS_TOKEN` | Upstox API access token | `your_token_here` | Optional |
-| `IPO_YEARS_BACK` | Years of IPO data to scan | `2` | Optional |
-| `LOG_LEVEL` | Logging verbosity | `INFO` | Optional |
-
-### **4. Deploy & Activate**
-```bash
-git add .
-git commit -m "🚀 Deploy IPO Scanner"
-git push origin main
+```text
+ipo-breakout-scanner/
+├── ipo_signals.csv                 # All mathematically approved, confirmed trades (with tier sizes)
+├── ipo_rejections.csv              # Audit log of potential setups blocked by validation (False-negative tracking)
+├── ipo_positions.csv               # Active/Closed portfolio tracking and trailing stops
+├── ipo_listing_data.csv            # Upstox-sourced listing metrics (High, Low, Close, Volume)
+├── recent_ipo_symbols.csv          # Discovery layer (NSE) output
+└── logs/                           # Raw system runtime logs
 ```
 
-The scanners will start automatically and run:
+---
 
-**Active Scanners:**
-- **Consolidation-Based Scanner** - Daily scan at 2:15 PM IST (Weekdays) ✅
-  - Detects consolidation patterns and breakouts
-  - Signal Type: "Consolidation-Based Breakout"
-- **Listing Day Breakout Scanner** - Hourly during market hours (9:15 AM - 3:30 PM IST) ✅
-  - Checks for breakouts above listing day high
-  - Signal Type: "Listing Day Breakout"
-- **Watchlist Scanner** - Hourly during market hours (if watchlist has active symbols) ✅
-  - Intraday breakout detection for watchlist stocks
+## 📱 **Alert Standard (Telegram)**
 
-## 🎯 **How It Works**
+When a trade survives the confirmation engine and is mathematically assigned a tier, the system fires a highly readable standard alert:
 
-### **Strategy 1: Consolidation-Based Detection Algorithm (v2.1.0)**
-- **Pattern Detection:** Identifies consolidation patterns with strict price and volume analysis
-- **Candle Quality:** Breakout candle must CLOSE strictly above resistance and be a bullish green candle.
-- **Smart Freshness:** Rejects breakouts older than 10 days; requires holding above base for 4-10 day old breakouts.
-- **Signal Type:** "Consolidation-Based Breakout" (marked in alerts and CSV)
-- **Grading System:**
-  - **Grade A+**: Perfect setup, highest allocation
-  - **Grade B**: Good setup, moderate allocation  
-  - **Grade C**: Acceptable setup, smaller allocation
-- **Risk Management:**
-  - **Stop losses** with trailing functionality
-  - **Position sizing by grade** for risk management
-  - **Quick loser rejection** (5-day, -5% rule)
-- **Conflict Prevention:** Checks for existing active positions before creating new signals
-
-### **Strategy 2: Listing Day High Breakout**
-- **Core Principle:** IPO stocks breaking listing day high with volume show strong momentum
-- **Signal Type:** "Listing Day Breakout" (marked in alerts and CSV)
-- **Entry:** When price breaks listing day high + volume spike (1.5x average)
-- **Stop Loss:** Listing day low (critical support)
-- **Target:** Listing day high + 50% of listing day range
-- **Advantage:** Simple, clear entry/exit rules based on key price levels
-- **No complex indicators** - Just price and volume confirmation
-- **Conflict Prevention:** Checks for existing active positions before creating new signals
-
-### **Strategy 3: Intraday Watchlist Monitoring**
-- **Purpose:** Real-time monitoring of specific symbols
-- **Data:** 5-minute candles from Upstox API
-- **Detection:** Intraday breakouts with volume confirmation
-- **Use Case:** Quick scalping opportunities on watchlist stocks
-
-## 📱 **Sample Telegram Alerts**
-
-### **Consolidation-Based Breakout Signal:**
-```
-🎯 CONSOLIDATION BREAKOUT SIGNAL
-
-📊 Symbol: KAYNES
-📋 Signal Type: Consolidation-Based Breakout
-⭐ Grade: A+
-💰 Entry: ₹1,247.50
-🛑 Stop Loss: ₹1,120.15
-📈 Target: ₹1,450.00
-```
-
-### **Listing Day Breakout Signal:**
-```
+```text
 🎯 LISTING DAY HIGH BREAKOUT!
 
-📊 Symbol: ABCOTS
+📊 KAYNES
 📋 Signal Type: Listing Day Breakout
-📅 Listing Date: 2024-09-24
-💰 Entry: ₹1,500.00
-🛑 Stop Loss: ₹1,200.00 (Listing Day Low)
-📈 Target: ₹1,800.00
 
-📅 Date: 2025-09-27 20:30
+🏆 TIER: A+  |  💰 Position Size: 100%
+📌 Perfect Base + High Volume Breakout
 
-Manual review recommended
+⏰ Context & Timing:
+• Age: 12 days old
+• Post-Confirm Move: +2.15%
+• ✅ Perfect Base Detected
+
+💰 Trade Details:
+• Current Price: ₹1,247.50 (Live)
+• Entry Target: ₹1,245.00
+• Stop Loss: ₹1,120.15 (-10%)
+• Target Obj: ₹1,450.00
+• Risk:Reward: 1:2.0
+
+📈 Metrics:
+• Listing Day High: ₹1,200.00 (BROKEN!)
+• Base High: ₹1,195.00
+
+📊 Confirmation:
+• Volume Spike: 2.5x avg
+• Vol vs Listing: 1.1x ✅
+
+⚡ Action Required: Consider entry based on tier size.
 ```
-
-## 📊 **File Structure & Flow**
-
-### **Core Python Scripts**
-
-```
-ipo-breakout-scanner/
-├── streamlined-ipo-scanner.py      # Main consolidation-based scanner
-├── listing_day_breakout_scanner.py # Listing day high breakout scanner
-├── hourly_breakout_scanner.py      # Intraday breakout scanner for watchlist
-├── fetch.py                        # IPO symbol fetcher from NSE
-├── utils.py                        # Upstox API utility functions
-└── requirements.txt                # Python dependencies
-```
-
-### **Data Files (Auto-generated)**
-
-```
-├── recent_ipo_symbols.csv          # List of recent IPOs with listing dates
-├── ipo_listing_data.csv            # Listing day high/low for each IPO
-├── ipo_signals.csv                 # All generated signals (tracked with v2.1.0 versioning)
-├── ipo_positions.csv               # Active and closed positions
-├── ipo_upstox_mapping.csv          # IPO symbol to Upstox instrument mapping
-├── watchlist.csv                   # Symbols to monitor for intraday breakouts
-└── logs/                           # Daily structured JSONL logs for parameter tuning
-    └── YYYY-MM-DD/
-        └── consolidation.jsonl     # Detailed logs of every SIGNAL_GENERATED and REJECTED_BREAKOUT
-```
-
-### **Automation Workflows**
-
-```
-.github/workflows/
-├── ipo-scanner.yml                 # Daily consolidation-based scanning
-├── listing-day-breakout.yml        # Hourly listing day breakout checks
-└── watchlist-hourly-scanner.yml    # Hourly intraday breakout checks
-```
-
-## 🔄 **System Flow & Strategies**
-
-### **Strategy 1: Consolidation-Based Breakout Scanner** 
-*(Main Scanner - `streamlined-ipo-scanner.py`)*
-**Status:** ✅ ACTIVE - Runs daily at 2:15 PM IST (Weekdays)
-
-**Flow:**
-1. **IPO Discovery** → `fetch.py` fetches recent IPOs from NSE
-2. **Data Collection** → Fetches historical price data (Upstox API or NSE fallback)
-3. **Pattern Detection** → Identifies consolidation patterns with:
-   - Price consolidation analysis
-   - Volume analysis
-   - Breakout confirmation
-4. **Signal Generation** → Creates signals with grades (A+, B, C)
-5. **Position Tracking** → Monitors active positions with trailing stops
-6. **Alerts** → Sends Telegram notifications
-
-**Entry Logic:**
-- Detects breakout from consolidation base
-- Entry: Next day opening price after breakout
-- Stop Loss: Grade-based (5-15% below entry)
-- Target: Based on consolidation range and grade
-
-**Automation:** Runs daily via `ipo-scanner.yml` workflow
 
 ---
 
-### **Strategy 2: Listing Day High Breakout Scanner**
-*(`listing_day_breakout_scanner.py`)*
-
-**Flow:**
-1. **Listing Data Collection** → Fetches and stores listing day high/low for each IPO
-2. **Tracking** → Stores in `ipo_listing_data.csv`:
-   - Listing day high
-   - Listing day low
-   - Listing day close
-   - Listing day volume
-3. **Breakout Detection** → Checks if current price breaks listing day high
-4. **Volume Confirmation** → Requires 1.5x average volume spike
-5. **Signal Generation** → Creates entry signal when breakout confirmed
-
-**Entry Logic:**
-- **Entry:** Current price when breaks listing day high with volume
-- **Stop Loss:** Listing day low (critical support level)
-- **Target:** Listing day high + 50% of listing day range
-
-**Key Principle:** IPO stocks that break their listing day high with volume often continue upward momentum.
-
-**Automation:** Runs hourly during market hours via `listing-day-breakout.yml` workflow
-
----
-
-### **Strategy 3: Intraday Watchlist Scanner**
-*(`hourly_breakout_scanner.py`)*
-
-**Flow:**
-1. **Watchlist Loading** → Reads symbols from `watchlist.csv` (status=ACTIVE)
-2. **Intraday Data** → Fetches 5-minute candles from Upstox API
-3. **Real-time Detection** → Monitors for intraday breakouts
-4. **Breakout Criteria:**
-   - Price breaks recent high
-   - Volume spike (1.5x average)
-   - RSI > 60 (momentum confirmation)
-5. **Immediate Alerts** → Sends Telegram alerts for quick action
-
-**Use Case:** Monitor specific symbols for intraday trading opportunities
-
-**Automation:** Runs hourly during market hours via `watchlist-hourly-scanner.yml` workflow (only if watchlist has active symbols)
-
----
-
-## 📋 **Data Flow Diagram**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    IPO Discovery Layer                       │
-│  fetch.py → recent_ipo_symbols.csv                          │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-        ┌──────────────┴──────────────┐
-        │                             │
-┌───────▼──────────┐      ┌──────────▼──────────────┐
-│ Strategy 1:      │      │ Strategy 2:             │
-│ Consolidation    │      │ Listing Day Breakout    │
-│ Scanner          │      │ Scanner                 │
-│                  │      │                         │
-│ • Pattern detect │      │ • Track listing high/low│
-│ • Grade signals  │      │ • Breakout detection    │
-│ • Daily scan     │      │ • Hourly scan           │
-└───────┬──────────┘      └──────────┬──────────────┘
-        │                             │
-        └──────────────┬──────────────┘
-                       │
-        ┌──────────────▼──────────────┐
-        │   Signal & Position Storage │
-        │  • ipo_signals.csv          │
-        │  • ipo_positions.csv        │
-        │  • ipo_listing_data.csv     │
-        └──────────────┬──────────────┘
-                       │
-        ┌──────────────▼──────────────┐
-        │      Telegram Alerts        │
-        │  • Entry signals            │
-        │  • Exit alerts              │
-        │  • Position updates         │
-        └─────────────────────────────┘
-```
-
-## 🎯 **Key Files Explained**
-
-### **Core Scripts**
-
-| File | Purpose | When It Runs |
-|------|---------|--------------|
-| `streamlined-ipo-scanner.py` | Main consolidation-based scanner | Daily (8:45 AM IST) |
-| `listing_day_breakout_scanner.py` | Listing day high breakout detection | Hourly (9:15 AM - 3:30 PM IST) |
-| `hourly_breakout_scanner.py` | Intraday breakout for watchlist | Hourly (if watchlist active) |
-| `fetch.py` | Fetches IPO symbols from NSE | On demand / when scanner runs |
-
-### **Data Files**
-
-| File | Purpose | Auto-updated |
-|------|---------|--------------|
-| `recent_ipo_symbols.csv` | List of recent IPOs | Yes (via fetch.py) |
-| `ipo_listing_data.csv` | Listing day high/low for each IPO | Yes (via listing scanner) |
-| `ipo_signals.csv` | All generated trading signals | Yes (all scanners) |
-| `ipo_positions.csv` | Active and closed positions | Yes (position updates) |
-| `watchlist.csv` | Symbols to monitor intraday | Manual |
-| `ipo_upstox_mapping.csv` | Symbol to Upstox instrument mapping | Manual/External |
-
-### **Workflow Files**
-
-| File | Schedule | Purpose | Status |
-|------|----------|---------|--------|
-| `ipo-scanner.yml` | Daily 2:15 PM IST (Weekdays) | Consolidation-based scanning | ✅ ACTIVE |
-| `listing-day-breakout.yml` | Hourly 9:15 AM - 3:30 PM IST | Listing day breakout checks | ✅ ACTIVE |
-| `watchlist-hourly-scanner.yml` | Hourly 9:15 AM - 3:30 PM IST | Watchlist intraday scanning | ✅ ACTIVE |
-
-## 🚀 **Quick Start Guide**
-
-### **1. Initial Setup**
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment variables
-# Create .env file with:
-# TELEGRAM_BOT_TOKEN=your_token
-# TELEGRAM_CHAT_ID=your_chat_id
-# UPSTOX_ACCESS_TOKEN=your_token (optional)
-```
-
-### **2. Run Scanners Manually**
-
-```bash
-# Consolidation-based scanner (main)
-python streamlined-ipo-scanner.py scan
-
-# Listing day breakout scanner
-python listing_day_breakout_scanner.py
-
-# Watchlist intraday scanner
-python hourly_breakout_scanner.py
-```
-
-### **3. Add Symbols to Watchlist**
-
-Edit `watchlist.csv`:
-```csv
-symbol,added_date,notes,status
-NATCAPSUQ,2025-11-12,IPO breakout candidate,ACTIVE
-SUPREME,2025-11-12,High volume pattern,ACTIVE
-```
-
-### **4. Monitor Results & Tune Parameters**
-
-- **Signals:** Check `ipo_signals.csv`
-- **Positions:** Check `ipo_positions.csv`
-- **Tuning Logs:** Check the `logs/YYYY-MM-DD/consolidation.jsonl` files. These track `REJECTED_BREAKOUT` events with exact mathematical metrics (e.g., `ratio: 1.15` when `MIN_RISK_REWARD: 1.5`), so you can easily tune parameters over time.
-- **Alerts:** Telegram notifications (if configured)
-
-### **5. Verify System Logic**
-Run the verification script anytime after making code changes to ensure all core logic properties safely remain intact:
-```bash
-python verify_scanner_logic.py
-```
-
-## 🔧 **Local Development**
-
-### **Setup Local Environment**
-```bash
-# Clone repository
-git clone <your-repo-url>
-cd ipo-breakout-scanner
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Copy environment template
-cp .env.template .env
-# Edit .env with your credentials
-
-# Run scanner manually
-python streamlined-ipo-scanner.py scan
-```
-
-### **Manual Commands**
-```bash
-# Daily IPO scan
-python streamlined-ipo-scanner.py scan
-
-# Weekly summary
-python streamlined-ipo-scanner.py weekly_summary
-
-# Monthly review
-python streamlined-ipo-scanner.py monthly_review
-```
-
-## 📈 **Trading Approach**
-
-### **Signal Generation**
-- **Automated detection** of IPO breakout patterns
-- **Quality filtering** through multi-indicator confluence
-- **Grade-based prioritization** for optimal allocation
-
-### **Manual Execution** (Regulatory Compliance)
-- **Signals for review** - not automated trading
-- **Human oversight** for final entry decisions
-- **Flexible position sizing** based on market conditions
-
-### **Portfolio Management**
-- **Real-time tracking** via CSV files
-- **Position monitoring** with current prices and P&L
-- **Risk monitoring** with stop-loss alerts
-
-## ⚠️ **Important Notes**
-
-### **Regulatory Compliance**
-- **Manual execution only** - system generates signals for review
-- **No automated trading** - you control all buy/sell decisions
-- **Educational/analytical tool** - not investment advice
+## ⚠️ **System Discipline & Compliance**
 
 ### **Risk Disclaimer**
-- **Past performance doesn't guarantee future results**
-- **Trading involves risk** - never risk more than you can afford to lose
-- **Systematic approach reduces but doesn't eliminate risk**
-
-## 🤝 **Contributing**
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/improvement`)
-3. Commit changes (`git commit -am 'Add improvement'`)
-4. Push to branch (`git push origin feature/improvement`)
-5. Create a Pull Request
-
-## 📄 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 **Acknowledgments**
-
-- **NSE** for providing market data access
-- **jugaad-data** library for data fetching
-- **Telegram Bot API** for notification system
-- **GitHub Actions** for free automation platform
-
-## 📧 **Support**
-
-For questions, issues, or suggestions:
-- 🐛 [Open an Issue](https://github.com/yourusername/ipo-breakout-scanner/issues)
-- 💬 [Start a Discussion](https://github.com/yourusername/ipo-breakout-scanner/discussions)
+- **Conflict Prevention:** The system ensures absolute discipline: `1 stock = 1 position`. If a stock is currently held in your active portfolio, new signals on that symbol are rigorously ignored.
+- **Manual Execution Only:** This engine calculates, sizes, grades, and alerts. It **does not** place API trades automatically. It acts as an analytical overlay, requiring human oversight for execution compliance and final risk approval.
+- **Educational/Analytical Tool:** Not financial or investment advice.
 
 ---
-
-**⚡ Ready to systematize your IPO trading? Deploy this scanner and start receiving high-quality breakout signals automatically!** 🚀
-
----
-
-<sub>Built with ❤️ for systematic IPO traders | Automated via GitHub Actions | Powered by proven technical analysis</sub>
+<sub>Built for systematic IPO momentum trading | Automated via GitHub Actions | Driven by mathematical price action</sub>
