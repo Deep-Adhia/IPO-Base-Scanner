@@ -229,20 +229,20 @@ LISTING_WATCHLIST_MAX_SIGN_FLIPS = _env_int(
 # ---------------------------------------------------------------------------
 # Tier A+: perfect base + listing high breakout + volume + fresh IPO → 100% size
 LISTING_TIER_APLUS_MIN_VOLUME_MULT  = _env_float("LISTING_TIER_APLUS_MIN_VOLUME_MULT", 1.8)
-LISTING_TIER_APLUS_MAX_AGE_DAYS     = _env_int("LISTING_TIER_APLUS_MAX_AGE_DAYS", 60)
+LISTING_TIER_APLUS_MAX_AGE_DAYS     = _env_int("LISTING_TIER_APLUS_MAX_AGE_DAYS", 365)
 
 # Tier A: pure momentum — strong volume, no base required, NOT perfect base → 60% size
 LISTING_TIER_A_MIN_VOLUME_MULT = _env_float("LISTING_TIER_A_MIN_VOLUME_MULT", 2.0)
-LISTING_TIER_A_MAX_AGE_DAYS    = _env_int("LISTING_TIER_A_MAX_AGE_DAYS", 45)
+LISTING_TIER_A_MAX_AGE_DAYS    = _env_int("LISTING_TIER_A_MAX_AGE_DAYS", 365)
 
 # Tier A — controlled fallback: outside A windows but still valid → 50% size
-LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS       = _env_int("LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS", 75)
+LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS       = _env_int("LISTING_TIER_A_FALLBACK_MAX_AGE_DAYS", 365)
 LISTING_TIER_A_FALLBACK_POSITION_SIZE_PCT  = _env_int("LISTING_TIER_A_FALLBACK_POSITION_SIZE_PCT", 50)
 
 # Tier B: base breakout below listing high (accumulation-driven) → 40% size
 LISTING_TIER_B_ENABLED                    = _env_bool("LISTING_TIER_B_ENABLED", True)
 LISTING_TIER_B_MAX_DISTANCE_FROM_HIGH_PCT = _env_float("LISTING_TIER_B_MAX_DISTANCE_FROM_HIGH_PCT", 20.0)
-LISTING_TIER_B_MAX_AGE_DAYS               = _env_int("LISTING_TIER_B_MAX_AGE_DAYS", 90)
+LISTING_TIER_B_MAX_AGE_DAYS               = _env_int("LISTING_TIER_B_MAX_AGE_DAYS", 365)
 LISTING_TIER_B_POSITION_SIZE_PCT          = _env_int("LISTING_TIER_B_POSITION_SIZE_PCT", 40)
 
 # Post-confirm move: minimum % above breakout reference after confirmation (kills dead trades)
