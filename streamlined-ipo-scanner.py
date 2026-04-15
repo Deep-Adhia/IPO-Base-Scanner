@@ -2106,7 +2106,14 @@ def detect_scan(symbols, listing_map):
         # DO NOT break the symbol loop — continue scanning other symbols
     
     logger.info(f"📊 Scan complete: {signals_found} signals found from {symbols_processed} symbols processed")
-    
+
+    # LOG: Scan-level funnel summary — day-level dataset for tracking scanner activity
+    write_daily_log("scanner", "SYSTEM", "SCAN_COMPLETED", {
+        "symbols_processed": symbols_processed,
+        "signals_found": signals_found,
+        "version": SCANNER_VERSION
+    })
+
     # Send scan summary to Telegram
     summary_msg = f"""📊 <b>IPO Scanner Summary</b>
     
@@ -2427,6 +2434,17 @@ def stop_loss_update_scan():
                 close_active_signal(sym, current_price, pnl, days_held, exit_reason)
                 exits_triggered += 1
                 
+                # LOG: Position exit event — critical for month-end grade/exit-reason analysis
+                write_daily_log("positions", sym, "POSITION_CLOSED", {
+                    "exit_reason": exit_reason,
+                    "entry_price": round(entry_price, 2),
+                    "exit_price": round(current_price, 2),
+                    "pnl_pct": round(pnl, 2),
+                    "days_held": days_held,
+                    "grade": pos.get("grade", "?"),
+                    "price_source": price_source
+                })
+                
                 # Send exit alert
                 exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days_held, entry_price)
                 send_telegram(exit_msg)
@@ -2456,9 +2474,30 @@ def stop_loss_update_scan():
                     current_price, new_trailing, pnl, days_held
                 ]
 
+                # LOG: Daily snapshot — every position every trading day (core dataset for tuning)
+                write_daily_log("positions", sym, "DAILY_SNAPSHOT", {
+                    "current_price": round(current_price, 2),
+                    "entry_price": round(entry_price, 2),
+                    "pnl_pct": round(pnl, 2),
+                    "trailing_stop": round(new_trailing, 2),
+                    "days_held": days_held,
+                    "grade": pos.get("grade", "?"),
+                    "price_source": price_source
+                })
+
                 # Count only real trailing-stop improvements as "updates"
                 if new_trailing > old_trailing:
                     updates_made += 1
+
+                    # LOG: Trailing stop improvement — key for understanding stop-protection quality
+                    write_daily_log("positions", sym, "TRAILING_STOP_UPDATED", {
+                        "old_stop": round(old_trailing, 2),
+                        "new_stop": round(new_trailing, 2),
+                        "current_price": round(current_price, 2),
+                        "pnl_pct": round(pnl, 2),
+                        "days_held": days_held,
+                        "grade": pos.get("grade", "?")
+                    })
 
                     # Send position update alert only when stop-loss actually moves
                     update_msg = format_position_update_alert(
