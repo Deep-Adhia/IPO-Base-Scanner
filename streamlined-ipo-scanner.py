@@ -1126,6 +1126,22 @@ def fetch_data(symbol, start_date):
     
 def update_positions():
     df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
+    
+    # Initialize outcome tracking columns backward compatibility
+    schema_cols = [
+        "max_runup_pct",
+        "max_drawdown_pct",
+        "outcome_type",
+        "holding_efficiency_pct",
+        "time_to_failure_days",
+        "time_to_failure_min",
+    ]
+    for c in schema_cols:
+        if c not in df_pos.columns:
+            df_pos[c] = None
+    df_pos["max_runup_pct"] = df_pos["max_runup_pct"].fillna(0.0)
+    df_pos["max_drawdown_pct"] = df_pos["max_drawdown_pct"].fillna(0.0)
+
     for idx, pos in df_pos[df_pos["status"]=="ACTIVE"].iterrows():
         sym = pos["symbol"]
         
@@ -1211,6 +1227,14 @@ def update_positions():
         if days < 0:
             logger.error(f"⚠️ Negative days for {sym}: entry_date={start}, today={today_date}")
             days = 0
+            
+        # Update peak metrics
+        current_max_runup = float(pos.get("max_runup_pct", 0.0) or 0.0)
+        current_max_drawdown = float(pos.get("max_drawdown_pct", 0.0) or 0.0)
+        
+        new_max_runup = max(current_max_runup, pnl)
+        new_max_drawdown = min(current_max_drawdown, pnl)
+
         
         # Enhanced exit strategies
         exit_reason = None
@@ -1232,20 +1256,50 @@ def update_positions():
             exit_reason = "Stop Loss"
         
         if exit_reason:
-            df_pos.loc[idx, ["status","exit_date","exit_price","pnl_pct","days_held"]] = [
+            # Outcome Classification
+            outcome_type = "NO_FOLLOW_THROUGH"
+            time_to_failure_days = None
+            time_to_failure_min = None
+            
+            if new_max_runup > 10.0 and days <= 5:
+                outcome_type = "FAST_WINNER"
+            elif new_max_runup > 10.0 and days > 5:
+                outcome_type = "SLOW_WINNER"
+            elif new_max_runup <= 3.0 and new_max_drawdown <= -3.0:
+                outcome_type = "FAILED_BREAKOUT"
+                time_to_failure_days = days
+            elif new_max_runup < 1.0 and exit_reason == "Stop Loss":
+                outcome_type = "IMMEDIATE_FAILURE"
+                time_to_failure_days = days
+            elif new_max_runup > 3.0 and new_max_runup <= 8.0:
+                outcome_type = "NO_FOLLOW_THROUGH"
+            
+            holding_efficiency_pct = None
+            if new_max_runup >= 5.0:
+                holding_efficiency_pct = round((pnl / new_max_runup) * 100.0, 2)
+
+            # Derived analytic metric for faster failure diagnostics (no strategy impact)
+            if time_to_failure_days is not None:
+                time_to_failure_min = int(time_to_failure_days * 390)
+                
+            df_pos.loc[idx, ["status","exit_date","exit_price","pnl_pct","days_held", "max_runup_pct", "max_drawdown_pct", "outcome_type", "holding_efficiency_pct", "time_to_failure_days", "time_to_failure_min"]] = [
                 "CLOSED", datetime.today().strftime("%Y-%m-%d"),
-                float(current_price), float(pnl), int(days)
+                float(current_price), float(pnl), int(days),
+                new_max_runup, new_max_drawdown, outcome_type, holding_efficiency_pct, time_to_failure_days, time_to_failure_min
             ]
             close_active_signal(sym, current_price, pnl, days, exit_reason)
             # Send detailed exit alert
             exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days, pos["entry_price"])
+            # Append outcome visually
+            exit_msg += f"\n\n📊 <b>Outcome:</b> {outcome_type} (Peak: +{new_max_runup:.1f}%)"
             send_telegram(exit_msg)
         else:
-            df_pos.loc[idx, ["current_price","trailing_stop","pnl_pct","days_held"]] = [
-                float(current_price), float(trailing), float(pnl), int(days)
+            df_pos.loc[idx, ["current_price","trailing_stop","pnl_pct","days_held", "max_runup_pct", "max_drawdown_pct"]] = [
+                float(current_price), float(trailing), float(pnl), int(days), new_max_runup, new_max_drawdown
             ]
+    
+    # Save positions
     df_pos.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-    logger.info("Positions updated")
 
 def compute_rsi(close, period=14):
     delta = close.diff()
@@ -1360,12 +1414,30 @@ def detect_live_patterns(symbols, listing_map):
         # Nested w/i loops can hit the same breakout many times — log each rejection reason once per symbol per run
         _consolidation_reject_logged = set()
 
+        ipo_age_for_log = (datetime.today().date() - pd.to_datetime(ld["listingDate"]).date()).days if ld and "listingDate" in ld and pd.notna(ld["listingDate"]) else 0
         def _log_consolidation_reject_once(details: dict):
             r = details.get("reason", "unknown")
             if r in _consolidation_reject_logged:
                 return
             _consolidation_reject_logged.add(r)
-            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", details)
+            
+            # Map into the standardized outcome payload
+            actual_metric = details.get("risk", details.get("ratio", details.get("distance_pct", details.get("days_old", None))))
+            required_metric = details.get("reward", details.get("min_required", details.get("max_allowed", None)))
+            
+            restructured_payload = {
+                "symbol": sym,
+                "stage": "post_confirm" if "days_old" in details else "pre_breakout",
+                "rejection_reason": r,
+                "key_metric": {
+                    "actual": actual_metric,
+                    "required": required_metric
+                },
+                "ipo_age": ipo_age_for_log,
+                "volume_ratio": details.get("vol_ratio", None),
+                "original_details": details
+            }
+            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", restructured_payload)
         
         # Use your proven backtest logic but check for LIVE patterns (recent breakouts)
         for w in CONSOL_WINDOWS[::-1]:  # Start with larger windows first
@@ -1674,6 +1746,29 @@ def detect_live_patterns(symbols, listing_map):
                 else:
                     date_str = str(date)
                 
+                # Calculate tracking metrics
+                ipo_age_days = 0
+                try:
+                    if ld and "listingDate" in ld and pd.notna(ld["listingDate"]):
+                        ipo_age_days = (datetime.today().date() - pd.to_datetime(ld["listingDate"]).date()).days
+                except:
+                    pass
+                dist_listing_high_pct = ((lhigh - entry) / lhigh * 100.0) if lhigh > 0 else 0.0
+                vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
+                
+                tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
+                volume_score = min(2.0, float(vol_ratio_val) / 2.0)
+                base_score = 1.0
+                momentum_score = 1.0
+                total_score = min(10.0, tier_weight + volume_score + base_score + momentum_score)
+                score_components = {
+                    "tier_weight": round(tier_weight, 2),
+                    "volume_score": round(volume_score, 2),
+                    "base_score": round(base_score, 2),
+                    "momentum_score": round(momentum_score, 2),
+                    "total_score": round(total_score, 2)
+                }
+                
                 new_signal = {
                     "signal_id": sid,
                     "symbol": sym,
@@ -1691,7 +1786,30 @@ def detect_live_patterns(symbols, listing_map):
                     "days_held": 0,
                     "signal_type": "CONSOLIDATION",
                     "version": SCANNER_VERSION,
-                    "scanner": "consolidation_live"
+                    "scanner": "consolidation_live",
+                    # --- Tier fields (additive, backward-compatible) ---
+                    "tier": grade,
+                    "position_size_pct": 100 if grade == 'A+' else (60 if grade == 'A' else (40 if grade == 'B' else 20)),
+                    "tier_rationale": "Consolidation Grade",
+                    # --- Setup Quality & Behavioral Metrics ---
+                    "ipo_age": ipo_age_days,
+                    "distance_from_listing_high_pct": round(dist_listing_high_pct, 2),
+                    "consolidation_range_pct": round(prng, 2),
+                    "volume_ratio": round(vol_ratio_val, 2),
+                    "volume_vs_listing_day": 0.0, # Not actively tracked in consol loop
+                    "risk_reward_ratio": round(risk_reward_ratio, 2) if 'risk_reward_ratio' in locals() else 0.0,
+                    "confirmation_time_min": 0,
+                    "max_extension_during_confirmation_pct": 0.0,
+                    "rejection_depth_pct": 0.0,
+                    "post_confirm_move_pct": round(distance_above, 2) if 'distance_above' in locals() else 0.0,
+                    "did_hold_breakout_level": True,
+                    "entry_vs_breakout_pct": round(distance_above, 2) if 'distance_above' in locals() else 0.0,
+                    "signal_strength_score": score_components['total_score'],
+                    # --- Score Components ---
+                    "tier_weight": score_components.get("tier_weight", 0.0),
+                    "volume_score": score_components.get("volume_score", 0.0),
+                    "base_score": score_components.get("base_score", 0.0),
+                    "momentum_score": score_components.get("momentum_score", 0.0),
                 }
                 
                 # Write to daily log
@@ -1839,7 +1957,32 @@ def detect_scan(symbols, listing_map):
             if r in _scan_reject_logged:
                 return
             _scan_reject_logged.add(r)
-            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", details)
+            ipo_age_for_log = (
+                (datetime.today().date() - pd.to_datetime(ld["listingDate"]).date()).days
+                if ld and "listingDate" in ld and pd.notna(ld["listingDate"])
+                else None
+            )
+            actual_metric = details.get(
+                "risk",
+                details.get("ratio", details.get("distance_pct", details.get("days_old", None)))
+            )
+            required_metric = details.get(
+                "reward",
+                details.get("min_required", details.get("max_allowed", None))
+            )
+            restructured_payload = {
+                "symbol": sym,
+                "stage": "post_confirm" if "days_old" in details else "pre_breakout",
+                "rejection_reason": r,
+                "key_metric": {
+                    "actual": actual_metric,
+                    "required": required_metric,
+                },
+                "ipo_age": ipo_age_for_log,
+                "volume_ratio": details.get("vol_ratio", None),
+                "original_details": details,
+            }
+            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", restructured_payload)
 
         for w in CONSOL_WINDOWS:
             if len(df) < w: continue
@@ -2228,6 +2371,22 @@ def stop_loss_update_scan():
     logger.info("🔄 Starting stop-loss update scan...")
     
     df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
+    
+    # Initialize outcome schema backward compatibility
+    schema_cols = [
+        "max_runup_pct",
+        "max_drawdown_pct",
+        "outcome_type",
+        "holding_efficiency_pct",
+        "time_to_failure_days",
+        "time_to_failure_min",
+    ]
+    for c in schema_cols:
+        if c not in df_positions.columns:
+            df_positions[c] = None
+    df_positions["max_runup_pct"] = df_positions["max_runup_pct"].fillna(0.0)
+    df_positions["max_drawdown_pct"] = df_positions["max_drawdown_pct"].fillna(0.0)
+    
     active_positions = df_positions[df_positions["status"] == "ACTIVE"]
     
     if active_positions.empty:
@@ -2413,6 +2572,15 @@ def stop_loss_update_scan():
             if days_held < 0:
                 logger.error(f"⚠️ Negative days for {sym}: entry_date={entry_date}, today={today_date}")
                 days_held = 0
+                
+            pnl = (current_price - entry_price) / entry_price * 100
+            
+            # Update peak metrics
+            current_max_runup = float(pos.get("max_runup_pct", 0.0) or 0.0)
+            current_max_drawdown = float(pos.get("max_drawdown_pct", 0.0) or 0.0)
+            
+            new_max_runup = max(current_max_runup, pnl)
+            new_max_drawdown = min(current_max_drawdown, pnl)
             
             # Check for exits - use current price for exit decisions
             exit_reason = None
@@ -2426,10 +2594,36 @@ def stop_loss_update_scan():
                 exit_reason = "Time Stop -8%"
             
             if exit_reason:
+                # Outcome Classification
+                outcome_type = "NO_FOLLOW_THROUGH"
+                time_to_failure_days = None
+                time_to_failure_min = None
+                
+                if new_max_runup > 10.0 and days_held <= 5:
+                    outcome_type = "FAST_WINNER"
+                elif new_max_runup > 10.0 and days_held > 5:
+                    outcome_type = "SLOW_WINNER"
+                elif new_max_runup <= 3.0 and new_max_drawdown <= -3.0:
+                    outcome_type = "FAILED_BREAKOUT"
+                    time_to_failure_days = days_held
+                elif new_max_runup < 1.0 and exit_reason == "Stop Loss":
+                    outcome_type = "IMMEDIATE_FAILURE"
+                    time_to_failure_days = days_held
+                elif new_max_runup > 3.0 and new_max_runup <= 8.0:
+                    outcome_type = "NO_FOLLOW_THROUGH"
+                
+                holding_efficiency_pct = None
+                if new_max_runup >= 5.0:
+                    holding_efficiency_pct = round((pnl / new_max_runup) * 100.0, 2)
+
+                # Derived analytic metric for faster failure diagnostics (no strategy impact)
+                if time_to_failure_days is not None:
+                    time_to_failure_min = int(time_to_failure_days * 390)
+                    
                 # Close position - use current price (live or historical)
-                pnl = (current_price - entry_price) / entry_price * 100
-                df_positions.loc[idx, ["status", "exit_date", "exit_price", "pnl_pct", "days_held"]] = [
-                    "CLOSED", datetime.today().strftime("%Y-%m-%d"), current_price, pnl, days_held
+                df_positions.loc[idx, ["status", "exit_date", "exit_price", "pnl_pct", "days_held", "max_runup_pct", "max_drawdown_pct", "outcome_type", "holding_efficiency_pct", "time_to_failure_days", "time_to_failure_min"]] = [
+                    "CLOSED", datetime.today().strftime("%Y-%m-%d"), current_price, pnl, days_held,
+                    new_max_runup, new_max_drawdown, outcome_type, holding_efficiency_pct, time_to_failure_days, time_to_failure_min
                 ]
                 close_active_signal(sym, current_price, pnl, days_held, exit_reason)
                 exits_triggered += 1
@@ -2447,11 +2641,10 @@ def stop_loss_update_scan():
                 
                 # Send exit alert
                 exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days_held, entry_price)
+                exit_msg += f"\n\n📊 <b>Outcome:</b> {outcome_type} (Peak: +{new_max_runup:.1f}%)"
                 send_telegram(exit_msg)
             else:
                 # Update position and (optionally) trail stop-loss
-                pnl = (current_price - entry_price) / entry_price * 100
-
                 # Default: no change in trailing stop
                 new_trailing = float(old_trailing)
 
@@ -2470,8 +2663,8 @@ def stop_loss_update_scan():
                         new_trailing = candidate_trailing
 
                 # Persist updated position
-                df_positions.loc[idx, ["current_price", "trailing_stop", "pnl_pct", "days_held"]] = [
-                    current_price, new_trailing, pnl, days_held
+                df_positions.loc[idx, ["current_price", "trailing_stop", "pnl_pct", "days_held", "max_runup_pct", "max_drawdown_pct"]] = [
+                    current_price, new_trailing, pnl, days_held, new_max_runup, new_max_drawdown
                 ]
 
                 # LOG: Daily snapshot — every position every trading day (core dataset for tuning)
@@ -2604,15 +2797,86 @@ if __name__ == "__main__":
     symbols, listing_map = get_symbols_and_listing()
     
 
+    def generate_daily_summary():
+        try:
+            today_str = datetime.today().strftime('%Y-%m-%d')
+            
+            summary = {
+                "date": today_str,
+                "total_signals": 0,
+                "tier_distribution": {"A+": 0, "A": 0, "B": 0, "C": 0, "D": 0, "UNKNOWN": 0},
+                "avg_signal_score": 0.0,
+                "top_score": 0.0,
+                "rejections": {}
+            }
+            
+            # 1. Parse signals
+            if os.path.exists(SIGNALS_CSV):
+                try:
+                    sig_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+                    todays_signals = sig_df[sig_df["signal_date"] == today_str]
+                    summary["total_signals"] = len(todays_signals)
+                    
+                    if len(todays_signals) > 0:
+                        total_score = 0.0
+                        for _, row in todays_signals.iterrows():
+                            # Reconstruct tier distribution
+                            t = row.get("tier", "N/A")
+                            if pd.isna(t) or str(t).strip() == "":
+                                t = "UNKNOWN"
+                            elif t not in summary["tier_distribution"]:
+                                t = "UNKNOWN"
+                            if t in summary["tier_distribution"]:
+                                summary["tier_distribution"][t] += 1
+                                
+                            score = float(row.get("signal_strength_score", 0.0) or 0.0)
+                            total_score += score
+                            summary["top_score"] = max(summary["top_score"], score)
+                            
+                        summary["avg_signal_score"] = round(total_score / len(todays_signals), 2)
+                except Exception as e:
+                    logger.error(f"Error parsing signals for summary: {e}")
+            
+            # 2. Parse rejections from logs
+            todays_log_dir = os.path.join("logs", today_str)
+            if os.path.exists(todays_log_dir):
+                for list_file in ["consolidation.jsonl", "listing_day.jsonl"]:
+                    filepath = os.path.join(todays_log_dir, list_file)
+                    if os.path.exists(filepath):
+                        with open(filepath, "r", encoding='utf-8') as f:
+                            for line in f:
+                                if not line.strip(): continue
+                                try:
+                                    entry = json.loads(line)
+                                    action = entry.get("action")
+                                    if action in ("REJECTED_BREAKOUT", "PENDING_REJECTED"):
+                                        details = entry.get("details", {})
+                                        reason = details.get("rejection_reason", details.get("reason", "unknown"))
+                                        summary["rejections"][reason] = summary["rejections"].get(reason, 0) + 1
+                                except json.JSONDecodeError:
+                                    pass
+            
+            # Dump to JSON
+            summary_file = os.path.join(todays_log_dir, "daily_summary.json") if os.path.exists(todays_log_dir) else "daily_summary.json"
+            with open(summary_file, "w", encoding="utf-8") as f:
+                json.dump(summary, f, indent=2)
+            logger.info(f"Daily summary generated at {summary_file}")
+            
+        except Exception as e:
+            logger.error(f"Failed to generate daily summary: {e}")
+
+
     if args.mode == "scan":
         signals_found = detect_live_patterns(symbols, listing_map)
         logger.info(f"✅ Live pattern scan completed successfully! Found {signals_found} signals.")
+        generate_daily_summary()
     elif args.mode == "weekly_summary":
         weekly_summary()
     elif args.mode == "monthly_review":
         monthly_review()
     elif args.mode == "stop_loss_update":
         stop_loss_update_scan()
+        generate_daily_summary()
     elif args.mode == "heartbeat":
         heartbeat()
     else:

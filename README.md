@@ -78,6 +78,11 @@ The system rejects aggressively. A setup is terminated at the first failing cond
 
 Grades are assigned by the `compute_grade_hybrid()` scoring function (5 criteria, max score 5):
 
+**Note on terminology**
+- `Grade` (consolidation scanner) and `Tier` (listing breakout engine) are independent scoring systems.
+- `Grade` measures consolidation/base quality.
+- `Tier` measures breakout quality and position sizing allocation.
+
 | Grade | Score | Min Confidence | Position Bias |
 |---|---|---|---|
 | **A+** | 4–5 | Very High (91%) | Full size |
@@ -118,6 +123,14 @@ Each JSONL entry is structured for machine parsing:
   "details": { "reason": "poor_risk_reward", "ratio": 0.83, "min_required": 1.3 }
 }
 ```
+
+Daily summary snapshots may also be generated as:
+
+```text
+logs/YYYY-MM-DD/daily_summary.json
+```
+
+This file is **derived output**, not a source-of-truth input. The source remains JSONL logs.
 
 After 30 days this dataset allows answering:
 - Which grades actually hit their targets (win rate per grade)?
@@ -205,6 +218,25 @@ Automated schedules (IST):
 | Monthly review | 1st of month 2:45 PM | `15 09 1 * *` |
 
 > **NSE Holiday Guard**: The scanner automatically skips NSE public holidays (full 2025–2026 calendar enforced in code). A Telegram notification is sent when a day is skipped.
+
+---
+
+## 📈 Quantitative Analysis (30-Day)
+
+Run:
+
+```bash
+python analyze_30d_data.py
+```
+
+The analysis script now uses a resilient read order for rejection metrics:
+
+1. Prefer `logs/YYYY-MM-DD/daily_summary.json` when available.
+2. If missing/empty (common on fresh local pull), automatically fallback to parsing:
+   - `logs/YYYY-MM-DD/consolidation.jsonl`
+   - `logs/YYYY-MM-DD/listing_day.jsonl`
+
+This means you can run analysis locally even if CI-generated summary files are not present in your branch.
 
 ---
 

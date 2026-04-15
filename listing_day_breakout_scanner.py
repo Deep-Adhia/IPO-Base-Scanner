@@ -836,6 +836,21 @@ def update_listing_data_for_new_ipos():
     except Exception as e:
         logger.error(f"Error updating listing data: {e}")
 
+def calculate_signal_score_components(tier, volume_ratio, perfect_base, post_confirm_pct):
+    tier_weight = 4.0 if tier == 'A+' else (3.0 if tier == 'A' else (2.0 if tier == 'B' else 1.0))
+    volume_score = min(2.0, float(volume_ratio) / 2.0) if volume_ratio else 0.0
+    base_score = 2.0 if perfect_base else 0.5
+    momentum_score = min(2.0, float(post_confirm_pct) / 2.0) if post_confirm_pct else 0.0
+    
+    total_score = min(10.0, tier_weight + volume_score + base_score + momentum_score)
+    return {
+        "tier_weight": round(tier_weight, 2),
+        "volume_score": round(volume_score, 2),
+        "base_score": round(base_score, 2),
+        "momentum_score": round(momentum_score, 2),
+        "total_score": round(total_score, 2)
+    }
+
 def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
     """Check if symbol has broken listing day high with volume"""
     try:
@@ -1301,6 +1316,32 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 logger.info(f"⏭️ {symbol}: No tier assigned — {tier_rationale}")
                 return None
 
+            # --- Analytics & Score Components ---
+            if signal_type == 'BASE_BREAKOUT':
+                breakout_level_for_calc = base_range_high
+                consolidation_range_pct = (base_range_high - df['LOW'].min()) / df['LOW'].min() * 100.0 if df['LOW'].min() > 0 else None
+            else:
+                breakout_level_for_calc = listing_day_high
+                consolidation_range_pct = None
+
+            entry_vs_breakout_pct = ((entry_price - breakout_level_for_calc) / breakout_level_for_calc * 100.0) if breakout_level_for_calc > 0 else 0.0
+            
+            # Retrieve components computed during PENDING
+            state = pending_breakouts.get(symbol) if pending_breakouts else None
+            confirmation_time_min = 0
+            max_extension_during_confirmation_pct = 0.0
+            rejection_depth_pct = 0.0
+            did_hold_breakout_level = True
+            
+            if state and signal_type == 'BREAKOUT':
+                started = datetime.fromisoformat(state.get("started_at", _now_ist().isoformat()))
+                confirmation_time_min = int((_now_ist() - started).total_seconds() // 60)
+                max_seen = float(state.get("max_price_seen", current_price))
+                max_extension_during_confirmation_pct = ((max_seen - listing_day_high) / listing_day_high * 100.0) if listing_day_high > 0 else 0.0
+                rejection_depth_pct = ((max_seen - current_price) / max_seen * 100.0) if max_seen > 0 else 0.0
+                
+            score_comps = calculate_signal_score_components(tier, vol_ratio_for_tier, perfect_base_ok, post_confirm_move_pct)
+
             return {
                 'symbol': symbol,
                 'listing_date': listing_date,
@@ -1335,6 +1376,18 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 'perfect_base': perfect_base_ok,
                 'post_confirm_move_pct': round(post_confirm_move_pct, 2),
                 'base_range_high': round(base_range_high, 2) if base_range_high > 0 else None,
+                # --- Analytics Tracking Fields ---
+                'ipo_age': days_since_listing,
+                'distance_from_listing_high_pct': round(((listing_day_high - current_price) / listing_day_high * 100) if listing_day_high > 0 else 0, 2),
+                'consolidation_range_pct': round(consolidation_range_pct, 2) if consolidation_range_pct is not None else None,
+                'volume_ratio': round(vol_ratio_for_tier, 2),
+                'confirmation_time_min': confirmation_time_min,
+                'max_extension_during_confirmation_pct': round(max_extension_during_confirmation_pct, 2),
+                'rejection_depth_pct': round(rejection_depth_pct, 2),
+                'did_hold_breakout_level': did_hold_breakout_level,
+                'entry_vs_breakout_pct': round(entry_vs_breakout_pct, 2),
+                'signal_strength_score': score_comps['total_score'],
+                'score_components': score_comps,
             }
 
         
@@ -1585,6 +1638,25 @@ def save_breakout_signal(breakout_data):
             "tier": breakout_data.get("tier", ""),
             "position_size_pct": breakout_data.get("position_size_pct", ""),
             "tier_rationale": breakout_data.get("tier_rationale", ""),
+            # --- Setup Quality & Behavioral Metrics ---
+            "ipo_age": breakout_data.get("ipo_age", None),
+            "distance_from_listing_high_pct": breakout_data.get("distance_from_listing_high_pct", None),
+            "consolidation_range_pct": breakout_data.get("consolidation_range_pct", None),
+            "volume_ratio": breakout_data.get("volume_ratio", None),
+            "volume_vs_listing_day": breakout_data.get("volume_vs_listing_day", None),
+            "risk_reward_ratio": breakout_data.get("risk_reward", None),
+            "confirmation_time_min": breakout_data.get("confirmation_time_min", None),
+            "max_extension_during_confirmation_pct": breakout_data.get("max_extension_during_confirmation_pct", None),
+            "rejection_depth_pct": breakout_data.get("rejection_depth_pct", None),
+            "post_confirm_move_pct": breakout_data.get("post_confirm_move_pct", None),
+            "did_hold_breakout_level": breakout_data.get("did_hold_breakout_level", True),
+            "entry_vs_breakout_pct": breakout_data.get("entry_vs_breakout_pct", None),
+            "signal_strength_score": breakout_data.get("signal_strength_score", None),
+            # --- Score Components ---
+            "tier_weight": breakout_data.get("score_components", {}).get("tier_weight", None),
+            "volume_score": breakout_data.get("score_components", {}).get("volume_score", None),
+            "base_score": breakout_data.get("score_components", {}).get("base_score", None),
+            "momentum_score": breakout_data.get("score_components", {}).get("momentum_score", None),
         }
         
         # Write to daily log
