@@ -208,18 +208,76 @@ def is_live_grade_allowed(grade: str) -> bool:
         # Unknown grade: be conservative and reject
         return False
 
-def is_market_hours() -> bool:
-    """Check if current IST time is within Indian market hours (9:15 AM - 3:30 PM IST).
-    Returns True if within market hours, False otherwise."""
+# NSE official trading holidays for 2025 and 2026
+# Source: NSE India holiday calendar
+NSE_HOLIDAYS = {
+    # 2025 holidays
+    "2025-01-26",  # Republic Day
+    "2025-02-26",  # Mahashivratri
+    "2025-03-14",  # Holi
+    "2025-04-10",  # Id-Ul-Fitr (Ramadan Eid)
+    "2025-04-14",  # Dr. Baba Saheb Ambedkar Jayanti
+    "2025-04-18",  # Good Friday
+    "2025-05-01",  # Maharashtra Day
+    "2025-08-15",  # Independence Day
+    "2025-08-27",  # Ganesh Chaturthi
+    "2025-10-02",  # Mahatma Gandhi Jayanti
+    "2025-10-02",  # Dussehra
+    "2025-10-24",  # Diwali Laxmi Pujan
+    "2025-10-28",  # Diwali Balipratipada
+    "2025-11-05",  # Prakash Gurpurb Sri Guru Nanak Dev Ji
+    "2025-11-15",  # ?
+    "2025-12-25",  # Christmas
+    # 2026 holidays
+    "2026-01-26",  # Republic Day
+    "2026-02-17",  # Mahashivratri
+    "2026-03-03",  # Holi
+    "2026-03-20",  # Id-Ul-Fitr (Ramadan Eid) - tentative
+    "2026-04-03",  # Good Friday
+    "2026-04-14",  # Dr. Baba Saheb Ambedkar Jayanti
+    "2026-05-01",  # Maharashtra Day
+    "2026-08-15",  # Independence Day
+    "2026-08-21",  # Ganesh Chaturthi
+    "2026-10-02",  # Mahatma Gandhi Jayanti
+    "2026-10-20",  # Dussehra
+    "2026-11-12",  # Diwali Laxmi Pujan (tentative)
+    "2026-11-13",  # Diwali Balipratipada (tentative)
+    "2026-11-23",  # Prakash Gurpurb Sri Guru Nanak Dev Ji (tentative)
+    "2026-12-25",  # Christmas
+}
+
+def is_market_day() -> bool:
+    """Check if today is an NSE trading day (not a weekend, not a holiday).
+    Returns True if the market is open today, False otherwise."""
     try:
         from datetime import timezone, timedelta as td
         ist = timezone(td(hours=5, minutes=30))
         now_ist = datetime.now(ist)
+        today_str = now_ist.strftime("%Y-%m-%d")
+        # Check weekend (0=Monday, 6=Sunday)
+        if now_ist.weekday() >= 5:
+            return False
+        # Check NSE holiday list
+        if today_str in NSE_HOLIDAYS:
+            return False
+        return True
+    except Exception:
+        # If check fails, assume market is open (fail-open)
+        return True
+
+def is_market_hours() -> bool:
+    """Check if current IST time is within Indian market hours (9:15 AM - 3:30 PM IST)
+    AND today is an NSE trading day (not a weekend or holiday).
+    Returns True if within market hours on a trading day, False otherwise."""
+    try:
+        from datetime import timezone, timedelta as td
+        ist = timezone(td(hours=5, minutes=30))
+        now_ist = datetime.now(ist)
+        # Check if today is a trading day first
+        if not is_market_day():
+            return False
         market_open = now_ist.replace(hour=9, minute=15, second=0, microsecond=0)
         market_close = now_ist.replace(hour=15, minute=30, second=0, microsecond=0)
-        # Also check weekday (0=Monday, 6=Sunday)
-        if now_ist.weekday() >= 5:  # Saturday or Sunday
-            return False
         return market_open <= now_ist <= market_close
     except Exception:
         # If timezone calculation fails, assume market is open (fail-open)
@@ -2483,6 +2541,26 @@ if __name__ == "__main__":
 
     auto_refresh_upstox_token()
     initialize_csvs()
+
+    # --- Market Holiday Guard ---
+    # For scan and stop_loss_update: verify today is an NSE trading day.
+    # Weekly/monthly summaries and heartbeat always run regardless of market day.
+    scan_modes = {"scan", "stop_loss_update", "dry_run"}
+    if args.mode in scan_modes and not is_market_day():
+        from datetime import timezone, timedelta as td
+        ist = timezone(td(hours=5, minutes=30))
+        today_ist = datetime.now(ist).strftime("%Y-%m-%d")
+        skip_msg = (
+            f"📅 <b>Market Holiday / Non-Trading Day</b>\n\n"
+            f"🗓 Date: {today_ist}\n"
+            f"⏭ Scanner skipped — NSE is closed today.\n"
+            f"✅ Next scan will run on the next trading day."
+        )
+        logger.info(f"📅 Market is closed today ({today_ist}). Skipping {args.mode} run.")
+        send_telegram(skip_msg)
+        sys.exit(0)
+    # --- End Holiday Guard ---
+
     update_positions()
     symbols, listing_map = get_symbols_and_listing()
     
