@@ -1,25 +1,43 @@
-def log_position_snapshot(data):
-    """
-    Log the POSITION_SNAPSHOT event with the provided data.
-    """
-    print(f"[POSITION_SNAPSHOT] - {data}")
+import json
+import os
+from datetime import datetime
 
+# Define the log file path based on the current date
+log_directory = os.path.join('logs', datetime.utcnow().strftime('%Y-%m-%d'))
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+log_file_path = os.path.join(log_directory, 'positions.jsonl')
 
-def log_stop_loss_updated(data):
-    """
-    Log the STOP_LOSS_UPDATED event with the provided data.
-    """
-    print(f"[STOP_LOSS_UPDATED] - {data}")
+# Function to log position snapshot
 
+def log_position_snapshot(position):
+    log_entry = {
+        'event': 'position_snapshot',
+        'timestamp': datetime.utcnow().isoformat(),
+        'position': position
+    }
+    with open(log_file_path, 'a') as log_file:
+        log_file.write(json.dumps(log_entry) + '\n')
 
-def log_position_scan_completed(data):
-    """
-    Log the POSITION_SCAN_COMPLETED event with the provided data.
-    """
-    print(f"[POSITION_SCAN_COMPLETED] - {data}")
+# Function to log when stop loss is updated
 
+def log_stop_loss_updated(position, new_stop_loss):
+    log_entry = {
+        'event': 'stop_loss_updated',
+        'timestamp': datetime.utcnow().isoformat(),
+        'position': position,
+        'new_stop_loss': new_stop_loss
+    }
+    with open(log_file_path, 'a') as log_file:
+        log_file.write(json.dumps(log_entry) + '\n')
 
-# Example usage:
-# log_position_snapshot({'position': 'AAPL', 'value': 150})
-# log_stop_loss_updated({'position': 'AAPL', 'new_stop_loss': 145})
-# log_position_scan_completed({'batch': 1, 'total_positions': 100})
+# Function to log position scan completed
+
+def log_position_scan_completed(scanned_positions):
+    log_entry = {
+        'event': 'position_scan_completed',
+        'timestamp': datetime.utcnow().isoformat(),
+        'scanned_positions': scanned_positions
+    }
+    with open(log_file_path, 'a') as log_file:
+        log_file.write(json.dumps(log_entry) + '\n')
