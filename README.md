@@ -108,6 +108,7 @@ logs/
   YYYY-MM-DD/
     consolidation.jsonl    ← REJECTED_BREAKOUT + SIGNAL_GENERATED events
     listing_day.jsonl      ← PENDING / CONFIRMED / BREAKOUT_SIGNAL events
+    watchlist.jsonl        ← Hourly watchlist SIGNAL_GENERATED + REJECTED_BREAKOUT + SCAN_COMPLETED
     positions.jsonl        ← POSITION_CLOSED + DAILY_SNAPSHOT + TRAILING_STOP_UPDATED
     scanner.jsonl          ← SCAN_COMPLETED funnel totals
 ```
@@ -157,6 +158,7 @@ IPO-Base-Scanner/
     └── YYYY-MM-DD/
         ├── consolidation.jsonl
         ├── listing_day.jsonl
+        ├── watchlist.jsonl
         ├── positions.jsonl
         └── scanner.jsonl
 ```
@@ -210,6 +212,11 @@ python streamlined-ipo-scanner.py monthly_review
 ### 4. Automation Deployment (GitHub Actions)
 Add to GitHub Repository Secrets: `UPSTOX_ACCESS_TOKEN`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
 
+Primary workflows:
+- `ipo-scanner-v2.yml` — consolidation scanner (`scan`, `stop_loss_update`, weekly/monthly summaries)
+- `listing-day-breakout.yml` — listing-day breakout scanner
+- `watchlist-hourly-scanner.yml` — hourly watchlist breakout scanner
+
 Automated schedules (IST):
 | Job | Time | Cron (UTC) |
 |---|---|---|
@@ -235,6 +242,7 @@ The analysis script now uses a resilient read order for rejection metrics:
 2. If missing/empty (common on fresh local pull), automatically fallback to parsing:
    - `logs/YYYY-MM-DD/consolidation.jsonl`
    - `logs/YYYY-MM-DD/listing_day.jsonl`
+   - `logs/YYYY-MM-DD/watchlist.jsonl`
 
 This means you can run analysis locally even if CI-generated summary files are not present in your branch.
 

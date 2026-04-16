@@ -1745,6 +1745,14 @@ def detect_live_patterns(symbols, listing_map):
                     date_str = date.strftime('%Y-%m-%d')
                 else:
                     date_str = str(date)
+
+                # Lightweight score component decomposition for explainability logs
+                vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
+                tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
+                volume_score = min(2.0, float(vol_ratio_val) / 2.0)
+                base_score = 1.0
+                momentum_score = 1.0
+                total_score = min(10.0, tier_weight + volume_score + base_score + momentum_score)
                 
                 # Calculate tracking metrics
                 ipo_age_days = 0
@@ -1816,7 +1824,15 @@ def detect_live_patterns(symbols, listing_map):
                 write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
-                    "consolidation_window": w, "price_source": price_source
+                    "consolidation_window": w, "price_source": price_source,
+                    "entry_vs_breakout_pct": round(distance_above, 2) if 'distance_above' in locals() else None,
+                    "post_confirm_move_pct": round(distance_above, 2) if 'distance_above' in locals() else None,
+                    "held_above_breakout_after_confirm": bool(entry >= high2),
+                    "signal_strength_score": score_components.get("total_score", None),
+                    "tier_weight": score_components.get("tier_weight", None),
+                    "volume_score": score_components.get("volume_score", None),
+                    "base_score": score_components.get("base_score", None),
+                    "momentum_score": score_components.get("momentum_score", None),
                 })
                 
                 # Add to positions
@@ -2171,7 +2187,15 @@ def detect_scan(symbols, listing_map):
                 write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
-                    "consolidation_window": w, "mode": "scan", "price_source": price_source
+                    "consolidation_window": w, "mode": "scan", "price_source": price_source,
+                    "entry_vs_breakout_pct": round((entry / high2 - 1.0) * 100.0, 2) if high2 > 0 else None,
+                    "post_confirm_move_pct": round((entry / high2 - 1.0) * 100.0, 2) if high2 > 0 else None,
+                    "held_above_breakout_after_confirm": bool(entry >= high2),
+                    "signal_strength_score": round(total_score, 2),
+                    "tier_weight": round(tier_weight, 2),
+                    "volume_score": round(volume_score, 2),
+                    "base_score": round(base_score, 2),
+                    "momentum_score": round(momentum_score, 2),
                 })
                 
                 # Read existing signals and append new signal
@@ -2636,7 +2660,13 @@ def stop_loss_update_scan():
                     "pnl_pct": round(pnl, 2),
                     "days_held": days_held,
                     "grade": pos.get("grade", "?"),
-                    "price_source": price_source
+                    "price_source": price_source,
+                    "outcome_type": outcome_type,
+                    "max_runup_pct": round(new_max_runup, 2),
+                    "max_drawdown_pct": round(new_max_drawdown, 2),
+                    "time_to_failure_days": time_to_failure_days,
+                    "time_to_failure_min": time_to_failure_min,
+                    "runup_before_drawdown_pct": round(new_max_runup, 2) if new_max_drawdown < 0 else None,
                 })
                 
                 # Send exit alert
@@ -2675,7 +2705,9 @@ def stop_loss_update_scan():
                     "trailing_stop": round(new_trailing, 2),
                     "days_held": days_held,
                     "grade": pos.get("grade", "?"),
-                    "price_source": price_source
+                    "price_source": price_source,
+                    "max_runup_pct": round(new_max_runup, 2),
+                    "max_drawdown_pct": round(new_max_drawdown, 2),
                 })
 
                 # Count only real trailing-stop improvements as "updates"

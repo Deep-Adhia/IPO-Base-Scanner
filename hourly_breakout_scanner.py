@@ -18,6 +18,7 @@ import time
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import logging
+import json
 
 # Load environment
 load_dotenv()
@@ -37,6 +38,30 @@ MIN_VOLUME_MULTIPLIER = 1.5  # Minimum volume spike for breakout
 # Telegram configuration
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+SCANNER_VERSION = "2.1.0"
+
+def write_daily_log(scanner_name, symbol, action, details=None):
+    """Write structured scanner logs to logs/YYYY-MM-DD/<scanner>.jsonl"""
+    try:
+        from datetime import timezone, timedelta as td
+        ist = timezone(td(hours=5, minutes=30))
+        now_ist = datetime.now(ist)
+        log_dir = os.path.join("logs", now_ist.strftime("%Y-%m-%d"))
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = os.path.join(log_dir, f"{scanner_name}.jsonl")
+        entry = {
+            "timestamp": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
+            "version": SCANNER_VERSION,
+            "scanner": scanner_name,
+            "symbol": symbol,
+            "action": action,
+            "details": details or {},
+        }
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, default=str) + "\n")
+    except Exception as e:
+        logger.debug(f"Could not write daily log: {e}")
 
 def send_telegram(msg):
     """Send Telegram notification"""
@@ -258,7 +283,7 @@ def fetch_intraday_data(symbol, interval=INTRADAY_INTERVAL):
         return df
     
     logger.warning(f"⚠️ Could not fetch intraday data for {symbol} from any source")
-        return None
+    return None
 
 def compute_rsi(close, period=14):
     """Calculate RSI"""
@@ -392,6 +417,14 @@ def detect_intraday_breakout(df, symbol):
                 'risk_reward': round(risk_reward, 2),
                 'breakout_strength': breakout_strength,
                 'price_source': live_source,
+                'entry_vs_breakout_pct': round(((entry_price / recent_high) - 1.0) * 100.0, 2) if recent_high > 0 else None,
+                'post_confirm_move_pct': round(((current_price / recent_high) - 1.0) * 100.0, 2) if recent_high > 0 else None,
+                'held_above_breakout_after_confirm': bool(current_price >= recent_high),
+                'signal_strength_score': round(float(breakout_strength) * 3.33, 2),
+                'tier_weight': None,
+                'volume_score': round(min(2.0, (current_volume / avg_volume) / 2.0), 2) if avg_volume > 0 else None,
+                'base_score': 1.0,
+                'momentum_score': round(min(2.0, max(0.0, (current_rsi - 50.0) / 10.0)), 2) if current_rsi is not None else None,
                 'timestamp': datetime.now()
             }
         
@@ -527,6 +560,23 @@ def scan_watchlist():
             
             if breakout:
                 logger.info(f"🎯 BREAKOUT DETECTED for {symbol}!")
+                write_daily_log("watchlist", symbol, "SIGNAL_GENERATED", {
+                    "entry": breakout.get("entry_price"),
+                    "stop_loss": breakout.get("stop_loss"),
+                    "target": breakout.get("target_price"),
+                    "breakout_level": breakout.get("recent_high"),
+                    "entry_vs_breakout_pct": breakout.get("entry_vs_breakout_pct"),
+                    "post_confirm_move_pct": breakout.get("post_confirm_move_pct"),
+                    "held_above_breakout_after_confirm": breakout.get("held_above_breakout_after_confirm"),
+                    "signal_strength_score": breakout.get("signal_strength_score"),
+                    "tier_weight": breakout.get("tier_weight"),
+                    "volume_score": breakout.get("volume_score"),
+                    "base_score": breakout.get("base_score"),
+                    "momentum_score": breakout.get("momentum_score"),
+                    "volume_ratio": breakout.get("volume_spike"),
+                    "risk_reward_ratio": breakout.get("risk_reward"),
+                    "price_source": breakout.get("price_source"),
+                })
                 
                 # Save signal
                 if save_breakout_signal(breakout):
@@ -539,6 +589,11 @@ def scan_watchlist():
                 time.sleep(0.5)
             else:
                 logger.info(f"✅ {symbol}: No breakout detected")
+                write_daily_log("watchlist", symbol, "REJECTED_BREAKOUT", {
+                    "rejection_reason": "no_intraday_breakout",
+                    "key_metric": {"actual": breakout, "required": "breakout_strength>=2 and price>recent_high"},
+                    "volume_ratio": None,
+                })
             
             # Rate limiting between symbols
             time.sleep(0.3)
@@ -549,6 +604,10 @@ def scan_watchlist():
     
     logger.info(f"\n{'='*60}")
     logger.info(f"✅ Scan complete: {breakouts_found} breakouts found")
+    write_daily_log("watchlist", "SYSTEM", "SCAN_COMPLETED", {
+        "symbols_scanned": len(symbols),
+        "signals_found": breakouts_found,
+    })
     
     # Send summary
     if breakouts_found > 0:

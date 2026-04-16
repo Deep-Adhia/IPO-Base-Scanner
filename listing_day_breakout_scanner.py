@@ -1671,6 +1671,13 @@ def save_breakout_signal(breakout_data):
             "tier_rationale": breakout_data.get('tier_rationale', ''),
             "perfect_base": breakout_data.get('perfect_base', False),
             "post_confirm_move_pct": breakout_data.get('post_confirm_move_pct', 0),
+            "entry_vs_breakout_pct": breakout_data.get("entry_vs_breakout_pct", None),
+            "held_above_breakout_after_confirm": breakout_data.get("did_hold_breakout_level", True),
+            "signal_strength_score": breakout_data.get("signal_strength_score", None),
+            "tier_weight": breakout_data.get("score_components", {}).get("tier_weight", None),
+            "volume_score": breakout_data.get("score_components", {}).get("volume_score", None),
+            "base_score": breakout_data.get("score_components", {}).get("base_score", None),
+            "momentum_score": breakout_data.get("score_components", {}).get("momentum_score", None),
         })
         
         # Append to CSV

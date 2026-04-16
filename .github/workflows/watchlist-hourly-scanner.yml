@@ -14,7 +14,7 @@ on:
       force_scan:
         description: 'Force scan even if watchlist is empty'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:
@@ -105,7 +105,7 @@ jobs:
           
           # Check if there are changes to commit
           if [ -n "$(git status --porcelain)" ]; then
-            git add ipo_signals.csv ipo_positions.csv
+            git add ipo_signals.csv ipo_positions.csv logs/ 2>/dev/null || true
             git commit -m "🤖 Auto-update: Watchlist hourly scan results [$(date '+%Y-%m-%d %H:%M:%S')]" || exit 0
             git push || exit 0
           else
