@@ -19,9 +19,9 @@ It only participates in moves where demand is already proven through sustained p
 
 ---
 
-## 🎯 Dual-Scanner Architecture
+## 🎯 Scanner Architecture
 
-The system runs **two independent scanners** that cover different phases of the IPO lifecycle.
+The system runs **two core scanners** plus an intraday watchlist scanner.
 
 ### 1. 📅 Listing Day Breakout Scanner (`listing_day_breakout_scanner.py`)
 
@@ -50,6 +50,13 @@ Targets IPOs **10–200 days post-listing** that have built a proper base struct
 4. Volume must confirm via one of: `2.5x avg burst`, `VOL_MULT (1.2x)` rolling, or absolute `3M+ value`.
 5. Follow-through filter: next candle must hold base high ±2% **or** show 80%+ continuation volume.
 6. Grade and R:R checks filter further before signal emission.
+
+---
+
+### 3. ⏱️ Watchlist Hourly Scanner (`hourly_breakout_scanner.py`)
+
+Monitors active watchlist symbols intraday and emits fast breakout alerts during market hours.
+It is a tactical alerting layer and writes structured JSONL logs to the same daily log path.
 
 ---
 
@@ -285,4 +292,4 @@ This means you can run analysis locally even if CI-generated summary files are n
 
 ---
 
-<sub>Built for systematic IPO momentum trading | v2.1.0 | Automated via GitHub Actions | Dual-scanner: Listing Day + Consolidation</sub>
+<sub>Built for systematic IPO momentum trading | v2.1.0 | Automated via GitHub Actions | Core scanners: Listing Day + Consolidation | Intraday watchlist layer</sub>
