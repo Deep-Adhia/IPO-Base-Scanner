@@ -163,7 +163,8 @@ def supertrend(df, p=10, m=3.0):
                     abs(df['LOW']-df['CLOSE'].shift())], axis=1).max(axis=1)
     atr = tr.rolling(p).mean()
     ub, lb = hl + m*atr, hl - m*atr
-    st = pd.Series(index=df.index)
+    # Explicit dtype avoids pandas FutureWarning for empty Series default dtype
+    st = pd.Series(index=df.index, dtype="float64")
     for i in range(1, len(df)):
         if df['CLOSE'].iat[i] <= lb.iat[i]:
             st.iat[i] = ub.iat[i]
@@ -1414,7 +1415,19 @@ def detect_live_patterns(symbols, listing_map):
         # Nested w/i loops can hit the same breakout many times — log each rejection reason once per symbol per run
         _consolidation_reject_logged = set()
 
-        ipo_age_for_log = (datetime.today().date() - pd.to_datetime(ld["listingDate"]).date()).days if ld and "listingDate" in ld and pd.notna(ld["listingDate"]) else 0
+        # listing_map values are typically datetime.date; older codepaths may pass dict-like objects.
+        ipo_age_for_log = 0
+        try:
+            listing_date_val = None
+            if isinstance(ld, dict):
+                listing_date_val = ld.get("listingDate") or ld.get("listing_date")
+            else:
+                listing_date_val = ld
+            if listing_date_val is not None and pd.notna(listing_date_val):
+                listing_date_val = pd.to_datetime(listing_date_val).date()
+                ipo_age_for_log = (datetime.today().date() - listing_date_val).days
+        except Exception:
+            ipo_age_for_log = 0
         def _log_consolidation_reject_once(details: dict):
             r = details.get("reason", "unknown")
             if r in _consolidation_reject_logged:
@@ -1757,10 +1770,16 @@ def detect_live_patterns(symbols, listing_map):
                 # Calculate tracking metrics
                 ipo_age_days = 0
                 try:
-                    if ld and "listingDate" in ld and pd.notna(ld["listingDate"]):
-                        ipo_age_days = (datetime.today().date() - pd.to_datetime(ld["listingDate"]).date()).days
-                except:
-                    pass
+                    listing_date_val = None
+                    if isinstance(ld, dict):
+                        listing_date_val = ld.get("listingDate") or ld.get("listing_date")
+                    else:
+                        listing_date_val = ld
+                    if listing_date_val is not None and pd.notna(listing_date_val):
+                        listing_date_val = pd.to_datetime(listing_date_val).date()
+                        ipo_age_days = (datetime.today().date() - listing_date_val).days
+                except Exception:
+                    ipo_age_days = 0
                 dist_listing_high_pct = ((lhigh - entry) / lhigh * 100.0) if lhigh > 0 else 0.0
                 vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
                 
@@ -1973,11 +1992,18 @@ def detect_scan(symbols, listing_map):
             if r in _scan_reject_logged:
                 return
             _scan_reject_logged.add(r)
-            ipo_age_for_log = (
-                (datetime.today().date() - pd.to_datetime(ld["listingDate"]).date()).days
-                if ld and "listingDate" in ld and pd.notna(ld["listingDate"])
-                else None
-            )
+            ipo_age_for_log = None
+            try:
+                listing_date_val = None
+                if isinstance(ld, dict):
+                    listing_date_val = ld.get("listingDate") or ld.get("listing_date")
+                else:
+                    listing_date_val = ld
+                if listing_date_val is not None and pd.notna(listing_date_val):
+                    listing_date_val = pd.to_datetime(listing_date_val).date()
+                    ipo_age_for_log = (datetime.today().date() - listing_date_val).days
+            except Exception:
+                ipo_age_for_log = None
             actual_metric = details.get(
                 "risk",
                 details.get("ratio", details.get("distance_pct", details.get("days_old", None)))
@@ -2183,6 +2209,14 @@ def detect_scan(symbols, listing_map):
                     "version": SCANNER_VERSION, "scanner": "consolidation_scan"
                 }
                 
+                # Explainability components (local scope for logging)
+                vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
+                tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
+                volume_score = min(2.0, float(vol_ratio_val) / 2.0)
+                base_score = 1.0
+                momentum_score = 1.0
+                total_score = min(10.0, tier_weight + volume_score + base_score + momentum_score)
+
                 # Write to daily log
                 write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
@@ -2832,6 +2866,8 @@ if __name__ == "__main__":
     def generate_daily_summary():
         try:
             today_str = datetime.today().strftime('%Y-%m-%d')
+            todays_log_dir = os.path.join("logs", today_str)
+            os.makedirs(todays_log_dir, exist_ok=True)
             
             summary = {
                 "date": today_str,
@@ -2870,26 +2906,29 @@ if __name__ == "__main__":
                     logger.error(f"Error parsing signals for summary: {e}")
             
             # 2. Parse rejections from logs
-            todays_log_dir = os.path.join("logs", today_str)
-            if os.path.exists(todays_log_dir):
-                for list_file in ["consolidation.jsonl", "listing_day.jsonl"]:
-                    filepath = os.path.join(todays_log_dir, list_file)
-                    if os.path.exists(filepath):
-                        with open(filepath, "r", encoding='utf-8') as f:
-                            for line in f:
-                                if not line.strip(): continue
-                                try:
-                                    entry = json.loads(line)
-                                    action = entry.get("action")
-                                    if action in ("REJECTED_BREAKOUT", "PENDING_REJECTED"):
-                                        details = entry.get("details", {})
-                                        reason = details.get("rejection_reason", details.get("reason", "unknown"))
-                                        summary["rejections"][reason] = summary["rejections"].get(reason, 0) + 1
-                                except json.JSONDecodeError:
-                                    pass
+            for list_file in ["consolidation.jsonl", "listing_day.jsonl", "watchlist.jsonl"]:
+                filepath = os.path.join(todays_log_dir, list_file)
+                if not os.path.exists(filepath):
+                    continue
+                try:
+                    with open(filepath, "r", encoding="utf-8") as f:
+                        for line in f:
+                            if not line.strip():
+                                continue
+                            try:
+                                entry = json.loads(line)
+                            except json.JSONDecodeError:
+                                continue
+                            action = entry.get("action")
+                            if action in ("REJECTED_BREAKOUT", "PENDING_REJECTED"):
+                                details = entry.get("details", {}) or {}
+                                reason = details.get("rejection_reason", details.get("reason", "unknown"))
+                                summary["rejections"][reason] = summary["rejections"].get(reason, 0) + 1
+                except Exception as e:
+                    logger.error(f"Error parsing {filepath}: {e}")
             
             # Dump to JSON
-            summary_file = os.path.join(todays_log_dir, "daily_summary.json") if os.path.exists(todays_log_dir) else "daily_summary.json"
+            summary_file = os.path.join(todays_log_dir, "daily_summary.json")
             with open(summary_file, "w", encoding="utf-8") as f:
                 json.dump(summary, f, indent=2)
             logger.info(f"Daily summary generated at {summary_file}")
