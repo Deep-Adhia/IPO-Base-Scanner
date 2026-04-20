@@ -57,18 +57,32 @@ jobs:
       
       - name: Install Python dependencies
         run: |
+          set -e
+          retry() {
+            local attempts="$1"
+            shift
+            local n=1
+            until "$@"; do
+              if [ "$n" -ge "$attempts" ]; then
+                echo "❌ Command failed after $attempts attempts: $*"
+                return 1
+              fi
+              local wait=$((n * 5))
+              echo "⚠️ Attempt $n failed. Retrying in ${wait}s: $*"
+              sleep "$wait"
+              n=$((n + 1))
+            done
+          }
           python -m pip install --upgrade pip
-          # Clear pip cache to ensure fresh dependency resolution
-          pip cache purge || true
           # Install beautifulsoup4 first to satisfy both jugaad-data and yfinance
           echo "📦 Installing beautifulsoup4==4.9.3 first..."
-          pip install beautifulsoup4==4.9.3
+          retry 4 pip install --retries 10 --timeout 120 beautifulsoup4==4.9.3
           # Install main dependencies
           echo "📦 Installing main dependencies..."
-          pip install -r requirements.txt
+          retry 4 pip install --retries 10 --timeout 120 -r requirements.txt
           # Install jugaad-data separately to avoid dependency resolver conflicts
           echo "📦 Installing jugaad-data..."
-          pip install "jugaad-data>=0.27,<0.28"
+          retry 4 pip install --retries 10 --timeout 120 "jugaad-data>=0.27,<0.28"
           echo "✅ Dependencies installed - NO TA-Lib (removed from requirements.txt)"
           echo "✅ beautifulsoup4==4.9.3 installed first to resolve dependency conflict"
       
