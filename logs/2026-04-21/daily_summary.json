@@ -12,8 +12,9 @@
   "avg_signal_score": 0.0,
   "top_score": 0.0,
   "rejections": {
-    "low_grade": 4,
-    "failed_follow_through": 2,
-    "poor_risk_reward": 1
+    "low_grade": 7,
+    "failed_follow_through": 4,
+    "poor_risk_reward": 1,
+    "excessive_stop_risk": 1
   }
 }
