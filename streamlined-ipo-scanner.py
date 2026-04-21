@@ -174,23 +174,56 @@ def supertrend(df, p=10, m=3.0):
             st.iat[i] = st.iat[i-1]
     return st
 
+import pandas as pd
+import numpy as np
+
+def sanitize_metric(val):
+    """Cast pandas/numpy variables to python natives for clean JSON logging"""
+    if pd.isna(val) or val is None:
+        return None
+    try:
+        if hasattr(val, 'item'):
+            return val.item()
+        if isinstance(val, (int, float, bool, str)):
+            return val
+        return float(val)
+    except:
+        return str(val)
+
 def compute_grade_hybrid(df, idx, w, avg_vol):
     score=0
     low, high = df['LOW'].tail(w).min(), df['HIGH'].tail(w).max()
     prng = (high-low)/low*100
     if prng<=18: score+=1
+    
+    vol_ratio = df['VOLUME'].iat[idx]/avg_vol if avg_vol>0 else 0
     if df['VOLUME'].iat[idx]>=2.5*avg_vol and df['VOLUME'].iloc[idx-2:idx+1].sum()>=4*avg_vol: score+=1
+    
     ret20 = (df['CLOSE'].iat[idx]/df['CLOSE'].iat[max(0,idx-20)]-1)
     percentile=np.percentile((df['CLOSE']-df['CLOSE'].shift(20))/df['CLOSE'].shift(20).fillna(0),85)
-    if ret20>=percentile: score+=1
+    rs_percentile_met = bool(ret20>=percentile)
+    if rs_percentile_met: score+=1
+    
     ema20,ema50 = df['CLOSE'].ewm(20).mean().iat[idx], df['CLOSE'].ewm(50).mean().iat[idx]
     macd = df['CLOSE'].ewm(12).mean().iat[idx] - df['CLOSE'].ewm(26).mean().iat[idx]
     sig = pd.Series(df['CLOSE'].ewm(12).mean()-df['CLOSE'].ewm(26).mean()).ewm(9).mean().iat[idx]
     rsi = 100-100/(1+(df['CLOSE'].diff().clip(lower=0).rolling(14).mean()/
                      df['CLOSE'].diff().clip(upper=0).abs().rolling(14).mean())).iat[idx]
-    if macd>sig and rsi>65 and ema20>ema50: score+=1
+    
+    trend_alignment = bool(macd>sig and rsi>65 and ema20>ema50)
+    if trend_alignment: score+=1
     if idx+1<len(df) and (df['OPEN'].iat[idx+1]/df['CLOSE'].iat[idx]-1)>=0.04: score+=1
-    return score
+    
+    metrics_dict = {
+        "metric_prng": sanitize_metric(prng),
+        "metric_vol_ratio": sanitize_metric(vol_ratio),
+        "metric_rsi": sanitize_metric(rsi),
+        "metric_base_width": sanitize_metric(w),
+        "metric_rs_percentile_met": sanitize_metric(rs_percentile_met),
+        "metric_trend_alignment": sanitize_metric(trend_alignment)
+    }
+
+    return score, metrics_dict
 
 def assign_grade(score):
     if score>=4: return 'A+'
@@ -1539,26 +1572,26 @@ def detect_live_patterns(symbols, listing_map):
                 if reject_quick_losers(df, j, w, avgv):
                     continue
 
-                score = compute_grade_hybrid(df, j, w, avgv)
+                score, metrics = compute_grade_hybrid(df, j, w, avgv)
                 grade = assign_grade(score)
 
                 # Enforce minimum grade for LIVE signals
                 if not is_live_grade_allowed(grade):
                     logger.info(f"⏭️ Skipping {sym} - grade {grade} below live threshold {MIN_LIVE_GRADE}")
-                    _log_consolidation_reject_once({"reason": "low_grade", "grade": grade, "min_required": MIN_LIVE_GRADE})
+                    _log_consolidation_reject_once({"reason": "low_grade", "grade": grade, "min_required": MIN_LIVE_GRADE, **metrics})
                     continue
 
                 # Enhanced B-grade filters with RSI and MACD
                 if grade == 'B' and not smart_b_filters(df, j, avgv):
-                    _log_consolidation_reject_once({"reason": "failed_b_filters", "grade": grade})
+                    _log_consolidation_reject_once({"reason": "failed_b_filters", "grade": grade, **metrics})
                     continue
 
                 if grade == 'C' and not smart_c_filters(df, j, df["OPEN"].iat[j], w, avgv):
-                    _log_consolidation_reject_once({"reason": "failed_c_filters", "grade": grade})
+                    _log_consolidation_reject_once({"reason": "failed_c_filters", "grade": grade, **metrics})
                     continue
 
                 if grade == 'D':
-                    _log_consolidation_reject_once({"reason": "grade_d", "grade": grade})
+                    _log_consolidation_reject_once({"reason": "grade_d", "grade": grade, **metrics})
                     continue
 
                 # This is a LIVE pattern - generate signal
@@ -1671,6 +1704,11 @@ def detect_live_patterns(symbols, listing_map):
                 
                 # Grade-based stop loss: More appropriate for IPO volatility
                 stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
+                risk_pct = (entry - stop) / entry * 100
+                if risk_pct > 10.0:
+                    logger.info(f"⏭️ Skipping {sym} - Stop risk {risk_pct:.2f}% exceeds hard 10% limit")
+                    _log_consolidation_reject_once({"reason": "excessive_stop_risk", "risk_pct": round(risk_pct, 2), "max_allowed": 10.0, **metrics})
+                    continue
                 date = entry_date  # Use actual entry date from dataframe
                 
                 # Ensure date is a string in YYYY-MM-DD format for CSV
@@ -1704,14 +1742,14 @@ def detect_live_patterns(symbols, listing_map):
                 reward_amount = target - entry
                 if risk_amount <= 0 or reward_amount <= 0:
                     logger.info(f"⏭️ Skipping {sym} - invalid risk/reward (risk={risk_amount:.2f}, reward={reward_amount:.2f})")
-                    _log_consolidation_reject_once({"reason": "invalid_risk_reward", "risk": round(risk_amount, 2), "reward": round(reward_amount, 2)})
+                    _log_consolidation_reject_once({"reason": "invalid_risk_reward", "risk": round(risk_amount, 2), "reward": round(reward_amount, 2), **metrics})
                     continue
                 risk_reward_ratio = reward_amount / risk_amount
 
                 # Reject trades with poor risk/reward
                 if risk_reward_ratio < MIN_RISK_REWARD:
                     logger.info(f"⏭️ Skipping {sym} - poor risk/reward 1:{risk_reward_ratio:.2f} (< {MIN_RISK_REWARD})")
-                    _log_consolidation_reject_once({"reason": "poor_risk_reward", "ratio": round(risk_reward_ratio, 2), "min_required": MIN_RISK_REWARD})
+                    _log_consolidation_reject_once({"reason": "poor_risk_reward", "ratio": round(risk_reward_ratio, 2), "min_required": MIN_RISK_REWARD, **metrics})
                     continue
 
                 # Reject entries that are too extended above breakout level
@@ -1723,7 +1761,7 @@ def detect_live_patterns(symbols, listing_map):
                             f"⏭️ Skipping {sym} - entry {distance_above:.2f}% above breakout "
                             f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
                         )
-                        _log_consolidation_reject_once({"reason": "too_extended", "distance_pct": round(distance_above, 2), "max_allowed": MAX_ENTRY_ABOVE_BREAKOUT_PCT})
+                        _log_consolidation_reject_once({"reason": "too_extended", "distance_pct": round(distance_above, 2), "max_allowed": MAX_ENTRY_ABOVE_BREAKOUT_PCT, **metrics})
                         continue
                 
                 # Smart freshness filter: allow if stock is holding the breakout level
@@ -1739,13 +1777,13 @@ def detect_live_patterns(symbols, listing_map):
                 
                 if days_since_breakout > 10:
                     logger.info(f"⏭️ Skipping {sym} - breakout is {days_since_breakout} days old (>10 days, too stale)")
-                    _log_consolidation_reject_once({"reason": "stale_breakout", "days_old": days_since_breakout})
+                    _log_consolidation_reject_once({"reason": "stale_breakout", "days_old": days_since_breakout, **metrics})
                     continue
                 elif days_since_breakout > 3:
                     # Allow only if price is still holding above breakout level
                     if entry < high2:
                         logger.info(f"⏭️ Skipping {sym} - breakout {days_since_breakout} days old and price ₹{entry:.2f} has fallen below breakout level ₹{high2:.2f}")
-                        _log_consolidation_reject_once({"reason": "stale_and_fallen", "days_old": days_since_breakout, "entry": round(entry, 2), "breakout_level": round(high2, 2)})
+                        _log_consolidation_reject_once({"reason": "stale_and_fallen", "days_old": days_since_breakout, "entry": round(entry, 2), "breakout_level": round(high2, 2), **metrics})
                         continue
                     else:
                         logger.info(f"✅ {sym} - breakout {days_since_breakout} days old but price ₹{entry:.2f} still holding above ₹{high2:.2f}")
@@ -1840,7 +1878,8 @@ def detect_live_patterns(symbols, listing_map):
                 }
                 
                 # Write to daily log
-                write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
+                metrics["metric_ipo_age"] = sanitize_metric(ipo_age) if 'ipo_age' in locals() else None
+                write_daily_log("consolidation", sym, "ACCEPTED_BREAKOUT", {**metrics, 
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
                     "consolidation_window": w, "price_source": price_source,
@@ -2099,10 +2138,10 @@ def detect_scan(symbols, listing_map):
                         _log_scan_reject_once({"reason": "failed_follow_through", "close_holds": bool(close_holds), "volume_confirms": bool(volume_confirms)})
                         continue
 
-                score = compute_grade_hybrid(df, j, w, avgv)
+                score, metrics = compute_grade_hybrid(df, j, w, avgv)
                 grade = assign_grade(score)
                 if grade == "D":
-                    _log_scan_reject_once({"reason": "grade_d", "grade": grade, "mode": "scan"})
+                    _log_scan_reject_once({"reason": "grade_d", "grade": grade, "mode": "scan", **metrics})
                     continue
                 
                 # This is a LIVE pattern - generate signal
@@ -2169,6 +2208,11 @@ def detect_scan(symbols, listing_map):
                 
                 # Grade-based stop loss: More appropriate for IPO volatility
                 stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
+                risk_pct = (entry - stop) / entry * 100
+                if risk_pct > 10.0:
+                    logger.info(f"⏭️ Skipping {sym} - Stop risk {risk_pct:.2f}% exceeds hard 10% limit")
+                    _log_scan_reject_once({"reason": "excessive_stop_risk", "risk_pct": round(risk_pct, 2), "max_allowed": 10.0, **metrics})
+                    continue
                 # Use actual entry date from dataframe
                 date = entry_date
                 
@@ -2183,7 +2227,7 @@ def detect_scan(symbols, listing_map):
                         active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
                         if sym in active_positions['symbol'].tolist():
                             logger.info(f"⏭️ Skipping {sym} - already has active position")
-                            _log_scan_reject_once({"reason": "active_position", "mode": "scan"})
+                            _log_scan_reject_once({"reason": "active_position", "mode": "scan", **metrics})
                             continue
                 except:
                     pass
@@ -2218,7 +2262,8 @@ def detect_scan(symbols, listing_map):
                 total_score = min(10.0, tier_weight + volume_score + base_score + momentum_score)
 
                 # Write to daily log
-                write_daily_log("consolidation", sym, "SIGNAL_GENERATED", {
+                metrics["metric_ipo_age"] = sanitize_metric(ipo_age) if 'ipo_age' in locals() else None
+                write_daily_log("consolidation", sym, "ACCEPTED_BREAKOUT", {**metrics, 
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
                     "consolidation_window": w, "mode": "scan", "price_source": price_source,

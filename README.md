@@ -72,6 +72,7 @@ The system rejects aggressively. A setup is terminated at the first failing cond
 | Grade below minimum (`C` by default) | `low_grade` |
 | Risk:Reward ratio `< 1.3` | `poor_risk_reward` |
 | Entry `>8%` above breakout level | `too_extended` |
+| Stop Loss `>10.0%` risk from entry | `excessive_stop_risk` |
 | Breakout `>10` days old | `stale_breakout` |
 | Cooldown (`<10` days since last signal for same symbol) | `cooldown` |
 | Symbol already in active position | Silent skip (no duplicate positions) |
@@ -120,17 +121,28 @@ logs/
     scanner.jsonl          ← SCAN_COMPLETED funnel totals
 ```
 
-Each JSONL entry is structured for machine parsing:
+Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of all technical components:
 ```json
 {
-  "timestamp": "2026-04-15 15:46:06 IST",
+  "timestamp": "2026-04-15 10:14:00 IST",
   "version": "2.1.0",
   "scanner": "consolidation",
-  "symbol": "ARSSBL",
-  "action": "REJECTED_BREAKOUT",
-  "details": { "reason": "poor_risk_reward", "ratio": 0.83, "min_required": 1.3 }
+  "symbol": "INOXINDIA",
+  "action": "ACCEPTED_BREAKOUT",
+  "details": {
+    "grade": "A+",
+    "reason": "signal_generated",
+    "metric_prng": 12.4,
+    "metric_vol_ratio": 3.1,
+    "metric_rsi": 72.5,
+    "metric_base_width": 45,
+    "metric_ipo_age": 120,
+    "risk_pct": 7.8
+  }
 }
 ```
+
+*Because metrics (`metric_prng`, `metric_vol_ratio`, etc.) are uniquely flattened and injected into EVERY setup's details regardless of acceptance or rejection, you can natively compare the technical fingerprints of winners vs. losers in 30 days using `pd.read_json(..., lines=True)`.*
 
 Daily summary snapshots may also be generated as:
 
