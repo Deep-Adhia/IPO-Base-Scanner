@@ -1,14 +1,15 @@
 import pandas as pd
 import json
 import os
+import argparse
 from datetime import datetime, timedelta
 
-def _aggregate_rejections_from_jsonl(day_dir):
+def _aggregate_rejections_from_jsonl(day_dir, version_filter=None):
     """Fallback parser: aggregate rejection reasons from daily JSONL logs."""
     rejection_counts = {}
     total = 0
     parsed_entries = 0
-    for file_name in ("consolidation.jsonl", "listing_day.jsonl"):
+    for file_name in ("consolidation.jsonl", "listing_day.jsonl", "watchlist.jsonl"):
         file_path = os.path.join(day_dir, file_name)
         if not os.path.exists(file_path):
             continue
@@ -20,6 +21,9 @@ def _aggregate_rejections_from_jsonl(day_dir):
                     try:
                         entry = json.loads(line)
                     except json.JSONDecodeError:
+                        continue
+
+                    if version_filter and str(entry.get("version", "")) != str(version_filter):
                         continue
 
                     action = entry.get("action")
@@ -35,7 +39,7 @@ def _aggregate_rejections_from_jsonl(day_dir):
             continue
     return rejection_counts, total, parsed_entries
 
-def run_analysis():
+def run_analysis(start_date=None, version_filter=None, rejection_days=10):
     print("===========================================")
     print(" IPO Scanner: 30-Day Quantitative Analysis ")
     print("===========================================")
@@ -47,12 +51,27 @@ def run_analysis():
         print(" Error: ipo_positions.csv not found")
         return
         
-    df_pos = pd.read_csv(positions_file)
+    df_pos_all = pd.read_csv(positions_file)
+    df_pos = df_pos_all.copy()
+
+    if start_date:
+        if 'entry_date' in df_pos.columns:
+            entry_dt = pd.to_datetime(df_pos['entry_date'], errors='coerce')
+            df_pos = df_pos[entry_dt.dt.date >= start_date].copy()
+        else:
+            print(" Warning: entry_date not found in positions, start-date filter skipped for positions.")
+    if version_filter and 'version' in df_pos.columns:
+        df_pos = df_pos[df_pos['version'].astype(str) == str(version_filter)].copy()
+
+    print(f"\n FILTERS:")
+    print(f"   Start Date: {start_date if start_date else 'None'}")
+    print(f"   Version: {version_filter if version_filter else 'None'}")
+    print(f"   Positions in scope: {len(df_pos)}/{len(df_pos_all)}")
     
     # 1. Base Win Rates
     total = len(df_pos)
     if total == 0:
-        print("No positions found.")
+        print("No positions found in filtered scope.")
         return
         
     closed = df_pos[df_pos['status'] == 'CLOSED']
@@ -103,7 +122,13 @@ def run_analysis():
             
     # 4. Tie to signals (Tier Analysis)
     if os.path.exists(signals_file):
-        df_sig = pd.read_csv(signals_file)
+        df_sig_all = pd.read_csv(signals_file)
+        df_sig = df_sig_all.copy()
+        if start_date and 'signal_date' in df_sig.columns:
+            signal_dt = pd.to_datetime(df_sig['signal_date'], errors='coerce')
+            df_sig = df_sig[signal_dt.dt.date >= start_date].copy()
+        if version_filter and 'version' in df_sig.columns:
+            df_sig = df_sig[df_sig['version'].astype(str) == str(version_filter)].copy()
         
         # Merge signals into positions to get tier and scores
         merged = closed.merge(df_sig, on='symbol', suffixes=('_pos', '_sig'))
@@ -140,17 +165,21 @@ def run_analysis():
     jsonl_fallback_days_used = 0
     
     if os.path.exists(logs_dir):
-        cutoff = datetime.today() - timedelta(days=10)
+        if start_date:
+            cutoff_date = start_date
+        else:
+            cutoff_date = (datetime.today() - timedelta(days=rejection_days)).date()
         for date_str in os.listdir(logs_dir):
             try:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-                if date_obj >= cutoff:
+                if date_obj.date() >= cutoff_date:
                     day_dir = os.path.join(logs_dir, date_str)
                     summary_file = os.path.join(day_dir, "daily_summary.json")
                     day_used = False
 
                     # Prefer daily summary (fast path)
-                    if os.path.exists(summary_file):
+                    # If version filter is enabled, skip summary shortcut and parse JSONL directly.
+                    if os.path.exists(summary_file) and not version_filter:
                         try:
                             with open(summary_file, "r", encoding="utf-8") as f:
                                 data = json.load(f)
@@ -166,7 +195,9 @@ def run_analysis():
 
                     # Fallback: parse JSONL logs directly when summary is missing/empty
                     if not day_used:
-                        day_counts, day_total, parsed_entries = _aggregate_rejections_from_jsonl(day_dir)
+                        day_counts, day_total, parsed_entries = _aggregate_rejections_from_jsonl(
+                            day_dir, version_filter=version_filter
+                        )
                         if parsed_entries > 0:
                             for reason, count in day_counts.items():
                                 rejection_reasons[reason] = rejection_reasons.get(reason, 0) + int(count)
@@ -187,4 +218,18 @@ def run_analysis():
     print("\n===========================================")
 
 if __name__ == "__main__":
-    run_analysis()
+    parser = argparse.ArgumentParser(description="Run quantitative IPO scanner analysis with non-destructive filters.")
+    parser.add_argument("--start-date", type=str, default=None, help="Include rows from this date onward (YYYY-MM-DD).")
+    parser.add_argument("--version", type=str, default=None, help="Optional version filter, e.g. 2.1.0.")
+    parser.add_argument("--rejection-days", type=int, default=10, help="Lookback days for rejection analysis when start-date is not provided.")
+    args = parser.parse_args()
+
+    parsed_start = None
+    if args.start_date:
+        try:
+            parsed_start = datetime.strptime(args.start_date, "%Y-%m-%d").date()
+        except ValueError:
+            print(" Error: --start-date must be YYYY-MM-DD")
+            raise SystemExit(2)
+
+    run_analysis(start_date=parsed_start, version_filter=args.version, rejection_days=args.rejection_days)
