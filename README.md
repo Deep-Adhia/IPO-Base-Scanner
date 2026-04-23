@@ -114,11 +114,10 @@ Every rejection and signal is written to a **structured daily JSONL log**, build
 ```
 logs/
   YYYY-MM-DD/
-    consolidation.jsonl    ← REJECTED_BREAKOUT + SIGNAL_GENERATED events
+    consolidation.jsonl    ← REJECTED_BREAKOUT + ACCEPTED_BREAKOUT events
     listing_day.jsonl      ← PENDING / CONFIRMED / BREAKOUT_SIGNAL events
     watchlist.jsonl        ← Hourly watchlist SIGNAL_GENERATED + REJECTED_BREAKOUT + SCAN_COMPLETED
     positions.jsonl        ← POSITION_CLOSED + DAILY_SNAPSHOT + TRAILING_STOP_UPDATED
-    scanner.jsonl          ← SCAN_COMPLETED funnel totals
 ```
 
 Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of all technical components:
@@ -178,8 +177,7 @@ IPO-Base-Scanner/
         ├── consolidation.jsonl
         ├── listing_day.jsonl
         ├── watchlist.jsonl
-        ├── positions.jsonl
-        └── scanner.jsonl
+        └── positions.jsonl
 ```
 
 > **No `ipo_rejections.csv`** — rejections are tracked in the daily JSONL logs, not a flat CSV, making them queryable by date, scanner, version, and reason.
@@ -255,6 +253,12 @@ Run:
 python analyze_30d_data.py
 ```
 
+Recommended for clean-window analysis (non-destructive filters):
+
+```bash
+python analyze_30d_data.py --start-date 2026-04-24 --version 2.1.0
+```
+
 The analysis script now uses a resilient read order for rejection metrics:
 
 1. Prefer `logs/YYYY-MM-DD/daily_summary.json` when available.
@@ -264,6 +268,7 @@ The analysis script now uses a resilient read order for rejection metrics:
    - `logs/YYYY-MM-DD/watchlist.jsonl`
 
 This means you can run analysis locally even if CI-generated summary files are not present in your branch.
+It also supports optional `--start-date`, `--version`, and `--rejection-days` filters so old rows are excluded without deleting historical data.
 
 ---
 
