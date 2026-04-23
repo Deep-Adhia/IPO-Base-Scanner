@@ -13,6 +13,7 @@ Optimized IPO breakout scanner:
 """
 
 SCANNER_VERSION = "2.1.0"  # Tracks logic version for signal bifurcation
+LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 import os
 import sys
@@ -470,6 +471,7 @@ def write_daily_log(scanner_name, symbol, action, details=None):
         entry = {
             "timestamp": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
             "version": SCANNER_VERSION,
+            "log_schema_version": LOG_SCHEMA_VERSION,
             "scanner": scanner_name,
             "symbol": symbol,
             "action": action,
@@ -1878,7 +1880,7 @@ def detect_live_patterns(symbols, listing_map):
                 }
                 
                 # Write to daily log
-                metrics["metric_ipo_age"] = sanitize_metric(ipo_age) if 'ipo_age' in locals() else None
+                metrics["metric_ipo_age"] = sanitize_metric(ipo_age_days) if 'ipo_age_days' in locals() else None
                 write_daily_log("consolidation", sym, "ACCEPTED_BREAKOUT", {**metrics, 
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
@@ -2262,7 +2264,7 @@ def detect_scan(symbols, listing_map):
                 total_score = min(10.0, tier_weight + volume_score + base_score + momentum_score)
 
                 # Write to daily log
-                metrics["metric_ipo_age"] = sanitize_metric(ipo_age) if 'ipo_age' in locals() else None
+                metrics["metric_ipo_age"] = sanitize_metric(ipo_age_days) if 'ipo_age_days' in locals() else None
                 write_daily_log("consolidation", sym, "ACCEPTED_BREAKOUT", {**metrics, 
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),

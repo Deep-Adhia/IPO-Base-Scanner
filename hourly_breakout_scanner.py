@@ -40,6 +40,7 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 SCANNER_VERSION = "2.1.0"
+LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 def write_daily_log(scanner_name, symbol, action, details=None):
     """Write structured scanner logs to logs/YYYY-MM-DD/<scanner>.jsonl"""
@@ -53,6 +54,7 @@ def write_daily_log(scanner_name, symbol, action, details=None):
         entry = {
             "timestamp": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
             "version": SCANNER_VERSION,
+            "log_schema_version": LOG_SCHEMA_VERSION,
             "scanner": scanner_name,
             "symbol": symbol,
             "action": action,

@@ -4,12 +4,15 @@ import os
 import argparse
 from datetime import datetime, timedelta
 
-def _aggregate_rejections_from_jsonl(day_dir, version_filter=None):
+def _aggregate_rejections_from_jsonl(day_dir, version_filter=None, include_watchlist=True):
     """Fallback parser: aggregate rejection reasons from daily JSONL logs."""
     rejection_counts = {}
     total = 0
     parsed_entries = 0
-    for file_name in ("consolidation.jsonl", "listing_day.jsonl", "watchlist.jsonl"):
+    files = ["consolidation.jsonl", "listing_day.jsonl"]
+    if include_watchlist:
+        files.append("watchlist.jsonl")
+    for file_name in files:
         file_path = os.path.join(day_dir, file_name)
         if not os.path.exists(file_path):
             continue
@@ -39,7 +42,7 @@ def _aggregate_rejections_from_jsonl(day_dir, version_filter=None):
             continue
     return rejection_counts, total, parsed_entries
 
-def run_analysis(start_date=None, version_filter=None, rejection_days=10):
+def run_analysis(start_date=None, version_filter=None, rejection_days=10, clean_cohort=False):
     print("===========================================")
     print(" IPO Scanner: 30-Day Quantitative Analysis ")
     print("===========================================")
@@ -53,6 +56,7 @@ def run_analysis(start_date=None, version_filter=None, rejection_days=10):
         
     df_pos_all = pd.read_csv(positions_file)
     df_pos = df_pos_all.copy()
+    df_sig = None
 
     if start_date:
         if 'entry_date' in df_pos.columns:
@@ -63,10 +67,32 @@ def run_analysis(start_date=None, version_filter=None, rejection_days=10):
     if version_filter and 'version' in df_pos.columns:
         df_pos = df_pos[df_pos['version'].astype(str) == str(version_filter)].copy()
 
+    if os.path.exists(signals_file):
+        df_sig_all = pd.read_csv(signals_file)
+        df_sig = df_sig_all.copy()
+        if start_date and 'signal_date' in df_sig.columns:
+            signal_dt = pd.to_datetime(df_sig['signal_date'], errors='coerce')
+            df_sig = df_sig[signal_dt.dt.date >= start_date].copy()
+        if version_filter and 'version' in df_sig.columns:
+            df_sig = df_sig[df_sig['version'].astype(str) == str(version_filter)].copy()
+        if clean_cohort:
+            if 'signal_type' in df_sig.columns:
+                df_sig = df_sig[df_sig['signal_type'].fillna('').astype(str) != 'WATCHLIST'].copy()
+            if 'grade' in df_sig.columns:
+                df_sig = df_sig[~df_sig['grade'].fillna('').astype(str).str.contains('LOW_VOL', na=False)].copy()
+            eligible_symbols = set(df_sig['symbol'].dropna().astype(str).tolist()) if 'symbol' in df_sig.columns else set()
+            if eligible_symbols:
+                df_pos = df_pos[df_pos['symbol'].astype(str).isin(eligible_symbols)].copy()
+            else:
+                df_pos = df_pos.iloc[0:0].copy()
+
     print(f"\n FILTERS:")
     print(f"   Start Date: {start_date if start_date else 'None'}")
     print(f"   Version: {version_filter if version_filter else 'None'}")
+    print(f"   Clean Cohort: {'ON (exclude WATCHLIST + LOW_VOL)' if clean_cohort else 'OFF'}")
     print(f"   Positions in scope: {len(df_pos)}/{len(df_pos_all)}")
+    if df_sig is not None:
+        print(f"   Signals in scope: {len(df_sig)}")
     
     # 1. Base Win Rates
     total = len(df_pos)
@@ -121,15 +147,7 @@ def run_analysis(start_date=None, version_filter=None, rejection_days=10):
             print(f" AVG TIME TO FAILURE: {avg_fail_days:.1f} days")
             
     # 4. Tie to signals (Tier Analysis)
-    if os.path.exists(signals_file):
-        df_sig_all = pd.read_csv(signals_file)
-        df_sig = df_sig_all.copy()
-        if start_date and 'signal_date' in df_sig.columns:
-            signal_dt = pd.to_datetime(df_sig['signal_date'], errors='coerce')
-            df_sig = df_sig[signal_dt.dt.date >= start_date].copy()
-        if version_filter and 'version' in df_sig.columns:
-            df_sig = df_sig[df_sig['version'].astype(str) == str(version_filter)].copy()
-        
+    if df_sig is not None:
         # Merge signals into positions to get tier and scores
         merged = closed.merge(df_sig, on='symbol', suffixes=('_pos', '_sig'))
         
@@ -179,7 +197,7 @@ def run_analysis(start_date=None, version_filter=None, rejection_days=10):
 
                     # Prefer daily summary (fast path)
                     # If version filter is enabled, skip summary shortcut and parse JSONL directly.
-                    if os.path.exists(summary_file) and not version_filter:
+                    if os.path.exists(summary_file) and not version_filter and not clean_cohort:
                         try:
                             with open(summary_file, "r", encoding="utf-8") as f:
                                 data = json.load(f)
@@ -196,7 +214,9 @@ def run_analysis(start_date=None, version_filter=None, rejection_days=10):
                     # Fallback: parse JSONL logs directly when summary is missing/empty
                     if not day_used:
                         day_counts, day_total, parsed_entries = _aggregate_rejections_from_jsonl(
-                            day_dir, version_filter=version_filter
+                            day_dir,
+                            version_filter=version_filter,
+                            include_watchlist=(not clean_cohort),
                         )
                         if parsed_entries > 0:
                             for reason, count in day_counts.items():
@@ -222,6 +242,7 @@ if __name__ == "__main__":
     parser.add_argument("--start-date", type=str, default=None, help="Include rows from this date onward (YYYY-MM-DD).")
     parser.add_argument("--version", type=str, default=None, help="Optional version filter, e.g. 2.1.0.")
     parser.add_argument("--rejection-days", type=int, default=10, help="Lookback days for rejection analysis when start-date is not provided.")
+    parser.add_argument("--clean-cohort", action="store_true", help="Exclude WATCHLIST and LOW_VOL signal cohorts from analysis scope.")
     args = parser.parse_args()
 
     parsed_start = None
@@ -232,4 +253,9 @@ if __name__ == "__main__":
             print(" Error: --start-date must be YYYY-MM-DD")
             raise SystemExit(2)
 
-    run_analysis(start_date=parsed_start, version_filter=args.version, rejection_days=args.rejection_days)
+    run_analysis(
+        start_date=parsed_start,
+        version_filter=args.version,
+        rejection_days=args.rejection_days,
+        clean_cohort=args.clean_cohort,
+    )

@@ -125,6 +125,7 @@ Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of 
 {
   "timestamp": "2026-04-15 10:14:00 IST",
   "version": "2.1.0",
+  "log_schema_version": "2026-04-23.v1",
   "scanner": "consolidation",
   "symbol": "INOXINDIA",
   "action": "ACCEPTED_BREAKOUT",
@@ -256,7 +257,7 @@ python analyze_30d_data.py
 Recommended for clean-window analysis (non-destructive filters):
 
 ```bash
-python analyze_30d_data.py --start-date 2026-04-24 --version 2.1.0
+python analyze_30d_data.py --start-date 2026-04-24 --version 2.1.0 --clean-cohort
 ```
 
 The analysis script now uses a resilient read order for rejection metrics:
@@ -268,7 +269,9 @@ The analysis script now uses a resilient read order for rejection metrics:
    - `logs/YYYY-MM-DD/watchlist.jsonl`
 
 This means you can run analysis locally even if CI-generated summary files are not present in your branch.
-It also supports optional `--start-date`, `--version`, and `--rejection-days` filters so old rows are excluded without deleting historical data.
+It also supports optional `--start-date`, `--version`, `--rejection-days`, and `--clean-cohort` filters so old rows are excluded without deleting historical data.
+
+For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 
 ---
 
