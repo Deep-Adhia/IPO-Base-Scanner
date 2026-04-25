@@ -15,9 +15,10 @@ def run_script(script_name, args=None):
 
 def main():
     parser = argparse.ArgumentParser(description="IPO Scanner MongoDB Management Tool")
-    parser.add_argument("task", choices=["test", "backfill-all", "validate", "backup"], 
+    parser.add_argument("task", choices=["test", "backfill-all", "validate", "backup", "analyze"], 
                         help="Task to perform")
     parser.add_argument("--today", action="store_true", help="For validation: logs only for today")
+    parser.add_argument("--days", type=int, default=3, help="For analysis: number of days to analyze")
 
     args = parser.parse_args()
 
@@ -37,6 +38,9 @@ def main():
 
     elif args.task == "backup":
         run_script("mongodb_backup.py")
+
+    elif args.task == "analyze":
+        run_script("analyze_telemetry.py", ["--days", str(args.days)] if hasattr(args, "days") else [])
 
 if __name__ == "__main__":
     main()

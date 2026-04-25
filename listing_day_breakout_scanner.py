@@ -38,7 +38,7 @@ scanner_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(scanner_module)
 
 # Import version and logging utilities from main scanner
-SCANNER_VERSION = getattr(scanner_module, 'SCANNER_VERSION', '2.1.0')
+SCANNER_VERSION = "2.2.0"
 write_daily_log = getattr(scanner_module, 'write_daily_log', lambda *a, **k: None)
 
 fetch_data = scanner_module.fetch_data
@@ -883,6 +883,40 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
         elif isinstance(listing_date, pd.Timestamp):
             listing_date = listing_date.date()
         
+        # Standardized Rejection Telemetry (Phase 2.2)
+        _rejection_logged = False
+        def _log_listing_rejection(reason: str, value: float, threshold: float, metrics: dict):
+            nonlocal _rejection_logged
+            if _rejection_logged: return
+            
+            # Near-miss filter for listing day: within 10% of high
+            is_interesting = (
+                current_high >= listing_day_high * 0.90
+            )
+            if not is_interesting: return
+
+            _rejection_logged = True
+            payload = {
+                "symbol": symbol,
+                "action": "REJECTED_BREAKOUT",
+                "log_type": "REJECTED",
+                "rejection_reason": reason,
+                "failing_metric": reason,
+                "failing_value": round(value, 2),
+                "threshold": round(threshold, 2),
+                "base_zone_passed": True,
+                "metrics": {
+                    "perf": metrics.get("perf", None),
+                    "prng": metrics.get("prng", None),
+                    "vol_ratio": metrics.get("vol_ratio", None),
+                    "rsi": metrics.get("rsi", None),
+                    "score": metrics.get("score", None)
+                },
+                "source": "live"
+            }
+            write_daily_log("listing_day", symbol, "REJECTED_BREAKOUT", payload, log_type="REJECTED")
+            logger.debug(f"[Telemetry] Logged listing rejection for {symbol}: {reason}")
+
         # Fetch current data
         df = fetch_data(symbol, listing_date)
         
@@ -972,6 +1006,7 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
             logger.info(f"📦 {symbol}: Checking Tier B base breakout (live high {current_high:.2f}, listing high {listing_day_high:.2f})")
         else:
             rejection_reason = f"Price ({current_high:.2f}) below listing day high ({listing_day_high:.2f})"
+            _log_listing_rejection("below_listing_high", current_high, listing_day_high, {"current_high": current_high, "listing_high": listing_day_high})
         
         # Condition 2: Volume confirmation (now a warning, not a rejection)
         volume_spike = current_volume >= avg_volume * MIN_VOLUME_MULTIPLIER
@@ -1152,6 +1187,7 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                             f"Strict: volume vs listing day {volume_vs_listing_day:.2f}x < {MIN_VOLUME_VS_LISTING_DAY}x"
                         )
                         logger.info(f"⏭️ Skipping {symbol}: {rejection_reason}")
+                        _log_listing_rejection("low_volume_vs_listing", volume_vs_listing_day, MIN_VOLUME_VS_LISTING_DAY, {"vol_ratio": volume_vs_listing_day})
                         return None
                 else:
                     if current_volume < avg_volume * MIN_VOL_MULT_WHEN_NO_LISTING_VOL:
@@ -1209,6 +1245,7 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                     f"⏭️ Skipping {symbol}: Leader score {leader_score} < {min_leader_for_signal} "
                     f"({'breakout' if signal_type == 'BREAKOUT' else 'watchlist'})"
                 )
+                _log_listing_rejection("low_leader_score", leader_score, min_leader_for_signal, {"leader_score": leader_score})
                 return None
 
             # --- Detect perfect base for BREAKOUT signals (used for A+ tier eligibility) ---
@@ -1273,7 +1310,7 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                         "rejection_pct": round(float(rejection_pct), 2),
                         "max_price_seen": round(float(max_seen), 2),
                         "elapsed_minutes": int((now_ts - started).total_seconds() // 60),
-                    })
+                    }, log_type="REJECTED")
                     return None
 
                 elapsed_min = int((now_ts - started).total_seconds() // 60)

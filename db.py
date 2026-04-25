@@ -28,8 +28,14 @@ _instrument_key_cache: dict = {}
 db_metrics = {
     "signals_generated": 0,
     "logs_written": 0,
+    "rejections_logged": 0,
     "db_inserts": 0
 }
+
+# Versioning and Safeguards
+SCANNER_VERSION = "2.2.0"
+MAX_DAILY_REJECTIONS = 500
+_rejection_guard_warned = False
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
@@ -73,9 +79,19 @@ def ensure_indexes():
     ipos_col.create_index("symbol", unique=True)
     listing_data_col.create_index("symbol", unique=True)
 
-def insert_log(scanner: str, symbol: str, action: str, candle_timestamp, details: dict, version: str, source: str = "live"):
+def insert_log(scanner: str, symbol: str, action: str, candle_timestamp, details: dict, version: str = SCANNER_VERSION, source: str = "live", log_type: str = "ACCEPTED"):
+    global _rejection_guard_warned
     if logs_col is None:
         return
+        
+    # Safeguard: Prevent runaway rejection logs on free tier
+    if log_type == "REJECTED":
+        if db_metrics["rejections_logged"] >= MAX_DAILY_REJECTIONS:
+            if not _rejection_guard_warned:
+                logger.warning(f"⚠️ [Telemetry] Daily rejection limit ({MAX_DAILY_REJECTIONS}) reached. Further rejections will not be logged.")
+                _rejection_guard_warned = True
+            return
+        increment_metric("rejections_logged")
         
     if isinstance(candle_timestamp, str):
         try:
@@ -94,6 +110,7 @@ def insert_log(scanner: str, symbol: str, action: str, candle_timestamp, details
         "action": action,
         "scanner": scanner,
         "version": version,
+        "log_type": log_type,
         "source": source,
         "details": details,
         "created_at": datetime.now(timezone.utc)

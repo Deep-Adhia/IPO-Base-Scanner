@@ -12,7 +12,7 @@ Optimized IPO breakout scanner:
 - Dry-run and heartbeat modes
 """
 
-SCANNER_VERSION = "2.1.0"  # Tracks logic version for signal bifurcation
+SCANNER_VERSION = "2.2.0"  # Tracks logic version for signal bifurcation
 LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 import os
@@ -452,7 +452,7 @@ if not YFINANCE_AVAILABLE:
 
 import json
 
-def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None):
+def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None, log_type="ACCEPTED"):
     """Write a structured daily log entry to logs/YYYY-MM-DD/scanner_name.log
     
     Creates daily log files per scanner in a date-organized folder structure.
@@ -475,6 +475,7 @@ def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp
             "scanner": scanner_name,
             "symbol": symbol,
             "action": action,
+            "log_type": log_type,
             "details": details or {}
         }
         
@@ -488,7 +489,8 @@ def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp
             insert_log(
                 scanner=scanner_name, symbol=symbol, action=action,
                 candle_timestamp=effective_candle_ts,
-                details=details or {}, version=SCANNER_VERSION, source="live"
+                details=details or {}, version=SCANNER_VERSION, source="live",
+                log_type=log_type
             )
         except Exception as db_e:
             logger.error(f"[MongoDB] log write FAILED for {symbol}/{action}: {db_e}")
@@ -1481,29 +1483,49 @@ def detect_live_patterns(symbols, listing_map):
                 ipo_age_for_log = (datetime.today().date() - listing_date_val).days
         except Exception:
             ipo_age_for_log = 0
-        def _log_consolidation_reject_once(details: dict):
-            r = details.get("reason", "unknown")
-            if r in _consolidation_reject_logged:
-                return
-            _consolidation_reject_logged.add(r)
+        # Standardized Rejection Telemetry for Analysis (Phase 2.2)
+        _rejection_reasons = []
+        _rejection_logged = False
+        
+        def _log_rejection_telemetry(reason: str, value: float, threshold: float, metrics: dict):
+            nonlocal _rejection_logged
+            if reason not in _rejection_reasons:
+                _rejection_reasons.append(reason)
             
-            # Map into the standardized outcome payload
-            actual_metric = details.get("risk", details.get("ratio", details.get("distance_pct", details.get("days_old", None))))
-            required_metric = details.get("reward", details.get("min_required", details.get("max_allowed", None)))
+            if _rejection_logged: return
             
-            restructured_payload = {
+            # 1. Near-Miss Threshold Filter: Only log candidates that are "interesting"
+            is_interesting = (
+                metrics.get("vol_ratio", 0) >= 0.8 or 
+                metrics.get("prng", 999) <= 70 or
+                metrics.get("rsi", 0) >= 55
+            )
+            if not is_interesting: return
+
+            _rejection_logged = True
+            payload = {
                 "symbol": sym,
-                "stage": "post_confirm" if "days_old" in details else "pre_breakout",
-                "rejection_reason": r,
-                "key_metric": {
-                    "actual": actual_metric,
-                    "required": required_metric
-                },
+                "action": "REJECTED_BREAKOUT",
+                "log_type": "REJECTED",
+                "rejection_reason": reason, # Primary reason code
+                "failing_metric": reason,   # Explicitly link value to metric
+                "failing_value": value,
+                "threshold": threshold,
+                "rejection_reasons": _rejection_reasons,
+                "base_zone_passed": True,
                 "ipo_age": ipo_age_for_log,
-                "volume_ratio": details.get("vol_ratio", None),
-                "original_details": details
+                "metrics": {
+                    "perf": metrics.get("perf"),
+                    "prng": metrics.get("prng"),
+                    "vol_ratio": metrics.get("vol_ratio"),
+                    "rsi": metrics.get("rsi"),
+                    "score": metrics.get("score")
+                },
+                "source": "live"
             }
-            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", restructured_payload)
+            # Centralized logging with REJECTED type
+            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", payload, log_type="REJECTED")
+            logger.debug(f"[Telemetry] Logged rejection for {sym}: {reason}")
         
         # Use your proven backtest logic but check for LIVE patterns (recent breakouts)
         for w in CONSOL_WINDOWS[::-1]:  # Start with larger windows first
@@ -1513,7 +1535,11 @@ def detect_live_patterns(symbols, listing_map):
             recent_start = max(w, len(df)-10)  # Check last 10 days for live patterns
             for i in range(recent_start, len(df)):
                 perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
+                # Only analyze symbols in the "Base Formation Zone" (8-35% below listing high)
                 if not (0.08 <= -perf <= 0.35): continue
+                
+                # Capture baseline metrics for this window
+                current_metrics = {"perf": round(perf, 4), "window": w}
                 
                 # CRITICAL FIX: For breakout detection, calculate consolidation from HISTORICAL data
                 # Exclude the current candle (i) to get accurate consolidation levels
@@ -1524,15 +1550,25 @@ def detect_live_patterns(symbols, listing_map):
                 
                 # Calculate consolidation from historical data (excluding current candle i)
                 low, high2 = df["LOW"][:historical_end].tail(w).min(), df["HIGH"][:historical_end].tail(w).max()
-                prng = (high2 - low) / low * 100
-                if prng > 60: continue
+                prng = round((high2 - low) / low * 100, 2)
+                current_metrics["prng"] = prng
+                
+                if prng > 60:
+                    _log_rejection_telemetry("loose_base", prng, 60.0, current_metrics)
+                    continue
                 
                 # Calculate average volume from historical data (excluding current candle)
                 avgv = df["VOLUME"][:historical_end].tail(w).mean()
+                vol_ratio = round(df["VOLUME"].iat[i] / avgv, 2)
+                current_metrics["vol_ratio"] = vol_ratio
+                
                 vol_ok = ((df["VOLUME"].iat[i] >= 2.5*avgv and df["VOLUME"].iloc[i-2:i+1].sum() >= 4*avgv) or
-                         df["VOLUME"].iat[i]/avgv >= VOL_MULT or
+                         vol_ratio >= VOL_MULT or
                          (df["VOLUME"].iloc[i-2:i+1].sum() * df["CLOSE"].iat[i]) >= ABS_VOL_MIN)
-                if not vol_ok: continue
+                
+                if not vol_ok:
+                    _log_rejection_telemetry("low_volume", vol_ratio, VOL_MULT, current_metrics)
+                    continue
                 
                 # Check if this is a LIVE breakout (happening now or very recently)
                 # For the last candle (i == len(df)-1), check LIVE price against consolidation
@@ -1585,7 +1621,7 @@ def detect_live_patterns(symbols, listing_map):
                     close_holds = next_day_close > base_high * 0.98  # Allow 2% pullback
                     volume_confirms = next_day_volume >= 0.8 * breakout_volume  # 80% volume ok
                     if not close_holds and not volume_confirms:
-                        _log_consolidation_reject_once({"reason": "failed_follow_through", "close_holds": bool(close_holds), "volume_confirms": bool(volume_confirms)})
+                        _log_rejection_telemetry("failed_follow_through", next_day_volume/breakout_volume, 0.8, current_metrics)
                         continue
 
                 # Apply your proven filters
@@ -1598,20 +1634,20 @@ def detect_live_patterns(symbols, listing_map):
                 # Enforce minimum grade for LIVE signals
                 if not is_live_grade_allowed(grade):
                     logger.info(f"⏭️ Skipping {sym} - grade {grade} below live threshold {MIN_LIVE_GRADE}")
-                    _log_consolidation_reject_once({"reason": "low_grade", "grade": grade, "min_required": MIN_LIVE_GRADE, **metrics})
+                    _log_rejection_telemetry(f"low_grade_{grade}", score, 1.0, {**current_metrics, **metrics, "grade": grade})
                     continue
 
                 # Enhanced B-grade filters with RSI and MACD
                 if grade == 'B' and not smart_b_filters(df, j, avgv):
-                    _log_consolidation_reject_once({"reason": "failed_b_filters", "grade": grade, **metrics})
+                    _log_rejection_telemetry("failed_b_filters", score, 2.0, {**current_metrics, **metrics, "grade": grade})
                     continue
 
                 if grade == 'C' and not smart_c_filters(df, j, df["OPEN"].iat[j], w, avgv):
-                    _log_consolidation_reject_once({"reason": "failed_c_filters", "grade": grade, **metrics})
+                    _log_rejection_telemetry("failed_c_filters", score, 1.0, {**current_metrics, **metrics, "grade": grade})
                     continue
 
                 if grade == 'D':
-                    _log_consolidation_reject_once({"reason": "grade_d", "grade": grade, **metrics})
+                    _log_rejection_telemetry("grade_d", score, 0.0, {**current_metrics, **metrics, "grade": grade})
                     continue
 
                 # This is a LIVE pattern - generate signal
@@ -2107,7 +2143,7 @@ def detect_scan(symbols, listing_map):
                 "volume_ratio": details.get("vol_ratio", None),
                 "original_details": details,
             }
-            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", restructured_payload)
+            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", restructured_payload, log_type="REJECTED")
 
         for w in CONSOL_WINDOWS:
             if len(df) < w: continue
