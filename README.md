@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.1.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
+[![Version](https://img.shields.io/badge/version-2.2.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
 [![Automated](https://img.shields.io/badge/automation-GitHub%20Actions-green.svg)](https://github.com/features/actions)
 
 This is **not** a simple breakout scanner.
@@ -128,21 +128,26 @@ Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of 
   "log_schema_version": "2026-04-23.v1",
   "scanner": "consolidation",
   "symbol": "INOXINDIA",
-  "action": "ACCEPTED_BREAKOUT",
+  "action": "REJECTED_BREAKOUT",
+  "log_type": "REJECTED",
+  "version": "2.2.0",
   "details": {
-    "grade": "A+",
-    "reason": "signal_generated",
-    "metric_prng": 12.4,
-    "metric_vol_ratio": 3.1,
-    "metric_rsi": 72.5,
-    "metric_base_width": 45,
-    "metric_ipo_age": 120,
-    "risk_pct": 7.8
+    "rejection_reason": "low_volume",
+    "failing_metric": "vol_ratio",
+    "failing_value": 0.95,
+    "threshold": 1.2,
+    "metrics": {
+      "perf": -0.12,
+      "prng": 15.5,
+      "vol_ratio": 0.95,
+      "rsi": 62.4,
+      "score": 3
+    }
   }
 }
 ```
 
-*Because metrics (`metric_prng`, `metric_vol_ratio`, etc.) are uniquely flattened and injected into EVERY setup's details regardless of acceptance or rejection, you can natively compare the technical fingerprints of winners vs. losers in 30 days using `pd.read_json(..., lines=True)`.*
+*Because every log now includes a standardized `metrics` snapshot and explicit `failing_metric` attribution (v2.2.0), you can build high-fidelity distributions of near-misses to mathematically optimize your filters.*
 
 Daily summary snapshots may also be generated as:
 
@@ -179,19 +184,17 @@ IPO-Base-Scanner/
 └── logs/                           # Structured daily JSONL logs
 ```
 
-### 🗄️ Database Architecture (Phase 2)
+### 🗄️ Database Architecture (Phase 2.2 / 2.3)
 
-The system is currently in **Phase 2: Dual-Write Infrastructure**. 
+The system is currently in **Phase 2.2: Structured Telemetry**.
 
-- **Primary Storage**: MongoDB Atlas (true UTC storage, deterministic IDs, structured schema).
-- **Secondary Storage**: Legacy CSVs (maintained for 3-day verification).
-- **Consistency**: All market events (signals/logs) are tied to candle-time, ensuring perfect idempotency.
-- **Fail-Safe**: If MongoDB is unreachable, the system automatically falls back to CSV-only mode.
-
----
-```
-
-> **No `ipo_rejections.csv`** — rejections are tracked in the daily JSONL logs, not a flat CSV, making them queryable by date, scanner, version, and reason.
+- **Primary Storage**: MongoDB Atlas (Cloud-native, UTC storage, deterministic IDs).
+- **Secondary Storage**: Legacy CSVs (maintained as a 3-day verification fail-safe).
+- **Versioning**: All data is versioned (`v2.2.0`) to ensure clean analysis cohorts.
+- **Fail-Safe**: Rejection logging is capped at 500/day to protect free-tier limits.
+- **Roadmap**: 
+    - **Phase 3**: 3-Day Live Validation (Zero Failure Cutover).
+    - **Phase 4**: Data Intelligence & Edge Extraction (Filter Optimization).
 
 ---
 
@@ -205,7 +208,17 @@ pip install -r requirements.txt
 cp .env.template .env
 ```
 
-### 2. Configure Data Sources
+### 2. Configure Database
+Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and add your connection string to `.env`:
+```bash
+MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/?appName=stock-tracker
+```
+Verify connectivity:
+```bash
+python manage_db.py test
+```
+
+### 3. Configure Data Sources
 
 ⚠️ **IMPORTANT**: The Upstox API is **required** for live price confirmation during market hours. Fallback sources (NSE/YFinance) are used only for historical data outside market hours.
 
@@ -224,10 +237,15 @@ MIN_DAYS_BETWEEN_SIGNALS=10   # Cooldown window per symbol
 CONSOL_WINDOWS=10,20,40,80,120
 ```
 
-### 3. Run Manually
+### 4. Run Manually
 ```bash
 # Run consolidation scan
 python streamlined-ipo-scanner.py scan
+
+# Run infrastructure tasks
+python manage_db.py validate   # Compare CSV vs MongoDB
+python manage_db.py backup     # Export MongoDB to local JSON
+python manage_db.py analyze    # Run Phase 4 Data Intelligence
 
 # Update stop-losses on active positions
 python streamlined-ipo-scanner.py stop_loss_update
@@ -237,7 +255,7 @@ python streamlined-ipo-scanner.py weekly_summary
 python streamlined-ipo-scanner.py monthly_review
 ```
 
-### 4. Automation Deployment (GitHub Actions)
+### 5. Automation Deployment (GitHub Actions)
 Add to GitHub Repository Secrets: 
 - `UPSTOX_ACCESS_TOKEN`
 - `TELEGRAM_BOT_TOKEN`
@@ -315,7 +333,7 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 • Score: 1.0/5
 • Consolidation Window: 80 days
 
-🤖 Scanner v2.1.0 | 2026-04-13 10:14 IST
+🤖 Scanner v2.2.0 | 2026-04-13 10:14 IST
 ```
 
 ---
@@ -329,4 +347,4 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 
 ---
 
-<sub>Built for systematic IPO momentum trading | v2.1.0 | Automated via GitHub Actions | Core scanners: Listing Day + Consolidation | Intraday watchlist layer</sub>
+<sub>Built for systematic IPO momentum trading | v2.2.0 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>

@@ -39,10 +39,10 @@ MIN_VOLUME_MULTIPLIER = 1.5  # Minimum volume spike for breakout
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-SCANNER_VERSION = "2.1.0"
+SCANNER_VERSION = "2.2.0"
 LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
-def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None):
+def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None, log_type="ACCEPTED"):
     """Write structured scanner logs to logs/YYYY-MM-DD/<scanner>.jsonl"""
     try:
         from datetime import timezone, timedelta as td
@@ -58,6 +58,7 @@ def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp
             "scanner": scanner_name,
             "symbol": symbol,
             "action": action,
+            "log_type": log_type,
             "details": details or {},
         }
         with open(log_file, "a", encoding="utf-8") as f:
@@ -70,7 +71,8 @@ def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp
             insert_log(
                 scanner=scanner_name, symbol=symbol, action=action,
                 candle_timestamp=effective_candle_ts,
-                details=details or {}, version=SCANNER_VERSION, source="live"
+                details=details or {}, version=SCANNER_VERSION, source="live",
+                log_type=log_type
             )
         except Exception as db_e:
             logger.error(f"[MongoDB] log write FAILED for {symbol}/{action}: {db_e}")
@@ -630,7 +632,7 @@ def scan_watchlist():
                     "rejection_reason": "no_intraday_breakout",
                     "key_metric": {"actual": breakout, "required": "breakout_strength>=2 and price>recent_high"},
                     "volume_ratio": None,
-                })
+                }, log_type="REJECTED")
             
             # Rate limiting between symbols
             time.sleep(0.3)
