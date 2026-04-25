@@ -607,9 +607,23 @@ def load_listing_data():
         return pd.DataFrame()
 
 def save_listing_data(df):
-    """Save listing data to CSV"""
+    """Save listing data to CSV and MongoDB"""
     try:
+        # Save to CSV
         df.to_csv(LISTING_DATA_CSV, index=False, encoding='utf-8')
+        
+        # MongoDB dual-write: upsert all records
+        try:
+            from db import upsert_listing_data
+            for _, row in df.iterrows():
+                upsert_listing_data(row['symbol'], row.to_dict())
+        except Exception as db_e:
+            logger.error(f"[MongoDB] listing_data write FAILED (CSV write succeeded): {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
     except Exception as e:
         logger.error(f"Error saving listing data: {e}")
 
@@ -1572,7 +1586,7 @@ def save_breakout_signal(breakout_data):
     """Save breakout signal to signals CSV"""
     try:
         today = datetime.now().date()
-        signal_id = f"LISTING_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}_{datetime.now().strftime('%H%M')}"
+        signal_id = f"LISTING_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}"
         
         # Check if signal already exists
         if os.path.exists(SIGNALS_CSV):
@@ -1659,7 +1673,7 @@ def save_breakout_signal(breakout_data):
             "momentum_score": breakout_data.get("score_components", {}).get("momentum_score", None),
         }
         
-        # Write to daily log
+        # Write to daily log — pass breakout candle time for market-correct deduplication
         write_daily_log("listing_day", breakout_data['symbol'], "BREAKOUT_SIGNAL", {
             "entry": breakout_data['entry_price'],
             "stop_loss": breakout_data['stop_loss'],
@@ -1678,7 +1692,7 @@ def save_breakout_signal(breakout_data):
             "volume_score": breakout_data.get("score_components", {}).get("volume_score", None),
             "base_score": breakout_data.get("score_components", {}).get("base_score", None),
             "momentum_score": breakout_data.get("score_components", {}).get("momentum_score", None),
-        })
+        }, candle_timestamp=breakout_data.get('candle_timestamp') or breakout_data.get('timestamp'))
         
         # Append to CSV
         new_df = pd.DataFrame([new_signal])
@@ -1691,6 +1705,18 @@ def save_breakout_signal(breakout_data):
             if 'notes' not in existing_signals.columns:
                 existing_signals['notes'] = ''
             pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+        
+        # MongoDB dual-write: signal
+        try:
+            from db import upsert_signal
+            upsert_signal(new_signal.copy())
+        except Exception as db_e:
+            logger.error(f"[MongoDB] signal write FAILED for {signal_id}: {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
         
         logger.info(f"✅ Saved breakout signal for {breakout_data['symbol']}")
         return True
@@ -1741,6 +1767,18 @@ def save_watchlist_signal(breakout_data):
         else:
             pd.concat([existing_signals, new_df], ignore_index=True).to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
             
+        # MongoDB dual-write: signal
+        try:
+            from db import upsert_signal
+            upsert_signal(new_signal.copy())
+        except Exception as db_e:
+            logger.error(f"[MongoDB] watchlist signal write FAILED for {signal_id}: {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
+
         logger.info(f"✅ Saved watchlist signal for {breakout_data['symbol']}")
         return True
         
@@ -1795,6 +1833,18 @@ def add_position(breakout_data):
             new_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
         else:
             pd.concat([existing_positions, new_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+        
+        # MongoDB dual-write: position
+        try:
+            from db import upsert_position
+            upsert_position(new_position.copy())
+        except Exception as db_e:
+            logger.error(f"[MongoDB] position write FAILED for {breakout_data['symbol']}: {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
         
         logger.info(f"✅ Added position for {breakout_data['symbol']}")
         return True
@@ -1931,6 +1981,20 @@ def scan_listing_day_breakouts():
     logger.info(f"✅ Scan complete: {breakouts_found} breakouts found")
     save_pending_breakouts(pending_breakouts)
     
+    try:
+        from db import db_metrics
+        db_stats = {
+            "listings_monitored": len(active_listings),
+            "signals_found": breakouts_found,
+            "db_signals": db_metrics.get("signals_generated", 0),
+            "db_logs": db_metrics.get("logs_written", 0),
+            "db_failures": db_metrics.get("failures", 0)
+        }
+    except Exception:
+        db_stats = {"listings_monitored": len(active_listings), "signals_found": breakouts_found}
+
+    write_daily_log("listing_day", "SYSTEM", "SCAN_COMPLETED", db_stats)
+    
     # Send summary
     if breakouts_found > 0:
         summary = f"""📊 <b>Listing Day Breakout Scan Summary</b>
@@ -1938,6 +2002,7 @@ def scan_listing_day_breakouts():
 🔍 Listings Monitored: {len(active_listings)}
 🎯 Breakouts Found: {breakouts_found}
 ⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+🧯 DB Status: {'✅ OK' if db_stats.get('db_failures', 0) == 0 else f"❌ {db_stats.get('db_failures')} FAILURES"}
 
 {'🎉 New breakouts detected! Check alerts above.' if breakouts_found > 0 else '✅ No breakouts at this time.'}"""
         send_telegram(summary)

@@ -1,0 +1,2173 @@
+[
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db712"
+    },
+    "signal_id": "CONSOL_MIDWESTLTD_20251114",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.290Z"
+    },
+    "days_held": 0,
+    "entry_price": 1160.0,
+    "exit_price": 0,
+    "grade": "C",
+    "pnl_pct": 0,
+    "score": 1,
+    "signal_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "signal_type": "CONSOLIDATION",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 1020.8,
+    "symbol": "MIDWESTLTD",
+    "target_price": 1293.42,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.290Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db714"
+    },
+    "signal_id": "LISTING_ENRIN_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.291Z"
+    },
+    "days_held": 0,
+    "entry_price": 2985.0,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 680,155 vs avg 477,945 (need 1.5x); Low volume vs listing day: 0.2x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "05:07:30",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 2746.2,
+    "symbol": "ENRIN",
+    "target_price": 3269.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.291Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db716"
+    },
+    "signal_id": "WATCHLIST_MWL_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.292Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "MWL",
+    "target_price": 265.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.292Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db718"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.293Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.293Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db71a"
+    },
+    "signal_id": "LISTING_SHADOWFAX_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.294Z"
+    },
+    "days_held": 0,
+    "entry_price": 120.04,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 535,621 vs avg 1,583,493 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "05:12:36",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 110.44,
+    "symbol": "SHADOWFAX",
+    "target_price": 130.71,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.294Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db71c"
+    },
+    "signal_id": "LISTING_JSLL_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.294Z"
+    },
+    "days_held": 0,
+    "entry_price": 603.7,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 315,104 vs avg 215,830 (need 1.5x); Low volume vs listing day: 1.2x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "06:38:22",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 555.4,
+    "symbol": "JSLL",
+    "target_price": 653.69,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.294Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db71e"
+    },
+    "signal_id": "LISTING_EBGNG_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.295Z"
+    },
+    "days_held": 0,
+    "entry_price": 366.5,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 219,073 vs avg 212,380 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "07:15:16",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 337.18,
+    "symbol": "EBGNG",
+    "target_price": 400.35,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.295Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db720"
+    },
+    "signal_id": "LISTING_ADVAIT_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.295Z"
+    },
+    "days_held": 0,
+    "entry_price": 1610.0,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 10,162 vs avg 31,566 (need 1.5x); Low volume vs listing day: 0.2x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "07:19:20",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 1481.2,
+    "symbol": "ADVAIT",
+    "target_price": 1739.08,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.295Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db722"
+    },
+    "signal_id": "LISTING_MWL_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.296Z"
+    },
+    "days_held": 0,
+    "entry_price": 269.05,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 100,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "08:28:14",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 247.53,
+    "symbol": "MWL",
+    "target_price": 296.75,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.296Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db724"
+    },
+    "signal_id": "LISTING_BUILDPRO_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.297Z"
+    },
+    "days_held": 0,
+    "entry_price": 912.3,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 24,623 vs avg 83,547 (need 1.5x); Low volume vs listing day: 0.1x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_time": "10:09:07",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 839.32,
+    "symbol": "BUILDPRO",
+    "target_price": 997.8,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.297Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db726"
+    },
+    "signal_id": "WATCHLIST_GAUDIUMIVF_20260302",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.297Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "GAUDIUMIVF",
+    "target_price": 87.15,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db728"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260303",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.297Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-02T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db72a"
+    },
+    "signal_id": "WATCHLIST_GAUDIUMIVF_20260303",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.299Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-02T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "GAUDIUMIVF",
+    "target_price": 87.15,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.299Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db72c"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260304",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.300Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-03T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db72e"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260305",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.300Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-04T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db730"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260306",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.301Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-05T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.301Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db732"
+    },
+    "signal_id": "LISTING_RNBDENIMS_20260309",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.301Z"
+    },
+    "days_held": 0,
+    "entry_price": 132.19,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 51,629 vs avg 2,482,644 (need 1.5x); Low volume vs listing day: 0.3x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-08T18:30:00Z"
+    },
+    "signal_time": "05:15:03",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 121.61,
+    "symbol": "RNBDENIMS",
+    "target_price": 153.62,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.301Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db734"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260310",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.301Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-09T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.301Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db736"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260311",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-10T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db738"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260312",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db73a"
+    },
+    "signal_id": "WATCHLIST_OMNI_20260312",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "OMNI",
+    "target_price": 224.7,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db73c"
+    },
+    "signal_id": "WATCHLIST_VIDYAWIRES_20260312",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "VIDYAWIRES",
+    "target_price": 58.45,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db73e"
+    },
+    "signal_id": "LISTING_VIDYAWIRES_20260312",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.305Z"
+    },
+    "days_held": 0,
+    "entry_price": 58.73,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 2,534,817 vs avg 2,133,839 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "signal_time": "07:56:42",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 54.03,
+    "symbol": "VIDYAWIRES",
+    "target_price": 67.18,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.305Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db740"
+    },
+    "signal_id": "WATCHLIST_SANATHAN_20260313",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.305Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SANATHAN",
+    "target_price": 423.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.305Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db742"
+    },
+    "signal_id": "WATCHLIST_OMNI_20260313",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.306Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "OMNI",
+    "target_price": 224.7,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db744"
+    },
+    "signal_id": "WATCHLIST_AEPL_20260313",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.306Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "AEPL",
+    "target_price": 18.98,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db746"
+    },
+    "signal_id": "WATCHLIST_KOTYARK_20260313",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.307Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "KOTYARK",
+    "target_price": 368.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.307Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db748"
+    },
+    "signal_id": "LISTING_AMAGI_20260313",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.307Z"
+    },
+    "days_held": 0,
+    "entry_price": 364.7,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 90,423 vs avg 248,219 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "signal_time": "09:01:40",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 335.52,
+    "symbol": "AMAGI",
+    "target_price": 393.91,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.307Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db74a"
+    },
+    "signal_id": "LISTING_GUJTHEM_20260313",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.307Z"
+    },
+    "days_held": 0,
+    "entry_price": 278.0,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 55,480 vs avg 67,329 (need 1.5x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "signal_time": "09:55:56",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 255.76,
+    "symbol": "GUJTHEM",
+    "target_price": 300.28,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.307Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db74c"
+    },
+    "signal_id": "WATCHLIST_OMNI_20260316",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.309Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-15T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "OMNI",
+    "target_price": 224.7,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.309Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db74e"
+    },
+    "signal_id": "WATCHLIST_KOTYARK_20260316",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.310Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-15T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "KOTYARK",
+    "target_price": 368.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.310Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db750"
+    },
+    "signal_id": "LISTING_AGARWALEYE_20260316",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.311Z"
+    },
+    "days_held": 0,
+    "entry_price": 418.15,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 106,183 vs avg 197,652 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-15T18:30:00Z"
+    },
+    "signal_time": "07:04:29",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 384.7,
+    "symbol": "AGARWALEYE",
+    "target_price": 460.85,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.311Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db752"
+    },
+    "signal_id": "WATCHLIST_AEPL_20260316",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.312Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-15T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "AEPL",
+    "target_price": 18.98,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.312Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db754"
+    },
+    "signal_id": "WATCHLIST_OMNI_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.312Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "OMNI",
+    "target_price": 224.7,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.312Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db756"
+    },
+    "signal_id": "WATCHLIST_AEPL_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.313Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "AEPL",
+    "target_price": 18.98,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.313Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db758"
+    },
+    "signal_id": "WATCHLIST_KOTYARK_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.314Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "KOTYARK",
+    "target_price": 368.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.314Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db75a"
+    },
+    "signal_id": "WATCHLIST_EMMVEE_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.314Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "EMMVEE",
+    "target_price": 227.71,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.314Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db75c"
+    },
+    "signal_id": "WATCHLIST_GAUDIUMIVF_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.315Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "GAUDIUMIVF",
+    "target_price": 87.15,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.315Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db75e"
+    },
+    "signal_id": "LISTING_GCSL_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.315Z"
+    },
+    "days_held": 0,
+    "entry_price": 339.0,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_time": "09:07:32",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 311.88,
+    "symbol": "GCSL",
+    "target_price": 372.52,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.315Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db760"
+    },
+    "signal_id": "WATCHLIST_BLUESTONE_20260317",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.317Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-16T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "BLUESTONE",
+    "target_price": 564.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.317Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db762"
+    },
+    "signal_id": "WATCHLIST_BLUESTONE_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.317Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "BLUESTONE",
+    "target_price": 564.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.317Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db764"
+    },
+    "signal_id": "WATCHLIST_EMMVEE_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.318Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "EMMVEE",
+    "target_price": 227.71,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.318Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db766"
+    },
+    "signal_id": "LISTING_OMNI_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.318Z"
+    },
+    "days_held": 0,
+    "entry_price": 226.18,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 319,282 vs avg 1,773,002 (need 1.5x); Low volume vs listing day: 0.0x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_time": "05:23:51",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 208.09,
+    "symbol": "OMNI",
+    "target_price": 248.88,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.318Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db768"
+    },
+    "signal_id": "WATCHLIST_AEPL_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.319Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "AEPL",
+    "target_price": 18.98,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.319Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db76a"
+    },
+    "signal_id": "LISTING_EMMVEE_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.320Z"
+    },
+    "days_held": 0,
+    "entry_price": 227.8,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume vs listing day: 0.1x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_time": "05:45:29",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 209.58,
+    "symbol": "EMMVEE",
+    "target_price": 248.51,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.320Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db76c"
+    },
+    "signal_id": "LISTING_GAUDIUMIVF_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.321Z"
+    },
+    "days_held": 0,
+    "entry_price": 87.9,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume vs listing day: 0.2x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_time": "05:45:55",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 80.87,
+    "symbol": "GAUDIUMIVF",
+    "target_price": 95.55,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.321Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db76e"
+    },
+    "signal_id": "WATCHLIST_SEDEMAC_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.321Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SEDEMAC",
+    "target_price": 1613.5,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.321Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db770"
+    },
+    "signal_id": "WATCHLIST_KOTYARK_20260318",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.323Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-17T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "KOTYARK",
+    "target_price": 368.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.323Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db772"
+    },
+    "signal_id": "WATCHLIST_BLUESTONE_20260319",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.323Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "BLUESTONE",
+    "target_price": 564.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.323Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db774"
+    },
+    "signal_id": "WATCHLIST_KOTYARK_20260319",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.324Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "KOTYARK",
+    "target_price": 368.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.324Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db776"
+    },
+    "signal_id": "WATCHLIST_AEPL_20260319",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.324Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "AEPL",
+    "target_price": 18.98,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.324Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db778"
+    },
+    "signal_id": "WATCHLIST_BLUESTONE_20260320",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.326Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-19T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "BLUESTONE",
+    "target_price": 564.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.326Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db77a"
+    },
+    "signal_id": "WATCHLIST_KOTYARK_20260320",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.326Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-19T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "KOTYARK",
+    "target_price": 368.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.326Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db77c"
+    },
+    "signal_id": "WATCHLIST_RSL_20260320",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.327Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-19T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "RSL",
+    "target_price": 122.1,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.327Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db77e"
+    },
+    "signal_id": "WATCHLIST_SINGERIND_20260320",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.328Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-19T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SINGERIND",
+    "target_price": 75.79,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.328Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db780"
+    },
+    "signal_id": "LISTING_KOTYARK_20260320",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.328Z"
+    },
+    "days_held": 0,
+    "entry_price": 369.05,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT_LOW_VOL",
+    "notes": "VOLUME_CAUTION: Low volume spike: 62,835 vs avg 90,793 (need 1.5x); Low volume vs listing day: 0.2x (need 1.2x)",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 80,
+    "signal_date": {
+      "$date": "2026-03-19T18:30:00Z"
+    },
+    "signal_time": "05:26:12",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 339.53,
+    "symbol": "KOTYARK",
+    "target_price": 421.05,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.328Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db782"
+    },
+    "signal_id": "WATCHLIST_SEDEMAC_20260325",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.328Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-24T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SEDEMAC",
+    "target_price": 1613.5,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.328Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db784"
+    },
+    "signal_id": "WATCHLIST_SEDEMAC_20260326",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.330Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-25T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SEDEMAC",
+    "target_price": 1613.5,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.330Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db786"
+    },
+    "signal_id": "CONSOL_SGFIN_20260325",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.330Z"
+    },
+    "days_held": 0,
+    "entry_price": 430.0,
+    "exit_price": 0,
+    "grade": "C",
+    "pnl_pct": 0,
+    "scanner": "consolidation_live",
+    "score": 1,
+    "signal_date": {
+      "$date": "2026-03-24T18:30:00Z"
+    },
+    "signal_time": "09:58:40",
+    "signal_type": "CONSOLIDATION",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 378.4,
+    "symbol": "SGFIN",
+    "target_price": 545.2,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.330Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db788"
+    },
+    "signal_id": "WATCHLIST_SEDEMAC_20260327",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.331Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-26T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SEDEMAC",
+    "target_price": 1613.5,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.331Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db78a"
+    },
+    "signal_id": "WATCHLIST_SEDEMAC_20260401",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.332Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-31T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SEDEMAC",
+    "target_price": 1613.5,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.332Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db78c"
+    },
+    "signal_id": "WATCHLIST_BCPL_20260401",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.333Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-03-31T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "BCPL",
+    "target_price": 74.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.333Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db78e"
+    },
+    "signal_id": "WATCHLIST_SEDEMAC_20260402",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.333Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SEDEMAC",
+    "target_price": 1613.5,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.333Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db790"
+    },
+    "signal_id": "WATCHLIST_SAMBHV_20260406",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.334Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-05T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SAMBHV",
+    "target_price": 111.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.334Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db792"
+    },
+    "signal_id": "WATCHLIST_UTLSOLAR_20260406",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.335Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-05T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "UTLSOLAR",
+    "target_price": 230.99,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.335Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db794"
+    },
+    "signal_id": "WATCHLIST_SAMBHV_20260407",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.336Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-06T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "SAMBHV",
+    "target_price": 111.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.336Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db796"
+    },
+    "signal_id": "WATCHLIST_UTLSOLAR_20260407",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.337Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-06T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "UTLSOLAR",
+    "target_price": 230.99,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.337Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db798"
+    },
+    "signal_id": "WATCHLIST_UTLSOLAR_20260408",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.337Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-07T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "UTLSOLAR",
+    "target_price": 230.99,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.337Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db79a"
+    },
+    "signal_id": "WATCHLIST_AEPL_20260408",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.338Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-07T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "AEPL",
+    "target_price": 18.98,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.338Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db79c"
+    },
+    "signal_id": "WATCHLIST_UTLSOLAR_20260409",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.338Z"
+    },
+    "days_held": 0,
+    "entry_price": 0.0,
+    "exit_price": 0,
+    "grade": "WATCHLIST",
+    "notes": "Within 5% of listing high",
+    "pnl_pct": 0,
+    "score": 0,
+    "signal_date": {
+      "$date": "2026-04-08T18:30:00Z"
+    },
+    "signal_type": "WATCHLIST",
+    "source": "backfill",
+    "status": "WATCH",
+    "stop_loss": 0.0,
+    "symbol": "UTLSOLAR",
+    "target_price": 230.99,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.338Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db79e"
+    },
+    "signal_id": "LISTING_AEPL_20260409",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.339Z"
+    },
+    "days_held": 0,
+    "entry_price": 19.1,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT",
+    "pnl_pct": 0,
+    "scanner": "listing_day",
+    "score": 100,
+    "signal_date": {
+      "$date": "2026-04-08T18:30:00Z"
+    },
+    "signal_time": "05:38:16",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 17.57,
+    "symbol": "AEPL",
+    "target_price": 21.12,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.339Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db7a0"
+    },
+    "signal_id": "CONSOL_SAATVIKGL_20260413",
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.340Z"
+    },
+    "days_held": 0,
+    "entry_price": 464.0,
+    "exit_price": 0,
+    "grade": "C",
+    "pnl_pct": 0,
+    "scanner": "consolidation_live",
+    "score": 1,
+    "signal_date": {
+      "$date": "2026-04-12T18:30:00Z"
+    },
+    "signal_time": "10:14:48",
+    "signal_type": "CONSOLIDATION",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 408.32,
+    "symbol": "SAATVIKGL",
+    "target_price": 589.58,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.340Z"
+    },
+    "version": "2.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db7a2"
+    },
+    "signal_id": "CONSOL_STLNETWORK_20260416",
+    "base_score": 1.0,
+    "confirmation_time_min": 0.0,
+    "consolidation_range_pct": 55.56,
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.340Z"
+    },
+    "days_held": 0,
+    "did_hold_breakout_level": true,
+    "distance_from_listing_high_pct": -9.35,
+    "entry_price": 25.15,
+    "entry_vs_breakout_pct": 2.65,
+    "exit_price": 0,
+    "grade": "C",
+    "ipo_age": 225.0,
+    "max_extension_during_confirmation_pct": 0.0,
+    "momentum_score": 1.0,
+    "pnl_pct": 0,
+    "position_size_pct": 20.0,
+    "post_confirm_move_pct": 2.65,
+    "rejection_depth_pct": 0.0,
+    "risk_reward_ratio": 3.26,
+    "scanner": "consolidation_live",
+    "score": 1,
+    "signal_date": {
+      "$date": "2026-04-15T18:30:00Z"
+    },
+    "signal_strength_score": 3.43,
+    "signal_time": "10:29:24",
+    "signal_type": "CONSOLIDATION",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 22.13,
+    "symbol": "STLNETWORK",
+    "target_price": 35.0,
+    "tier": "C",
+    "tier_rationale": "Consolidation Grade",
+    "tier_weight": 1.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.340Z"
+    },
+    "version": "2.1.0",
+    "volume_ratio": 0.86,
+    "volume_score": 0.43,
+    "volume_vs_listing_day": 0.0
+  },
+  {
+    "_id": {
+      "$oid": "69ecd92338869899a32db7a4"
+    },
+    "signal_id": "LISTING_ELPROINTL_20260424",
+    "base_score": 0.5,
+    "confirmation_time_min": 0.0,
+    "created_at": {
+      "$date": "2026-04-25T15:09:39.341Z"
+    },
+    "days_held": 0,
+    "did_hold_breakout_level": true,
+    "distance_from_listing_high_pct": -1.89,
+    "entry_price": 108.0,
+    "entry_vs_breakout_pct": 1.89,
+    "exit_price": 0,
+    "grade": "LISTING_BREAKOUT",
+    "ipo_age": 4.0,
+    "leader_score": 7.0,
+    "max_extension_during_confirmation_pct": 0.0,
+    "momentum_score": 0.94,
+    "pnl_pct": 0,
+    "position_size_pct": 60.0,
+    "post_confirm_move_pct": 1.89,
+    "rejection_depth_pct": 0.0,
+    "risk_reward_ratio": 2.31,
+    "scanner": "listing_day",
+    "score": 100,
+    "signal_date": {
+      "$date": "2026-04-23T18:30:00Z"
+    },
+    "signal_strength_score": 5.67,
+    "signal_time": "10:19:32",
+    "signal_type": "LISTING_DAY_BREAKOUT",
+    "source": "backfill",
+    "status": "ACTIVE",
+    "stop_loss": 99.36,
+    "symbol": "ELPROINTL",
+    "target_price": 128.0,
+    "tier": "A",
+    "tier_rationale": "Pure momentum breakout \u2014 smaller position, faster exit, don't expect long trend",
+    "tier_weight": 3.0,
+    "updated_at": {
+      "$date": "2026-04-25T15:09:39.341Z"
+    },
+    "version": "2.1.0",
+    "volume_ratio": 2.46,
+    "volume_score": 1.23,
+    "volume_vs_listing_day": 4.74
+  }
+]

@@ -1,0 +1,3776 @@
+[
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba91"
+    },
+    "ipo_symbol": "ARISINFRA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.835Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0H9P01028",
+    "isin": "INE0H9P01028",
+    "match_type": "exact",
+    "name": "ARISINFRA SOLUTIONS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.835Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba93"
+    },
+    "ipo_symbol": "EPACKPEB",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.837Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0MLS01022",
+    "isin": "INE0MLS01022",
+    "match_type": "exact",
+    "name": "EPACK PREFAB TECHN LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.837Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba95"
+    },
+    "ipo_symbol": "DBEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.838Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0OPA01019",
+    "isin": "INE0OPA01019",
+    "match_type": "exact",
+    "name": "DEEPAK BUILDERS & ENG I L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.838Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba97"
+    },
+    "ipo_symbol": "ANUHPHR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.839Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE489G01022",
+    "isin": "INE489G01022",
+    "match_type": "exact",
+    "name": "ANUH PHARMA LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.839Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba99"
+    },
+    "ipo_symbol": "BORANA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.840Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE16SF01016",
+    "isin": "INE16SF01016",
+    "match_type": "exact",
+    "name": "BORANA WEAVES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.840Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba9b"
+    },
+    "ipo_symbol": "SYSTMTXC",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.840Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE356B01024",
+    "isin": "INE356B01024",
+    "match_type": "exact",
+    "name": "SYSTEMATIX CORP SERVICE L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.840Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba9d"
+    },
+    "ipo_symbol": "VIKRAMSOLR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.840Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE078V01014",
+    "isin": "INE078V01014",
+    "match_type": "exact",
+    "name": "VIKRAM SOLAR LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.840Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dba9f"
+    },
+    "ipo_symbol": "RMDRIP",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.841Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE219Y01026",
+    "isin": "INE219Y01026",
+    "match_type": "exact",
+    "name": "R M DRIP & SPRINK SYS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.841Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaa1"
+    },
+    "ipo_symbol": "SAMBHV",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.842Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE12NJ01018",
+    "isin": "INE12NJ01018",
+    "match_type": "exact",
+    "name": "SAMBHV STEEL TUBES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.842Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaa3"
+    },
+    "ipo_symbol": "GCSL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.843Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE199P01028",
+    "isin": "INE199P01028",
+    "match_type": "exact",
+    "name": "GRETEX CORPORATE SERVICES",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.843Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaa5"
+    },
+    "ipo_symbol": "ARSSBL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.844Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE549H01021",
+    "isin": "INE549H01021",
+    "match_type": "exact",
+    "name": "ANAND RATHI SH N STK BR L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.844Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaa7"
+    },
+    "ipo_symbol": "CEWATER",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.845Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE037Z01029",
+    "isin": "INE037Z01029",
+    "match_type": "exact",
+    "name": "CONCORD ENVIRO SYSTEMS L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.845Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaa9"
+    },
+    "ipo_symbol": "REGAAL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.845Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0MHO01029",
+    "isin": "INE0MHO01029",
+    "match_type": "exact",
+    "name": "REGAAL RESOURCES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.845Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaab"
+    },
+    "ipo_symbol": "JARO",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.846Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE00YJ01010",
+    "isin": "INE00YJ01010",
+    "match_type": "exact",
+    "name": "JARO INS OF TEC MG N RE L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.846Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaad"
+    },
+    "ipo_symbol": "AEGISVOPAK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.847Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0INX01018",
+    "isin": "INE0INX01018",
+    "match_type": "exact",
+    "name": "AEGIS VOPAK TERMINALS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.847Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaaf"
+    },
+    "ipo_symbol": "NATCAPSUQ",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE936B01015",
+    "isin": "INE936B01015",
+    "match_type": "exact",
+    "name": "NATURAL CAPSULES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbab1"
+    },
+    "ipo_symbol": "THELEELA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0AQ201015",
+    "isin": "INE0AQ201015",
+    "match_type": "exact",
+    "name": "SCHLOSS BANGALORE LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbab3"
+    },
+    "ipo_symbol": "BMWVENTLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE965W01036",
+    "isin": "INE965W01036",
+    "match_type": "exact",
+    "name": "BMW VENTURES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbab5"
+    },
+    "ipo_symbol": "BELRISE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE894V01022",
+    "isin": "INE894V01022",
+    "match_type": "exact",
+    "name": "BELRISE INDUSTRIES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.848Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbab7"
+    },
+    "ipo_symbol": "ABINFRA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.849Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE00YB01017",
+    "isin": "INE00YB01017",
+    "match_type": "exact",
+    "name": "A B INFRABUILD LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.849Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbab9"
+    },
+    "ipo_symbol": "NAVKARURB",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.849Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE268H01044",
+    "isin": "INE268H01044",
+    "match_type": "exact",
+    "name": "NAVKAR URBANSTRUCTURE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.849Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbabb"
+    },
+    "ipo_symbol": "RACLGEAR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.851Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE704B01017",
+    "isin": "INE704B01017",
+    "match_type": "exact",
+    "name": "RACL GEARTECH LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.851Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbabd"
+    },
+    "ipo_symbol": "AVL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.852Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE679V01027",
+    "isin": "INE679V01027",
+    "match_type": "exact",
+    "name": "ADITYA VISION LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.852Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbabf"
+    },
+    "ipo_symbol": "ENRIN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.852Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1NPP01017",
+    "isin": "INE1NPP01017",
+    "match_type": "exact",
+    "name": "SIEMENS ENERGY INDIA LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.852Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbac1"
+    },
+    "ipo_symbol": "MAMATA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.854Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0TO701015",
+    "isin": "INE0TO701015",
+    "match_type": "exact",
+    "name": "MAMATA MACHINERY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.854Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbac3"
+    },
+    "ipo_symbol": "CPEDU",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.854Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0P6P01016",
+    "isin": "INE0P6P01016",
+    "match_type": "exact",
+    "name": "CAREER POINT EDUTECH LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.854Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbac5"
+    },
+    "ipo_symbol": "CURAA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.855Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE117B01020",
+    "isin": "INE117B01020",
+    "match_type": "exact",
+    "name": "CURA TECHNOLOGIES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.855Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbac7"
+    },
+    "ipo_symbol": "BRIGHOTEL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.856Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE03NU01014",
+    "isin": "INE03NU01014",
+    "match_type": "exact",
+    "name": "BRIGADE HOTEL VENTURE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.856Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbac9"
+    },
+    "ipo_symbol": "MCLOUD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.856Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE613C01026",
+    "isin": "INE613C01026",
+    "match_type": "exact",
+    "name": "MAGELLANIC CLOUD LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.856Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbacb"
+    },
+    "ipo_symbol": "CHEMBONDCH",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.857Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0TGX01019",
+    "isin": "INE0TGX01019",
+    "match_type": "exact",
+    "name": "CHEMBOND CHEMICAL LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.857Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbacd"
+    },
+    "ipo_symbol": "EUROPRATIK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.858Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE198501012",
+    "isin": "INE198501012",
+    "match_type": "exact",
+    "name": "EURO PRATIK SALES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.858Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbacf"
+    },
+    "ipo_symbol": "BAJAJINDEF",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.859Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0O9T01021",
+    "isin": "INE0O9T01021",
+    "match_type": "exact",
+    "name": "INDEF MANUFACTURING LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.859Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbad1"
+    },
+    "ipo_symbol": "DENTA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.859Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0R4L01018",
+    "isin": "INE0R4L01018",
+    "match_type": "exact",
+    "name": "DENTA WATER N INFRA SOL L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.859Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbad3"
+    },
+    "ipo_symbol": "AFCONS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.861Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE101I01011",
+    "isin": "INE101I01011",
+    "match_type": "exact",
+    "name": "AFCONS INFRASTRUCTURE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.861Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbad5"
+    },
+    "ipo_symbol": "BHARATSE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.861Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE415D01024",
+    "isin": "INE415D01024",
+    "match_type": "exact",
+    "name": "BHARAT SEATS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.861Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbad7"
+    },
+    "ipo_symbol": "GUJTHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.862Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE942C01045",
+    "isin": "INE942C01045",
+    "match_type": "exact",
+    "name": "GUJARAT THEMIS BIOSYN LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.862Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbad9"
+    },
+    "ipo_symbol": "IKS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.862Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE115Q01022",
+    "isin": "INE115Q01022",
+    "match_type": "exact",
+    "name": "INVENTURUS KNOWLEDGE SO L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.862Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbadb"
+    },
+    "ipo_symbol": "TRANSRAILL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.863Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE454P01035",
+    "isin": "INE454P01035",
+    "match_type": "exact",
+    "name": "TRANSRAIL LIGHTING LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.863Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbadd"
+    },
+    "ipo_symbol": "NTPCGREEN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.864Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0ONG01011",
+    "isin": "INE0ONG01011",
+    "match_type": "exact",
+    "name": "NTPC GREEN ENERGY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.864Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbadf"
+    },
+    "ipo_symbol": "SRD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.864Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE01NE01012",
+    "isin": "INE01NE01012",
+    "match_type": "exact",
+    "name": "SHANKAR LAL RAMPAL LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.864Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbae1"
+    },
+    "ipo_symbol": "DIGITIDE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.865Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0U4701011",
+    "isin": "INE0U4701011",
+    "match_type": "exact",
+    "name": "DIGITIDE SOLUTIONS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.865Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbae3"
+    },
+    "ipo_symbol": "RNBDENIMS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.865Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE012Q01021",
+    "isin": "INE012Q01021",
+    "match_type": "exact",
+    "name": "R&B DENIMS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.865Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbae5"
+    },
+    "ipo_symbol": "BLUESTONE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.866Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE304W01038",
+    "isin": "INE304W01038",
+    "match_type": "exact",
+    "name": "BLUESTONE JEWEL LFSTL LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.866Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbae7"
+    },
+    "ipo_symbol": "INNOVANA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.866Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE403Y01018",
+    "isin": "INE403Y01018",
+    "match_type": "exact",
+    "name": "INNOVANA THINKLABS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.866Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbae9"
+    },
+    "ipo_symbol": "SUPREME",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.866Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE822E01011",
+    "isin": "INE822E01011",
+    "match_type": "exact",
+    "name": "SUPREME HOLDIN N HOSP I L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.866Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaeb"
+    },
+    "ipo_symbol": "SMARTWORKS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.868Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0NAZ01010",
+    "isin": "INE0NAZ01010",
+    "match_type": "exact",
+    "name": "SMARTWORKS COWORKING SP L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.868Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaed"
+    },
+    "ipo_symbol": "AFFORDABLE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.869Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE692Z01013",
+    "isin": "INE692Z01013",
+    "match_type": "exact",
+    "name": "AFFORD ROBO & AUTO LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.869Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaef"
+    },
+    "ipo_symbol": "AJAXENGG",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.869Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE274Y01021",
+    "isin": "INE274Y01021",
+    "match_type": "exact",
+    "name": "AJAX ENGINEERING LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.869Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaf1"
+    },
+    "ipo_symbol": "ATLANTAELE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.870Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0Z4F01028",
+    "isin": "INE0Z4F01028",
+    "match_type": "exact",
+    "name": "ATLANTA ELECTRICALS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.870Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaf3"
+    },
+    "ipo_symbol": "ABLBL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.871Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE14LE01019",
+    "isin": "INE14LE01019",
+    "match_type": "exact",
+    "name": "ADITYA BIRLA LIFES BRAN L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.871Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaf5"
+    },
+    "ipo_symbol": "ISHANCH",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.872Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE561M01018",
+    "isin": "INE561M01018",
+    "match_type": "exact",
+    "name": "ISHAN DYES N CHEMICALS L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.872Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaf7"
+    },
+    "ipo_symbol": "JAINREC",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.873Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0YD401026",
+    "isin": "INE0YD401026",
+    "match_type": "exact",
+    "name": "JAIN RESOURCE RECYCLING L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.873Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaf9"
+    },
+    "ipo_symbol": "SENORES",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.874Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0RB801010",
+    "isin": "INE0RB801010",
+    "match_type": "exact",
+    "name": "SENORES PHARMACEUTICALS L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.874Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbafb"
+    },
+    "ipo_symbol": "DEVX",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.874Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0VOV01021",
+    "isin": "INE0VOV01021",
+    "match_type": "exact",
+    "name": "DEV ACCELERATOR LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.874Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbafd"
+    },
+    "ipo_symbol": "ARFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.874Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE784R01023",
+    "isin": "INE784R01023",
+    "match_type": "exact",
+    "name": "ARFIN INDIA LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.874Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbaff"
+    },
+    "ipo_symbol": "SAATVIKGL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.875Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE13B501022",
+    "isin": "INE13B501022",
+    "match_type": "exact",
+    "name": "SAATVIK GREEN ENERGY LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.875Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb01"
+    },
+    "ipo_symbol": "PICCADIL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.876Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE546C01010",
+    "isin": "INE546C01010",
+    "match_type": "exact",
+    "name": "PICCADILY AGRO INDUSTRI L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.876Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb03"
+    },
+    "ipo_symbol": "PROSTARM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.877Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0BX301013",
+    "isin": "INE0BX301013",
+    "match_type": "exact",
+    "name": "PROSTARM INFO SYSTEMS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.877Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb05"
+    },
+    "ipo_symbol": "RAJOOENG",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE535F01024",
+    "isin": "INE535F01024",
+    "match_type": "exact",
+    "name": "RAJOO ENGINEERS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb07"
+    },
+    "ipo_symbol": "HILINFRA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE00RL01028",
+    "isin": "INE00RL01028",
+    "match_type": "exact",
+    "name": "HIGHWAY INFRASTRUCTURE L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb09"
+    },
+    "ipo_symbol": "RHETAN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0KKN01029",
+    "isin": "INE0KKN01029",
+    "match_type": "exact",
+    "name": "RHETAN TMT LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb0b"
+    },
+    "ipo_symbol": "SGLTL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0M4D01010",
+    "isin": "INE0M4D01010",
+    "match_type": "exact",
+    "name": "STANDARD GLASS LIN TECH L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.878Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb0d"
+    },
+    "ipo_symbol": "SGMART",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.880Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE385F01024",
+    "isin": "INE385F01024",
+    "match_type": "exact",
+    "name": "SG MART LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.880Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb0f"
+    },
+    "ipo_symbol": "TINNARUBR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.880Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE015C01016",
+    "isin": "INE015C01016",
+    "match_type": "exact",
+    "name": "TINNA RUBBER AND INFR LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.880Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb11"
+    },
+    "ipo_symbol": "SAILIFE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.881Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE570L01029",
+    "isin": "INE570L01029",
+    "match_type": "exact",
+    "name": "SAI LIFE SCIENCES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.881Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb13"
+    },
+    "ipo_symbol": "MASTERTR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.882Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE677D01037",
+    "isin": "INE677D01037",
+    "match_type": "exact",
+    "name": "MASTER TRUST LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.882Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb15"
+    },
+    "ipo_symbol": "IVALUE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.882Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE056801025",
+    "isin": "INE056801025",
+    "match_type": "exact",
+    "name": "IVALUE INFOSOLUTIONS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.882Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb17"
+    },
+    "ipo_symbol": "QPOWER",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.882Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0SII01026",
+    "isin": "INE0SII01026",
+    "match_type": "exact",
+    "name": "QUALITY POWER ELEC EQUP L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.882Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb19"
+    },
+    "ipo_symbol": "SPECTRUM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.883Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE01EO01010",
+    "isin": "INE01EO01010",
+    "match_type": "exact",
+    "name": "SPECTRUM ELECTRIC IND LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.883Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb1b"
+    },
+    "ipo_symbol": "ROSSTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.884Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0OJW01016",
+    "isin": "INE0OJW01016",
+    "match_type": "exact",
+    "name": "ROSSELL TECHSYS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.884Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb1d"
+    },
+    "ipo_symbol": "VENTIVE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.884Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE781S01027",
+    "isin": "INE781S01027",
+    "match_type": "exact",
+    "name": "VENTIVE HOSPITALITY LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.884Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb1f"
+    },
+    "ipo_symbol": "VINCOFE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.886Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE498Q01014",
+    "isin": "INE498Q01014",
+    "match_type": "exact",
+    "name": "VINTAGE COFFEE N BVRGS L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.886Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb21"
+    },
+    "ipo_symbol": "EBGNG",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.886Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE18JU01028",
+    "isin": "INE18JU01028",
+    "match_type": "exact",
+    "name": "GNG ELECTRONICS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.886Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb23"
+    },
+    "ipo_symbol": "PROTEAN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.887Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE004A01022",
+    "isin": "INE004A01022",
+    "match_type": "exact",
+    "name": "PROTEAN EGOV TECHNO LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.887Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb25"
+    },
+    "ipo_symbol": "PATELRMART",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.887Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0R8B01010",
+    "isin": "INE0R8B01010",
+    "match_type": "exact",
+    "name": "PATEL RETAIL LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.887Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb27"
+    },
+    "ipo_symbol": "GEMAROMA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.889Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE06XZ01023",
+    "isin": "INE06XZ01023",
+    "match_type": "exact",
+    "name": "GEM AROMATICS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.889Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb29"
+    },
+    "ipo_symbol": "ORCHASP",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.889Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE215B01022",
+    "isin": "INE215B01022",
+    "match_type": "exact",
+    "name": "ORCHASP LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.889Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb2b"
+    },
+    "ipo_symbol": "PRABHA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.889Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0I0M01023",
+    "isin": "INE0I0M01023",
+    "match_type": "exact",
+    "name": "PRABHA ENERGY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.889Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb2d"
+    },
+    "ipo_symbol": "NPST",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.890Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0FFK01017",
+    "isin": "INE0FFK01017",
+    "match_type": "exact",
+    "name": "NETWORK PEOPLE SRV TECH L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.890Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb2f"
+    },
+    "ipo_symbol": "GANESHCP",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.891Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE652V01016",
+    "isin": "INE652V01016",
+    "match_type": "exact",
+    "name": "GANESH CONSUMER PRODUCT L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.891Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb31"
+    },
+    "ipo_symbol": "EFCIL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.892Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE886D01026",
+    "isin": "INE886D01026",
+    "match_type": "exact",
+    "name": "EFC (I) LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.892Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb33"
+    },
+    "ipo_symbol": "LLOYDSENT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.894Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE080I01025",
+    "isin": "INE080I01025",
+    "match_type": "exact",
+    "name": "LLOYDS ENTERPRISES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.894Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb35"
+    },
+    "ipo_symbol": "BLACKBUCK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.895Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0UIZ01018",
+    "isin": "INE0UIZ01018",
+    "match_type": "exact",
+    "name": "BLACKBUCK LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.895Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb37"
+    },
+    "ipo_symbol": "HEXT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.895Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE093A01041",
+    "isin": "INE093A01041",
+    "match_type": "exact",
+    "name": "HEXAWARE TECHNOLOGIES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.895Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb39"
+    },
+    "ipo_symbol": "MOBIKWIK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.895Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0HLU01028",
+    "isin": "INE0HLU01028",
+    "match_type": "exact",
+    "name": "ONE MOBIKWIK SYSTEMS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.895Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb3b"
+    },
+    "ipo_symbol": "SHREEJISPG",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.896Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1B6101010",
+    "isin": "INE1B6101010",
+    "match_type": "exact",
+    "name": "SHREEJI SHIPPING GLOBAL L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.896Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb3d"
+    },
+    "ipo_symbol": "ALLTIME",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.896Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0GV601021",
+    "isin": "INE0GV601021",
+    "match_type": "exact",
+    "name": "ALL TIME PLASTICS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.896Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb3f"
+    },
+    "ipo_symbol": "MBEL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.897Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE08N601015",
+    "isin": "INE08N601015",
+    "match_type": "exact",
+    "name": "M AND B ENGINEERING LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.897Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb41"
+    },
+    "ipo_symbol": "CPPLUS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.898Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE819V01029",
+    "isin": "INE819V01029",
+    "match_type": "exact",
+    "name": "ADITYA INFOTECH LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.898Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb43"
+    },
+    "ipo_symbol": "SGFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE618R01015",
+    "isin": "INE618R01015",
+    "match_type": "exact",
+    "name": "SG FINSERVE LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb45"
+    },
+    "ipo_symbol": "STYL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE04VU01023",
+    "isin": "INE04VU01023",
+    "match_type": "exact",
+    "name": "SESHAASAI TECHNOLOGIES L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb47"
+    },
+    "ipo_symbol": "NIBE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE149O01018",
+    "isin": "INE149O01018",
+    "match_type": "exact",
+    "name": "NIBE LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb49"
+    },
+    "ipo_symbol": "ELLEN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE236E01022",
+    "isin": "INE236E01022",
+    "match_type": "exact",
+    "name": "ELLENBARRIE INDUS GASES L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.899Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb4b"
+    },
+    "ipo_symbol": "HDBFS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.901Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE756I01012",
+    "isin": "INE756I01012",
+    "match_type": "exact",
+    "name": "HDB FINANCIAL SERVICES L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.901Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb4d"
+    },
+    "ipo_symbol": "LAXMIINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.901Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE06WU01026",
+    "isin": "INE06WU01026",
+    "match_type": "exact",
+    "name": "LAXMI INDIA FINANCE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.901Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb4f"
+    },
+    "ipo_symbol": "VMSTMT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.902Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0SJA01013",
+    "isin": "INE0SJA01013",
+    "match_type": "exact",
+    "name": "VMS TMT LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.902Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb51"
+    },
+    "ipo_symbol": "ABCOTS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.903Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE08PH01015",
+    "isin": "INE08PH01015",
+    "match_type": "exact",
+    "name": "A B COTSPIN INDIA LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.903Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb53"
+    },
+    "ipo_symbol": "TRAVELFOOD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.904Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE103V01028",
+    "isin": "INE103V01028",
+    "match_type": "exact",
+    "name": "TRAVEL FOOD SERVICES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.904Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb55"
+    },
+    "ipo_symbol": "KALPATARU",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.904Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE227J01012",
+    "isin": "INE227J01012",
+    "match_type": "exact",
+    "name": "KALPATARU LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.904Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb57"
+    },
+    "ipo_symbol": "SCODATUBES",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.905Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE090501011",
+    "isin": "INE090501011",
+    "match_type": "exact",
+    "name": "SCODA TUBES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.905Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb59"
+    },
+    "ipo_symbol": "LAXMIDENTL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.905Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0WO601020",
+    "isin": "INE0WO601020",
+    "match_type": "exact",
+    "name": "LAXMI DENTAL LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.905Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb5b"
+    },
+    "ipo_symbol": "BLUSPRING",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.907Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0U4101014",
+    "isin": "INE0U4101014",
+    "match_type": "exact",
+    "name": "BLUSPRING ENTERPRISES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.907Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb5d"
+    },
+    "ipo_symbol": "PASHUPATI",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.907Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE124Y01010",
+    "isin": "INE124Y01010",
+    "match_type": "exact",
+    "name": "PASHUPATI COTSPIN LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.907Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb5f"
+    },
+    "ipo_symbol": "IGCL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.908Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE05J901018",
+    "isin": "INE05J901018",
+    "match_type": "exact",
+    "name": "INDOGULF CROPSCIENCES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.908Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb61"
+    },
+    "ipo_symbol": "SHANTIGOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.909Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE06ZD01017",
+    "isin": "INE06ZD01017",
+    "match_type": "exact",
+    "name": "SHANTI GOLD INTERNATION L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.909Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb63"
+    },
+    "ipo_symbol": "JSLL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.910Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0J5801029",
+    "isin": "INE0J5801029",
+    "match_type": "exact",
+    "name": "JEENA SIKHO LIFECARE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.910Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb65"
+    },
+    "ipo_symbol": "WAAREERTL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.911Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE299N01021",
+    "isin": "INE299N01021",
+    "match_type": "exact",
+    "name": "WAAREE RENEWABLE TECH LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.911Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb67"
+    },
+    "ipo_symbol": "UNIMECH",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.911Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0U3I01011",
+    "isin": "INE0U3I01011",
+    "match_type": "exact",
+    "name": "UNIMECH AEROSPACE N MFG L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.911Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb69"
+    },
+    "ipo_symbol": "SWIGGY",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.912Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE00H001014",
+    "isin": "INE00H001014",
+    "match_type": "exact",
+    "name": "SWIGGY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.912Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb6b"
+    },
+    "ipo_symbol": "EUROBOND",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.913Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE505V01016",
+    "isin": "INE505V01016",
+    "match_type": "exact",
+    "name": "EURO PANEL PRODUCTS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.913Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb6d"
+    },
+    "ipo_symbol": "CIFL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.913Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE345H01024",
+    "isin": "INE345H01024",
+    "match_type": "exact",
+    "name": "CAPITAL INDIA FINANCE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.913Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb6f"
+    },
+    "ipo_symbol": "DDEVPLSTIK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.914Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0HR601026",
+    "isin": "INE0HR601026",
+    "match_type": "exact",
+    "name": "DDEV PLASTIKS IND LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.914Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb71"
+    },
+    "ipo_symbol": "INDOFARM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.914Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE622H01018",
+    "isin": "INE622H01018",
+    "match_type": "exact",
+    "name": "INDO FARM EQUIPMENT LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.914Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb73"
+    },
+    "ipo_symbol": "GLOBECIVIL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.915Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0V3U01015",
+    "isin": "INE0V3U01015",
+    "match_type": "exact",
+    "name": "GLOBE CIVIL PROJECTS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.915Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb75"
+    },
+    "ipo_symbol": "GODAVARIB",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.915Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE497S01012",
+    "isin": "INE497S01012",
+    "match_type": "exact",
+    "name": "GODAVARI BIOREFINERIES L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.915Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb77"
+    },
+    "ipo_symbol": "ACMESOLAR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.915Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE622W01025",
+    "isin": "INE622W01025",
+    "match_type": "exact",
+    "name": "ACME SOLAR HOLDINGS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.915Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb79"
+    },
+    "ipo_symbol": "ATHERENERG",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.917Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0LEZ01016",
+    "isin": "INE0LEZ01016",
+    "match_type": "exact",
+    "name": "ATHER ENERGY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.917Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb7b"
+    },
+    "ipo_symbol": "JUBLCPL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.917Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE03CC01015",
+    "isin": "INE03CC01015",
+    "match_type": "exact",
+    "name": "JUBILANT AGRI N CON PRO L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.917Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb7d"
+    },
+    "ipo_symbol": "MEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.918Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0PKD01011",
+    "isin": "INE0PKD01011",
+    "match_type": "exact",
+    "name": "MANGAL ELECTRICAL IND L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.918Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb7f"
+    },
+    "ipo_symbol": "JSWCEMENT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.918Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE718I01012",
+    "isin": "INE718I01012",
+    "match_type": "exact",
+    "name": "JSW CEMENT LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.918Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb81"
+    },
+    "ipo_symbol": "WAAREEENER",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.919Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE377N01017",
+    "isin": "INE377N01017",
+    "match_type": "exact",
+    "name": "WAAREE ENERGIES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.919Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb83"
+    },
+    "ipo_symbol": "BELLACASA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.920Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE344T01014",
+    "isin": "INE344T01014",
+    "match_type": "exact",
+    "name": "BELLA CASA FASH AND RET L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.920Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb85"
+    },
+    "ipo_symbol": "CRIZAC",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.921Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0S4R01014",
+    "isin": "INE0S4R01014",
+    "match_type": "exact",
+    "name": "CRIZAC LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.921Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb87"
+    },
+    "ipo_symbol": "PRIMO",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.922Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE607A01022",
+    "isin": "INE607A01022",
+    "match_type": "exact",
+    "name": "PRIMO CHEMICALS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.922Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb89"
+    },
+    "ipo_symbol": "GARUDA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.922Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0JVO01026",
+    "isin": "INE0JVO01026",
+    "match_type": "exact",
+    "name": "GARUDA CONSTRUCT N ENG L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.922Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb8b"
+    },
+    "ipo_symbol": "JKIPL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.923Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1FF001016",
+    "isin": "INE1FF001016",
+    "match_type": "exact",
+    "name": "JINKUSHAL INDUSTRIES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.923Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb8d"
+    },
+    "ipo_symbol": "OSWALPUMPS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.924Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0BYP01024",
+    "isin": "INE0BYP01024",
+    "match_type": "exact",
+    "name": "OSWAL PUMPS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.924Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb8f"
+    },
+    "ipo_symbol": "TIGERLOGS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.925Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE906O01029",
+    "isin": "INE906O01029",
+    "match_type": "exact",
+    "name": "TIGER LOGISTICS (INDIA) L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.925Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb91"
+    },
+    "ipo_symbol": "HYUNDAI",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.926Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0V6F01027",
+    "isin": "INE0V6F01027",
+    "match_type": "exact",
+    "name": "HYUNDAI MOTOR INDIA LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.926Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb93"
+    },
+    "ipo_symbol": "SHRINGARMS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.926Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1B3L01017",
+    "isin": "INE1B3L01017",
+    "match_type": "exact",
+    "name": "SHRINGAR HOU OF MANGALS L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.926Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb95"
+    },
+    "ipo_symbol": "SOLARWORLD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.926Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0TY101024",
+    "isin": "INE0TY101024",
+    "match_type": "exact",
+    "name": "SOLARWORLD ENERGY SOL LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.926Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb97"
+    },
+    "ipo_symbol": "KMEW",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.928Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0CJD01011",
+    "isin": "INE0CJD01011",
+    "match_type": "exact",
+    "name": "KNOWLEDGE MARINE & EN W L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.928Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb99"
+    },
+    "ipo_symbol": "ANTHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.928Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0CZ201020",
+    "isin": "INE0CZ201020",
+    "match_type": "exact",
+    "name": "ANTHEM BIOSCIENCES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.928Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb9b"
+    },
+    "ipo_symbol": "VIKRAN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.930Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE01R501028",
+    "isin": "INE01R501028",
+    "match_type": "exact",
+    "name": "VIKRAN ENGINEERING LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.930Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb9d"
+    },
+    "ipo_symbol": "FISCHER",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.930Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE771F01041",
+    "isin": "INE771F01041",
+    "match_type": "exact",
+    "name": "FISCHER MEDICAL VENTURE L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.930Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbb9f"
+    },
+    "ipo_symbol": "EIEL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.930Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0LLY01014",
+    "isin": "INE0LLY01014",
+    "match_type": "exact",
+    "name": "ENVIRO INFRA ENGINEERS L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.930Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbba1"
+    },
+    "ipo_symbol": "SURAKSHA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.931Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE877V01027",
+    "isin": "INE877V01027",
+    "match_type": "exact",
+    "name": "SURAKSHA DIAGNOSTIC LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.931Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbba3"
+    },
+    "ipo_symbol": "VMM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.932Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE01EA01019",
+    "isin": "INE01EA01019",
+    "match_type": "exact",
+    "name": "VISHAL MEGA MART LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.932Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbba5"
+    },
+    "ipo_symbol": "DAMCAPITAL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.933Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE284H01025",
+    "isin": "INE284H01025",
+    "match_type": "exact",
+    "name": "DAM CAPITAL ADVISORS LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.933Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbba7"
+    },
+    "ipo_symbol": "GKENERGY",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.933Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1AG301022",
+    "isin": "INE1AG301022",
+    "match_type": "exact",
+    "name": "GK ENERGY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.933Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbba9"
+    },
+    "ipo_symbol": "QUADFUTURE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.933Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0LRY01011",
+    "isin": "INE0LRY01011",
+    "match_type": "exact",
+    "name": "QUADRANT FUTURE TEK LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.933Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbab"
+    },
+    "ipo_symbol": "MWL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.934Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0JYY01011",
+    "isin": "INE0JYY01011",
+    "match_type": "exact",
+    "name": "MANGALAM WORLDWIDE LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.934Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbad"
+    },
+    "ipo_symbol": "SAGILITY",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.934Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0W2G01015",
+    "isin": "INE0W2G01015",
+    "match_type": "exact",
+    "name": "SAGILITY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.934Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbaf"
+    },
+    "ipo_symbol": "FINKURVE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.935Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE734I01027",
+    "isin": "INE734I01027",
+    "match_type": "exact",
+    "name": "FINKURVE FINANCIAL SERV L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.935Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbb1"
+    },
+    "ipo_symbol": "IGIL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.936Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0Q9301021",
+    "isin": "INE0Q9301021",
+    "match_type": "exact",
+    "name": "INTERNATIO GEMM INS (I) L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.936Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbb3"
+    },
+    "ipo_symbol": "KRISHIVAL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.936Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0GGO01015",
+    "isin": "INE0GGO01015",
+    "match_type": "exact",
+    "name": "KRISHIVAL FOODS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.936Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbb5"
+    },
+    "ipo_symbol": "OCCLLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.937Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0PK601023",
+    "isin": "INE0PK601023",
+    "match_type": "exact",
+    "name": "OCCL LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.937Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbb7"
+    },
+    "ipo_symbol": "INDIQUBE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.937Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE06ST01018",
+    "isin": "INE06ST01018",
+    "match_type": "exact",
+    "name": "INDIQUBE SPACES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.937Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbb9"
+    },
+    "ipo_symbol": "MOSCHIP",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.939Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE935B01025",
+    "isin": "INE935B01025",
+    "match_type": "exact",
+    "name": "MOSCHIP TECHNOLOGIES LTD",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.939Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbbb"
+    },
+    "ipo_symbol": "SANATHAN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.940Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0JPD01013",
+    "isin": "INE0JPD01013",
+    "match_type": "exact",
+    "name": "SANATHAN TEXTILES LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.940Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbbd"
+    },
+    "ipo_symbol": "STLNETWORK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.940Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1VXE01018",
+    "isin": "INE1VXE01018",
+    "match_type": "exact",
+    "name": "STL NETWORKS LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.940Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbbf"
+    },
+    "ipo_symbol": "URBANCO",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.941Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0CAZ01013",
+    "isin": "INE0CAZ01013",
+    "match_type": "exact",
+    "name": "URBAN COMPANY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.941Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbc1"
+    },
+    "ipo_symbol": "STALLION",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.942Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0RYC01010",
+    "isin": "INE0RYC01010",
+    "match_type": "exact",
+    "name": "STALLION IND FLUOROCHEM L",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.942Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbc3"
+    },
+    "ipo_symbol": "CARRARO",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.943Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0V7W01012",
+    "isin": "INE0V7W01012",
+    "match_type": "exact",
+    "name": "CARRARO INDIA LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.943Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbc5"
+    },
+    "ipo_symbol": "KPEL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.944Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE127T01021",
+    "isin": "INE127T01021",
+    "match_type": "exact",
+    "name": "K.P. ENERGY LIMITED",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.943Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbc7"
+    },
+    "ipo_symbol": "ADVANCE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.944Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1B0W01010",
+    "isin": "INE1B0W01010",
+    "match_type": "exact",
+    "name": "Advance Agrolife Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.944Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbc9"
+    },
+    "ipo_symbol": "ADVENTHTL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.945Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE28GN01010",
+    "isin": "INE28GN01010",
+    "match_type": "exact",
+    "name": "Advent Hotels International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.945Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbcb"
+    },
+    "ipo_symbol": "CANHLIFE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.945Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE01TY01017",
+    "isin": "INE01TY01017",
+    "match_type": "exact",
+    "name": "Canara HSBC Life Insurance Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.945Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbcd"
+    },
+    "ipo_symbol": "CRAMC",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.946Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE218I01013",
+    "isin": "INE218I01013",
+    "match_type": "exact",
+    "name": "Canara Robeco Asset Management Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbcf"
+    },
+    "ipo_symbol": "FABTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.946Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0HF201011",
+    "isin": "INE0HF201011",
+    "match_type": "exact",
+    "name": "Fabtech Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.946Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbd1"
+    },
+    "ipo_symbol": "GLOTTIS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0TQE01026",
+    "isin": "INE0TQE01026",
+    "match_type": "exact",
+    "name": "Glottis Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbd3"
+    },
+    "ipo_symbol": "GROWW",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0HOQ01053",
+    "isin": "INE0HOQ01053",
+    "match_type": "exact",
+    "name": "Billionbrains Garage Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbd5"
+    },
+    "ipo_symbol": "LENSKART",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE956O01016",
+    "isin": "INE956O01016",
+    "match_type": "exact",
+    "name": "Lenskart Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbd7"
+    },
+    "ipo_symbol": "LGEINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE324D01010",
+    "isin": "INE324D01010",
+    "match_type": "exact",
+    "name": "LG Electronics India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.947Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbd9"
+    },
+    "ipo_symbol": "MARKOLINES",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.949Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0FW001016",
+    "isin": "INE0FW001016",
+    "match_type": "exact",
+    "name": "Markolines Pavement Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.949Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbdb"
+    },
+    "ipo_symbol": "MIDWESTLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.949Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0XAD01024",
+    "isin": "INE0XAD01024",
+    "match_type": "exact",
+    "name": "Midwest Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.949Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbdd"
+    },
+    "ipo_symbol": "MONEYBOXX",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.949Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE296Q01012",
+    "isin": "INE296Q01012",
+    "match_type": "exact",
+    "name": "Moneyboxx Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.949Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbdf"
+    },
+    "ipo_symbol": "OMFREIGHT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.951Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1BZC01019",
+    "isin": "INE1BZC01019",
+    "match_type": "exact",
+    "name": "Om Freight Forwarders Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.951Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbe1"
+    },
+    "ipo_symbol": "ORKLAINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.951Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE16NZ01023",
+    "isin": "INE16NZ01023",
+    "match_type": "exact",
+    "name": "Orkla India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.951Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbe3"
+    },
+    "ipo_symbol": "PACEDIGITK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.952Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0S3G01027",
+    "isin": "INE0S3G01027",
+    "match_type": "exact",
+    "name": "Pace Digitek Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.952Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbe5"
+    },
+    "ipo_symbol": "PIRAMALFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.952Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE202B01038",
+    "isin": "INE202B01038",
+    "match_type": "exact",
+    "name": "Piramal Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.952Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbe7"
+    },
+    "ipo_symbol": "RUBICON",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.954Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE506V01022",
+    "isin": "INE506V01022",
+    "match_type": "exact",
+    "name": "Rubicon Research Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.954Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbe9"
+    },
+    "ipo_symbol": "SOLEX",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.955Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE880Y01017",
+    "isin": "INE880Y01017",
+    "match_type": "exact",
+    "name": "Solex Energy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.955Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbeb"
+    },
+    "ipo_symbol": "STUDDS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.955Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE00Q601028",
+    "isin": "INE00Q601028",
+    "match_type": "exact",
+    "name": "Studds Accessories Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.955Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbed"
+    },
+    "ipo_symbol": "TATACAP",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.956Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE976I01016",
+    "isin": "INE976I01016",
+    "match_type": "exact",
+    "name": "Tata Capital Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.956Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbef"
+    },
+    "ipo_symbol": "TMCV",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.957Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1TAE01010",
+    "isin": "INE1TAE01010",
+    "match_type": "exact",
+    "name": "Tata Motors Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.957Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbf1"
+    },
+    "ipo_symbol": "WEWORK",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.957Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE085001019",
+    "isin": "INE085001019",
+    "match_type": "exact",
+    "name": "WeWork India Management Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.957Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbf3"
+    },
+    "ipo_symbol": "AEQUS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.957Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE947N01017",
+    "isin": "INE947N01017",
+    "match_type": "exact",
+    "name": "Aequs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.957Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbf5"
+    },
+    "ipo_symbol": "BETA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.958Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE351Y01019",
+    "isin": "INE351Y01019",
+    "match_type": "exact",
+    "name": "Beta Drugs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.958Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbf7"
+    },
+    "ipo_symbol": "CAPILLARY",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.959Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0ILV01024",
+    "isin": "INE0ILV01024",
+    "match_type": "exact",
+    "name": "Capillary Technologies India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.959Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbf9"
+    },
+    "ipo_symbol": "CORONA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.959Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE02ZQ01018",
+    "isin": "INE02ZQ01018",
+    "match_type": "exact",
+    "name": "CORONA Remedies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.959Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbfb"
+    },
+    "ipo_symbol": "EXCELSOFT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.959Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE606N01019",
+    "isin": "INE606N01019",
+    "match_type": "exact",
+    "name": "Excelsoft Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.959Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbfd"
+    },
+    "ipo_symbol": "HCC-RE1",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.961Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE549A20026",
+    "isin": "INE549A20026",
+    "match_type": "exact",
+    "name": "Hindustan Construction-RE",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.961Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbbff"
+    },
+    "ipo_symbol": "JAYKAY",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.961Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE903A01025",
+    "isin": "INE903A01025",
+    "match_type": "exact",
+    "name": "Jaykay Enterprises Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.961Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc01"
+    },
+    "ipo_symbol": "KNAGRI",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.961Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0KNW01016",
+    "isin": "INE0KNW01016",
+    "match_type": "exact",
+    "name": "KN Agri Resources Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.961Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc03"
+    },
+    "ipo_symbol": "KSR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.963Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1SPP01016",
+    "isin": "INE1SPP01016",
+    "match_type": "exact",
+    "name": "KSR Footwear Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc05"
+    },
+    "ipo_symbol": "LEMERITE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.963Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0G1L01017",
+    "isin": "INE0G1L01017",
+    "match_type": "exact",
+    "name": "Le Merite Exports Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.963Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc07"
+    },
+    "ipo_symbol": "MEESHO",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.964Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0VDM01015",
+    "isin": "INE0VDM01015",
+    "match_type": "exact",
+    "name": "Meesho Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.964Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc09"
+    },
+    "ipo_symbol": "MODINATUR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.964Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE537F01012",
+    "isin": "INE537F01012",
+    "match_type": "exact",
+    "name": "Modi Naturals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.964Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc0b"
+    },
+    "ipo_symbol": "MODIS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.965Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0L0L01012",
+    "isin": "INE0L0L01012",
+    "match_type": "exact",
+    "name": "Modis Navnirman Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.965Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc0d"
+    },
+    "ipo_symbol": "PARKHOSPS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.965Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE119201023",
+    "isin": "INE119201023",
+    "match_type": "exact",
+    "name": "Park Medi World Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.965Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc0f"
+    },
+    "ipo_symbol": "PAUSHAKLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.965Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE111F01024",
+    "isin": "INE111F01024",
+    "match_type": "exact",
+    "name": "Paushak Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.965Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc11"
+    },
+    "ipo_symbol": "PINELABS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.966Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE15B701018",
+    "isin": "INE15B701018",
+    "match_type": "exact",
+    "name": "Pine Labs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc13"
+    },
+    "ipo_symbol": "PWL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.966Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0LP301011",
+    "isin": "INE0LP301011",
+    "match_type": "exact",
+    "name": "Physicswallah Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.966Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc15"
+    },
+    "ipo_symbol": "SHILCTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.967Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE024F01011",
+    "isin": "INE024F01011",
+    "match_type": "exact",
+    "name": "Shilchar Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.967Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc17"
+    },
+    "ipo_symbol": "SHIVAUM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.968Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE719F01016",
+    "isin": "INE719F01016",
+    "match_type": "exact",
+    "name": "Shiv Aum Steels Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.968Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc19"
+    },
+    "ipo_symbol": "SKFINDUS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.969Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE2J8701016",
+    "isin": "INE2J8701016",
+    "match_type": "exact",
+    "name": "SKF India (Industrial) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.969Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc1b"
+    },
+    "ipo_symbol": "SUDEEPPHRM",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.969Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0QPI01025",
+    "isin": "INE0QPI01025",
+    "match_type": "exact",
+    "name": "Sudeep Pharma Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.969Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc1d"
+    },
+    "ipo_symbol": "TENNIND",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.971Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE19RI01016",
+    "isin": "INE19RI01016",
+    "match_type": "exact",
+    "name": "Tenneco Clean Air India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.971Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc1f"
+    },
+    "ipo_symbol": "UTLSOLAR",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.971Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE12UR01024",
+    "isin": "INE12UR01024",
+    "match_type": "exact",
+    "name": "Fujiyama Power Systems Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.971Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc21"
+    },
+    "ipo_symbol": "VIDYAWIRES",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.971Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE14UN01029",
+    "isin": "INE14UN01029",
+    "match_type": "exact",
+    "name": "Vidya Wires Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.971Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc23"
+    },
+    "ipo_symbol": "WAKEFIT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.973Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0E7301029",
+    "isin": "INE0E7301029",
+    "match_type": "exact",
+    "name": "Wakefit Innovations Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.973Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc25"
+    },
+    "ipo_symbol": "AGARWALEYE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.974Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE943P01029",
+    "isin": "INE943P01029",
+    "match_type": "exact",
+    "name": "Dr. Agarwal's Health Care Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.974Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc27"
+    },
+    "ipo_symbol": "AHCL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.974Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0Y8W01017",
+    "isin": "INE0Y8W01017",
+    "match_type": "exact",
+    "name": "Anlon Healthcare Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.974Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc29"
+    },
+    "ipo_symbol": "ALGOQUANT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.975Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE598D01035",
+    "isin": "INE598D01035",
+    "match_type": "exact",
+    "name": "Algoquant Fintech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.975Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc2b"
+    },
+    "ipo_symbol": "AMANTA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.976Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE084K01015",
+    "isin": "INE084K01015",
+    "match_type": "exact",
+    "name": "Amanta Healthcare Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.976Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc2d"
+    },
+    "ipo_symbol": "BUILDPRO",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.977Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE24OJ01011",
+    "isin": "INE24OJ01011",
+    "match_type": "exact",
+    "name": "Shankara Buildpro Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc2f"
+    },
+    "ipo_symbol": "EMMVEE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.977Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1C6T01020",
+    "isin": "INE1C6T01020",
+    "match_type": "exact",
+    "name": "Emmvee Photovoltaic Power Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc31"
+    },
+    "ipo_symbol": "GKSL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.978Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0V0W01025",
+    "isin": "INE0V0W01025",
+    "match_type": "exact",
+    "name": "Gujarat Kidney And Super Speciality Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.978Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc33"
+    },
+    "ipo_symbol": "HALDER",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.980Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE115S01010",
+    "isin": "INE115S01010",
+    "match_type": "exact",
+    "name": "Halder Venture Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.980Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc35"
+    },
+    "ipo_symbol": "ICICIAMC",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.980Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE346A01027",
+    "isin": "INE346A01027",
+    "match_type": "exact",
+    "name": "ICICI Prudential Asset Management Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.980Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc37"
+    },
+    "ipo_symbol": "ITCHOTELS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.981Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE379A01028",
+    "isin": "INE379A01028",
+    "match_type": "exact",
+    "name": "ITC Hotels Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.981Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc39"
+    },
+    "ipo_symbol": "KRISHNADEF",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.982Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0J5601015",
+    "isin": "INE0J5601015",
+    "match_type": "exact",
+    "name": "Krishna Defence And Allied Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc3b"
+    },
+    "ipo_symbol": "KSHINTL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.982Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE987S01020",
+    "isin": "INE987S01020",
+    "match_type": "exact",
+    "name": "KSH International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc3d"
+    },
+    "ipo_symbol": "LOTUSDEV",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.983Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0V9Q01010",
+    "isin": "INE0V9Q01010",
+    "match_type": "exact",
+    "name": "Sri Lotus Developers and Realty Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.983Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc3f"
+    },
+    "ipo_symbol": "NEPHROPLUS",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.984Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE428V01029",
+    "isin": "INE428V01029",
+    "match_type": "exact",
+    "name": "Nephrocare Health Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.984Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc41"
+    },
+    "ipo_symbol": "ONESOURCE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.984Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE013P01021",
+    "isin": "INE013P01021",
+    "match_type": "exact",
+    "name": "Onesource Specialty Pharma Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.984Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc43"
+    },
+    "ipo_symbol": "RAYMONDREL",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.986Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE1SY401010",
+    "isin": "INE1SY401010",
+    "match_type": "exact",
+    "name": "Raymond Realty Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.986Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc45"
+    },
+    "ipo_symbol": "RUDRA",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.987Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE027T01023",
+    "isin": "INE027T01023",
+    "match_type": "exact",
+    "name": "Rudra Global Infra Products Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc47"
+    },
+    "ipo_symbol": "SILGO-RE1",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.987Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE01II20021",
+    "isin": "INE01II20021",
+    "match_type": "exact",
+    "name": "Silgo Retail Ltd-RE",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc49"
+    },
+    "ipo_symbol": "TRUALT",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.989Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE0MWH01014",
+    "isin": "INE0MWH01014",
+    "match_type": "exact",
+    "name": "TruAlt Bioenergy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.989Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecdd9038869899a32dbc4b"
+    },
+    "ipo_symbol": "VINEET-RE",
+    "created_at": {
+      "$date": "2026-04-25T15:28:16.990Z"
+    },
+    "exchange": "NSE",
+    "instrument_key": "NSE_EQ|INE505Y20010",
+    "isin": "INE505Y20010",
+    "match_type": "exact",
+    "name": "Vineet Laboratories Limited-RE",
+    "updated_at": {
+      "$date": "2026-04-25T15:28:16.990Z"
+    }
+  }
+]

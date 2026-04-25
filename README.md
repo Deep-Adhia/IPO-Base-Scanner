@@ -167,18 +167,28 @@ IPO-Base-Scanner/
 ├── streamlined-ipo-scanner.py      # Consolidation scanner (v2.1.0)
 ├── listing_day_breakout_scanner.py # Listing day scanner
 │
-├── ipo_signals.csv                 # All confirmed signals (active + closed)
-├── ipo_positions.csv               # Portfolio tracker (pnl, trailing stops, status)
-├── ipo_listing_data.csv            # Listing day metrics per symbol (High, Low, Vol)
-├── ipo_upstox_mapping.csv          # NSE symbol → Upstox instrument_key mapping
-├── recent_ipo_symbols.csv          # Discovery layer output (symbols + listing dates)
+├── ipo_signals.csv                 # [Legacy] All confirmed signals (active + closed)
+├── ipo_positions.csv               # [Legacy] Portfolio tracker (pnl, trailing stops, status)
+├── ipo_listing_data.csv            # [Legacy] Listing day metrics per symbol
+├── ipo_upstox_mapping.csv          # [Legacy] NSE symbol → Upstox instrument_key mapping
+├── recent_ipo_symbols.csv          # [Legacy] Discovery layer output
 │
-└── logs/                           # Structured daily JSONL logs (per scanner per day)
-    └── YYYY-MM-DD/
-        ├── consolidation.jsonl
-        ├── listing_day.jsonl
-        ├── watchlist.jsonl
-        └── positions.jsonl
+├── db.py                           # Core MongoDB persistence layer
+├── manage_db.py                    # Unified management entrypoint (test, backup, backfill, validate)
+├── test_db_connection.py           # Infrastructure health-check utility
+└── logs/                           # Structured daily JSONL logs
+```
+
+### 🗄️ Database Architecture (Phase 2)
+
+The system is currently in **Phase 2: Dual-Write Infrastructure**. 
+
+- **Primary Storage**: MongoDB Atlas (true UTC storage, deterministic IDs, structured schema).
+- **Secondary Storage**: Legacy CSVs (maintained for 3-day verification).
+- **Consistency**: All market events (signals/logs) are tied to candle-time, ensuring perfect idempotency.
+- **Fail-Safe**: If MongoDB is unreachable, the system automatically falls back to CSV-only mode.
+
+---
 ```
 
 > **No `ipo_rejections.csv`** — rejections are tracked in the daily JSONL logs, not a flat CSV, making them queryable by date, scanner, version, and reason.
@@ -228,7 +238,14 @@ python streamlined-ipo-scanner.py monthly_review
 ```
 
 ### 4. Automation Deployment (GitHub Actions)
-Add to GitHub Repository Secrets: `UPSTOX_ACCESS_TOKEN`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
+Add to GitHub Repository Secrets: 
+- `UPSTOX_ACCESS_TOKEN`
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+- `MONGO_URI` (Atlas connection string)
+
+**Infrastructure Health:**
+Every workflow run now includes a **"Check MongoDB Connection"** step. If this fails, check your Atlas IP Whitelist (allow `0.0.0.0/0` for GitHub runners).
 
 Primary workflows:
 - `ipo-scanner-v2.yml` — consolidation scanner (`scan`, `stop_loss_update`, weekly/monthly summaries)

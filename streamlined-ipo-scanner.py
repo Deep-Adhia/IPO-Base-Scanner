@@ -452,7 +452,7 @@ if not YFINANCE_AVAILABLE:
 
 import json
 
-def write_daily_log(scanner_name, symbol, action, details=None):
+def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None):
     """Write a structured daily log entry to logs/YYYY-MM-DD/scanner_name.log
     
     Creates daily log files per scanner in a date-organized folder structure.
@@ -480,6 +480,24 @@ def write_daily_log(scanner_name, symbol, action, details=None):
         
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, default=str) + "\n")
+
+        # MongoDB dual-write: use provided candle_timestamp if available, else fall back to now_ist
+        try:
+            from db import insert_log, db_metrics
+            effective_candle_ts = candle_timestamp if candle_timestamp is not None else now_ist
+            insert_log(
+                scanner=scanner_name, symbol=symbol, action=action,
+                candle_timestamp=effective_candle_ts,
+                details=details or {}, version=SCANNER_VERSION, source="live"
+            )
+        except Exception as db_e:
+            logger.error(f"[MongoDB] log write FAILED for {symbol}/{action}: {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
+
     except Exception as e:
         logger.debug(f"Could not write daily log: {e}")
 
@@ -1722,7 +1740,7 @@ def detect_live_patterns(symbols, listing_map):
                     date_str = str(date)
                 
                 # Create unique signal ID with type prefix
-                sid = f"CONSOL_{sym}_{date_str.replace('-', '')}_{w}_{j}_LIVE"
+                sid = f"CONSOL_{sym}_{date_str.replace('-', '')}"
                 if sid in existing: continue
                 
                 # Check if symbol already has active position (prevent duplicates)
@@ -1926,6 +1944,18 @@ def detect_live_patterns(symbols, listing_map):
                 else:
                     pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
                 
+                # MongoDB dual-write: signal
+                try:
+                    from db import upsert_signal, db_metrics
+                    upsert_signal(new_signal.copy())
+                except Exception as db_e:
+                    logger.error(f"[MongoDB] signal write FAILED for {sid}: {db_e}")
+                    try:
+                        from db import db_metrics
+                        db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+                    except Exception:
+                        pass
+                
                 try:
                     existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
                 except (FileNotFoundError, pd.errors.EmptyDataError):
@@ -1935,6 +1965,18 @@ def detect_live_patterns(symbols, listing_map):
                     positions_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
                 else:
                     pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+
+                # MongoDB dual-write: position
+                try:
+                    from db import upsert_position, db_metrics
+                    upsert_position(new_position.copy())
+                except Exception as db_e:
+                    logger.error(f"[MongoDB] position write FAILED for {sym}: {db_e}")
+                    try:
+                        from db import db_metrics
+                        db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+                    except Exception:
+                        pass
                 
                 # Send Telegram notification with next day trading instructions
                 if days_old > 1:
@@ -2219,7 +2261,7 @@ def detect_scan(symbols, listing_map):
                 date = entry_date
                 
                 # Create unique signal ID with type prefix
-                sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}_{j}"
+                sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}"
                 if sid in existing: continue
                 
                 # Check if symbol already has active position (prevent duplicates)
@@ -2356,11 +2398,20 @@ def detect_scan(symbols, listing_map):
     logger.info(f"📊 Scan complete: {signals_found} signals found from {symbols_processed} symbols processed")
 
     # LOG: Scan-level funnel summary — day-level dataset for tracking scanner activity
-    write_daily_log("scanner", "SYSTEM", "SCAN_COMPLETED", {
-        "symbols_processed": symbols_processed,
-        "signals_found": signals_found,
-        "version": SCANNER_VERSION
-    })
+    try:
+        from db import db_metrics
+        db_stats = {
+            "symbols_processed": symbols_processed,
+            "signals_found": signals_found,
+            "db_signals": db_metrics.get("signals_generated", 0),
+            "db_logs": db_metrics.get("logs_written", 0),
+            "db_failures": db_metrics.get("failures", 0),
+            "version": SCANNER_VERSION
+        }
+    except Exception:
+        db_stats = {"symbols_processed": symbols_processed, "signals_found": signals_found}
+
+    write_daily_log("scanner", "SYSTEM", "SCAN_COMPLETED", db_stats)
 
     # Send scan summary to Telegram
     summary_msg = f"""📊 <b>IPO Scanner Summary</b>
@@ -2369,6 +2420,7 @@ def detect_scan(symbols, listing_map):
 • Symbols Processed: {symbols_processed}
 • New Signals Found: {signals_found}
 • Scan Date: {datetime.today().strftime('%Y-%m-%d %H:%M')}
+• DB Status: {'✅ OK' if db_stats.get('db_failures', 0) == 0 else f"❌ {db_stats.get('db_failures')} FAILURES"}
 
 {'🎯 New signals detected! Check details above.' if signals_found > 0 else '✅ No new signals today - Market conditions normal.'}
 

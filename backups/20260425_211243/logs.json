@@ -1,0 +1,6174 @@
+[
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536603c"
+    },
+    "log_id": "c6d909f307765cbe8d8ee0b3af0b6b85b28727e5d1fb9c9e06903d4a4eccd4cf",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.554Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T05:07:30Z"
+    },
+    "symbol": "ENRIN",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 2985.0,
+      "stop_loss": 2746.2,
+      "target": 3269.0,
+      "listing_high": 2982.0,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.554Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536603d"
+    },
+    "log_id": "a0ee1ade8f17f5b24670a1c641619948e090fda567390bab89034c7efedc0c4d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.574Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T05:12:36Z"
+    },
+    "symbol": "SHADOWFAX",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 120.04,
+      "stop_loss": 110.44,
+      "target": 130.71,
+      "listing_high": 119.67,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.574Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536603e"
+    },
+    "log_id": "b32152a4b7fbc2059990e3ec5b0f9c1eb5ac47fd24ae177a93d7aaecdda05ee3",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.575Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T06:38:22Z"
+    },
+    "symbol": "JSLL",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 603.7,
+      "stop_loss": 555.4,
+      "target": 653.69,
+      "listing_high": 576.95,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.575Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536603f"
+    },
+    "log_id": "da0acb48081efc258e7bc5651fbccd9a0d158fad39c1a19b7245742f738da62e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.575Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T07:15:16Z"
+    },
+    "symbol": "EBGNG",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 366.5,
+      "stop_loss": 337.18,
+      "target": 400.35,
+      "listing_high": 359.4,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.575Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366040"
+    },
+    "log_id": "7caa6b831f716225b39f082053c2b86a861add5c3342eda8c727ec5575940399",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.575Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T07:19:20Z"
+    },
+    "symbol": "ADVAIT",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 1610.0,
+      "stop_loss": 1481.2,
+      "target": 1739.08,
+      "listing_high": 1538.9,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.575Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366041"
+    },
+    "log_id": "ee059a0f6475d77a0d59d8e8483330a9efc13d694180a1019cfee1ec1ed27b76",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.577Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T08:28:14Z"
+    },
+    "symbol": "MWL",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 269.05,
+      "stop_loss": 247.53,
+      "target": 296.75,
+      "listing_high": 265.0,
+      "volume_caution": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.577Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366042"
+    },
+    "log_id": "aca72420af8928a34c189b2c6202bbcf7238cc67f4bb0209b921e534d3b8c29c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.577Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-02T10:09:07Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 912.3,
+      "stop_loss": 839.32,
+      "target": 997.8,
+      "listing_high": 898.05,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.577Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366043"
+    },
+    "log_id": "520da533139719715ff74d61426c67e01915c765ae8bcf82eb7c8c930d7b7300",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.577Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-03T09:27:04Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.577Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366045"
+    },
+    "log_id": "f5b320bdc62198be3e506362812da36813988b7845b37c43e5f2ffbd1b7ae334",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.579Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-03T09:27:05Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.579Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366049"
+    },
+    "log_id": "4eeba4b0021287897db77ec87b876f1e50f97b18bbc3ad1e4b5f2c849cc398ab",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.581Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-03T09:36:06Z"
+    },
+    "symbol": "AEGISVOPAK",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.581Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536604c"
+    },
+    "log_id": "d80d2535304a82ef0d568a2fe952e918cdce75e4128b579ac97051c34e80701b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.582Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-04T09:40:21Z"
+    },
+    "symbol": "AEGISVOPAK",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.582Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536604f"
+    },
+    "log_id": "ac5bf4d20b5c11b39dfc5acefd0f10bbbd8edc736cbc04475d9ec923d3e02e6b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.583Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-04T09:40:21Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.583Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366051"
+    },
+    "log_id": "c476926c8783e60ecd104b8c1a58585bc8d342b43d38eb2a2217730590a76780",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.584Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-04T09:40:22Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.584Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366055"
+    },
+    "log_id": "195111da1da0a63ec06c2261bdb89e73976dc22028fce5ed2fd27f4aca52d389",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.586Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-05T09:35:57Z"
+    },
+    "symbol": "AEGISVOPAK",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.586Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366058"
+    },
+    "log_id": "6991b98754eda5a55f9605d5c7d58f6b6c33489fe71960c61140af9631986afa",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.589Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-05T09:38:08Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366059"
+    },
+    "log_id": "5b158bb867c1d5edf8620b430471f04f16c0b2e4d7d5692c43a55687a8f257fd",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.589Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-05T09:38:09Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.589Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536605b"
+    },
+    "log_id": "b95c1b675f43251416b7fff75aa4e4709cd06cee82940a65474c77af0f92d3eb",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.590Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-06T09:25:54Z"
+    },
+    "symbol": "AEGISVOPAK",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.590Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536605d"
+    },
+    "log_id": "15a29eab84ef22b68b4d74ee7f017a018f2327135f6e829f1f70c281f1504755",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.591Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-09T05:15:03Z"
+    },
+    "symbol": "RNBDENIMS",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 132.19,
+      "stop_loss": 121.61,
+      "target": 153.62,
+      "listing_high": 128.98,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.591Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536605e"
+    },
+    "log_id": "e03ac95bdb3ea197e69334a4e7d346dbbf493630e556d9620aaf1b88cbd49c7a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.593Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-10T09:44:30Z"
+    },
+    "symbol": "KSR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.593Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366065"
+    },
+    "log_id": "a9bf827f4448e03e98d4ae69e590e762d2bb293e9dcad7574fe36ddc409a68d9",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.596Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-11T09:39:26Z"
+    },
+    "symbol": "KSR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.596Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536606c"
+    },
+    "log_id": "e3be621fb5fca8d169cafa295ffb4d6acf82c494c3104ed8fadd48a66ae3abe7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.600Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-12T09:39:57Z"
+    },
+    "symbol": "KSR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.600Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366073"
+    },
+    "log_id": "fc31e5c45694f4a10a6b5594f7e6fdeb3696711996250db5f59d7d72d17c269d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.602Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-12T07:56:42Z"
+    },
+    "symbol": "VIDYAWIRES",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 58.73,
+      "stop_loss": 54.03,
+      "target": 67.18,
+      "listing_high": 58.45,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.602Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366074"
+    },
+    "log_id": "d59a82f1fcd75842b5d63cb504956f494293a6d6e2cf4b4db72af278bd82d341",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.604Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-13T09:30:39Z"
+    },
+    "symbol": "KSR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.604Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536607b"
+    },
+    "log_id": "2ed5365df227539382268099b21556cfec0596780c365077de664f3293e65181",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.607Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-13T09:01:40Z"
+    },
+    "symbol": "AMAGI",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 364.7,
+      "stop_loss": 335.52,
+      "target": 393.91,
+      "listing_high": 356.95,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.607Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536607c"
+    },
+    "log_id": "361b3100b63619de7967eced6797a7e4cfa5e32fb34448d3313897a8907bc17a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.607Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-13T09:55:56Z"
+    },
+    "symbol": "GUJTHEM",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 278.0,
+      "stop_loss": 255.76,
+      "target": 300.28,
+      "listing_high": 269.85,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.607Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536607d"
+    },
+    "log_id": "0f24c55dd7eb598281a47927078a9e3aa804cb745079baee3799f220e932d44a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.609Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-16T07:04:29Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 418.15,
+      "stop_loss": 384.7,
+      "target": 460.85,
+      "listing_high": 412.9,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.609Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536607e"
+    },
+    "log_id": "485ff6bb17ddd282e913bb03a2fbc5c27981c2728639992d1798b241a51d6b09",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.609Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-17T09:53:53Z"
+    },
+    "symbol": "KSR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.609Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366081"
+    },
+    "log_id": "c36e77b54ddd9db6587770d529361809ae076ddb95625019ebaded3b4d24f00c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.612Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-17T09:07:32Z"
+    },
+    "symbol": "GCSL",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 339.0,
+      "stop_loss": 311.88,
+      "target": 372.52,
+      "listing_high": 324.7,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.612Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366082"
+    },
+    "log_id": "7bdddcb33162f8e3656ab58b6b5687932dd86cdb60210252c336e478a4770a19",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.612Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-18T05:23:51Z"
+    },
+    "symbol": "OMNI",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 226.18,
+      "stop_loss": 208.09,
+      "target": 248.88,
+      "listing_high": 224.7,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.612Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366083"
+    },
+    "log_id": "700cab468b5000fc0ecfce36585551af4e7ce1ae6a6e5c9203f6c2e2e69e1e30",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.613Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-18T05:45:29Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 227.8,
+      "stop_loss": 209.58,
+      "target": 248.51,
+      "listing_high": 227.71,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.613Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366084"
+    },
+    "log_id": "02a386778571a9a6e0b30ed3fc18f83b4afadd56ccbd2d17b8906dc4f9bfcea0",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.613Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-18T05:45:55Z"
+    },
+    "symbol": "GAUDIUMIVF",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 87.9,
+      "stop_loss": 80.87,
+      "target": 95.55,
+      "listing_high": 87.15,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.613Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366085"
+    },
+    "log_id": "9a5667950211cc5ed288a8358fca15e793ddf8bb98b0779b8cf138911d916560",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.615Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-19T09:37:55Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.99,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.615Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366086"
+    },
+    "log_id": "6e10d3ffc1e0cc22ef5d4aa803cd5faa06ff6ae9e2cdca5153e15c927e8a2628",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.615Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-20T09:44:37Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.615Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366087"
+    },
+    "log_id": "5f619b511603d78b0bd6d565a555adaa32e9cacbd0618244a0dadbd2379065a7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.615Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-20T05:26:12Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 369.05,
+      "stop_loss": 339.53,
+      "target": 421.05,
+      "listing_high": 368.0,
+      "volume_caution": true
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.615Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366088"
+    },
+    "log_id": "c1353764e362563662decec3b6ce53e04d0cdd4e722f5491b192194601ea451d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.616Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-24T09:53:15Z"
+    },
+    "symbol": "SHIVAUM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.616Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366089"
+    },
+    "log_id": "dea574a2f08968143a079c28f673b4c1ea3a49bc06f4c55798ffc1af9de3ee00",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.617Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-24T09:56:31Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.617Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536608a"
+    },
+    "log_id": "d29ee7fa983269b1c96b600958f30a48eb58b311ce4bf7f716762f0dc0d3dd5f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.617Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-25T09:40:36Z"
+    },
+    "symbol": "SHIVAUM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.617Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536608b"
+    },
+    "log_id": "86a850c48b32ee5cccb2cd471bfedc3278ab12c1bc546c67ceaccfe1141a4d35",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.618Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-25T09:59:28Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.618Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536608c"
+    },
+    "log_id": "61854202ea863fd067ccf23ced55d99c0365e8db89fc09129008a90720154837",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.618Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-25T10:02:36Z"
+    },
+    "symbol": "SGFIN",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 1.14,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.618Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536608d"
+    },
+    "log_id": "f61056fa906e3ad28a40bf6c35b5f09a24b55f42d0a642e6881b74817bc92b5d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.619Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-26T09:48:55Z"
+    },
+    "symbol": "SHIVAUM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.619Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536608e"
+    },
+    "log_id": "962688ddaee15c96cd311a6d06fde506962fb9bcbb48ee37977cfcf2fa709a43",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.619Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-26T09:58:39Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.619Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536608f"
+    },
+    "log_id": "b140a87a636cb3bf106b955089a64cbba39fc5bd7a2af5e2cb2e3fa1a3200d4a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.620Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-26T09:58:40Z"
+    },
+    "symbol": "SGFIN",
+    "action": "SIGNAL_GENERATED",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "grade": "C",
+      "entry": 430.0,
+      "stop": 378.4,
+      "target": 545.2,
+      "score": 1,
+      "breakout_level": 424.0,
+      "consolidation_window": 40,
+      "price_source": "\ud83d\udcc8 Yfinance Live Price"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.620Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366090"
+    },
+    "log_id": "3ab5e5f39671bb6ca5ae61e662fa68dfc75f4bffeb284436116d4e53dd9b0ac4",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.621Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-27T09:41:59Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.621Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366091"
+    },
+    "log_id": "37d8ce672d483b1777a90220c2ac5f95544b44938eaa0f7453b68f3115ceed00",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.621Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-27T09:55:57Z"
+    },
+    "symbol": "SHIVAUM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.621Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366092"
+    },
+    "log_id": "8ff41aaced1124eb6ea3ac14e24f69ec7e994f7f18338caab8782dc1aa3b825d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.622Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-03-31T09:50:00Z"
+    },
+    "symbol": "WAAREERTL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.622Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366093"
+    },
+    "log_id": "7faed4ac738246927c15e53fe1efd039b78001da44416f4e77bc63ace792b546",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.622Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-08T09:54:02Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.622Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366094"
+    },
+    "log_id": "0dfbbffd6c559c8a0ed781a3725193d9718381d4091beffc31572c925ef7422f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.622Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-08T09:57:16Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "cooldown",
+      "gap_days": 0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.622Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366095"
+    },
+    "log_id": "3895289459216682ee118f0ed8ef614d00a87ed07c3abfa9d833e5d795e87afc",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.623Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-08T09:57:16Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.623Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366096"
+    },
+    "log_id": "29360acfa1cbd52d55dfe2d1fbedf42b0ba9a3c62e46b327c305a30b7b6312d6",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.623Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-09T10:06:08Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "cooldown",
+      "gap_days": 1
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.623Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366097"
+    },
+    "log_id": "9bfaf1d4b82b53e9edd2e5b9192172e69e1d9aa59b7aa68609e24af5bcf9cca5",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.625Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-09T10:06:08Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.625Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366098"
+    },
+    "log_id": "83d8960c242d63f21a3bb5a5f796b87a77fc3092c428500ca09bec5d7a4b5f20",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.625Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-09T10:11:16Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.625Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366099"
+    },
+    "log_id": "15737bce1e041f205699197f301991926571e485a9576a716fc7b5959684918e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.625Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-09T10:20:33Z"
+    },
+    "symbol": "ARSSBL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.625Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536609a"
+    },
+    "log_id": "ba4cfd3b364a4f6d2b4d7025c8b9bf6ac2a60f1f6814bf3558b08c950591dd60",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.627Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-09T05:38:16Z"
+    },
+    "symbol": "AEPL",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 19.1,
+      "stop_loss": 17.57,
+      "target": 21.12,
+      "listing_high": 18.98,
+      "volume_caution": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.627Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536609b"
+    },
+    "log_id": "2428347e24c75bcce6f873e4385ec4cdcc79c99f5adce1c1ff3c62c5069a52ee",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.627Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-10T09:58:49Z"
+    },
+    "symbol": "ARSSBL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.627Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536609c"
+    },
+    "log_id": "247fbc5a385519e035c3a68f2762370efc29c6d603ed6ee32f8e73f8824542f8",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.628Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-10T10:07:03Z"
+    },
+    "symbol": "SHILCTECH",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.628Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536609d"
+    },
+    "log_id": "b7eee8b584439f83244dd5a5bfb2e67d40fb4b137d13459f0ac68d740ef4a03f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.628Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-10T10:08:07Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.628Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536609e"
+    },
+    "log_id": "ae3e71e5c29ff5a49b09bb211b94ee302aaebb0403c9da36a622bf98f722fa22",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.628Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-10T10:11:14Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "cooldown",
+      "gap_days": 2
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.628Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536609f"
+    },
+    "log_id": "a6c45dbe2750cbd807813c13c90998064397dfb30adc05ac340ed8cd2da04b85",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.630Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-10T10:11:15Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.630Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a0"
+    },
+    "log_id": "ca618a4793ae0faaea4405f3f55bbb3bc21aebb7d654e5a6a19a816b5eb2863b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.630Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:04:34Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.630Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a1"
+    },
+    "log_id": "588b5387723b64a381d27042a2ff512402bc93855714e00f09398bbe3af7af8e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.630Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:14:48Z"
+    },
+    "symbol": "SAATVIKGL",
+    "action": "SIGNAL_GENERATED",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "grade": "C",
+      "entry": 464.0,
+      "stop": 408.32,
+      "target": 589.58,
+      "score": 1,
+      "breakout_level": 446.9,
+      "consolidation_window": 80,
+      "price_source": "\ud83d\ude80 Upstox Live Price"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.630Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a2"
+    },
+    "log_id": "8c152bc004af57fc001b8befd1a278ab1d876a2738f80f9bfbc37ad502d2b35d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.631Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:14:50Z"
+    },
+    "symbol": "SCODATUBES",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.631Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a3"
+    },
+    "log_id": "a2bd0b29888b10db6e9fa0a8bf84a2fb0f45a6b417a2e0630ecddf3298b3bd98",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.631Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:17:53Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "cooldown",
+      "gap_days": 6
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.631Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a4"
+    },
+    "log_id": "5b15f3f2713565db8ed90ebc7677bda804a9e3c282501ec77ea4cbaba6ffe48c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.632Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:17:53Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.632Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a5"
+    },
+    "log_id": "db1a96174c07a18b153ff941cf2d45942772c3b4cc1210ca4bd4d995c4a094f1",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.632Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:23:02Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.632Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a6"
+    },
+    "log_id": "66c741d33eb6c47ef397cd7766bbc65cd05ec6eb2f56746f76736a7c3e2721c4",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:26:09Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a7"
+    },
+    "log_id": "64dbdf0618f0f4201d69bf19f7566aa9d66c9f9260aa0c78e45b45c06d0bfa51",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:33:21Z"
+    },
+    "symbol": "SHILCTECH",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a8"
+    },
+    "log_id": "7823335655005375f9ebcc77436634822133dc297a53d84b7e495427689228e3",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-14T10:33:23Z"
+    },
+    "symbol": "ARSSBL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660a9"
+    },
+    "log_id": "f93a86f27b09d82f020a4b99496744a2eeaa1e0b697e24037d131514ff58b5b5",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:03:52Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "failed_follow_through",
+      "close_holds": false,
+      "volume_confirms": false
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.633Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660aa"
+    },
+    "log_id": "5e6a6784a7a97348f53a32bcfc45a1151ee06aaf8e60db803b06baa6d95237ab",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.635Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:16:06Z"
+    },
+    "symbol": "ARSSBL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.635Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ab"
+    },
+    "log_id": "ef7e415ac6116d60b50dbdcff8f787e6d64c44a43e1b59eb7b433ee4239cce45",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.635Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:16:08Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "poor_risk_reward",
+      "ratio": 0.83,
+      "min_required": 1.3
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.635Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ac"
+    },
+    "log_id": "bf11994e0bb153800a8541648566efbc8929c8657ea41f1348b0665bfea5f04e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.636Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:17:12Z"
+    },
+    "symbol": "SHILCTECH",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.636Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ad"
+    },
+    "log_id": "2040b7881bf9e155274b39bb06999da9550b9d490c8c76bd17386e3eca8afd0b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.637Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:17:12Z"
+    },
+    "symbol": "SCODATUBES",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.637Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ae"
+    },
+    "log_id": "ebd90df17740b59bcd9f975a7ac7cc8d7729b5ca81d637ce7cdcd83405453f90",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.637Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:29:27Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "cooldown",
+      "gap_days": 6
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.637Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660af"
+    },
+    "log_id": "59dea1894095f598aa909580458211fbdb73b18e39694d959ab37acd1873eacd",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:29:27Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b0"
+    },
+    "log_id": "692cab9dabe5fcf06086afd82568da1f74b5fc35f8973eef7dc08a9ce1d1c071",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-15T10:34:35Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "reason": "low_grade",
+      "grade": "D",
+      "min_required": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b1"
+    },
+    "log_id": "096546ddeadbebccbe2789e0ec94d0cc1b124a3108b294460e283a29ad40d1e3",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:12:55Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "KNAGRI",
+      "stage": "pre_breakout",
+      "rejection_reason": "poor_risk_reward",
+      "key_metric": {
+        "actual": 0.95,
+        "required": 1.3
+      },
+      "ipo_age": 128,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "poor_risk_reward",
+        "ratio": 0.95,
+        "min_required": 1.3
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b2"
+    },
+    "log_id": "33938ac384e4463ff6963f2fc1a49c63e9a5bd15ee21bea38086d5b0d530352f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:18:05Z"
+    },
+    "symbol": "SCODATUBES",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SCODATUBES",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 316,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.638Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b3"
+    },
+    "log_id": "00faf0e3889813aff1983c5621edb3436695c7dbd8a09607b3cfdb1099c2f599",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.639Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:19:06Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ANTHEM",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 269,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.639Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b4"
+    },
+    "log_id": "c26ad807d1ac031e67db0dd2ee7c80d4c3e1ab21d48aa7ce2249a94a45e51f58",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.640Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:23:16Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MODINATUR",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 126,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.640Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b5"
+    },
+    "log_id": "1e10019eb0adf9849606b26701e8d9a6e2e1e5b1159cc6ec139a8b323f9799ad",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.640Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:30:25Z"
+    },
+    "symbol": "SHILCTECH",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SHILCTECH",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 143,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.640Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b6"
+    },
+    "log_id": "66c73dd8acbf20709ddbf1f236efc2b2edb0b6c0b63a1d4ea8f90dfba7d1140e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:31:27Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SAMBHV",
+      "stage": "pre_breakout",
+      "rejection_reason": "cooldown",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 288,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "cooldown",
+        "gap_days": 8
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b7"
+    },
+    "log_id": "96e7ce5ca9657041d87af8a3964524d5d1b2518f2cc6f908f5071362377bd9b4",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:31:27Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SAMBHV",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 288,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b8"
+    },
+    "log_id": "d6bc0ad173ae845be421588d2394b6521b79cbc62818d96d5fa9500f08ece86c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-16T13:42:40Z"
+    },
+    "symbol": "ARSSBL",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ARSSBL",
+      "stage": "pre_breakout",
+      "rejection_reason": "poor_risk_reward",
+      "key_metric": {
+        "actual": 0.83,
+        "required": 1.3
+      },
+      "ipo_age": 198,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "poor_risk_reward",
+        "ratio": 0.83,
+        "min_required": 1.3
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660b9"
+    },
+    "log_id": "b2f4fd5a23c1e6d0f0407e1cfa244d7f4745ea7e73f6ab7323118a4e73a24b4d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:06:43Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "poor_risk_reward",
+      "key_metric": {
+        "actual": 1.21,
+        "required": 1.3
+      },
+      "ipo_age": 128,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "poor_risk_reward",
+        "ratio": 1.21,
+        "min_required": 1.3
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.641Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ba"
+    },
+    "log_id": "f5558fe7d2c9e8eb29061a180a0c557453e1bfaff30cc27ad61515320bc33b8c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.643Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:07:49Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MODINATUR",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 127,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.643Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660bb"
+    },
+    "log_id": "bcfd7a313ed08d4f25de789d46b1b8c6f7e36bd71959ecfcd9178a6e8dac6eb7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.643Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:11:55Z"
+    },
+    "symbol": "KNAGRI",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "KNAGRI",
+      "stage": "pre_breakout",
+      "rejection_reason": "poor_risk_reward",
+      "key_metric": {
+        "actual": 1.11,
+        "required": 1.3
+      },
+      "ipo_age": 129,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "poor_risk_reward",
+        "ratio": 1.11,
+        "min_required": 1.3
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.643Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660bc"
+    },
+    "log_id": "a523cff4882b705ddc70e2896f32d2f30b2e0b64059ba2af57a184ad944d2e1c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.644Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:20:08Z"
+    },
+    "symbol": "SHILCTECH",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SHILCTECH",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 144,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.644Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660bd"
+    },
+    "log_id": "5a0a2d1c267140ede37485957123398d7895155422d363905c5dbd354b1d8e2f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.644Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:22:14Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SAMBHV",
+      "stage": "pre_breakout",
+      "rejection_reason": "cooldown",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 289,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "cooldown",
+        "gap_days": 9
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.644Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660be"
+    },
+    "log_id": "dfe3a14be4981849524f1d2245f30eba830ac81bb645fe88f009ee15bf2d3655",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:22:15Z"
+    },
+    "symbol": "SAMBHV",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SAMBHV",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 289,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660bf"
+    },
+    "log_id": "264eae87a1df157783c4608ecd2b05252f19d4f49d188e0f2a9242510aefb1b7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:29:24Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "SIGNAL_GENERATED",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "grade": "C",
+      "entry": 25.15,
+      "stop": 22.13,
+      "target": 35.0,
+      "score": 1,
+      "breakout_level": 24.5,
+      "consolidation_window": 80,
+      "price_source": "\ud83d\ude80 Upstox Live Price",
+      "entry_vs_breakout_pct": 2.65,
+      "post_confirm_move_pct": 2.65,
+      "held_above_breakout_after_confirm": true,
+      "signal_strength_score": 3.43,
+      "tier_weight": 1.0,
+      "volume_score": 0.43,
+      "base_score": 1.0,
+      "momentum_score": 1.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c0"
+    },
+    "log_id": "61be14df3dd7b59c3d4a5f4b40a38a2a5476ad7941725bfbbc2725f007f1d09d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:30:26Z"
+    },
+    "symbol": "SCODATUBES",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SCODATUBES",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 317,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c1"
+    },
+    "log_id": "ce783afd2d628bd5f665ae8a4def27de6e319b841904d2f13514f2d50d1fb9ec",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:32:29Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ANTHEM",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 270,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.645Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c2"
+    },
+    "log_id": "7a9b508ee08bc091ea8adc3d3e708eab5d2fa022ad3a03116db381336f1027c0",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.646Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:39Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 1106.05,
+      "entry_price": 912.3,
+      "pnl_pct": 21.24,
+      "trailing_stop": 995.44,
+      "days_held": 46,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 22.53,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c3"
+    },
+    "log_id": "c20e2a6d4faead6715748bc473a73e4c3b357f026212b037e6d064c29767e610",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.646Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:39Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 839.32,
+      "new_stop": 995.44,
+      "current_price": 1106.05,
+      "pnl_pct": 21.24,
+      "days_held": 46,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c4"
+    },
+    "log_id": "387d3a96520ef0ec0f6cff77ad24eea20deb746badc16319317be3a3f63fbeed",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.646Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:41Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 444.05,
+      "entry_price": 418.15,
+      "pnl_pct": 6.19,
+      "trailing_stop": 399.65,
+      "days_held": 32,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 7.01,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.646Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c5"
+    },
+    "log_id": "c4dae3a8b7a7c7f53b0f4413502d073d4b8f501b44409dccebbc210b2ca97d42",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:41Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 384.7,
+      "new_stop": 399.65,
+      "current_price": 444.05,
+      "pnl_pct": 6.19,
+      "days_held": 32,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c6"
+    },
+    "log_id": "f73bcd81426ec41733ffe306ecf36663575df7cc042f2b706a5a6a6ad699f886",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:42Z"
+    },
+    "symbol": "OMNI",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 335.65,
+      "entry_price": 226.18,
+      "pnl_pct": 48.4,
+      "trailing_stop": 302.08,
+      "days_held": 30,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 51.95,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c7"
+    },
+    "log_id": "dd9aecf7a7ee89f46205c40a425b418009da5f6a5310c2b6c8fb830c9aed72c2",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:42Z"
+    },
+    "symbol": "OMNI",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 208.09,
+      "new_stop": 302.08,
+      "current_price": 335.65,
+      "pnl_pct": 48.4,
+      "days_held": 30,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c8"
+    },
+    "log_id": "980c962723ae468dfc63f922dd93eceee598f22532369f78600717ddd797b271",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:44Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 265.54,
+      "entry_price": 227.8,
+      "pnl_pct": 16.57,
+      "trailing_stop": 238.99,
+      "days_held": 30,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 16.57,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.647Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660c9"
+    },
+    "log_id": "be329b848ee3f16ed3bb092f93408690945ee85785962d71855216d874286a78",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:44Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 209.58,
+      "new_stop": 238.99,
+      "current_price": 265.54,
+      "pnl_pct": 16.57,
+      "days_held": 30,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ca"
+    },
+    "log_id": "a954f927095abe5112f98b715515ff039256ac0c4f6088718f8c32e8a2a717ad",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:45Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 360.9,
+      "entry_price": 369.05,
+      "pnl_pct": -2.21,
+      "trailing_stop": 339.53,
+      "days_held": 28,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 0.0,
+      "max_drawdown_pct": -4.93
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660cb"
+    },
+    "log_id": "9752df8bd74010a27e9f8f0692f743c019416111f836cf857b57896ccedef0cc",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:45Z"
+    },
+    "symbol": "SGFIN",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 513.65,
+      "entry_price": 430.0,
+      "pnl_pct": 19.45,
+      "trailing_stop": 452.01,
+      "days_held": 23,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 20.16,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660cc"
+    },
+    "log_id": "4d68c44ddded7e6b38f9b1b7542bcabcef234117a6f595e549f8bb656c5d7cb2",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:45Z"
+    },
+    "symbol": "SGFIN",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 378.4,
+      "new_stop": 452.01,
+      "current_price": 513.65,
+      "pnl_pct": 19.45,
+      "days_held": 23,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.649Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660cd"
+    },
+    "log_id": "d98975c75d9f46f906be5c0bb8c29e742d2de91146340f5b3509c8a3c939f823",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.651Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:47Z"
+    },
+    "symbol": "AEPL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 19.0,
+      "entry_price": 19.1,
+      "pnl_pct": -0.52,
+      "trailing_stop": 17.57,
+      "days_held": 8,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.73,
+      "max_drawdown_pct": -0.73
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.651Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ce"
+    },
+    "log_id": "357332cf882e82b196080e0f0dfe9eef7bc6b68ebd569a95c1acca01f00d659d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.651Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:47Z"
+    },
+    "symbol": "SAATVIKGL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 471.15,
+      "entry_price": 464.0,
+      "pnl_pct": 1.54,
+      "trailing_stop": 408.32,
+      "days_held": 4,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 1.81,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.651Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660cf"
+    },
+    "log_id": "0aec3d79de9bf6a2676bddc7e2aa3e545dec8d3e3d7407e0a73d184150a916ca",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.651Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-17T10:33:48Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 25.15,
+      "entry_price": 25.15,
+      "pnl_pct": 0.0,
+      "trailing_stop": 22.13,
+      "days_held": 1,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 0.0,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.651Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d0"
+    },
+    "log_id": "423afa01ee195e587606d49bb7ed7c4ffee59238e69487ff5a5c92c73b68d86c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.652Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:20Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 1185.45,
+      "entry_price": 912.3,
+      "pnl_pct": 29.94,
+      "trailing_stop": 1066.9,
+      "days_held": 49,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 29.94,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.652Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d1"
+    },
+    "log_id": "801c42a93996d2927aeee564a3a629a1280ea3fb6877e23645156b7a63da950b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.652Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:20Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 839.32,
+      "new_stop": 1066.9,
+      "current_price": 1185.45,
+      "pnl_pct": 29.94,
+      "days_held": 49,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.652Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d2"
+    },
+    "log_id": "8d16086812627b1d39fd437aafa2277ed08f8cb0042f3622b61dd40ab4b3fc3a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.652Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:22Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 450.25,
+      "entry_price": 418.15,
+      "pnl_pct": 7.68,
+      "trailing_stop": 405.23,
+      "days_held": 35,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 7.68,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.652Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d3"
+    },
+    "log_id": "f962309b3ac742a06f2cdd9425326f571888a5b8119f8f2bcaddeca0b799b6be",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.653Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:22Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 384.7,
+      "new_stop": 405.23,
+      "current_price": 450.25,
+      "pnl_pct": 7.68,
+      "days_held": 35,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.653Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d4"
+    },
+    "log_id": "9e91596b3626cdb9f71d447d2505212a4a0843c51a628404d900ddcae7cc29e7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.653Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:22Z"
+    },
+    "symbol": "OMNI",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 343.85,
+      "entry_price": 226.18,
+      "pnl_pct": 52.02,
+      "trailing_stop": 309.47,
+      "days_held": 33,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 52.02,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.653Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d5"
+    },
+    "log_id": "61403e2d4b38aedd91321700bd589255d7db8e13093ee6eed69e0d5b508b494b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.654Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:22Z"
+    },
+    "symbol": "OMNI",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 208.09,
+      "new_stop": 309.47,
+      "current_price": 343.85,
+      "pnl_pct": 52.02,
+      "days_held": 33,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.654Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d6"
+    },
+    "log_id": "8f0ba40732799de6e20fdd8ea3a37c88ce2b1de6afe3586269d586e6ccb1b986",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.654Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:23Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 261.19,
+      "entry_price": 227.8,
+      "pnl_pct": 14.66,
+      "trailing_stop": 235.07,
+      "days_held": 33,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 16.57,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.654Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d7"
+    },
+    "log_id": "6fc08ea0e75aa05a0c901a6b5cf6f6f42225b4d87e9b7f1baf9da24ce399e07c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.655Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:23Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 209.58,
+      "new_stop": 235.07,
+      "current_price": 261.19,
+      "pnl_pct": 14.66,
+      "days_held": 33,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.655Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d8"
+    },
+    "log_id": "a86947bf53b3aa9333fc3b379f3e54760e7fe9c7bf03e39f9b08076a7fb30626",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.655Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:24Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 372.4,
+      "entry_price": 369.05,
+      "pnl_pct": 0.91,
+      "trailing_stop": 339.53,
+      "days_held": 31,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.07,
+      "max_drawdown_pct": -4.93
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.655Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660d9"
+    },
+    "log_id": "b67a8ef0417cb1003c9dff93d6d0265c82e288477c95daf7fd195a3b2e90c180",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:25Z"
+    },
+    "symbol": "SGFIN",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 496.75,
+      "entry_price": 430.0,
+      "pnl_pct": 15.52,
+      "trailing_stop": 437.14,
+      "days_held": 26,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 20.16,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660da"
+    },
+    "log_id": "7dbbe1cbc70cae2f80ff97bc6679e8d78dda58e30bf393d1c50328704c5deaa3",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:25Z"
+    },
+    "symbol": "SGFIN",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 378.4,
+      "new_stop": 437.14,
+      "current_price": 496.75,
+      "pnl_pct": 15.52,
+      "days_held": 26,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660db"
+    },
+    "log_id": "ab393f4011089cd01b7cebbacaf0305233922196f7952915695037a407cb95c4",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:26Z"
+    },
+    "symbol": "AEPL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 19.3,
+      "entry_price": 19.1,
+      "pnl_pct": 1.05,
+      "trailing_stop": 17.57,
+      "days_held": 11,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.73,
+      "max_drawdown_pct": -0.73
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660dc"
+    },
+    "log_id": "5ab8b3bdcf6431aaf6dd0e70e6b9696739039d2877cf159f0ffc294413737196",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:27Z"
+    },
+    "symbol": "SAATVIKGL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 464.05,
+      "entry_price": 464.0,
+      "pnl_pct": 0.01,
+      "trailing_stop": 408.32,
+      "days_held": 7,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 1.81,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660dd"
+    },
+    "log_id": "54c16016ffd856d1ee86f3a42893fff26e6235a4ca5e4c54a4b2e1170785c277",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:27Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 30.18,
+      "entry_price": 25.15,
+      "pnl_pct": 20.0,
+      "trailing_stop": 26.56,
+      "days_held": 4,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 20.0,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.656Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660de"
+    },
+    "log_id": "a467fb8c3cced761870fe8296f2b7d36d1d4f73dc13f6ff5a8b450815c22b53b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.657Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-20T10:58:27Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 22.13,
+      "new_stop": 26.56,
+      "current_price": 30.18,
+      "pnl_pct": 20.0,
+      "days_held": 4,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.657Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660df"
+    },
+    "log_id": "5c46a720f139b89e38385bf1a09b8a74529e39c241cd4b7b835787a1787771e2",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.657Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T10:16:00Z"
+    },
+    "symbol": "EPACKPEB",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "EPACKPEB",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 202,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.657Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e0"
+    },
+    "log_id": "a1e5830197490890d6ec70016c476d4bffdf65c30d2b019eb6bba7059ae199a5",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.657Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T10:22:06Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ANTHEM",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 274,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.657Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e1"
+    },
+    "log_id": "abf13109a4410ef5226522ffec7a721fb5c9c3d0fa213a712ad0e16126f02d00",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.659Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T10:41:27Z"
+    },
+    "symbol": "SCODATUBES",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SCODATUBES",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 321,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.659Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e2"
+    },
+    "log_id": "395e104cb6aebcbc6a09af9d237641cd9357068b8ef972e8369038366ab95f4d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.659Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T11:43:46Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MODINATUR",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 131,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.659Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e3"
+    },
+    "log_id": "a92d97539d5be2a354f2fb5d9b6c6edb38558f2334fcfa9536f794b4aee1f5c7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T11:59:01Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 132,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C"
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e4"
+    },
+    "log_id": "923cfab97bdc1b50c5dd20e38c7504e7d860239e689cb126aa9f061b117f777b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T11:59:01Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "poor_risk_reward",
+      "key_metric": {
+        "actual": 0.83,
+        "required": 1.3
+      },
+      "ipo_age": 132,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "poor_risk_reward",
+        "ratio": 0.83,
+        "min_required": 1.3
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e5"
+    },
+    "log_id": "52f2cc5bb7ef41cc00f460df506999d13e765a07b378f8d919cb86c660647e34",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:19:31Z"
+    },
+    "symbol": "ADVANCE",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ADVANCE",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 195,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e6"
+    },
+    "log_id": "65210d7216d86b12b206fb6330be8fe26dc70bf04ee958b3b45366b2bfdc7d64",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T16:26:52Z"
+    },
+    "symbol": "EPACKPEB",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "EPACKPEB",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 202,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 51.645607929182134,
+        "metric_vol_ratio": 0.871593754474435,
+        "metric_rsi": 77.01268742791231,
+        "metric_base_width": 20,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.660Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e7"
+    },
+    "log_id": "465b98c72e4adbac26276cf0231b1619bed938ee031f4eb4e136f069ef6acd5d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T16:52:31Z"
+    },
+    "symbol": "ADVANCE",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ADVANCE",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 195,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e8"
+    },
+    "log_id": "f4a791a45f8d8e7eb59a348cc7cade052ba228ac9a6aae2b48ad1021e4003a1a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T17:00:45Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ANTHEM",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 274,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660e9"
+    },
+    "log_id": "82f834beddf0696b6983fb25c6d84dd81536739abef355f6cbaeb6442f583d9c",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T17:11:01Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 132,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 78.28773168578994,
+        "metric_vol_ratio": 0.8550653622142417,
+        "metric_rsi": 88.32422000643295,
+        "metric_base_width": 80,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ea"
+    },
+    "log_id": "9bdf149059748bf72faf3f31b2525da567a961eeee64041f279d55e059f383ef",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T17:11:02Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "excessive_stop_risk",
+      "key_metric": {
+        "actual": null,
+        "required": 10.0
+      },
+      "ipo_age": 132,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "excessive_stop_risk",
+        "risk_pct": 12.0,
+        "max_allowed": 10.0,
+        "metric_prng": 78.28773168578994,
+        "metric_vol_ratio": 3.52552760594881,
+        "metric_rsi": 86.70816550714025,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660eb"
+    },
+    "log_id": "f6a2d50e5c071570167b524cf2fe2837268a3f0c5a7f04dac44ffed39bddb614",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T17:27:40Z"
+    },
+    "symbol": "SCODATUBES",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "SCODATUBES",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 321,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 40.35087719298245,
+        "metric_vol_ratio": 2.0766510119372716,
+        "metric_rsi": 59.11805820307535,
+        "metric_base_width": 20,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ec"
+    },
+    "log_id": "921966dc3f22d86a5a509a5939d15a958b504725c2b32021895db5038f755845",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:30:57Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 1208.9,
+      "entry_price": 912.3,
+      "pnl_pct": 32.51,
+      "trailing_stop": 1088.01,
+      "days_held": 50,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 32.51,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ed"
+    },
+    "log_id": "8201dc2697aa3887c0678d923e29d75b3bc170bc434dd14d63a37ca3db6bcd3d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:30:57Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 839.32,
+      "new_stop": 1088.01,
+      "current_price": 1208.9,
+      "pnl_pct": 32.51,
+      "days_held": 50,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ee"
+    },
+    "log_id": "a047268837ddfce4b58e27d217a4cd8c7d365684c139503535f0bc43b27466ee",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:30:58Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 457.45,
+      "entry_price": 418.15,
+      "pnl_pct": 9.4,
+      "trailing_stop": 411.7,
+      "days_held": 36,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 9.77,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.661Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ef"
+    },
+    "log_id": "6d29adebe1ea7b742a37b32482ca87a0c8e7bbf5989d457fb38e4d04e7ee00cb",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:30:58Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 384.7,
+      "new_stop": 411.7,
+      "current_price": 457.45,
+      "pnl_pct": 9.4,
+      "days_held": 36,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f0"
+    },
+    "log_id": "a30e45c9baa037501b52d217b1b3df8afb073a4da68e0e53ad2eb811cc9ca090",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:30:59Z"
+    },
+    "symbol": "OMNI",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 344.6,
+      "entry_price": 226.18,
+      "pnl_pct": 52.36,
+      "trailing_stop": 310.14,
+      "days_held": 34,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 52.36,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f1"
+    },
+    "log_id": "1e900e7e951b79056eb9e315264dca2bfb6e86d8c698641e7c0b72b19cdabcf7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:30:59Z"
+    },
+    "symbol": "OMNI",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 208.09,
+      "new_stop": 310.14,
+      "current_price": 344.6,
+      "pnl_pct": 52.36,
+      "days_held": 34,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f2"
+    },
+    "log_id": "eee81a278211a4ddc6d2793ed3a8b66108e6dbf0168a66fcdbcd7e9b05289866",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:00Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 261.31,
+      "entry_price": 227.8,
+      "pnl_pct": 14.71,
+      "trailing_stop": 235.18,
+      "days_held": 34,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 16.57,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f3"
+    },
+    "log_id": "f65242402e9b615a97a32ccea64d529a4b65a9128262d6c27f7ecbf107f57e2e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:00Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 209.58,
+      "new_stop": 235.18,
+      "current_price": 261.31,
+      "pnl_pct": 14.71,
+      "days_held": 34,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.663Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f4"
+    },
+    "log_id": "dd2b7f2938acff46d9b7dead48c040b7532b67453da0b308359cf463603d1f73",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:01Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 366.7,
+      "entry_price": 369.05,
+      "pnl_pct": -0.64,
+      "trailing_stop": 339.53,
+      "days_held": 32,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.07,
+      "max_drawdown_pct": -4.93
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f5"
+    },
+    "log_id": "e13e73b9106ea12ddca5153797bfc29eb1138f325761d8c8686eaae167c86347",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:01Z"
+    },
+    "symbol": "SGFIN",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 541.4,
+      "entry_price": 430.0,
+      "pnl_pct": 25.91,
+      "trailing_stop": 476.43,
+      "days_held": 27,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 26.41,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f6"
+    },
+    "log_id": "f517024094e4391fe11868b0d91e3bfe294300418a555c4f34c02b07ef623830",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:01Z"
+    },
+    "symbol": "SGFIN",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 378.4,
+      "new_stop": 476.43,
+      "current_price": 541.4,
+      "pnl_pct": 25.91,
+      "days_held": 27,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f7"
+    },
+    "log_id": "d9d403aeb2bf436ce9a28229e5b0260155c4a4d7d33cbf4dfd90e62037e157c4",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:02Z"
+    },
+    "symbol": "AEPL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 18.99,
+      "entry_price": 19.1,
+      "pnl_pct": -0.58,
+      "trailing_stop": 17.57,
+      "days_held": 12,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.73,
+      "max_drawdown_pct": -1.57
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.664Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f8"
+    },
+    "log_id": "c1c69d18b4ea22c624d1eab344985c7caaf4b9d753739db892224b45f822e1ba",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:03Z"
+    },
+    "symbol": "SAATVIKGL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 461.85,
+      "entry_price": 464.0,
+      "pnl_pct": -0.46,
+      "trailing_stop": 408.32,
+      "days_held": 8,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 1.81,
+      "max_drawdown_pct": -0.46
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660f9"
+    },
+    "log_id": "1ad67c829be72ebb7827bf6b183d7c22bf904deca7a78d25b0b2eb22637c0990",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:04Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 30.56,
+      "entry_price": 25.15,
+      "pnl_pct": 21.51,
+      "trailing_stop": 26.89,
+      "days_held": 5,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 21.83,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660fa"
+    },
+    "log_id": "778bed40304be8ed7e6e240cd7f523b91e3e4806c15ccb331858c39fe15dc95b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T12:31:04Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 22.13,
+      "new_stop": 26.89,
+      "current_price": 30.56,
+      "pnl_pct": 21.51,
+      "days_held": 5,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660fb"
+    },
+    "log_id": "3032841b653772c998c527c28157141fd08a17256d137bab945d51e1376faa0e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-21T18:46:45Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MODINATUR",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 131,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 62.049147839873164,
+        "metric_vol_ratio": 2.115551156748732,
+        "metric_rsi": 79.49969493593653,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660fc"
+    },
+    "log_id": "08d5e086d6b4d1e9a1b5e2d8d5949932a9ccf20034c08e2464ea2a8b1573401b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T10:31:36Z"
+    },
+    "symbol": "ADVANCE",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ADVANCE",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 196,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660fd"
+    },
+    "log_id": "0202dc49450eb882fb4e59120002c718b58f7cb5069677ecf1d5afe186b02c5d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T10:38:43Z"
+    },
+    "symbol": "ANTHEM",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ANTHEM",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 275,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.665Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660fe"
+    },
+    "log_id": "c5b4ed00c1f22178c4b7ee02b3075b86fec056b3f30e96e874ea1346f6578438",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.666Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T10:48:56Z"
+    },
+    "symbol": "EPACKPEB",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "EPACKPEB",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 203,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 51.645607929182134,
+        "metric_vol_ratio": 0.871593754474435,
+        "metric_rsi": 77.01268742791231,
+        "metric_base_width": 20,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.666Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a553660ff"
+    },
+    "log_id": "663004898185cbb77ea7a495320164082d601885ad3177fa2c2186480580349f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.666Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T11:17:32Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MODINATUR",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 132,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 62.049147839873164,
+        "metric_vol_ratio": 2.0607088727282843,
+        "metric_rsi": 79.49969493593653,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.666Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366100"
+    },
+    "log_id": "57c4f5e77943a40f52379810b7a2e84b36c95aeb48ca5026c9e6a4025c49fa2b",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.666Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T11:41:01Z"
+    },
+    "symbol": "BLUESTONE",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "BLUESTONE",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 246,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 33.6144578313253,
+        "metric_vol_ratio": 0.5749278269188808,
+        "metric_rsi": 64.96083550913838,
+        "metric_base_width": 10,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.666Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366101"
+    },
+    "log_id": "6004e694f9dee067f535296eabdbf9bb03dbd560e86c160eb6a0b777be74a108",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.667Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T11:54:17Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 133,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 81.56222418358342,
+        "metric_vol_ratio": 0.8550653622142417,
+        "metric_rsi": 88.32422000643295,
+        "metric_base_width": 80,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.667Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366102"
+    },
+    "log_id": "77d7ffa09dc69d4a0504f09695403e97420aab2a3e9ac258aecc9a3a461525ea",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T11:54:18Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "excessive_stop_risk",
+      "key_metric": {
+        "actual": null,
+        "required": 10.0
+      },
+      "ipo_age": 133,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "excessive_stop_risk",
+        "risk_pct": 12.0,
+        "max_allowed": 10.0,
+        "metric_prng": 81.56222418358342,
+        "metric_vol_ratio": 3.52552760594881,
+        "metric_rsi": 86.70816550714025,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366103"
+    },
+    "log_id": "86596f88b8a14efa34105359fb1eb46ea39565a2ec16766a1eb6d46a2c59001a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:11Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 1178.0,
+      "entry_price": 912.3,
+      "pnl_pct": 29.12,
+      "trailing_stop": 1060.2,
+      "days_held": 51,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 32.51,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366104"
+    },
+    "log_id": "63cd2a26d677f1fac01791b6d9d614adeb97437ecdd67b7cf6d2680d73aefba8",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:11Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 839.32,
+      "new_stop": 1060.2,
+      "current_price": 1178.0,
+      "pnl_pct": 29.12,
+      "days_held": 51,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366105"
+    },
+    "log_id": "b3ac8edb5ed4c9937122abf0096d5a4c2453a6d4bba088436fd524a4c91a0c5a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:13Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 461.15,
+      "entry_price": 418.15,
+      "pnl_pct": 10.28,
+      "trailing_stop": 415.03,
+      "days_held": 37,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 10.37,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.668Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366106"
+    },
+    "log_id": "f3e6972284dcac9a43f54ff80b65d72b767ad55ea48086b769e268bb3e334112",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.669Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:13Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 384.7,
+      "new_stop": 415.03,
+      "current_price": 461.15,
+      "pnl_pct": 10.28,
+      "days_held": 37,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.669Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366107"
+    },
+    "log_id": "ee9e1b6f8057c0eb04c4ee1f5324f00dd01e2890bd11e76e8223a047a7b202c1",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.669Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:14Z"
+    },
+    "symbol": "OMNI",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 377.5,
+      "entry_price": 226.18,
+      "pnl_pct": 66.9,
+      "trailing_stop": 339.75,
+      "days_held": 35,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 66.9,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.669Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366108"
+    },
+    "log_id": "c5f5edbb23248c6226b613ed2be2c61e9eae79c98245a464771a2841db20ba15",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.669Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:14Z"
+    },
+    "symbol": "OMNI",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 208.09,
+      "new_stop": 339.75,
+      "current_price": 377.5,
+      "pnl_pct": 66.9,
+      "days_held": 35,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.669Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366109"
+    },
+    "log_id": "caa59a9151e9db1fc9340fc21fd5edfcab63994acc0438a235fcccb05a60d5f5",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.670Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:15Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 264.68,
+      "entry_price": 227.8,
+      "pnl_pct": 16.19,
+      "trailing_stop": 238.21,
+      "days_held": 35,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 16.57,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.670Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536610a"
+    },
+    "log_id": "f44b11a3610efa7646dcb113e98d12656874dfc2b1d86c7bf4006d5e4aaf973e",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.670Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:15Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 209.58,
+      "new_stop": 238.21,
+      "current_price": 264.68,
+      "pnl_pct": 16.19,
+      "days_held": 35,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.670Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536610b"
+    },
+    "log_id": "5b49ecf0ff2b805d651a1b60a038b08c72cf4bc93fef472eaa5f3f70db22d367",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.670Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:17Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 367.75,
+      "entry_price": 369.05,
+      "pnl_pct": -0.35,
+      "trailing_stop": 339.53,
+      "days_held": 33,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.07,
+      "max_drawdown_pct": -4.93
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.670Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536610c"
+    },
+    "log_id": "110920c329b693de0b7d6e9d7addadb5b4256f16023233caa95d3e53707fac86",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:17Z"
+    },
+    "symbol": "SGFIN",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 533.25,
+      "entry_price": 430.0,
+      "pnl_pct": 24.01,
+      "trailing_stop": 469.26,
+      "days_held": 28,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 26.41,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536610d"
+    },
+    "log_id": "bd574f04bef810513c91449081b058ace69e658dd9110c053e45a6c68e61d166",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:17Z"
+    },
+    "symbol": "SGFIN",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 378.4,
+      "new_stop": 469.26,
+      "current_price": 533.25,
+      "pnl_pct": 24.01,
+      "days_held": 28,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536610e"
+    },
+    "log_id": "b299ff622835cdbd94aa3e9fa39c9192409fe23e23360b919a0e7792c2f3553f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:18Z"
+    },
+    "symbol": "AEPL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 19.0,
+      "entry_price": 19.1,
+      "pnl_pct": -0.52,
+      "trailing_stop": 17.57,
+      "days_held": 13,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.73,
+      "max_drawdown_pct": -1.57
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536610f"
+    },
+    "log_id": "7c175d2ae63957daabf7bb1cff9e86f8a59acf3e00768ec89a2a84172c0ef877",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:19Z"
+    },
+    "symbol": "SAATVIKGL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 461.0,
+      "entry_price": 464.0,
+      "pnl_pct": -0.65,
+      "trailing_stop": 408.32,
+      "days_held": 9,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 1.81,
+      "max_drawdown_pct": -0.65
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.671Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366110"
+    },
+    "log_id": "a73de625128edc792be7eac648e26d4b9013d493a28ad813c5838bde317fbbe6",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.673Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:20Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 31.07,
+      "entry_price": 25.15,
+      "pnl_pct": 23.54,
+      "trailing_stop": 27.34,
+      "days_held": 6,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 23.54,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.673Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366111"
+    },
+    "log_id": "784e69da68abe3394aaf426224c5509d7d3d8814ec9491baef5929097ae9b229",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.673Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-22T12:28:20Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 22.13,
+      "new_stop": 27.34,
+      "current_price": 31.07,
+      "pnl_pct": 23.54,
+      "days_held": 6,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.673Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366112"
+    },
+    "log_id": "0fdf12785be17e302c01df9c70123e6270ac7ab2fd4a43bbb773b8897bfc99b3",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.673Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:10:06Z"
+    },
+    "symbol": "MODINATUR",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MODINATUR",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 133,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 62.049147839873164,
+        "metric_vol_ratio": 1.980559688527365,
+        "metric_rsi": 79.49969493593653,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.673Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366113"
+    },
+    "log_id": "3172c09bb5c4cbe98980756645ed6dc78efba36912f8d7ce1db3b56ae0ab5a2f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.674Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:21:16Z"
+    },
+    "symbol": "EPACKPEB",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "EPACKPEB",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 204,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 51.645607929182134,
+        "metric_vol_ratio": 0.871593754474435,
+        "metric_rsi": 77.01268742791231,
+        "metric_base_width": 20,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.674Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366114"
+    },
+    "log_id": "8c2351c6a3f529efcde1cb914cfb2e1b4880b17be273e9ac37572c9ddedc4bc6",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.674Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:23:18Z"
+    },
+    "symbol": "OMFREIGHT",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "OMFREIGHT",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 197,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 44.189991518235786,
+        "metric_vol_ratio": 0.4622931366625446,
+        "metric_rsi": 87.77070063694264,
+        "metric_base_width": 20,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.674Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366115"
+    },
+    "log_id": "4af8ab71e61b28ecd3ff3a27622939c4bb7e10c54b9722bc6533676543ac76ba",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:23:18Z"
+    },
+    "symbol": "OMFREIGHT",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "OMFREIGHT",
+      "stage": "pre_breakout",
+      "rejection_reason": "excessive_stop_risk",
+      "key_metric": {
+        "actual": null,
+        "required": 10.0
+      },
+      "ipo_age": 197,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "excessive_stop_risk",
+        "risk_pct": 12.0,
+        "max_allowed": 10.0,
+        "metric_prng": 17.20904578047436,
+        "metric_vol_ratio": 1.0004562034024636,
+        "metric_rsi": 87.77070063694264,
+        "metric_base_width": 10,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366116"
+    },
+    "log_id": "17d4bbd25303aeb4a998e2a3eaf4a22a630fdd1b72cb3840e9a203930c225412",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:55:45Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 134,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 81.56222418358342,
+        "metric_vol_ratio": 0.8550653622142417,
+        "metric_rsi": 88.32422000643295,
+        "metric_base_width": 80,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366117"
+    },
+    "log_id": "57f6175653fcc5c0f05e26e16e6aa05f4c547fcafb3d9bc419c0579a011ad55d",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:55:46Z"
+    },
+    "symbol": "AEQUS",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "AEQUS",
+      "stage": "pre_breakout",
+      "rejection_reason": "excessive_stop_risk",
+      "key_metric": {
+        "actual": null,
+        "required": 10.0
+      },
+      "ipo_age": 134,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "excessive_stop_risk",
+        "risk_pct": 12.0,
+        "max_allowed": 10.0,
+        "metric_prng": 81.56222418358342,
+        "metric_vol_ratio": 3.52552760594881,
+        "metric_rsi": 86.70816550714025,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366118"
+    },
+    "log_id": "57a8a664bddd006b7e396120d568d4c81cdf7433c277d2db4348df0bb5907e27",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T10:59:52Z"
+    },
+    "symbol": "ADVANCE",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "ADVANCE",
+      "stage": "pre_breakout",
+      "rejection_reason": "failed_follow_through",
+      "key_metric": {
+        "actual": null,
+        "required": null
+      },
+      "ipo_age": 197,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "failed_follow_through",
+        "close_holds": false,
+        "volume_confirms": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366119"
+    },
+    "log_id": "86d7d38202aa3a72eb2ddea97b8dff125383cfa284349f919fc615e758f27f14",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T11:30:18Z"
+    },
+    "symbol": "BLUESTONE",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "BLUESTONE",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 247,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 29.626168224299054,
+        "metric_vol_ratio": 0.5749278269188808,
+        "metric_rsi": 64.96083550913838,
+        "metric_base_width": 10,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.675Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536611a"
+    },
+    "log_id": "637b07be25a0ea7cb47aabc5230bdcd22e5f72b6f221aa8ba6110525c6b43ffd",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T11:54:39Z"
+    },
+    "symbol": "MEESHO",
+    "action": "REJECTED_BREAKOUT",
+    "scanner": "consolidation",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "symbol": "MEESHO",
+      "stage": "pre_breakout",
+      "rejection_reason": "low_grade",
+      "key_metric": {
+        "actual": null,
+        "required": "C"
+      },
+      "ipo_age": 134,
+      "volume_ratio": null,
+      "original_details": {
+        "reason": "low_grade",
+        "grade": "D",
+        "min_required": "C",
+        "metric_prng": 44.94265689710099,
+        "metric_vol_ratio": 2.4827118318756676,
+        "metric_rsi": 78.99571341090024,
+        "metric_base_width": 40,
+        "metric_rs_percentile_met": false,
+        "metric_trend_alignment": false
+      }
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536611b"
+    },
+    "log_id": "ac8d8a44c3325c95e00eda6e710e05050e3a0d205875520d1a7bdff5fdb233e5",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:15Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 1151.35,
+      "entry_price": 912.3,
+      "pnl_pct": 26.2,
+      "trailing_stop": 1036.21,
+      "days_held": 52,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 32.51,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536611c"
+    },
+    "log_id": "73243c026c28963b37a43f84ffa6929cd4dde1b39b5cb72b0a2beb2323da3677",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:15Z"
+    },
+    "symbol": "BUILDPRO",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 839.32,
+      "new_stop": 1036.21,
+      "current_price": 1151.35,
+      "pnl_pct": 26.2,
+      "days_held": 52,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536611d"
+    },
+    "log_id": "b34b47e50b972d25b1cdc59137c16f8debee269be2e0b89aa009ffe8c98978c4",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:17Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 455.0,
+      "entry_price": 418.15,
+      "pnl_pct": 8.81,
+      "trailing_stop": 409.5,
+      "days_held": 38,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 10.37,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536611e"
+    },
+    "log_id": "80820f6b00a7d130d5b2fdad0fe55c49fa4622b8da0a83f57bcd37dc0d9d4a4a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:17Z"
+    },
+    "symbol": "AGARWALEYE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 384.7,
+      "new_stop": 409.5,
+      "current_price": 455.0,
+      "pnl_pct": 8.81,
+      "days_held": 38,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.677Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536611f"
+    },
+    "log_id": "8c34d2605d9501f2c7f8cb3f455e7cd651953e271b875d2921d5b54627aacdfa",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:18Z"
+    },
+    "symbol": "OMNI",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 406.75,
+      "entry_price": 226.18,
+      "pnl_pct": 79.83,
+      "trailing_stop": 366.07,
+      "days_held": 36,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 79.83,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366120"
+    },
+    "log_id": "341aff479254d80d6a9c53c1972d7a24506c775d1fd3db170ad2b611d0d1dddd",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:18Z"
+    },
+    "symbol": "OMNI",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 208.09,
+      "new_stop": 366.07,
+      "current_price": 406.75,
+      "pnl_pct": 79.83,
+      "days_held": 36,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366121"
+    },
+    "log_id": "5fd99eebce85145a4b295c607ea13ddbbc5c72082649602bedfec2af82b6c63a",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:19Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 273.95,
+      "entry_price": 227.8,
+      "pnl_pct": 20.26,
+      "trailing_stop": 246.56,
+      "days_held": 36,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 20.26,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366122"
+    },
+    "log_id": "c12357f1c0b63c2d859e2f719b34600ac5ae5893495461295822a794ce332263",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:19Z"
+    },
+    "symbol": "EMMVEE",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 209.58,
+      "new_stop": 246.56,
+      "current_price": 273.95,
+      "pnl_pct": 20.26,
+      "days_held": 36,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366123"
+    },
+    "log_id": "bc5d2db00c96c15f89cc96300578a6434d294c6b6d10c1de88a03a80e1948fac",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:20Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 397.2,
+      "entry_price": 369.05,
+      "pnl_pct": 7.63,
+      "trailing_stop": 357.48,
+      "days_held": 34,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 8.12,
+      "max_drawdown_pct": -4.93
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366124"
+    },
+    "log_id": "d68e6e7ff1395fd4c464b832064215c936db4c4a3823dc3271ce35cf7589b651",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:20Z"
+    },
+    "symbol": "KOTYARK",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 339.53,
+      "new_stop": 357.48,
+      "current_price": 397.2,
+      "pnl_pct": 7.63,
+      "days_held": 34,
+      "grade": "LISTING_BREAKOUT"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.678Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366125"
+    },
+    "log_id": "6df32d85835c5bdba78b9c4b0c9e787be7f0a71c442e9d5311beef4b1bc8d05f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:21Z"
+    },
+    "symbol": "SGFIN",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 543.0,
+      "entry_price": 430.0,
+      "pnl_pct": 26.28,
+      "trailing_stop": 477.84,
+      "days_held": 29,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 26.41,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366126"
+    },
+    "log_id": "9a6dd044db66da80438bc8fa62b96c3eff394af9fdcbc73f428f201d51331927",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:21Z"
+    },
+    "symbol": "SGFIN",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 378.4,
+      "new_stop": 477.84,
+      "current_price": 543.0,
+      "pnl_pct": 26.28,
+      "days_held": 29,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366127"
+    },
+    "log_id": "e0cd6bef614753c7b588c198b3e1e3213519022f0f9aad0ac8884035dc47c154",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:22Z"
+    },
+    "symbol": "AEPL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 18.71,
+      "entry_price": 19.1,
+      "pnl_pct": -2.04,
+      "trailing_stop": 17.57,
+      "days_held": 14,
+      "grade": "LISTING_BREAKOUT",
+      "price_source": "Live (yfinance)",
+      "max_runup_pct": 1.73,
+      "max_drawdown_pct": -2.04
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366128"
+    },
+    "log_id": "b3788ffcc590c5c705bea8925ec54bd6f18396fafbce6c9e8efe7fb990ffbb97",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:23Z"
+    },
+    "symbol": "SAATVIKGL",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 467.8,
+      "entry_price": 464.0,
+      "pnl_pct": 0.82,
+      "trailing_stop": 408.32,
+      "days_held": 10,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 1.81,
+      "max_drawdown_pct": -0.65
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366129"
+    },
+    "log_id": "145b6c59c326cdea62f8fb438a00c6ad8221dc30e74d7bd58e41cad96b9a09b7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:24Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "DAILY_SNAPSHOT",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "current_price": 31.65,
+      "entry_price": 25.15,
+      "pnl_pct": 25.84,
+      "trailing_stop": 27.85,
+      "days_held": 7,
+      "grade": "C",
+      "price_source": "Live (upstox)",
+      "max_runup_pct": 25.84,
+      "max_drawdown_pct": 0.0
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.680Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536612a"
+    },
+    "log_id": "763fe1b33dd8b20d8da1e49523b5855ea47a5947b10027a8436101c5bd2b83d7",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.681Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-23T12:31:24Z"
+    },
+    "symbol": "STLNETWORK",
+    "action": "TRAILING_STOP_UPDATED",
+    "scanner": "positions",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "old_stop": 22.13,
+      "new_stop": 27.85,
+      "current_price": 31.65,
+      "pnl_pct": 25.84,
+      "days_held": 7,
+      "grade": "C"
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.681Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536612b"
+    },
+    "log_id": "3ff897abc0f67a10c1d03e696f7a6d41ca8ac67c8f712f25ee99f48e7c4157bb",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.681Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T06:05:29Z"
+    },
+    "symbol": "ELPROINTL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 106.0,
+      "confirm_minutes": 60,
+      "price": 108.72,
+      "leader_score": 5
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.681Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536612c"
+    },
+    "log_id": "a362078b1c4ab10c5dba318632ba5be0a7d6750a29b0c3db879d4cf495473686",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.681Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T06:27:49Z"
+    },
+    "symbol": "ELPROINTL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 106.0,
+      "confirm_minutes": 60,
+      "price": 109.48,
+      "leader_score": 5
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.681Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536612d"
+    },
+    "log_id": "8c5f0ff2bebc1ca5ab6d8808ca0791f787e8a1698079c042b672e469b478cf7f",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.682Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T06:28:18Z"
+    },
+    "symbol": "MADHAVIPL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 9.45,
+      "confirm_minutes": 60,
+      "price": 9.5,
+      "leader_score": 7
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.682Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536612e"
+    },
+    "log_id": "163a94609efb3d984dfe137184a423f00de81fb15410b089f6da80b8108ad926",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T08:42:30Z"
+    },
+    "symbol": "ELPROINTL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 106.0,
+      "confirm_minutes": 60,
+      "price": 108.89,
+      "leader_score": 5
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a5536612f"
+    },
+    "log_id": "fbdc028f5d1d3b8a63082028a8c905b0246ffaacc20a6b56ce32f1c9039b8a41",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T08:42:51Z"
+    },
+    "symbol": "MADHAVIPL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 9.45,
+      "confirm_minutes": 60,
+      "price": 9.5,
+      "leader_score": 7
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366130"
+    },
+    "log_id": "8c7ca414a8cfddf83fb2adefeeeb371e74a6fa75492b73fe3ce342d297b08dfa",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T09:14:59Z"
+    },
+    "symbol": "ELPROINTL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 106.0,
+      "confirm_minutes": 60,
+      "price": 109.0,
+      "leader_score": 5
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366131"
+    },
+    "log_id": "eae780485b541a825b3a7086acc5817ad65895b353675afe8db7a79d1e9ab630",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T09:15:21Z"
+    },
+    "symbol": "MADHAVIPL",
+    "action": "PENDING_STARTED",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "breakout_level": 9.45,
+      "confirm_minutes": 60,
+      "price": 9.55,
+      "leader_score": 8
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.683Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecd9236b481a4a55366132"
+    },
+    "log_id": "1ca732075a64e612e16abf835574edfa1e39bce6aed83978b016f55eeee64cc3",
+    "timestamp": {
+      "$date": "2026-04-25T15:09:23.684Z"
+    },
+    "candle_timestamp": {
+      "$date": "2026-04-24T10:19:32Z"
+    },
+    "symbol": "ELPROINTL",
+    "action": "BREAKOUT_SIGNAL",
+    "scanner": "listing_day",
+    "version": "2.1.0",
+    "source": "backfill",
+    "details": {
+      "entry": 108.0,
+      "stop_loss": 99.36,
+      "target": 128.0,
+      "listing_high": 106.0,
+      "volume_caution": false,
+      "tier": "A",
+      "position_size_pct": 60,
+      "tier_rationale": "Pure momentum breakout \u2014 smaller position, faster exit, don't expect long trend",
+      "perfect_base": false,
+      "post_confirm_move_pct": 1.89,
+      "entry_vs_breakout_pct": 1.89,
+      "held_above_breakout_after_confirm": true,
+      "signal_strength_score": 5.67,
+      "tier_weight": 3.0,
+      "volume_score": 1.23,
+      "base_score": 0.5,
+      "momentum_score": 0.94
+    },
+    "created_at": {
+      "$date": "2026-04-25T15:09:23.684Z"
+    }
+  }
+]

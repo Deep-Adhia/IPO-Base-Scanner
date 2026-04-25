@@ -80,6 +80,26 @@ def fetch_recent_ipo_symbols(years_back=1):
                             f.write(f"{sym}\n")
                     
                     print(f"💾 Saved to: recent_ipo_symbols.csv")
+
+                    # MongoDB dual-write: upsert discovered IPOs
+                    try:
+                        from db import upsert_ipo, ensure_indexes
+                        ensure_indexes()
+                        for _, row in df_symbols.iterrows():
+                            upsert_ipo(
+                                symbol=row['symbol'],
+                                listing_date=row['listing_date'],
+                                name=row['company']
+                            )
+                        print(f"✅ [MongoDB] Upserted {len(df_symbols)} IPO records")
+                    except Exception as db_e:
+                        print(f"⚠️ [MongoDB] IPO write FAILED (CSV write succeeded): {db_e}")
+                        try:
+                            from db import db_metrics
+                            db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+                        except Exception:
+                            pass
+
                     return df_symbols
                 else:
                     print("⚠️ NSE API: Could not find required columns")

@@ -1,0 +1,8029 @@
+[
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbec2"
+    },
+    "symbol": "ABCOTS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.158Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:25Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-23T18:30:00Z"
+    },
+    "listing_day_close": 452.1,
+    "listing_day_high": 504.0,
+    "listing_day_low": 440.0,
+    "listing_day_volume": 137783.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.157Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbec4"
+    },
+    "symbol": "ABLBL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.159Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:26Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-22T18:30:00Z"
+    },
+    "listing_day_close": 158.65,
+    "listing_day_high": 175.0,
+    "listing_day_low": 158.65,
+    "listing_day_volume": 6414316.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.159Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbec6"
+    },
+    "symbol": "ADVANCE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.160Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:26Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-07T18:30:00Z"
+    },
+    "listing_day_close": 108.3,
+    "listing_day_high": 114.5,
+    "listing_day_low": 108.3,
+    "listing_day_volume": 9016969.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.160Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbec8"
+    },
+    "symbol": "ADVENTHTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.161Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:27Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-12T18:30:00Z"
+    },
+    "listing_day_close": 328.65,
+    "listing_day_high": 328.65,
+    "listing_day_low": 300.0,
+    "listing_day_volume": 765254.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.160Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeca"
+    },
+    "symbol": "AEGISVOPAK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.161Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:29Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-01T18:30:00Z"
+    },
+    "listing_day_close": 242.0,
+    "listing_day_high": 242.0,
+    "listing_day_low": 220.0,
+    "listing_day_volume": 27206468.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.161Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbecc"
+    },
+    "symbol": "AJAXENGG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.162Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:07:07Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-16T18:30:00Z"
+    },
+    "listing_day_close": 595.4,
+    "listing_day_high": 609.0,
+    "listing_day_low": 566.0,
+    "listing_day_volume": 6686060.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.162Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbece"
+    },
+    "symbol": "ALLTIME",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.163Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:32Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-13T18:30:00Z"
+    },
+    "listing_day_close": 283.3,
+    "listing_day_high": 325.0,
+    "listing_day_low": 280.65,
+    "listing_day_volume": 16679393.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.163Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbed0"
+    },
+    "symbol": "ANTHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.164Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:33Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-20T18:30:00Z"
+    },
+    "listing_day_close": 730.35,
+    "listing_day_high": 747.0,
+    "listing_day_low": 723.05,
+    "listing_day_volume": 41014089.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.163Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbed2"
+    },
+    "symbol": "ANUHPHR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.164Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:34Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-19T18:30:00Z"
+    },
+    "listing_day_close": 111.42,
+    "listing_day_high": 122.85,
+    "listing_day_low": 110.04,
+    "listing_day_volume": 222486.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.164Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbed4"
+    },
+    "symbol": "ARFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.165Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:35Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-21T18:30:00Z"
+    },
+    "listing_day_close": 38.4,
+    "listing_day_high": 41.9,
+    "listing_day_low": 37.01,
+    "listing_day_volume": 1226411.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.165Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbed6"
+    },
+    "symbol": "ARISINFRA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.166Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:37Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-24T18:30:00Z"
+    },
+    "listing_day_close": 174.38,
+    "listing_day_high": 208.5,
+    "listing_day_low": 171.49,
+    "listing_day_volume": 13200640.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.166Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbed8"
+    },
+    "symbol": "ARSSBL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.168Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:07:30Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "listing_day_close": 445.55,
+    "listing_day_high": 458.7,
+    "listing_day_low": 431.0,
+    "listing_day_volume": 21291574.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.168Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeda"
+    },
+    "symbol": "ATHERENERG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.169Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:39Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-05T18:30:00Z"
+    },
+    "listing_day_close": 302.3,
+    "listing_day_high": 333.0,
+    "listing_day_low": 299.1,
+    "listing_day_volume": 15001040.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.169Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbedc"
+    },
+    "symbol": "ATLANTAELE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.170Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:40Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-28T18:30:00Z"
+    },
+    "listing_day_close": 823.35,
+    "listing_day_high": 865.0,
+    "listing_day_low": 806.25,
+    "listing_day_volume": 8410016.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.170Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbede"
+    },
+    "symbol": "BAJAJINDEF",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.171Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:41Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-20T18:30:00Z"
+    },
+    "listing_day_close": 266.95,
+    "listing_day_high": 295.05,
+    "listing_day_low": 266.95,
+    "listing_day_volume": 65258.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.171Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbee0"
+    },
+    "symbol": "BELLACASA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.172Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:42Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-17T18:30:00Z"
+    },
+    "listing_day_close": 421.5,
+    "listing_day_high": 443.9,
+    "listing_day_low": 415.0,
+    "listing_day_volume": 20593.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.172Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbee2"
+    },
+    "symbol": "BELRISE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.173Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:43Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-27T18:30:00Z"
+    },
+    "listing_day_close": 97.41,
+    "listing_day_high": 102.4,
+    "listing_day_low": 91.55,
+    "listing_day_volume": 198506902.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.173Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbee4"
+    },
+    "symbol": "BHARATSE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.174Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:44Z"
+    },
+    "listing_date": {
+      "$date": "2025-03-23T18:30:00Z"
+    },
+    "listing_day_close": 84.43,
+    "listing_day_high": 86.0,
+    "listing_day_low": 77.99,
+    "listing_day_volume": 140657.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.173Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbee6"
+    },
+    "symbol": "BLACKBUCK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.174Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:45Z"
+    },
+    "listing_date": {
+      "$date": "2024-11-21T18:30:00Z"
+    },
+    "listing_day_close": 260.05,
+    "listing_day_high": 285.9,
+    "listing_day_low": 255.35,
+    "listing_day_volume": 6737252.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.174Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbee8"
+    },
+    "symbol": "BLUESTONE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.175Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:46Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-18T18:30:00Z"
+    },
+    "listing_day_close": 546.0,
+    "listing_day_high": 564.0,
+    "listing_day_low": 508.1,
+    "listing_day_volume": 11549622.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.175Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeea"
+    },
+    "symbol": "BLUSPRING",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.175Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:47Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-10T18:30:00Z"
+    },
+    "listing_day_close": 84.55,
+    "listing_day_high": 89.0,
+    "listing_day_low": 84.55,
+    "listing_day_volume": 112410.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.175Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeec"
+    },
+    "symbol": "BMWVENTLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.176Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:48Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "listing_day_close": 74.1,
+    "listing_day_high": 78.0,
+    "listing_day_low": 74.1,
+    "listing_day_volume": 1451832.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.176Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeee"
+    },
+    "symbol": "BORANA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.176Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:49Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-26T18:30:00Z"
+    },
+    "listing_day_close": 255.15,
+    "listing_day_high": 255.15,
+    "listing_day_low": 243.0,
+    "listing_day_volume": 2004551.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.176Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbef0"
+    },
+    "symbol": "BRIGHOTEL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.178Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:50Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-30T18:30:00Z"
+    },
+    "listing_day_close": 85.32,
+    "listing_day_high": 87.84,
+    "listing_day_low": 81.1,
+    "listing_day_volume": 21119517.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.178Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbef2"
+    },
+    "symbol": "CANHLIFE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.178Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:51Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-16T18:30:00Z"
+    },
+    "listing_day_close": 111.42,
+    "listing_day_high": 112.8,
+    "listing_day_low": 106.0,
+    "listing_day_volume": 63162574.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.178Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbef4"
+    },
+    "symbol": "CARRARO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.180Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:52Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-29T18:30:00Z"
+    },
+    "listing_day_close": 636.2,
+    "listing_day_high": 682.0,
+    "listing_day_low": 631.0,
+    "listing_day_volume": 2751746.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.180Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbef6"
+    },
+    "symbol": "CEWATER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.180Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:53Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-26T18:30:00Z"
+    },
+    "listing_day_close": 827.1,
+    "listing_day_high": 860.0,
+    "listing_day_low": 801.0,
+    "listing_day_volume": 9233701.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.180Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbef8"
+    },
+    "symbol": "CHEMBONDCH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.181Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:54Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-22T18:30:00Z"
+    },
+    "listing_day_close": 178.5,
+    "listing_day_high": 178.5,
+    "listing_day_low": 170.0,
+    "listing_day_volume": 137104.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.181Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbefa"
+    },
+    "symbol": "CIFL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.182Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:55Z"
+    },
+    "listing_date": {
+      "$date": "2025-04-16T18:30:00Z"
+    },
+    "listing_day_close": 36.0,
+    "listing_day_high": 36.9,
+    "listing_day_low": 34.59,
+    "listing_day_volume": 124917.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.182Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbefc"
+    },
+    "symbol": "CPEDU",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.182Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:56Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-04T18:30:00Z"
+    },
+    "listing_day_close": 235.45,
+    "listing_day_high": 240.52,
+    "listing_day_low": 217.61,
+    "listing_day_volume": 136923.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.182Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbefe"
+    },
+    "symbol": "CPPLUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.183Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:57Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-04T18:30:00Z"
+    },
+    "listing_day_close": 1082.65,
+    "listing_day_high": 1104.0,
+    "listing_day_low": 1015.0,
+    "listing_day_volume": 19682593.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.183Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf00"
+    },
+    "symbol": "CRAMC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.184Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:58Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-15T18:30:00Z"
+    },
+    "listing_day_close": 300.45,
+    "listing_day_high": 318.0,
+    "listing_day_low": 280.25,
+    "listing_day_volume": 52008010.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.184Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf02"
+    },
+    "symbol": "CRIZAC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.184Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:31:59Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-08T18:30:00Z"
+    },
+    "listing_day_close": 307.63,
+    "listing_day_high": 309.15,
+    "listing_day_low": 275.0,
+    "listing_day_volume": 67262152.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.184Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf04"
+    },
+    "symbol": "CURAA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.186Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:00Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-12T18:30:00Z"
+    },
+    "listing_day_close": 169.5,
+    "listing_day_high": 175.11,
+    "listing_day_low": 158.44,
+    "listing_day_volume": 6427.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.185Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf06"
+    },
+    "symbol": "DAMCAPITAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.186Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:01Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-26T18:30:00Z"
+    },
+    "listing_day_close": 415.1,
+    "listing_day_high": 456.9,
+    "listing_day_low": 392.95,
+    "listing_day_volume": 43448517.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.186Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf08"
+    },
+    "symbol": "DDEVPLSTIK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.187Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:08:06Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-14T18:30:00Z"
+    },
+    "listing_day_close": 259.95,
+    "listing_day_high": 266.0,
+    "listing_day_low": 258.05,
+    "listing_day_volume": 53535.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.187Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf0a"
+    },
+    "symbol": "DENTA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.187Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:03Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-28T18:30:00Z"
+    },
+    "listing_day_close": 341.25,
+    "listing_day_high": 341.25,
+    "listing_day_low": 325.0,
+    "listing_day_volume": 1559846.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.187Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf0c"
+    },
+    "symbol": "DEVX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.188Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:04Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-16T18:30:00Z"
+    },
+    "listing_day_close": 64.05,
+    "listing_day_high": 64.05,
+    "listing_day_low": 59.0,
+    "listing_day_volume": 6168175.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.188Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf0e"
+    },
+    "symbol": "DIGITIDE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.188Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:06Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-10T18:30:00Z"
+    },
+    "listing_day_close": 232.75,
+    "listing_day_high": 257.25,
+    "listing_day_low": 232.75,
+    "listing_day_volume": 2752430.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.188Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf10"
+    },
+    "symbol": "EBGNG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.189Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T01:45:16Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-29T18:30:00Z"
+    },
+    "listing_day_close": 333.39,
+    "listing_day_high": 359.4,
+    "listing_day_low": 325.55,
+    "listing_day_volume": 26545484.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.189Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf12"
+    },
+    "symbol": "EFCIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.190Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:07Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-19T18:30:00Z"
+    },
+    "listing_day_close": 344.85,
+    "listing_day_high": 357.0,
+    "listing_day_low": 341.5,
+    "listing_day_volume": 355763.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.190Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf14"
+    },
+    "symbol": "EIEL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.190Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:09Z"
+    },
+    "listing_date": {
+      "$date": "2024-11-28T18:30:00Z"
+    },
+    "listing_day_close": 207.07,
+    "listing_day_high": 233.7,
+    "listing_day_low": 205.05,
+    "listing_day_volume": 55409608.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.190Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf16"
+    },
+    "symbol": "ELLEN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.191Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:10Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "listing_day_close": 534.6,
+    "listing_day_high": 534.6,
+    "listing_day_low": 486.0,
+    "listing_day_volume": 16209672.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.191Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf18"
+    },
+    "symbol": "ENRIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.191Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-01T23:37:30Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-18T18:30:00Z"
+    },
+    "listing_day_close": 2735.0,
+    "listing_day_high": 2982.0,
+    "listing_day_low": 2698.0,
+    "listing_day_volume": 4080416.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.191Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf1a"
+    },
+    "symbol": "EPACKPEB",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.191Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:12Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "listing_day_close": 190.66,
+    "listing_day_high": 197.7,
+    "listing_day_low": 183.85,
+    "listing_day_volume": 10651072.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.191Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf1c"
+    },
+    "symbol": "EUROBOND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.193Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:13Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-31T18:30:00Z"
+    },
+    "listing_day_close": 204.28,
+    "listing_day_high": 228.5,
+    "listing_day_low": 200.0,
+    "listing_day_volume": 64471.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.193Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf1e"
+    },
+    "symbol": "EUROPRATIK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.194Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:14Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-22T18:30:00Z"
+    },
+    "listing_day_close": 248.38,
+    "listing_day_high": 278.0,
+    "listing_day_low": 247.06,
+    "listing_day_volume": 11746338.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf20"
+    },
+    "symbol": "FABTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.194Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:15Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-06T18:30:00Z"
+    },
+    "listing_day_close": 182.4,
+    "listing_day_high": 192.5,
+    "listing_day_low": 182.4,
+    "listing_day_volume": 6037277.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.194Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf22"
+    },
+    "symbol": "FINKURVE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.195Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:16Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "listing_day_close": 114.07,
+    "listing_day_high": 114.07,
+    "listing_day_low": 105.0,
+    "listing_day_volume": 51575.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.195Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf24"
+    },
+    "symbol": "FISCHER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.196Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:17Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-09T18:30:00Z"
+    },
+    "listing_day_close": 775.85,
+    "listing_day_high": 839.9,
+    "listing_day_low": 770.1,
+    "listing_day_volume": 10938.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.196Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf26"
+    },
+    "symbol": "GANESHCP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.196Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:18Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-28T18:30:00Z"
+    },
+    "listing_day_close": 294.3,
+    "listing_day_high": 308.7,
+    "listing_day_low": 291.65,
+    "listing_day_volume": 5493770.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.196Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf28"
+    },
+    "symbol": "GCSL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.198Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-17T03:37:32Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-03T18:30:00Z"
+    },
+    "listing_day_close": 317.3,
+    "listing_day_high": 324.7,
+    "listing_day_low": 280.0,
+    "listing_day_volume": 448071.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.198Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf2a"
+    },
+    "symbol": "GEMAROMA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.199Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:20Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "listing_day_close": 319.05,
+    "listing_day_high": 349.6,
+    "listing_day_low": 314.65,
+    "listing_day_volume": 9152805.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.198Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf2c"
+    },
+    "symbol": "GKENERGY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.199Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:20Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-25T18:30:00Z"
+    },
+    "listing_day_close": 167.74,
+    "listing_day_high": 174.7,
+    "listing_day_low": 165.0,
+    "listing_day_volume": 29452801.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.199Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf2e"
+    },
+    "symbol": "GLOBECIVIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.199Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:21Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "listing_day_close": 94.46,
+    "listing_day_high": 94.5,
+    "listing_day_low": 87.0,
+    "listing_day_volume": 7078717.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.199Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf30"
+    },
+    "symbol": "GLOTTIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.201Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:23Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-06T18:30:00Z"
+    },
+    "listing_day_close": 83.7,
+    "listing_day_high": 93.0,
+    "listing_day_low": 81.17,
+    "listing_day_volume": 28034318.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.201Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf32"
+    },
+    "symbol": "GROWW",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.201Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:24Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-11T18:30:00Z"
+    },
+    "listing_day_close": 131.33,
+    "listing_day_high": 134.4,
+    "listing_day_low": 112.0,
+    "listing_day_volume": 523838472.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.201Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf34"
+    },
+    "symbol": "GUJTHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.202Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-13T04:25:56Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-24T18:30:00Z"
+    },
+    "listing_day_close": 243.46,
+    "listing_day_high": 269.85,
+    "listing_day_low": 240.14,
+    "listing_day_volume": 33559.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.202Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf36"
+    },
+    "symbol": "HDBFS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.202Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:26Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-01T18:30:00Z"
+    },
+    "listing_day_close": 840.95,
+    "listing_day_high": 851.4,
+    "listing_day_low": 827.15,
+    "listing_day_volume": 80966441.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.202Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf38"
+    },
+    "symbol": "HEXT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.204Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:28Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-18T18:30:00Z"
+    },
+    "listing_day_close": 762.55,
+    "listing_day_high": 788.0,
+    "listing_day_low": 708.0,
+    "listing_day_volume": 18950189.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.204Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf3a"
+    },
+    "symbol": "HILINFRA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.204Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:29Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-11T18:30:00Z"
+    },
+    "listing_day_close": 120.75,
+    "listing_day_high": 120.75,
+    "listing_day_low": 115.0,
+    "listing_day_volume": 5236750.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.204Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf3c"
+    },
+    "symbol": "IGCL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.205Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:30Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-02T18:30:00Z"
+    },
+    "listing_day_close": 110.35,
+    "listing_day_high": 113.0,
+    "listing_day_low": 106.0,
+    "listing_day_volume": 5240704.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.205Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf3e"
+    },
+    "symbol": "IGIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.206Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:31Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-19T18:30:00Z"
+    },
+    "listing_day_close": 471.15,
+    "listing_day_high": 525.0,
+    "listing_day_low": 459.0,
+    "listing_day_volume": 64151155.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.206Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf40"
+    },
+    "symbol": "IKS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.207Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:32Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-18T18:30:00Z"
+    },
+    "listing_day_close": 1960.85,
+    "listing_day_high": 2031.0,
+    "listing_day_low": 1852.1,
+    "listing_day_volume": 16494444.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.206Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf42"
+    },
+    "symbol": "INDIQUBE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.207Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:33Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-29T18:30:00Z"
+    },
+    "listing_day_close": 217.97,
+    "listing_day_high": 222.97,
+    "listing_day_low": 201.6,
+    "listing_day_volume": 10351056.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.207Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf44"
+    },
+    "symbol": "INDOFARM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.207Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:34Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-06T18:30:00Z"
+    },
+    "listing_day_close": 273.69,
+    "listing_day_high": 287.0,
+    "listing_day_low": 256.0,
+    "listing_day_volume": 24272789.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.207Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf46"
+    },
+    "symbol": "INNOVANA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.209Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:35Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-16T18:30:00Z"
+    },
+    "listing_day_close": 467.7,
+    "listing_day_high": 524.0,
+    "listing_day_low": 456.25,
+    "listing_day_volume": 14712.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.209Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf48"
+    },
+    "symbol": "ISHANCH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.209Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:08:55Z"
+    },
+    "listing_date": {
+      "$date": "2025-03-23T18:30:00Z"
+    },
+    "listing_day_close": 42.08,
+    "listing_day_high": 45.0,
+    "listing_day_low": 41.63,
+    "listing_day_volume": 41395.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.209Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf4a"
+    },
+    "symbol": "IVALUE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.210Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:38Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-24T18:30:00Z"
+    },
+    "listing_day_close": 281.85,
+    "listing_day_high": 298.35,
+    "listing_day_low": 274.05,
+    "listing_day_volume": 8220100.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.210Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf4c"
+    },
+    "symbol": "JAINREC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.211Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:39Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "listing_day_close": 318.06,
+    "listing_day_high": 318.06,
+    "listing_day_low": 247.57,
+    "listing_day_volume": 48880419.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.211Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf4e"
+    },
+    "symbol": "JARO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.212Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:40Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "listing_day_close": 744.25,
+    "listing_day_high": 890.0,
+    "listing_day_low": 717.55,
+    "listing_day_volume": 4394427.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.212Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf50"
+    },
+    "symbol": "JKIPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.213Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:41Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-02T18:30:00Z"
+    },
+    "listing_day_close": 121.66,
+    "listing_day_high": 126.95,
+    "listing_day_low": 118.75,
+    "listing_day_volume": 3140504.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.213Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf52"
+    },
+    "symbol": "JSLL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.214Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T01:08:22Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-10T18:30:00Z"
+    },
+    "listing_day_close": 536.1,
+    "listing_day_high": 576.95,
+    "listing_day_low": 510.3,
+    "listing_day_volume": 263596.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.214Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf54"
+    },
+    "symbol": "JSWCEMENT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.214Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:43Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-13T18:30:00Z"
+    },
+    "listing_day_close": 146.07,
+    "listing_day_high": 154.77,
+    "listing_day_low": 145.05,
+    "listing_day_volume": 105274421.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.214Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf56"
+    },
+    "symbol": "JUBLCPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.215Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:44Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-13T18:30:00Z"
+    },
+    "listing_day_close": 1510.4,
+    "listing_day_high": 1589.9,
+    "listing_day_low": 1510.4,
+    "listing_day_volume": 458.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.215Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf58"
+    },
+    "symbol": "KALPATARU",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.216Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:45Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "listing_day_close": 432.95,
+    "listing_day_high": 452.8,
+    "listing_day_low": 414.0,
+    "listing_day_volume": 9459898.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.216Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf5a"
+    },
+    "symbol": "KMEW",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.216Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:46Z"
+    },
+    "listing_date": {
+      "$date": "2024-11-13T18:30:00Z"
+    },
+    "listing_day_close": 2111.45,
+    "listing_day_high": 2189.05,
+    "listing_day_low": 1915.0,
+    "listing_day_volume": 66526.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.216Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf5c"
+    },
+    "symbol": "KPEL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.216Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:47Z"
+    },
+    "listing_date": {
+      "$date": "2024-11-13T18:30:00Z"
+    },
+    "listing_day_close": 534.45,
+    "listing_day_high": 549.0,
+    "listing_day_low": 526.0,
+    "listing_day_volume": 66906.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.216Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf5e"
+    },
+    "symbol": "KRISHIVAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.218Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:48Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-19T18:30:00Z"
+    },
+    "listing_day_close": 414.8,
+    "listing_day_high": 414.8,
+    "listing_day_low": 407.0,
+    "listing_day_volume": 83088.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.218Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf60"
+    },
+    "symbol": "LAXMIDENTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.218Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:49Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-19T18:30:00Z"
+    },
+    "listing_day_close": 550.55,
+    "listing_day_high": 584.0,
+    "listing_day_low": 525.0,
+    "listing_day_volume": 23912071.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.218Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf62"
+    },
+    "symbol": "LAXMIINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.219Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:49Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-04T18:30:00Z"
+    },
+    "listing_day_close": 134.11,
+    "listing_day_high": 146.68,
+    "listing_day_low": 132.98,
+    "listing_day_volume": 6460461.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.219Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf64"
+    },
+    "symbol": "LENSKART",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.219Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:50Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-09T18:30:00Z"
+    },
+    "listing_day_close": 403.1,
+    "listing_day_high": 413.75,
+    "listing_day_low": 356.1,
+    "listing_day_volume": 131582855.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.219Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf66"
+    },
+    "symbol": "LGEINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.220Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:51Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-13T18:30:00Z"
+    },
+    "listing_day_close": 1689.9,
+    "listing_day_high": 1749.0,
+    "listing_day_low": 1650.0,
+    "listing_day_volume": 68793750.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.220Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf68"
+    },
+    "symbol": "MAMATA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.221Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:52Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-26T18:30:00Z"
+    },
+    "listing_day_close": 630.0,
+    "listing_day_high": 630.0,
+    "listing_day_low": 600.0,
+    "listing_day_volume": 2646195.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.220Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf6a"
+    },
+    "symbol": "MARKOLINES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.222Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:53Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-13T18:30:00Z"
+    },
+    "listing_day_close": 183.9,
+    "listing_day_high": 188.0,
+    "listing_day_low": 180.0,
+    "listing_day_volume": 196228.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.222Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf6c"
+    },
+    "symbol": "MBEL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.222Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:54Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-05T18:30:00Z"
+    },
+    "listing_day_close": 408.65,
+    "listing_day_high": 418.8,
+    "listing_day_low": 373.5,
+    "listing_day_volume": 15361082.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.222Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf6e"
+    },
+    "symbol": "MCLOUD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.223Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:55Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-06T18:30:00Z"
+    },
+    "listing_day_close": 75.9,
+    "listing_day_high": 80.0,
+    "listing_day_low": 75.0,
+    "listing_day_volume": 241713.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf70"
+    },
+    "symbol": "MEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.223Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:56Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-27T18:30:00Z"
+    },
+    "listing_day_close": 535.35,
+    "listing_day_high": 566.0,
+    "listing_day_low": 527.35,
+    "listing_day_volume": 5830496.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf72"
+    },
+    "symbol": "MIDWESTLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.223Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:57Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-23T18:30:00Z"
+    },
+    "listing_day_close": 1140.5,
+    "listing_day_high": 1190.0,
+    "listing_day_low": 1129.1,
+    "listing_day_volume": 4728110.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.223Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf74"
+    },
+    "symbol": "MOBIKWIK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.224Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:32:58Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-17T18:30:00Z"
+    },
+    "listing_day_close": 528.0,
+    "listing_day_high": 528.0,
+    "listing_day_low": 440.0,
+    "listing_day_volume": 29575248.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.224Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf76"
+    },
+    "symbol": "MONEYBOXX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.225Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:05Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-14T18:30:00Z"
+    },
+    "listing_day_close": 158.64,
+    "listing_day_high": 170.12,
+    "listing_day_low": 155.5,
+    "listing_day_volume": 24457.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.225Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf78"
+    },
+    "symbol": "MOSCHIP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.225Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:06Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-04T18:30:00Z"
+    },
+    "listing_day_close": 198.74,
+    "listing_day_high": 204.0,
+    "listing_day_low": 197.05,
+    "listing_day_volume": 152624.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.225Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf7a"
+    },
+    "symbol": "MWL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.225Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T02:58:14Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-17T18:30:00Z"
+    },
+    "listing_day_close": 254.95,
+    "listing_day_high": 265.0,
+    "listing_day_low": 237.3,
+    "listing_day_volume": 107575.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.225Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf7c"
+    },
+    "symbol": "NATCAPSUQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.228Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:08Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-13T18:30:00Z"
+    },
+    "listing_day_close": 249.55,
+    "listing_day_high": 264.8,
+    "listing_day_low": 237.5,
+    "listing_day_volume": 6543.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.227Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf7e"
+    },
+    "symbol": "NAVKARURB",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.228Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:09Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-16T18:30:00Z"
+    },
+    "listing_day_close": 3.05,
+    "listing_day_high": 3.15,
+    "listing_day_low": 2.88,
+    "listing_day_volume": 11831640.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.228Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf80"
+    },
+    "symbol": "NIBE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.229Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:10Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-06T18:30:00Z"
+    },
+    "listing_day_close": 1592.9,
+    "listing_day_high": 1660.0,
+    "listing_day_low": 1570.05,
+    "listing_day_volume": 66988.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.229Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf82"
+    },
+    "symbol": "NPST",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.230Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:11Z"
+    },
+    "listing_date": {
+      "$date": "2025-04-29T18:30:00Z"
+    },
+    "listing_day_close": 2320.15,
+    "listing_day_high": 2425.0,
+    "listing_day_low": 2250.0,
+    "listing_day_volume": 10046.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.230Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf84"
+    },
+    "symbol": "NTPCGREEN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.230Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:12Z"
+    },
+    "listing_date": {
+      "$date": "2024-11-26T18:30:00Z"
+    },
+    "listing_day_close": 121.65,
+    "listing_day_high": 122.65,
+    "listing_day_low": 111.5,
+    "listing_day_volume": 300960804.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.230Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf86"
+    },
+    "symbol": "OMFREIGHT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.230Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:09:49Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-07T18:30:00Z"
+    },
+    "listing_day_close": 85.57,
+    "listing_day_high": 85.57,
+    "listing_day_low": 81.1,
+    "listing_day_volume": 1881994.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.230Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf88"
+    },
+    "symbol": "ORCHASP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.232Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:15Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-06T18:30:00Z"
+    },
+    "listing_day_close": 3.58,
+    "listing_day_high": 3.79,
+    "listing_day_low": 3.45,
+    "listing_day_volume": 630507.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.232Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf8a"
+    },
+    "symbol": "ORKLAINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.233Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:16Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-05T18:30:00Z"
+    },
+    "listing_day_close": 713.65,
+    "listing_day_high": 760.0,
+    "listing_day_low": 692.55,
+    "listing_day_volume": 16614143.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.233Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf8c"
+    },
+    "symbol": "OSWALPUMPS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.233Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:09:55Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-19T18:30:00Z"
+    },
+    "listing_day_close": 625.35,
+    "listing_day_high": 652.0,
+    "listing_day_low": 622.25,
+    "listing_day_volume": 16374659.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.233Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf8e"
+    },
+    "symbol": "PACEDIGITK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.234Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:17Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-05T18:30:00Z"
+    },
+    "listing_day_close": 217.99,
+    "listing_day_high": 231.0,
+    "listing_day_low": 207.0,
+    "listing_day_volume": 36039509.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.234Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf90"
+    },
+    "symbol": "PASHUPATI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.234Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:10:10Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-16T18:30:00Z"
+    },
+    "listing_day_close": 688.35,
+    "listing_day_high": 690.0,
+    "listing_day_low": 661.0,
+    "listing_day_volume": 6632.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.234Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf92"
+    },
+    "symbol": "PATELRMART",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.235Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:19Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "listing_day_close": 287.7,
+    "listing_day_high": 305.0,
+    "listing_day_low": 285.55,
+    "listing_day_volume": 3859718.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.235Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf94"
+    },
+    "symbol": "PICCADIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.235Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:20Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-01T18:30:00Z"
+    },
+    "listing_day_close": 603.5,
+    "listing_day_high": 630.0,
+    "listing_day_low": 600.05,
+    "listing_day_volume": 110937.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.235Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf96"
+    },
+    "symbol": "PIRAMALFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.236Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:21Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-06T18:30:00Z"
+    },
+    "listing_day_close": 1323.0,
+    "listing_day_high": 1323.0,
+    "listing_day_low": 1260.0,
+    "listing_day_volume": 1256400.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.236Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf98"
+    },
+    "symbol": "PRABHA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.236Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:22Z"
+    },
+    "listing_date": {
+      "$date": "2025-03-18T18:30:00Z"
+    },
+    "listing_day_close": 210.94,
+    "listing_day_high": 222.05,
+    "listing_day_low": 210.94,
+    "listing_day_volume": 61162.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.236Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf9a"
+    },
+    "symbol": "PRIMO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.237Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:23Z"
+    },
+    "listing_date": {
+      "$date": "2025-04-21T18:30:00Z"
+    },
+    "listing_day_close": 27.96,
+    "listing_day_high": 29.48,
+    "listing_day_low": 27.8,
+    "listing_day_volume": 60302.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.237Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf9c"
+    },
+    "symbol": "PROSTARM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.237Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:24Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-02T18:30:00Z"
+    },
+    "listing_day_close": 126.0,
+    "listing_day_high": 126.0,
+    "listing_day_low": 120.0,
+    "listing_day_volume": 6449680.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.237Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbf9e"
+    },
+    "symbol": "PROTEAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.237Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:25Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-05T18:30:00Z"
+    },
+    "listing_day_close": 1469.7,
+    "listing_day_high": 1535.0,
+    "listing_day_low": 1457.05,
+    "listing_day_volume": 235483.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.237Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfa0"
+    },
+    "symbol": "QPOWER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.239Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:26Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-23T18:30:00Z"
+    },
+    "listing_day_close": 387.9,
+    "listing_day_high": 430.75,
+    "listing_day_low": 382.5,
+    "listing_day_volume": 11080676.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.239Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfa2"
+    },
+    "symbol": "QUADFUTURE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.240Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:27Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-13T18:30:00Z"
+    },
+    "listing_day_close": 444.0,
+    "listing_day_high": 444.0,
+    "listing_day_low": 362.1,
+    "listing_day_volume": 14675829.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.240Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfa4"
+    },
+    "symbol": "RACLGEAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.241Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:28Z"
+    },
+    "listing_date": {
+      "$date": "2024-11-26T18:30:00Z"
+    },
+    "listing_day_close": 847.9,
+    "listing_day_high": 860.0,
+    "listing_day_low": 820.05,
+    "listing_day_volume": 10640.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.241Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfa6"
+    },
+    "symbol": "RAJOOENG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.241Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:29Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-28T18:30:00Z"
+    },
+    "listing_day_close": 132.82,
+    "listing_day_high": 133.7,
+    "listing_day_low": 129.15,
+    "listing_day_volume": 209806.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.241Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfa8"
+    },
+    "symbol": "REGAAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.242Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:31Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-19T18:30:00Z"
+    },
+    "listing_day_close": 131.58,
+    "listing_day_high": 145.7,
+    "listing_day_low": 130.25,
+    "listing_day_volume": 46908688.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.242Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfaa"
+    },
+    "symbol": "RHETAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.243Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:10:31Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-25T18:30:00Z"
+    },
+    "listing_day_close": 21.29,
+    "listing_day_high": 22.39,
+    "listing_day_low": 20.32,
+    "listing_day_volume": 2487834.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.243Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfac"
+    },
+    "symbol": "RMDRIP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.244Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:32Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-29T18:30:00Z"
+    },
+    "listing_day_close": 66.3,
+    "listing_day_high": 66.8,
+    "listing_day_low": 62.55,
+    "listing_day_volume": 1659290.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.243Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfae"
+    },
+    "symbol": "RNBDENIMS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.244Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-08T23:45:03Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-03T18:30:00Z"
+    },
+    "listing_day_close": 103.35,
+    "listing_day_high": 128.98,
+    "listing_day_low": 100.41,
+    "listing_day_volume": 166945.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.244Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfb0"
+    },
+    "symbol": "ROSSTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.245Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:35Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-08T18:30:00Z"
+    },
+    "listing_day_close": 531.75,
+    "listing_day_high": 579.0,
+    "listing_day_low": 531.75,
+    "listing_day_volume": 177963.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.245Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfb2"
+    },
+    "symbol": "RUBICON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.246Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:10:39Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-15T18:30:00Z"
+    },
+    "listing_day_close": 628.2,
+    "listing_day_high": 639.0,
+    "listing_day_low": 587.35,
+    "listing_day_volume": 24688246.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.246Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfb4"
+    },
+    "symbol": "SAATVIKGL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.246Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:37Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-25T18:30:00Z"
+    },
+    "listing_day_close": 440.7,
+    "listing_day_high": 465.0,
+    "listing_day_low": 427.3,
+    "listing_day_volume": 6749933.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.246Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfb6"
+    },
+    "symbol": "SAILIFE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.248Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:39Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-17T18:30:00Z"
+    },
+    "listing_day_close": 764.65,
+    "listing_day_high": 780.0,
+    "listing_day_low": 650.0,
+    "listing_day_volume": 46659166.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.247Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfb8"
+    },
+    "symbol": "SAMBHV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.248Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:40Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-01T18:30:00Z"
+    },
+    "listing_day_close": 97.59,
+    "listing_day_high": 111.0,
+    "listing_day_low": 96.25,
+    "listing_day_volume": 57089913.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.248Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfba"
+    },
+    "symbol": "SANATHAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.248Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:41Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-26T18:30:00Z"
+    },
+    "listing_day_close": 388.35,
+    "listing_day_high": 423.0,
+    "listing_day_low": 382.0,
+    "listing_day_volume": 13703609.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.248Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfbc"
+    },
+    "symbol": "SCODATUBES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.249Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:42Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-03T18:30:00Z"
+    },
+    "listing_day_close": 147.0,
+    "listing_day_high": 147.0,
+    "listing_day_low": 135.1,
+    "listing_day_volume": 4683120.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.249Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfbe"
+    },
+    "symbol": "SENORES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.249Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:42Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-29T18:30:00Z"
+    },
+    "listing_day_close": 557.05,
+    "listing_day_high": 609.65,
+    "listing_day_low": 538.85,
+    "listing_day_volume": 14234437.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.249Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfc0"
+    },
+    "symbol": "SGFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.249Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:43Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-04T18:30:00Z"
+    },
+    "listing_day_close": 398.15,
+    "listing_day_high": 412.0,
+    "listing_day_low": 395.0,
+    "listing_day_volume": 59292.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.249Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfc2"
+    },
+    "symbol": "SGLTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.251Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:44Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-12T18:30:00Z"
+    },
+    "listing_day_close": 163.28,
+    "listing_day_high": 182.0,
+    "listing_day_low": 161.0,
+    "listing_day_volume": 45302299.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.251Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfc4"
+    },
+    "symbol": "SGMART",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.251Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:45Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-11T18:30:00Z"
+    },
+    "listing_day_close": 358.1,
+    "listing_day_high": 369.0,
+    "listing_day_low": 350.5,
+    "listing_day_volume": 106559.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.251Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfc6"
+    },
+    "symbol": "SHANTIGOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.251Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:46Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-31T18:30:00Z"
+    },
+    "listing_day_close": 229.38,
+    "listing_day_high": 238.36,
+    "listing_day_low": 227.1,
+    "listing_day_volume": 22998671.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.251Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfc8"
+    },
+    "symbol": "SHREEJISPG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.253Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:52Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "listing_day_close": 255.1,
+    "listing_day_high": 275.0,
+    "listing_day_low": 252.2,
+    "listing_day_volume": 14197871.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.253Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfca"
+    },
+    "symbol": "SHRINGARMS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.253Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:53Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-16T18:30:00Z"
+    },
+    "listing_day_close": 184.88,
+    "listing_day_high": 191.0,
+    "listing_day_low": 182.6,
+    "listing_day_volume": 23282861.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.253Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfcc"
+    },
+    "symbol": "SMARTWORKS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.254Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:53Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-16T18:30:00Z"
+    },
+    "listing_day_close": 445.05,
+    "listing_day_high": 469.25,
+    "listing_day_low": 435.0,
+    "listing_day_volume": 17540423.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.254Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfce"
+    },
+    "symbol": "SOLARWORLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.254Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:54Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "listing_day_close": 323.5,
+    "listing_day_high": 388.5,
+    "listing_day_low": 320.5,
+    "listing_day_volume": 9257897.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.254Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfd0"
+    },
+    "symbol": "SOLEX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.255Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:55Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-07T18:30:00Z"
+    },
+    "listing_day_close": 1715.35,
+    "listing_day_high": 1826.35,
+    "listing_day_low": 1652.45,
+    "listing_day_volume": 78973.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.255Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfd2"
+    },
+    "symbol": "SPECTRUM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.256Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:56Z"
+    },
+    "listing_date": {
+      "$date": "2025-03-27T18:30:00Z"
+    },
+    "listing_day_close": 2057.05,
+    "listing_day_high": 2249.95,
+    "listing_day_low": 1915.55,
+    "listing_day_volume": 13043.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.256Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfd4"
+    },
+    "symbol": "STALLION",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.256Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:57Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-22T18:30:00Z"
+    },
+    "listing_day_close": 126.0,
+    "listing_day_high": 126.0,
+    "listing_day_low": 120.0,
+    "listing_day_volume": 7572766.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.256Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfd6"
+    },
+    "symbol": "STLNETWORK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.256Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:58Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-03T18:30:00Z"
+    },
+    "listing_day_close": 21.75,
+    "listing_day_high": 23.0,
+    "listing_day_low": 21.75,
+    "listing_day_volume": 2817454.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.256Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfd8"
+    },
+    "symbol": "STUDDS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.257Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:33:59Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-06T18:30:00Z"
+    },
+    "listing_day_close": 560.3,
+    "listing_day_high": 585.0,
+    "listing_day_low": 557.0,
+    "listing_day_volume": 5490621.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.257Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfda"
+    },
+    "symbol": "STYL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.258Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:00Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "listing_day_close": 411.45,
+    "listing_day_high": 437.45,
+    "listing_day_low": 406.0,
+    "listing_day_volume": 10374909.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.257Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfdc"
+    },
+    "symbol": "SUPREME",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.259Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:00Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-02T18:30:00Z"
+    },
+    "listing_day_close": 88.44,
+    "listing_day_high": 92.35,
+    "listing_day_low": 84.9,
+    "listing_day_volume": 117829.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.258Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfde"
+    },
+    "symbol": "SURAKSHA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.259Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:01Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-05T18:30:00Z"
+    },
+    "listing_day_close": 417.25,
+    "listing_day_high": 449.0,
+    "listing_day_low": 414.95,
+    "listing_day_volume": 6747269.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.259Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfe0"
+    },
+    "symbol": "SYSTMTXC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.260Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:02Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-05T18:30:00Z"
+    },
+    "listing_day_close": 139.77,
+    "listing_day_high": 142.98,
+    "listing_day_low": 126.1,
+    "listing_day_volume": 401671.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.260Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfe2"
+    },
+    "symbol": "TATACAP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.260Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:03Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-12T18:30:00Z"
+    },
+    "listing_day_close": 330.5,
+    "listing_day_high": 333.0,
+    "listing_day_low": 326.25,
+    "listing_day_volume": 117611923.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.260Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfe4"
+    },
+    "symbol": "THELEELA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.261Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:04Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-01T18:30:00Z"
+    },
+    "listing_day_close": 435.55,
+    "listing_day_high": 438.9,
+    "listing_day_low": 405.0,
+    "listing_day_volume": 13347851.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.261Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfe6"
+    },
+    "symbol": "TIGERLOGS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.262Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:05Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-17T18:30:00Z"
+    },
+    "listing_day_close": 51.37,
+    "listing_day_high": 56.69,
+    "listing_day_low": 49.65,
+    "listing_day_volume": 1367904.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.262Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfe8"
+    },
+    "symbol": "TINNARUBR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.262Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:06Z"
+    },
+    "listing_date": {
+      "$date": "2025-04-16T18:30:00Z"
+    },
+    "listing_day_close": 1021.15,
+    "listing_day_high": 1040.0,
+    "listing_day_low": 1005.4,
+    "listing_day_volume": 8204.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.262Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfea"
+    },
+    "symbol": "TMCV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.263Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:07Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-11T18:30:00Z"
+    },
+    "listing_day_close": 329.45,
+    "listing_day_high": 345.0,
+    "listing_day_low": 320.0,
+    "listing_day_volume": 31273277.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.263Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfec"
+    },
+    "symbol": "TRANSRAILL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.263Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:08Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-26T18:30:00Z"
+    },
+    "listing_day_close": 553.55,
+    "listing_day_high": 605.0,
+    "listing_day_low": 544.5,
+    "listing_day_volume": 19363730.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.263Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbfee"
+    },
+    "symbol": "TRAVELFOOD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.264Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:11:21Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-13T18:30:00Z"
+    },
+    "listing_day_close": 1074.8,
+    "listing_day_high": 1130.0,
+    "listing_day_low": 1066.0,
+    "listing_day_volume": 4942773.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.264Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbff0"
+    },
+    "symbol": "UNIMECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.264Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:10Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-30T18:30:00Z"
+    },
+    "listing_day_close": 1376.25,
+    "listing_day_high": 1485.0,
+    "listing_day_low": 1327.75,
+    "listing_day_volume": 8420710.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.264Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbff2"
+    },
+    "symbol": "URBANCO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.265Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:11Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-16T18:30:00Z"
+    },
+    "listing_day_close": 166.83,
+    "listing_day_high": 179.0,
+    "listing_day_low": 161.37,
+    "listing_day_volume": 196030557.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.265Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbff4"
+    },
+    "symbol": "VENTIVE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:12Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-29T18:30:00Z"
+    },
+    "listing_day_close": 704.35,
+    "listing_day_high": 749.0,
+    "listing_day_low": 702.0,
+    "listing_day_volume": 12283534.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.265Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbff6"
+    },
+    "symbol": "VIKRAMSOLR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:13Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "listing_day_close": 356.4,
+    "listing_day_high": 381.65,
+    "listing_day_low": 333.65,
+    "listing_day_volume": 66991042.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbff8"
+    },
+    "symbol": "VIKRAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:14Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-02T18:30:00Z"
+    },
+    "listing_day_close": 95.71,
+    "listing_day_high": 101.77,
+    "listing_day_low": 93.26,
+    "listing_day_volume": 79381336.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbffa"
+    },
+    "symbol": "VMM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-16T07:11:30Z"
+    },
+    "listing_date": {
+      "$date": "2024-12-17T18:30:00Z"
+    },
+    "listing_day_close": 111.93,
+    "listing_day_high": 114.4,
+    "listing_day_low": 104.0,
+    "listing_day_volume": 728732202.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.266Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbffc"
+    },
+    "symbol": "VMSTMT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.268Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:17Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-23T18:30:00Z"
+    },
+    "listing_day_close": 99.65,
+    "listing_day_high": 105.0,
+    "listing_day_low": 99.65,
+    "listing_day_volume": 5353619.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.268Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbffe"
+    },
+    "symbol": "WAAREERTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.269Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:18Z"
+    },
+    "listing_date": {
+      "$date": "2025-04-08T18:30:00Z"
+    },
+    "listing_day_close": 856.25,
+    "listing_day_high": 884.95,
+    "listing_day_low": 841.15,
+    "listing_day_volume": 68541.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.269Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc000"
+    },
+    "symbol": "WEWORK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.269Z"
+    },
+    "last_updated": {
+      "$date": "2025-11-13T22:34:19Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-09T18:30:00Z"
+    },
+    "listing_day_close": 628.65,
+    "listing_day_high": 650.15,
+    "listing_day_low": 614.25,
+    "listing_day_volume": 7071726.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.269Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc002"
+    },
+    "symbol": "AEQUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.269Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:39Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-09T18:30:00Z"
+    },
+    "listing_day_close": 151.29,
+    "listing_day_high": 157.0,
+    "listing_day_low": 135.4,
+    "listing_day_volume": 115621297.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.269Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc004"
+    },
+    "symbol": "BETA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:40Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-23T18:30:00Z"
+    },
+    "listing_day_close": 1617.0,
+    "listing_day_high": 1698.95,
+    "listing_day_low": 1530.1,
+    "listing_day_volume": 6019.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc006"
+    },
+    "symbol": "CAPILLARY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:42Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-20T18:30:00Z"
+    },
+    "listing_day_close": 606.5,
+    "listing_day_high": 633.9,
+    "listing_day_low": 570.05,
+    "listing_day_volume": 24241476.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc008"
+    },
+    "symbol": "CORONA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:43Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-14T18:30:00Z"
+    },
+    "listing_day_close": 1438.4,
+    "listing_day_high": 1497.8,
+    "listing_day_low": 1413.0,
+    "listing_day_volume": 12889175.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc00a"
+    },
+    "symbol": "EXCELSOFT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.273Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:45Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-25T18:30:00Z"
+    },
+    "listing_day_close": 125.97,
+    "listing_day_high": 142.59,
+    "listing_day_low": 125.13,
+    "listing_day_volume": 78134073.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.271Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc00c"
+    },
+    "symbol": "HCC-RE1",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.273Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:46Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-11T18:30:00Z"
+    },
+    "listing_day_close": 4.65,
+    "listing_day_high": 4.82,
+    "listing_day_low": 4.01,
+    "listing_day_volume": 42356897.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.273Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc00e"
+    },
+    "symbol": "JAYKAY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.274Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:47Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-02T18:30:00Z"
+    },
+    "listing_day_close": 211.7,
+    "listing_day_high": 219.7,
+    "listing_day_low": 208.25,
+    "listing_day_volume": 95084.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.274Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc010"
+    },
+    "symbol": "KNAGRI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.274Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:48Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-08T18:30:00Z"
+    },
+    "listing_day_close": 203.25,
+    "listing_day_high": 207.0,
+    "listing_day_low": 189.0,
+    "listing_day_volume": 7748.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.274Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc012"
+    },
+    "symbol": "KSR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.274Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:49Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-26T18:30:00Z"
+    },
+    "listing_day_close": 32.28,
+    "listing_day_high": 34.95,
+    "listing_day_low": 32.28,
+    "listing_day_volume": 22486.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.274Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc014"
+    },
+    "symbol": "LEMERITE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.275Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:51Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-11T18:30:00Z"
+    },
+    "listing_day_close": 513.75,
+    "listing_day_high": 537.85,
+    "listing_day_low": 509.0,
+    "listing_day_volume": 101902.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.275Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc016"
+    },
+    "symbol": "MEESHO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.275Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:52Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-09T18:30:00Z"
+    },
+    "listing_day_close": 170.09,
+    "listing_day_high": 177.49,
+    "listing_day_low": 162.0,
+    "listing_day_volume": 400297561.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.275Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc018"
+    },
+    "symbol": "MODINATUR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.277Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:53Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-10T18:30:00Z"
+    },
+    "listing_day_close": 379.55,
+    "listing_day_high": 390.0,
+    "listing_day_low": 352.25,
+    "listing_day_volume": 3378.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.277Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc01a"
+    },
+    "symbol": "MODIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:54Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "listing_day_close": 394.45,
+    "listing_day_high": 409.0,
+    "listing_day_low": 371.55,
+    "listing_day_volume": 146856.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.277Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc01c"
+    },
+    "symbol": "PAUSHAKLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:56Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-30T18:30:00Z"
+    },
+    "listing_day_close": 588.15,
+    "listing_day_high": 625.0,
+    "listing_day_low": 580.0,
+    "listing_day_volume": 17434.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc01e"
+    },
+    "symbol": "PINELABS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:57Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "listing_day_close": 250.89,
+    "listing_day_high": 284.0,
+    "listing_day_low": 234.17,
+    "listing_day_volume": 97868249.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc020"
+    },
+    "symbol": "PWL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:43:59Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-17T18:30:00Z"
+    },
+    "listing_day_close": 155.24,
+    "listing_day_high": 161.99,
+    "listing_day_low": 137.35,
+    "listing_day_volume": 273389694.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.278Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc022"
+    },
+    "symbol": "SHILCTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.280Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:01Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-23T18:30:00Z"
+    },
+    "listing_day_close": 4182.1,
+    "listing_day_high": 4350.0,
+    "listing_day_low": 4156.0,
+    "listing_day_volume": 5020.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.280Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc024"
+    },
+    "symbol": "SHIVAUM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.281Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:02Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "listing_day_close": 300.0,
+    "listing_day_high": 312.0,
+    "listing_day_low": 298.5,
+    "listing_day_volume": 54.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.281Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc026"
+    },
+    "symbol": "SKFINDUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.281Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:03Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-04T18:30:00Z"
+    },
+    "listing_day_close": 2671.8,
+    "listing_day_high": 2720.0,
+    "listing_day_low": 2498.5,
+    "listing_day_volume": 31893.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.281Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc028"
+    },
+    "symbol": "SUDEEPPHRM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.281Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:04Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-27T18:30:00Z"
+    },
+    "listing_day_close": 774.15,
+    "listing_day_high": 795.0,
+    "listing_day_low": 725.0,
+    "listing_day_volume": 39753452.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.281Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc02a"
+    },
+    "symbol": "TENNIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.282Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:05Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-18T18:30:00Z"
+    },
+    "listing_day_close": 490.8,
+    "listing_day_high": 517.0,
+    "listing_day_low": 480.1,
+    "listing_day_volume": 101572434.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.282Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc02c"
+    },
+    "symbol": "UTLSOLAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.282Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:07Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-19T18:30:00Z"
+    },
+    "listing_day_close": 208.44,
+    "listing_day_high": 230.99,
+    "listing_day_low": 205.25,
+    "listing_day_volume": 17145774.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.282Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc02e"
+    },
+    "symbol": "VIDYAWIRES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.284Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-12T02:26:42Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-09T18:30:00Z"
+    },
+    "listing_day_close": 53.17,
+    "listing_day_high": 58.45,
+    "listing_day_low": 50.0,
+    "listing_day_volume": 95216157.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.284Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc030"
+    },
+    "symbol": "WAKEFIT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.284Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-17T17:44:09Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-14T18:30:00Z"
+    },
+    "listing_day_close": 192.29,
+    "listing_day_high": 203.5,
+    "listing_day_low": 177.0,
+    "listing_day_volume": 47754828.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.284Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc032"
+    },
+    "symbol": "PARKHOSPS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.284Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-18T00:06:52Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-16T18:30:00Z"
+    },
+    "listing_day_close": 147.95,
+    "listing_day_high": 165.87,
+    "listing_day_low": 146.93,
+    "listing_day_volume": 41035070.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.284Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc034"
+    },
+    "symbol": "RUDRA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.285Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-21T22:59:08Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-18T18:30:00Z"
+    },
+    "listing_day_close": 27.47,
+    "listing_day_high": 29.0,
+    "listing_day_low": 26.22,
+    "listing_day_volume": 256426.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.285Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc036"
+    },
+    "symbol": "SWANDEF",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.286Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-21T22:59:10Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-20T18:30:00Z"
+    },
+    "listing_day_close": 37.8,
+    "listing_day_high": 37.8,
+    "listing_day_low": 37.8,
+    "listing_day_volume": 7098.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.286Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc038"
+    },
+    "symbol": "KSHINTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.287Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-23T22:52:15Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-22T18:30:00Z"
+    },
+    "listing_day_close": 355.0,
+    "listing_day_high": 370.25,
+    "listing_day_low": 350.0,
+    "listing_day_volume": 4332284.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.287Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc03a"
+    },
+    "symbol": "GKSL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.287Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-30T22:54:52Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-29T18:30:00Z"
+    },
+    "listing_day_close": 104.54,
+    "listing_day_high": 123.0,
+    "listing_day_low": 102.9,
+    "listing_day_volume": 29869973.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.287Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc03c"
+    },
+    "symbol": "KRISHNADEF",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.287Z"
+    },
+    "last_updated": {
+      "$date": "2025-12-30T22:54:58Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-29T18:30:00Z"
+    },
+    "listing_day_close": 813.8,
+    "listing_day_high": 843.75,
+    "listing_day_low": 800.0,
+    "listing_day_volume": 41789.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.287Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc03e"
+    },
+    "symbol": "ALGOQUANT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.289Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-06T22:58:14Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-05T18:30:00Z"
+    },
+    "listing_day_close": 69.15,
+    "listing_day_high": 71.01,
+    "listing_day_low": 66.0,
+    "listing_day_volume": 1425674.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc040"
+    },
+    "symbol": "BUILDPRO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.289Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T04:39:07Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-08T18:30:00Z"
+    },
+    "listing_day_close": 812.55,
+    "listing_day_high": 898.05,
+    "listing_day_low": 812.55,
+    "listing_day_volume": 297359.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.289Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc042"
+    },
+    "symbol": "AGARWALEYE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.290Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-16T01:34:29Z"
+    },
+    "listing_date": {
+      "$date": "2025-02-03T18:30:00Z"
+    },
+    "listing_day_close": 401.65,
+    "listing_day_high": 412.9,
+    "listing_day_low": 370.2,
+    "listing_day_volume": 15635750.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.290Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc044"
+    },
+    "symbol": "AHCL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.290Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:47Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-02T18:30:00Z"
+    },
+    "listing_day_close": 91.73,
+    "listing_day_high": 92.5,
+    "listing_day_low": 90.78,
+    "listing_day_volume": 6429647.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.290Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc046"
+    },
+    "symbol": "AMANTA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.291Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:48Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-08T18:30:00Z"
+    },
+    "listing_day_close": 141.75,
+    "listing_day_high": 141.75,
+    "listing_day_low": 132.0,
+    "listing_day_volume": 4273222.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.291Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc048"
+    },
+    "symbol": "EMMVEE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.291Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-18T00:15:29Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-17T18:30:00Z"
+    },
+    "listing_day_close": 219.4,
+    "listing_day_high": 227.71,
+    "listing_day_low": 207.0,
+    "listing_day_volume": 36063490.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.291Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc04a"
+    },
+    "symbol": "ICICIAMC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.291Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:51Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-18T18:30:00Z"
+    },
+    "listing_day_close": 2585.9,
+    "listing_day_high": 2663.4,
+    "listing_day_low": 2575.0,
+    "listing_day_volume": 31422557.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.291Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc04c"
+    },
+    "symbol": "ITCHOTELS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.293Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:52Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-28T18:30:00Z"
+    },
+    "listing_day_close": 171.85,
+    "listing_day_high": 180.0,
+    "listing_day_low": 171.0,
+    "listing_day_volume": 24895079.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.293Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc04e"
+    },
+    "symbol": "LOTUSDEV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.293Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:53Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-05T18:30:00Z"
+    },
+    "listing_day_close": 195.67,
+    "listing_day_high": 195.8,
+    "listing_day_low": 176.7,
+    "listing_day_volume": 91822808.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.293Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc050"
+    },
+    "symbol": "NEPHROPLUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.294Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:54Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-16T18:30:00Z"
+    },
+    "listing_day_close": 471.25,
+    "listing_day_high": 499.0,
+    "listing_day_low": 463.8,
+    "listing_day_volume": 15351924.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.294Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc052"
+    },
+    "symbol": "ONESOURCE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.295Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:55Z"
+    },
+    "listing_date": {
+      "$date": "2025-01-23T18:30:00Z"
+    },
+    "listing_day_close": 1710.0,
+    "listing_day_high": 1800.0,
+    "listing_day_low": 1710.0,
+    "listing_day_volume": 1533351.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.295Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc054"
+    },
+    "symbol": "RAYMONDREL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.295Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:56Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "listing_day_close": 969.2,
+    "listing_day_high": 1050.0,
+    "listing_day_low": 950.0,
+    "listing_day_volume": 1113469.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.295Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc056"
+    },
+    "symbol": "TRUALT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.295Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-18T07:31:57Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-02T18:30:00Z"
+    },
+    "listing_day_close": 530.95,
+    "listing_day_high": 549.0,
+    "listing_day_low": 512.8,
+    "listing_day_volume": 15118475.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.295Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc058"
+    },
+    "symbol": "BHARATCOAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.296Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-19T23:04:08Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-18T18:30:00Z"
+    },
+    "listing_day_close": 40.58,
+    "listing_day_high": 45.09,
+    "listing_day_low": 40.12,
+    "listing_day_volume": 738039378.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.296Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc05a"
+    },
+    "symbol": "HALDER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.296Z"
+    },
+    "last_updated": {
+      "$date": "2026-01-19T23:04:09Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-18T18:30:00Z"
+    },
+    "listing_day_close": 272.37,
+    "listing_day_high": 272.37,
+    "listing_day_low": 272.3,
+    "listing_day_volume": 18203.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.296Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc05c"
+    },
+    "symbol": "ADVAIT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.297Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T01:49:21Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-19T18:30:00Z"
+    },
+    "listing_day_close": 1391.8,
+    "listing_day_high": 1538.9,
+    "listing_day_low": 1366.8,
+    "listing_day_volume": 48593.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc05e"
+    },
+    "symbol": "AMAGI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.297Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-13T03:31:40Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-20T18:30:00Z"
+    },
+    "listing_day_close": 348.25,
+    "listing_day_high": 356.95,
+    "listing_day_low": 318.0,
+    "listing_day_volume": 26831287.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.297Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc060"
+    },
+    "symbol": "SHADOWFAX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.299Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-01T23:42:36Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-27T18:30:00Z"
+    },
+    "listing_day_close": 109.98,
+    "listing_day_high": 119.67,
+    "listing_day_low": 109.0,
+    "listing_day_volume": 28514464.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.299Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc062"
+    },
+    "symbol": "ARIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.299Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-08T23:50:46Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-24T18:30:00Z"
+    },
+    "listing_day_close": 174.38,
+    "listing_day_high": 208.5,
+    "listing_day_low": 171.49,
+    "listing_day_volume": 13200640.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.299Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc064"
+    },
+    "symbol": "AYE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-16T23:43:00Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-15T18:30:00Z"
+    },
+    "listing_day_close": 128.91,
+    "listing_day_high": 133.8,
+    "listing_day_low": 120.55,
+    "listing_day_volume": 9822584.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc066"
+    },
+    "symbol": "FRACTAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-16T23:43:01Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-15T18:30:00Z"
+    },
+    "listing_day_close": 847.15,
+    "listing_day_high": 897.3,
+    "listing_day_low": 831.3,
+    "listing_day_volume": 6818588.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc068"
+    },
+    "symbol": "KWIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-16T23:43:03Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-15T18:30:00Z"
+    },
+    "listing_day_close": 29.42,
+    "listing_day_high": 31.29,
+    "listing_day_low": 28.31,
+    "listing_day_volume": 49715872.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc06a"
+    },
+    "symbol": "DCMSIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-17T23:44:29Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-16T18:30:00Z"
+    },
+    "listing_day_close": 52.21,
+    "listing_day_high": 52.21,
+    "listing_day_low": 49.5,
+    "listing_day_volume": 77108.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.300Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc06c"
+    },
+    "symbol": "DSFCL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.302Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-17T23:44:30Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-16T18:30:00Z"
+    },
+    "listing_day_close": 47.5,
+    "listing_day_high": 52.5,
+    "listing_day_low": 47.5,
+    "listing_day_volume": 79374.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc06e"
+    },
+    "symbol": "GICL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.302Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-18T23:43:01Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-17T18:30:00Z"
+    },
+    "listing_day_close": 49.2,
+    "listing_day_high": 50.35,
+    "listing_day_low": 47.0,
+    "listing_day_volume": 132997.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc070"
+    },
+    "symbol": "CEINSYS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.304Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-19T23:37:07Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-18T18:30:00Z"
+    },
+    "listing_day_close": 1010.8,
+    "listing_day_high": 1041.4,
+    "listing_day_low": 1002.0,
+    "listing_day_volume": 23221.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.302Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc072"
+    },
+    "symbol": "BONLON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.304Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-22T23:47:43Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-19T18:30:00Z"
+    },
+    "listing_day_close": 46.65,
+    "listing_day_high": 47.52,
+    "listing_day_low": 43.0,
+    "listing_day_volume": 7311.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.304Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc074"
+    },
+    "symbol": "AARNAV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.304Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-25T23:41:19Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-24T18:30:00Z"
+    },
+    "listing_day_close": 27.93,
+    "listing_day_high": 29.0,
+    "listing_day_low": 25.28,
+    "listing_day_volume": 78610.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.304Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc076"
+    },
+    "symbol": "TCC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.306Z"
+    },
+    "last_updated": {
+      "$date": "2026-02-25T23:41:20Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-24T18:30:00Z"
+    },
+    "listing_day_close": 466.25,
+    "listing_day_high": 526.4,
+    "listing_day_low": 456.05,
+    "listing_day_volume": 422570.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc078"
+    },
+    "symbol": "GAUDIUMIVF",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.306Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-18T00:15:55Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-26T18:30:00Z"
+    },
+    "listing_day_close": 80.26,
+    "listing_day_high": 87.15,
+    "listing_day_low": 79.5,
+    "listing_day_volume": 8849112.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.306Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc07a"
+    },
+    "symbol": "CLEANMAX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.307Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T23:36:10Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "listing_day_close": 867.5,
+    "listing_day_high": 960.0,
+    "listing_day_low": 768.0,
+    "listing_day_volume": 6824962.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.307Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc07c"
+    },
+    "symbol": "SRTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.308Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-02T23:36:12Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "listing_day_close": 71.4,
+    "listing_day_high": 71.4,
+    "listing_day_low": 66.0,
+    "listing_day_volume": 6126419.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.308Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc07e"
+    },
+    "symbol": "PNGSREVA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.308Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-04T23:35:58Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-03T18:30:00Z"
+    },
+    "listing_day_close": 411.7,
+    "listing_day_high": 433.0,
+    "listing_day_low": 360.0,
+    "listing_day_volume": 4798593.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.308Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc080"
+    },
+    "symbol": "OMNI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.308Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-17T23:53:51Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-04T18:30:00Z"
+    },
+    "listing_day_close": 204.93,
+    "listing_day_high": 224.7,
+    "listing_day_low": 202.0,
+    "listing_day_volume": 6645675.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.308Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc082"
+    },
+    "symbol": "INA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.309Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-09T23:32:32Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-08T18:30:00Z"
+    },
+    "listing_day_close": 96.81,
+    "listing_day_high": 98.48,
+    "listing_day_low": 93.6,
+    "listing_day_volume": 345985.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.309Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc084"
+    },
+    "symbol": "SEDEMAC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.310Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-11T23:36:45Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-10T18:30:00Z"
+    },
+    "listing_day_close": 1451.1,
+    "listing_day_high": 1613.5,
+    "listing_day_low": 1420.0,
+    "listing_day_volume": 3815477.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.310Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc086"
+    },
+    "symbol": "VITAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.310Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-11T23:36:46Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-10T18:30:00Z"
+    },
+    "listing_day_close": 41.5,
+    "listing_day_high": 44.5,
+    "listing_day_low": 41.2,
+    "listing_day_volume": 49574.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.310Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc088"
+    },
+    "symbol": "AEPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.311Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-09T00:08:16Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "listing_day_close": 18.19,
+    "listing_day_high": 18.98,
+    "listing_day_low": 16.96,
+    "listing_day_volume": 76331.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.311Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc08a"
+    },
+    "symbol": "KOTYARK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.312Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-19T23:56:12Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "listing_day_close": 360.65,
+    "listing_day_high": 368.0,
+    "listing_day_low": 316.0,
+    "listing_day_volume": 312674.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.311Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc08c"
+    },
+    "symbol": "MARSONS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.312Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-16T00:02:39Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "listing_day_close": 138.54,
+    "listing_day_high": 152.0,
+    "listing_day_low": 137.0,
+    "listing_day_volume": 907069.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.312Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc08e"
+    },
+    "symbol": "RSL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.313Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-19T23:37:42Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "listing_day_close": 113.03,
+    "listing_day_high": 122.1,
+    "listing_day_low": 111.16,
+    "listing_day_volume": 11720153.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.313Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc090"
+    },
+    "symbol": "SINGERIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.313Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-19T23:37:44Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "listing_day_close": 70.42,
+    "listing_day_high": 75.79,
+    "listing_day_low": 69.01,
+    "listing_day_volume": 61428.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.313Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc092"
+    },
+    "symbol": "INNOVISION",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.314Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-23T23:44:10Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-22T18:30:00Z"
+    },
+    "listing_day_close": 374.2,
+    "listing_day_high": 470.0,
+    "listing_day_low": 374.2,
+    "listing_day_volume": 7314994.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.314Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc094"
+    },
+    "symbol": "GSPCROP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.314Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-24T23:44:40Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-23T18:30:00Z"
+    },
+    "listing_day_close": 356.25,
+    "listing_day_high": 364.0,
+    "listing_day_low": 328.0,
+    "listing_day_volume": 8598096.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.314Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc096"
+    },
+    "symbol": "BCPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.315Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-30T00:21:57Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-26T18:30:00Z"
+    },
+    "listing_day_close": 72.28,
+    "listing_day_high": 74.0,
+    "listing_day_low": 60.0,
+    "listing_day_volume": 187142.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.315Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc098"
+    },
+    "symbol": "CMPDI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.316Z"
+    },
+    "last_updated": {
+      "$date": "2026-03-30T23:59:11Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-29T18:30:00Z"
+    },
+    "listing_day_close": 154.06,
+    "listing_day_high": 168.7,
+    "listing_day_low": 152.22,
+    "listing_day_volume": 9685688.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.316Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc09a"
+    },
+    "symbol": "RMC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.316Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-01T23:54:23Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-31T18:30:00Z"
+    },
+    "listing_day_close": 370.9,
+    "listing_day_high": 370.9,
+    "listing_day_low": 370.4,
+    "listing_day_volume": 3000.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.316Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc09c"
+    },
+    "symbol": "AMIRCHAND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.316Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-02T23:55:29Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "listing_day_close": 180.0,
+    "listing_day_high": 200.0,
+    "listing_day_low": 180.0,
+    "listing_day_volume": 17587998.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.316Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc09e"
+    },
+    "symbol": "POWERICA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.318Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-02T23:55:30Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "listing_day_close": 390.0,
+    "listing_day_high": 397.0,
+    "listing_day_low": 365.1,
+    "listing_day_volume": 4226926.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.318Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0a0"
+    },
+    "symbol": "SAIPARENT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.319Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-02T23:55:31Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "listing_day_close": 405.7,
+    "listing_day_high": 416.0,
+    "listing_day_low": 400.0,
+    "listing_day_volume": 1052029.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.319Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0a2"
+    },
+    "symbol": "NIMBSPROJ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.319Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-06T23:59:47Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-05T18:30:00Z"
+    },
+    "listing_day_close": 198.98,
+    "listing_day_high": 199.02,
+    "listing_day_low": 193.0,
+    "listing_day_volume": 267713.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.319Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0a4"
+    },
+    "symbol": "SAHLIBHFI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.320Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-13T00:34:05Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-09T18:30:00Z"
+    },
+    "listing_day_close": 84.3,
+    "listing_day_high": 85.6,
+    "listing_day_low": 83.5,
+    "listing_day_volume": 16602.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.320Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0a6"
+    },
+    "symbol": "OMPOWER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.320Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-20T00:35:02Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-16T18:30:00Z"
+    },
+    "listing_day_close": 193.38,
+    "listing_day_high": 195.3,
+    "listing_day_low": 186.0,
+    "listing_day_volume": 2366480.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.320Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0a8"
+    },
+    "symbol": "3BBLACKBIO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.321Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:52Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1301.9,
+    "listing_day_high": 1346.85,
+    "listing_day_low": 1281.1,
+    "listing_day_volume": 4965.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.321Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0aa"
+    },
+    "symbol": "ABANSENT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.322Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:53Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 26.5,
+    "listing_day_high": 27.0,
+    "listing_day_low": 22.3,
+    "listing_day_volume": 584.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.322Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ac"
+    },
+    "symbol": "ABMKNO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:54Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 252.0,
+    "listing_day_high": 253.0,
+    "listing_day_low": 252.0,
+    "listing_day_volume": 15.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ae"
+    },
+    "symbol": "ACSTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:55Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 40.0,
+    "listing_day_high": 41.55,
+    "listing_day_low": 39.95,
+    "listing_day_volume": 33643.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0b0"
+    },
+    "symbol": "AKCAPIT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:55Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1549.2,
+    "listing_day_high": 1637.95,
+    "listing_day_low": 1530.1,
+    "listing_day_volume": 190.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0b2"
+    },
+    "symbol": "AMBALALSA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:57Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 32.45,
+    "listing_day_high": 36.45,
+    "listing_day_low": 30.9,
+    "listing_day_volume": 62875.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.323Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0b4"
+    },
+    "symbol": "ARIHANT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.325Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:57Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 907.55,
+    "listing_day_high": 1100.0,
+    "listing_day_low": 900.0,
+    "listing_day_volume": 706.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.325Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0b6"
+    },
+    "symbol": "ASHIKA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.325Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:58Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 382.25,
+    "listing_day_high": 394.0,
+    "listing_day_low": 368.5,
+    "listing_day_volume": 115746.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.325Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0b8"
+    },
+    "symbol": "ASTAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.325Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:23:59Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 625.0,
+    "listing_day_high": 633.0,
+    "listing_day_low": 625.0,
+    "listing_day_volume": 5.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.325Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ba"
+    },
+    "symbol": "AVAILFC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.327Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:00Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 153.65,
+    "listing_day_high": 178.0,
+    "listing_day_low": 148.25,
+    "listing_day_volume": 2231.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.327Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0bc"
+    },
+    "symbol": "BAJAJST",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.327Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:01Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 483.95,
+    "listing_day_high": 507.8,
+    "listing_day_low": 480.0,
+    "listing_day_volume": 5589.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.327Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0be"
+    },
+    "symbol": "BATLIBOI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.327Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:03Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 81.85,
+    "listing_day_high": 88.95,
+    "listing_day_low": 81.05,
+    "listing_day_volume": 14641.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.327Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0c0"
+    },
+    "symbol": "BEEKAY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.328Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:03Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 424.3,
+    "listing_day_high": 445.0,
+    "listing_day_low": 355.05,
+    "listing_day_volume": 642.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.328Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0c2"
+    },
+    "symbol": "BENGALASM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.328Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:05Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 5880.45,
+    "listing_day_high": 5900.0,
+    "listing_day_low": 5845.85,
+    "listing_day_volume": 6.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.328Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0c4"
+    },
+    "symbol": "BI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.330Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:06Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 63.7,
+    "listing_day_high": 64.05,
+    "listing_day_low": 61.1,
+    "listing_day_volume": 1732.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.330Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0c6"
+    },
+    "symbol": "BIMETAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.330Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:07Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 600.0,
+    "listing_day_high": 609.95,
+    "listing_day_low": 599.9,
+    "listing_day_volume": 32.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.330Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0c8"
+    },
+    "symbol": "BIRLAPREC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.331Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:08Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 35.05,
+    "listing_day_high": 35.5,
+    "listing_day_low": 33.2,
+    "listing_day_volume": 12833.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.331Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ca"
+    },
+    "symbol": "BLACKROSE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.331Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:09Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 83.25,
+    "listing_day_high": 84.7,
+    "listing_day_low": 81.4,
+    "listing_day_volume": 4296.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.331Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0cc"
+    },
+    "symbol": "BLIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:10Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 73.15,
+    "listing_day_high": 75.95,
+    "listing_day_low": 72.8,
+    "listing_day_volume": 35667.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.331Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ce"
+    },
+    "symbol": "BNAGROCHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:10Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 244.4,
+    "listing_day_high": 248.95,
+    "listing_day_low": 226.0,
+    "listing_day_volume": 1185.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0d0"
+    },
+    "symbol": "BNALTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:11Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 420.0,
+    "listing_day_high": 439.0,
+    "listing_day_low": 420.0,
+    "listing_day_volume": 56.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0d2"
+    },
+    "symbol": "BTTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:12Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 36.7,
+    "listing_day_high": 37.0,
+    "listing_day_low": 33.0,
+    "listing_day_volume": 10813.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.333Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0d4"
+    },
+    "symbol": "COCKERILL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.334Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:13Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 5204.6,
+    "listing_day_high": 5297.0,
+    "listing_day_low": 4955.0,
+    "listing_day_volume": 1239.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.334Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0d6"
+    },
+    "symbol": "COMFINTE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.335Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:14Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 7.45,
+    "listing_day_high": 8.0,
+    "listing_day_low": 7.0,
+    "listing_day_volume": 195967.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.335Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0d8"
+    },
+    "symbol": "DAICHI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.336Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:15Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 263.4,
+    "listing_day_high": 265.0,
+    "listing_day_low": 258.7,
+    "listing_day_volume": 323.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.336Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0da"
+    },
+    "symbol": "DECNGOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.336Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:15Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 120.2,
+    "listing_day_high": 124.3,
+    "listing_day_low": 115.0,
+    "listing_day_volume": 2397728.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.336Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0dc"
+    },
+    "symbol": "DISAQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.337Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:16Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 12055.3,
+    "listing_day_high": 12622.05,
+    "listing_day_low": 12026.0,
+    "listing_day_volume": 75.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.337Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0de"
+    },
+    "symbol": "DRAGARWQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.337Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:18Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 4787.85,
+    "listing_day_high": 4823.0,
+    "listing_day_low": 4700.0,
+    "listing_day_volume": 49.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.337Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0e0"
+    },
+    "symbol": "ELANTAS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.337Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:19Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 9255.0,
+    "listing_day_high": 9290.0,
+    "listing_day_low": 9005.0,
+    "listing_day_volume": 395.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.337Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0e2"
+    },
+    "symbol": "ELCIDIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.339Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:20Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 133779.5,
+    "listing_day_high": 137000.0,
+    "listing_day_low": 130700.0,
+    "listing_day_volume": 30.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.339Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0e4"
+    },
+    "symbol": "ELITECON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.339Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:20Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 45.6,
+    "listing_day_high": 45.65,
+    "listing_day_low": 41.5,
+    "listing_day_volume": 1540016.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.339Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0e6"
+    },
+    "symbol": "ELPROINTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.340Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-24T04:49:32Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 102.5,
+    "listing_day_high": 106.0,
+    "listing_day_low": 86.0,
+    "listing_day_volume": 33099.0,
+    "status": "BREAKOUT",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.340Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0e8"
+    },
+    "symbol": "EMPOWER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.341Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:22Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1.4,
+    "listing_day_high": 1.5,
+    "listing_day_low": 1.3,
+    "listing_day_volume": 2129393.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.341Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ea"
+    },
+    "symbol": "FEDDERSHOL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.341Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:23Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 36.25,
+    "listing_day_high": 38.4,
+    "listing_day_low": 35.5,
+    "listing_day_volume": 14094.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.341Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ec"
+    },
+    "symbol": "FERMENTA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.341Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:24Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 318.4,
+    "listing_day_high": 319.95,
+    "listing_day_low": 310.0,
+    "listing_day_volume": 1894.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.341Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0ee"
+    },
+    "symbol": "FRONTSP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.342Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:25Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1513.35,
+    "listing_day_high": 1549.85,
+    "listing_day_low": 1460.0,
+    "listing_day_volume": 9427.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.342Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0f0"
+    },
+    "symbol": "GNRL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.343Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:26Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 99.5,
+    "listing_day_high": 101.5,
+    "listing_day_low": 97.2,
+    "listing_day_volume": 7535.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.343Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0f2"
+    },
+    "symbol": "GOODYEAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.343Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:27Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 797.45,
+    "listing_day_high": 800.0,
+    "listing_day_low": 748.95,
+    "listing_day_volume": 3417.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.343Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0f4"
+    },
+    "symbol": "GRANDOAK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.344Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:28Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 28.9,
+    "listing_day_high": 34.8,
+    "listing_day_low": 28.6,
+    "listing_day_volume": 3796.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.344Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0f6"
+    },
+    "symbol": "GRAUWEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.345Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:29Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 68.16,
+    "listing_day_high": 69.5,
+    "listing_day_low": 65.0,
+    "listing_day_volume": 114971.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.345Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0f8"
+    },
+    "symbol": "GRAVISSHO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.345Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:30Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 28.05,
+    "listing_day_high": 34.95,
+    "listing_day_low": 25.2,
+    "listing_day_volume": 3366847.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.345Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0fa"
+    },
+    "symbol": "HALDYNGL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.346Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:31Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 89.05,
+    "listing_day_high": 93.65,
+    "listing_day_low": 88.0,
+    "listing_day_volume": 5126.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.346Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0fc"
+    },
+    "symbol": "HAWKINCOOK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.346Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:32Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 7573.6,
+    "listing_day_high": 7600.0,
+    "listing_day_low": 7402.0,
+    "listing_day_volume": 364.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.346Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc0fe"
+    },
+    "symbol": "HBESD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.347Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:33Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 66.3,
+    "listing_day_high": 77.9,
+    "listing_day_low": 61.3,
+    "listing_day_volume": 202.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.347Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc100"
+    },
+    "symbol": "INDPRUD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.347Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:35Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 6572.65,
+    "listing_day_high": 6665.0,
+    "listing_day_low": 6136.05,
+    "listing_day_volume": 138.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.347Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc102"
+    },
+    "symbol": "INVPRECQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.347Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:35Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 672.1,
+    "listing_day_high": 689.0,
+    "listing_day_low": 630.0,
+    "listing_day_volume": 2575.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.347Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc104"
+    },
+    "symbol": "IWP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.349Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:37Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 33.0,
+    "listing_day_high": 34.35,
+    "listing_day_low": 28.0,
+    "listing_day_volume": 2075.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.349Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc106"
+    },
+    "symbol": "KAMAHOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.349Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:37Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 2506.1,
+    "listing_day_high": 2538.0,
+    "listing_day_low": 2501.0,
+    "listing_day_volume": 457.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.349Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc108"
+    },
+    "symbol": "KANCHI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.349Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:38Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 400.65,
+    "listing_day_high": 418.0,
+    "listing_day_low": 386.0,
+    "listing_day_volume": 127.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.349Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc10a"
+    },
+    "symbol": "KENNAMET",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.351Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:39Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 2462.0,
+    "listing_day_high": 2498.9,
+    "listing_day_low": 2430.0,
+    "listing_day_volume": 1331.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.351Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc10c"
+    },
+    "symbol": "KIRANVYPAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.351Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:40Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 189.5,
+    "listing_day_high": 195.0,
+    "listing_day_low": 176.0,
+    "listing_day_volume": 74.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.351Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc10e"
+    },
+    "symbol": "KIRLFER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.352Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:41Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 427.25,
+    "listing_day_high": 448.0,
+    "listing_day_low": 423.1,
+    "listing_day_volume": 23647.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.352Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc110"
+    },
+    "symbol": "KLBRENG-B",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.353Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:42Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 519.8,
+    "listing_day_high": 533.0,
+    "listing_day_low": 500.1,
+    "listing_day_volume": 36969.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.353Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc112"
+    },
+    "symbol": "KOTIC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.354Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:43Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 174.8,
+    "listing_day_high": 178.05,
+    "listing_day_low": 155.0,
+    "listing_day_volume": 1271.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.354Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc114"
+    },
+    "symbol": "KOVAI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.354Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:44Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 5487.9,
+    "listing_day_high": 5500.0,
+    "listing_day_low": 5350.1,
+    "listing_day_volume": 915.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.354Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc116"
+    },
+    "symbol": "KPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.354Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:45Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1662.6,
+    "listing_day_high": 1770.0,
+    "listing_day_low": 1650.0,
+    "listing_day_volume": 10069.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.354Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc118"
+    },
+    "symbol": "LAHOTIOV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.355Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:46Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 44.1,
+    "listing_day_high": 44.1,
+    "listing_day_low": 44.1,
+    "listing_day_volume": 10.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.355Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc11a"
+    },
+    "symbol": "MADHAVIPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.356Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:48Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 8.9,
+    "listing_day_high": 9.45,
+    "listing_day_low": 8.0,
+    "listing_day_volume": 134271.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.356Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc11c"
+    },
+    "symbol": "MAFATIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.356Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:49Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 130.65,
+    "listing_day_high": 137.0,
+    "listing_day_low": 130.0,
+    "listing_day_volume": 12591.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.356Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc11e"
+    },
+    "symbol": "MAJESAUT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.357Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:50Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 300.0,
+    "listing_day_high": 330.0,
+    "listing_day_low": 296.05,
+    "listing_day_volume": 613.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.357Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc120"
+    },
+    "symbol": "MCCHRLS-B",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.358Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:51Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 676.0,
+    "listing_day_high": 690.0,
+    "listing_day_low": 676.0,
+    "listing_day_volume": 26.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.358Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc122"
+    },
+    "symbol": "MENNPIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.358Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:52Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 57.0,
+    "listing_day_high": 58.85,
+    "listing_day_low": 56.9,
+    "listing_day_volume": 1250.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.358Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc124"
+    },
+    "symbol": "MERCANTILE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.358Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:53Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 22.1,
+    "listing_day_high": 24.0,
+    "listing_day_low": 19.0,
+    "listing_day_volume": 543.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.358Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc126"
+    },
+    "symbol": "METROGLOBL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.359Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:55Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 129.2,
+    "listing_day_high": 149.0,
+    "listing_day_low": 128.0,
+    "listing_day_volume": 4799.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.359Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc128"
+    },
+    "symbol": "MMWL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.359Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:56Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 10.9,
+    "listing_day_high": 11.3,
+    "listing_day_low": 10.0,
+    "listing_day_volume": 7578.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.359Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc12a"
+    },
+    "symbol": "NATIONSTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.360Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:24:57Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1411.65,
+    "listing_day_high": 1519.95,
+    "listing_day_low": 1410.5,
+    "listing_day_volume": 27.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.360Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc12c"
+    },
+    "symbol": "NILE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.362Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:02Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1703.65,
+    "listing_day_high": 1769.8,
+    "listing_day_low": 1672.0,
+    "listing_day_volume": 288.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.362Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc12e"
+    },
+    "symbol": "NIRLON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.362Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:02Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 539.79,
+    "listing_day_high": 549.95,
+    "listing_day_low": 516.03,
+    "listing_day_volume": 5900.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.362Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc130"
+    },
+    "symbol": "NITTAGELA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.362Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:03Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 863.2,
+    "listing_day_high": 868.0,
+    "listing_day_low": 837.05,
+    "listing_day_volume": 993.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.362Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc132"
+    },
+    "symbol": "NOVARTIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.363Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:04Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 995.45,
+    "listing_day_high": 1005.85,
+    "listing_day_low": 991.0,
+    "listing_day_volume": 4123.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.363Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc134"
+    },
+    "symbol": "PIONRINV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.364Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:05Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 106.15,
+    "listing_day_high": 118.75,
+    "listing_day_low": 106.0,
+    "listing_day_volume": 859.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.363Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc136"
+    },
+    "symbol": "PML",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.364Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:06Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 607.0,
+    "listing_day_high": 645.0,
+    "listing_day_low": 599.0,
+    "listing_day_volume": 47.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.364Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc138"
+    },
+    "symbol": "PRADPME",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.364Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:07Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 370.6,
+    "listing_day_high": 389.0,
+    "listing_day_low": 365.0,
+    "listing_day_volume": 1422.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.364Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc13a"
+    },
+    "symbol": "PRAVEG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.366Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:08Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 266.6,
+    "listing_day_high": 275.0,
+    "listing_day_low": 261.85,
+    "listing_day_volume": 10608.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.366Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc13c"
+    },
+    "symbol": "PREMCO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.366Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:08Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 420.35,
+    "listing_day_high": 425.0,
+    "listing_day_low": 410.0,
+    "listing_day_volume": 53.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.366Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc13e"
+    },
+    "symbol": "QUINT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.367Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:09Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 42.7,
+    "listing_day_high": 43.0,
+    "listing_day_low": 38.15,
+    "listing_day_volume": 216.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.367Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc140"
+    },
+    "symbol": "RAJPALAYAM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.367Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:10Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 794.5,
+    "listing_day_high": 814.0,
+    "listing_day_low": 745.0,
+    "listing_day_volume": 4436.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.367Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc142"
+    },
+    "symbol": "RRIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.368Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:11Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 15.35,
+    "listing_day_high": 16.45,
+    "listing_day_low": 15.25,
+    "listing_day_volume": 7992.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.367Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc144"
+    },
+    "symbol": "RSDFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.368Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:26:12Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 84.45,
+    "listing_day_high": 86.85,
+    "listing_day_low": 84.45,
+    "listing_day_volume": 116.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.368Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc146"
+    },
+    "symbol": "SCANSTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.369Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:17Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 33.7,
+    "listing_day_high": 34.85,
+    "listing_day_low": 31.35,
+    "listing_day_volume": 700.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.369Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc148"
+    },
+    "symbol": "SEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.370Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:19Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 178.2,
+    "listing_day_high": 183.9,
+    "listing_day_low": 175.3,
+    "listing_day_volume": 62126.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.370Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc14a"
+    },
+    "symbol": "SHARDUL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.370Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:20Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 27.7,
+    "listing_day_high": 29.5,
+    "listing_day_low": 26.5,
+    "listing_day_volume": 1844.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.370Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc14c"
+    },
+    "symbol": "SHBAJRG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.370Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:21Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 176.4,
+    "listing_day_high": 177.2,
+    "listing_day_low": 173.5,
+    "listing_day_volume": 524.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.370Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc14e"
+    },
+    "symbol": "SHINDL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.371Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:22Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 148.8,
+    "listing_day_high": 151.0,
+    "listing_day_low": 147.15,
+    "listing_day_volume": 45854.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.371Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc150"
+    },
+    "symbol": "SHRIKRISH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.371Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:24Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 42.6,
+    "listing_day_high": 47.0,
+    "listing_day_low": 35.45,
+    "listing_day_volume": 7688.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.371Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc152"
+    },
+    "symbol": "SICAGEN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.373Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:25Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 54.55,
+    "listing_day_high": 55.9,
+    "listing_day_low": 52.45,
+    "listing_day_volume": 4317.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.373Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc154"
+    },
+    "symbol": "SIKA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.373Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:28:26Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 958.85,
+    "listing_day_high": 988.0,
+    "listing_day_low": 936.0,
+    "listing_day_volume": 4393.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.373Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc156"
+    },
+    "symbol": "SURYALA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.373Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:29:28Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 357.25,
+    "listing_day_high": 359.9,
+    "listing_day_low": 346.95,
+    "listing_day_volume": 161.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.373Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc158"
+    },
+    "symbol": "TAALTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.374Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:29:29Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 2986.0,
+    "listing_day_high": 3100.0,
+    "listing_day_low": 2946.3,
+    "listing_day_volume": 154.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.374Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc15a"
+    },
+    "symbol": "TAMBOLIIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.374Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:29:30Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 169.2,
+    "listing_day_high": 183.0,
+    "listing_day_low": 150.0,
+    "listing_day_volume": 861.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.374Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc15c"
+    },
+    "symbol": "THACKER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.375Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:30:33Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1033.45,
+    "listing_day_high": 1033.45,
+    "listing_day_low": 1033.45,
+    "listing_day_volume": 1.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.375Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc15e"
+    },
+    "symbol": "TIMEX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.375Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:35Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 322.05,
+    "listing_day_high": 324.95,
+    "listing_day_low": 312.0,
+    "listing_day_volume": 112145.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.375Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc160"
+    },
+    "symbol": "TRANSPEK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.375Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:36Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 1136.82,
+    "listing_day_high": 1155.0,
+    "listing_day_low": 1136.0,
+    "listing_day_volume": 990.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.375Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc162"
+    },
+    "symbol": "ULTRAMAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.377Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:38Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 419.25,
+    "listing_day_high": 428.85,
+    "listing_day_low": 413.0,
+    "listing_day_volume": 1367.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.377Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc164"
+    },
+    "symbol": "VELJAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.377Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:39Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 990.7,
+    "listing_day_high": 991.0,
+    "listing_day_low": 960.0,
+    "listing_day_volume": 83.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.377Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc166"
+    },
+    "symbol": "WELSPLSOL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.379Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:40Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 37.05,
+    "listing_day_high": 38.45,
+    "listing_day_low": 36.0,
+    "listing_day_volume": 94689.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.379Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc168"
+    },
+    "symbol": "WIMPLAST",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.379Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:40Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 385.26,
+    "listing_day_high": 420.0,
+    "listing_day_low": 380.0,
+    "listing_day_volume": 1313.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.379Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc16a"
+    },
+    "symbol": "WPIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.379Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:31:41Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 428.4,
+    "listing_day_high": 435.0,
+    "listing_day_low": 399.0,
+    "listing_day_volume": 62001.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.379Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc16c"
+    },
+    "symbol": "ZSARACOM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.380Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-21T00:32:43Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "listing_day_close": 9809.5,
+    "listing_day_high": 9849.05,
+    "listing_day_low": 9499.95,
+    "listing_day_volume": 26.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.380Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc16e"
+    },
+    "symbol": "SAPPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.381Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-22T00:23:44Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-20T18:30:00Z"
+    },
+    "listing_day_close": 279.0,
+    "listing_day_high": 279.95,
+    "listing_day_low": 275.0,
+    "listing_day_volume": 415.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.381Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc170"
+    },
+    "symbol": "SONAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.382Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-22T00:24:48Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-20T18:30:00Z"
+    },
+    "listing_day_close": 99.8,
+    "listing_day_high": 99.8,
+    "listing_day_low": 99.8,
+    "listing_day_volume": 2.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc172"
+    },
+    "symbol": "TECHNVISN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.382Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-22T00:24:48Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-20T18:30:00Z"
+    },
+    "listing_day_close": 6072.0,
+    "listing_day_high": 6099.0,
+    "listing_day_low": 5969.95,
+    "listing_day_volume": 43.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.382Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc174"
+    },
+    "symbol": "THAKDEV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.383Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-22T00:24:49Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-20T18:30:00Z"
+    },
+    "listing_day_close": 129.15,
+    "listing_day_high": 129.15,
+    "listing_day_low": 128.7,
+    "listing_day_volume": 18.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.383Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc176"
+    },
+    "symbol": "ZFSTEERING",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.383Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-22T00:24:50Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-20T18:30:00Z"
+    },
+    "listing_day_close": 839.75,
+    "listing_day_high": 888.0,
+    "listing_day_low": 805.0,
+    "listing_day_volume": 550.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.383Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc178"
+    },
+    "symbol": "NEAGI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.384Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-23T00:25:24Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-21T18:30:00Z"
+    },
+    "listing_day_close": 3400.0,
+    "listing_day_high": 3400.0,
+    "listing_day_low": 3400.0,
+    "listing_day_volume": 2.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.384Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dc17a"
+    },
+    "symbol": "SAYAJIHOTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.384Z"
+    },
+    "last_updated": {
+      "$date": "2026-04-23T00:25:25Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-21T18:30:00Z"
+    },
+    "listing_day_close": 276.0,
+    "listing_day_high": 276.0,
+    "listing_day_low": 274.95,
+    "listing_day_volume": 45.0,
+    "status": "ACTIVE",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.384Z"
+    }
+  }
+]

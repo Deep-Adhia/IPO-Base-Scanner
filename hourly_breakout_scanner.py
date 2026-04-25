@@ -42,7 +42,7 @@ CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 SCANNER_VERSION = "2.1.0"
 LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
-def write_daily_log(scanner_name, symbol, action, details=None):
+def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None):
     """Write structured scanner logs to logs/YYYY-MM-DD/<scanner>.jsonl"""
     try:
         from datetime import timezone, timedelta as td
@@ -62,6 +62,24 @@ def write_daily_log(scanner_name, symbol, action, details=None):
         }
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, default=str) + "\n")
+
+        # MongoDB dual-write: use provided candle_timestamp if available, else fall back to now_ist
+        try:
+            from db import insert_log
+            effective_candle_ts = candle_timestamp if candle_timestamp is not None else now_ist
+            insert_log(
+                scanner=scanner_name, symbol=symbol, action=action,
+                candle_timestamp=effective_candle_ts,
+                details=details or {}, version=SCANNER_VERSION, source="live"
+            )
+        except Exception as db_e:
+            logger.error(f"[MongoDB] log write FAILED for {symbol}/{action}: {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
+
     except Exception as e:
         logger.debug(f"Could not write daily log: {e}")
 
@@ -481,17 +499,22 @@ def format_intraday_alert(breakout_data):
 def save_breakout_signal(breakout_data):
     """Save breakout signal to CSV"""
     try:
-        # Check if signal already exists (same symbol, same day)
-        today = datetime.now().date()
-        signal_id = f"{breakout_data['symbol']}_INTRADAY_{today.strftime('%Y%m%d')}_{datetime.now().strftime('%H%M')}"
+        # Get actual candle timestamp for determinism — use market event time, not system time
+        candle_ts = breakout_data.get('timestamp', datetime.now())
+        if not hasattr(candle_ts, 'strftime'):
+            candle_ts = datetime.now()
+        candle_time = candle_ts.strftime('%H%M')
         
-        # Load existing signals
+        # signal_date tied to market candle date, not execution date
+        signal_date = candle_ts.date() if hasattr(candle_ts, 'date') else datetime.now().date()
+        signal_id = f"INTRADAY_{breakout_data['symbol']}_{signal_date.strftime('%Y%m%d')}_{candle_time}"
+        
+        # Check if we already have a signal for this symbol today
         if os.path.exists(SIGNALS_CSV):
             existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-            # Check if we already have a signal for this symbol today
             today_signals = existing_signals[
                 (existing_signals['symbol'] == breakout_data['symbol']) &
-                (pd.to_datetime(existing_signals['signal_date']).dt.date == today)
+                (pd.to_datetime(existing_signals['signal_date']).dt.date == signal_date)
             ]
             if len(today_signals) > 0:
                 logger.info(f"Signal already exists for {breakout_data['symbol']} today")
@@ -503,7 +526,7 @@ def save_breakout_signal(breakout_data):
         new_signal = {
             "signal_id": signal_id,
             "symbol": breakout_data['symbol'],
-            "signal_date": today,
+            "signal_date": signal_date,  # market candle date
             "entry_price": breakout_data['entry_price'],
             "grade": "INTRADAY",
             "score": breakout_data['breakout_strength'] * 10,
@@ -522,6 +545,18 @@ def save_breakout_signal(breakout_data):
             new_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
         else:
             pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+        
+        # MongoDB dual-write: signal
+        try:
+            from db import upsert_signal
+            upsert_signal(new_signal.copy())
+        except Exception as db_e:
+            logger.error(f"[MongoDB] signal write FAILED for {signal_id}: {db_e}")
+            try:
+                from db import db_metrics
+                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+            except Exception:
+                pass
         
         logger.info(f"✅ Saved breakout signal for {breakout_data['symbol']}")
         return True
@@ -606,10 +641,19 @@ def scan_watchlist():
     
     logger.info(f"\n{'='*60}")
     logger.info(f"✅ Scan complete: {breakouts_found} breakouts found")
-    write_daily_log("watchlist", "SYSTEM", "SCAN_COMPLETED", {
-        "symbols_scanned": len(symbols),
-        "signals_found": breakouts_found,
-    })
+    try:
+        from db import db_metrics
+        db_stats = {
+            "symbols_scanned": len(symbols),
+            "signals_found": breakouts_found,
+            "db_signals": db_metrics.get("signals_generated", 0),
+            "db_logs": db_metrics.get("logs_written", 0),
+            "db_failures": db_metrics.get("failures", 0)
+        }
+    except Exception:
+        db_stats = {"symbols_scanned": len(symbols), "signals_found": breakouts_found}
+
+    write_daily_log("watchlist", "SYSTEM", "SCAN_COMPLETED", db_stats)
     
     # Send summary
     if breakouts_found > 0:
@@ -618,6 +662,7 @@ def scan_watchlist():
 🔍 Symbols Scanned: {len(symbols)}
 🎯 Breakouts Found: {breakouts_found}
 ⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+🧯 DB Status: {'✅ OK' if db_stats.get('db_failures', 0) == 0 else f"❌ {db_stats.get('db_failures')} FAILURES"}
 
 {'🎉 New breakouts detected! Check alerts above.' if breakouts_found > 0 else '✅ No new breakouts at this time.'}"""
         send_telegram(summary)

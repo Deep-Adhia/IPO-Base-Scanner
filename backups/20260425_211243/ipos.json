@@ -1,0 +1,4626 @@
+[
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc80"
+    },
+    "symbol": "3BBLACKBIO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.974Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "3B Blackbio Dx Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.974Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc82"
+    },
+    "symbol": "AARNAV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.975Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-24T18:30:00Z"
+    },
+    "name": "Aarnav Fashions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.975Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc84"
+    },
+    "symbol": "ABANSENT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.975Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Abans Enterprises Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.975Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc86"
+    },
+    "symbol": "ABCOTS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.977Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-23T18:30:00Z"
+    },
+    "name": "A B Cotspin India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.977Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc88"
+    },
+    "symbol": "ABLBL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.978Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-22T18:30:00Z"
+    },
+    "name": "Aditya Birla Lifestyle Brands Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.978Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc8a"
+    },
+    "symbol": "ABMKNO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.978Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "ABM Knowledgeware Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.978Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc8c"
+    },
+    "symbol": "ACSTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.978Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "ACS Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.978Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc8e"
+    },
+    "symbol": "ADVAIT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.980Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-19T18:30:00Z"
+    },
+    "name": "Advait Energy Transitions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.980Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc90"
+    },
+    "symbol": "ADVANCE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.980Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-07T18:30:00Z"
+    },
+    "name": "Advance Agrolife Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.980Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc92"
+    },
+    "symbol": "ADVENTHTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.980Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-12T18:30:00Z"
+    },
+    "name": "Advent Hotels International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.980Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc94"
+    },
+    "symbol": "AEGISVOPAK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.982Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-01T18:30:00Z"
+    },
+    "name": "Aegis Vopak Terminals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc96"
+    },
+    "symbol": "AEPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.982Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "name": "Artemis Electricals and Projects Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.982Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc98"
+    },
+    "symbol": "AEQUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.983Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-09T18:30:00Z"
+    },
+    "name": "Aequs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.983Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc9a"
+    },
+    "symbol": "AHCL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.983Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-02T18:30:00Z"
+    },
+    "name": "Anlon Healthcare Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.983Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc9c"
+    },
+    "symbol": "AKCAPIT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.983Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "AK Capital Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.983Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbc9e"
+    },
+    "symbol": "ALGOQUANT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.984Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-05T18:30:00Z"
+    },
+    "name": "Algoquant Fintech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.984Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbca0"
+    },
+    "symbol": "ALLTIME",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.984Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-13T18:30:00Z"
+    },
+    "name": "All Time Plastics Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.984Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbca2"
+    },
+    "symbol": "AMAGI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.985Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-20T18:30:00Z"
+    },
+    "name": "Amagi Media Labs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.985Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbca4"
+    },
+    "symbol": "AMANTA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.985Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-08T18:30:00Z"
+    },
+    "name": "Amanta Healthcare Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.985Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbca6"
+    },
+    "symbol": "AMBALALSA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.986Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Ambalal Sarabhai Enterprises Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.986Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbca8"
+    },
+    "symbol": "AMIRCHAND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.986Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "name": "Amir Chand Jagdish Kumar (Exports) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.986Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcaa"
+    },
+    "symbol": "ANTHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-20T18:30:00Z"
+    },
+    "name": "Anthem Biosciences Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcac"
+    },
+    "symbol": "ARFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-21T18:30:00Z"
+    },
+    "name": "Arfin India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcae"
+    },
+    "symbol": "ARIHANT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Arihant Foundations & Housing Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcb0"
+    },
+    "symbol": "ARIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-24T18:30:00Z"
+    },
+    "name": "Arisinfra Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.987Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcb2"
+    },
+    "symbol": "ARSSBL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.989Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "name": "Anand Rathi Share and Stock Brokers Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.989Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcb4"
+    },
+    "symbol": "ASHIKA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.990Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Ashika Credit Capital Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.990Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcb6"
+    },
+    "symbol": "ASTAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.990Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Asian Star Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.990Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcb8"
+    },
+    "symbol": "ATHERENERG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.991Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-05T18:30:00Z"
+    },
+    "name": "Ather Energy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.991Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcba"
+    },
+    "symbol": "ATLANTAELE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.991Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-28T18:30:00Z"
+    },
+    "name": "Atlanta Electricals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.991Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcbc"
+    },
+    "symbol": "AVAILFC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.991Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Available Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.991Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcbe"
+    },
+    "symbol": "AYE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.993Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-15T18:30:00Z"
+    },
+    "name": "Aye Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.993Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcc0"
+    },
+    "symbol": "BAJAJST",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.994Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Bajaj Steel Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.994Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcc2"
+    },
+    "symbol": "BATLIBOI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.995Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Batliboi Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.995Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcc4"
+    },
+    "symbol": "BCPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.995Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-26T18:30:00Z"
+    },
+    "name": "BCPL Railway Infrastructure Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.995Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcc6"
+    },
+    "symbol": "BEEKAY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.995Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Beekay Steel Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.995Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcc8"
+    },
+    "symbol": "BELLACASA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.996Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-17T18:30:00Z"
+    },
+    "name": "Bella Casa Fashion & Retail Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.996Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcca"
+    },
+    "symbol": "BELRISE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.996Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-27T18:30:00Z"
+    },
+    "name": "Belrise Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.996Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbccc"
+    },
+    "symbol": "BENGALASM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.997Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Bengal & Assam Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.997Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcce"
+    },
+    "symbol": "BETA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.997Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-23T18:30:00Z"
+    },
+    "name": "Beta Drugs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.997Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcd0"
+    },
+    "symbol": "BHARATCOAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.997Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-18T18:30:00Z"
+    },
+    "name": "Bharat Coking Coal Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.997Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcd2"
+    },
+    "symbol": "BI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Bilcare Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcd4"
+    },
+    "symbol": "BIMETAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Bimetal Bearings Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4838869899a32dbcd6"
+    },
+    "symbol": "BIRLAPREC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Birla Precision Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcd8"
+    },
+    "symbol": "BLACKROSE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Black Rose Inds. Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:20.999Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcda"
+    },
+    "symbol": "BLIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.001Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Balmer Lawrie Investments Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.001Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcdc"
+    },
+    "symbol": "BLUESTONE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.001Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-18T18:30:00Z"
+    },
+    "name": "BlueStone Jewellery and Lifestyle Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.001Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcde"
+    },
+    "symbol": "BLUSPRING",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.001Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-10T18:30:00Z"
+    },
+    "name": "Bluspring Enterprises Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.001Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbce0"
+    },
+    "symbol": "BMWVENTLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.003Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "name": "BMW Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.003Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbce2"
+    },
+    "symbol": "BNAGROCHEM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.003Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "BN Agrochem Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.003Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbce4"
+    },
+    "symbol": "BNALTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.004Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "B & A Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.004Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbce6"
+    },
+    "symbol": "BONLON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.004Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-19T18:30:00Z"
+    },
+    "name": "Bonlon Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.004Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbce8"
+    },
+    "symbol": "BORANA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.004Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-26T18:30:00Z"
+    },
+    "name": "Borana Weaves Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.004Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcea"
+    },
+    "symbol": "BRIGHOTEL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.005Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-30T18:30:00Z"
+    },
+    "name": "Brigade Hotel Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.005Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcec"
+    },
+    "symbol": "BTTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.006Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Bhilwara Technical Textiles Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.006Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcee"
+    },
+    "symbol": "BUILDPRO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.006Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-08T18:30:00Z"
+    },
+    "name": "Shankara Buildpro Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.006Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcf0"
+    },
+    "symbol": "CANHLIFE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.007Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-16T18:30:00Z"
+    },
+    "name": "Canara HSBC Life Insurance Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.007Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcf2"
+    },
+    "symbol": "CAPILLARY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.008Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-20T18:30:00Z"
+    },
+    "name": "Capillary Technologies India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.008Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcf4"
+    },
+    "symbol": "CEINSYS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.008Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-18T18:30:00Z"
+    },
+    "name": "Ceinsys Tech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.008Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcf6"
+    },
+    "symbol": "CHEMBONDCH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.008Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-22T18:30:00Z"
+    },
+    "name": "Chembond Chemicals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.008Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcf8"
+    },
+    "symbol": "CLEANMAX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.009Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "name": "Clean Max Enviro Energy Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.009Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcfa"
+    },
+    "symbol": "CMPDI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.010Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-29T18:30:00Z"
+    },
+    "name": "Central Mine Planning & Design Institute Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.010Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcfc"
+    },
+    "symbol": "COCKERILL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.011Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "John Cockerill India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.011Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbcfe"
+    },
+    "symbol": "COMFINTE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.011Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Comfort Intech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.011Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd00"
+    },
+    "symbol": "CORONA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.011Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-14T18:30:00Z"
+    },
+    "name": "CORONA Remedies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.011Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd02"
+    },
+    "symbol": "CPEDU",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.013Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-04T18:30:00Z"
+    },
+    "name": "Career Point Edutech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.013Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd04"
+    },
+    "symbol": "CPPLUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.013Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-04T18:30:00Z"
+    },
+    "name": "Aditya Infotech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.013Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd06"
+    },
+    "symbol": "CRAMC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.014Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-15T18:30:00Z"
+    },
+    "name": "Canara Robeco Asset Management Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.014Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd08"
+    },
+    "symbol": "CRIZAC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.015Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-08T18:30:00Z"
+    },
+    "name": "Crizac Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.015Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd0a"
+    },
+    "symbol": "DAICHI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.015Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Dai-Ichi Karkaria Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.015Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd0c"
+    },
+    "symbol": "DCMSIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.015Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-16T18:30:00Z"
+    },
+    "name": "DCM Shriram International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.015Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd0e"
+    },
+    "symbol": "DECNGOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.016Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Deccan Gold Mines Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.016Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd10"
+    },
+    "symbol": "DEVX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.016Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-16T18:30:00Z"
+    },
+    "name": "Dev Accelerator Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.016Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd12"
+    },
+    "symbol": "DIGITIDE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.016Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-10T18:30:00Z"
+    },
+    "name": "Digitide Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.016Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd14"
+    },
+    "symbol": "DISAQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.018Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Disa India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.018Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd16"
+    },
+    "symbol": "DRAGARWQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.018Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Dr Agarwals Eye Hospital Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.018Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd18"
+    },
+    "symbol": "DSFCL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.019Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-16T18:30:00Z"
+    },
+    "name": "DCM Shriram Fine Chemicals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.019Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd1a"
+    },
+    "symbol": "EBGNG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.019Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-29T18:30:00Z"
+    },
+    "name": "GNG Electronics Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.019Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd1c"
+    },
+    "symbol": "EFCIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.019Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-19T18:30:00Z"
+    },
+    "name": "EFC (I) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.019Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd1e"
+    },
+    "symbol": "ELANTAS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.021Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Elantas Beck India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.021Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd20"
+    },
+    "symbol": "ELCIDIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.021Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "EL CID Investments Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.021Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd22"
+    },
+    "symbol": "ELITECON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.022Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Elitecon International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.022Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd24"
+    },
+    "symbol": "ELLEN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.023Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "name": "Ellenbarrie Industrial Gases Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd26"
+    },
+    "symbol": "ELPROINTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.023Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Elpro International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd28"
+    },
+    "symbol": "EMMVEE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.023Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-17T18:30:00Z"
+    },
+    "name": "Emmvee Photovoltaic Power Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.023Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd2a"
+    },
+    "symbol": "EMPOWER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.024Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Empower India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.024Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd2c"
+    },
+    "symbol": "ENRIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.024Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-18T18:30:00Z"
+    },
+    "name": "Siemens Energy India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.024Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd2e"
+    },
+    "symbol": "EPACKPEB",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.025Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "name": "EPack Prefab Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.025Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd30"
+    },
+    "symbol": "EUROBOND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.026Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-31T18:30:00Z"
+    },
+    "name": "Euro Panel Products Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.026Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd32"
+    },
+    "symbol": "EUROPRATIK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.026Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-22T18:30:00Z"
+    },
+    "name": "Euro Pratik Sales Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.026Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd34"
+    },
+    "symbol": "EXCELSOFT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.027Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-25T18:30:00Z"
+    },
+    "name": "Excelsoft Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.027Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd36"
+    },
+    "symbol": "FABTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.027Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-06T18:30:00Z"
+    },
+    "name": "Fabtech Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.027Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd38"
+    },
+    "symbol": "FEDDERSHOL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.029Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Fedders Holding Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.029Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd3a"
+    },
+    "symbol": "FERMENTA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.029Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Fermenta Biotech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.029Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd3c"
+    },
+    "symbol": "FINKURVE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.030Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "name": "Finkurve Financial Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.030Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd3e"
+    },
+    "symbol": "FISCHER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.030Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-09T18:30:00Z"
+    },
+    "name": "Fischer Medical Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.030Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd40"
+    },
+    "symbol": "FRACTAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.031Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-15T18:30:00Z"
+    },
+    "name": "Fractal Analytics Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.031Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd42"
+    },
+    "symbol": "FRONTSP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.032Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Frontier Springs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.032Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd44"
+    },
+    "symbol": "GANESHCP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.032Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-28T18:30:00Z"
+    },
+    "name": "Ganesh Consumer Products Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.032Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd46"
+    },
+    "symbol": "GAUDIUMIVF",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.033Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-26T18:30:00Z"
+    },
+    "name": "Gaudium IVF and Women Health Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.033Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd48"
+    },
+    "symbol": "GCSL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.033Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-03T18:30:00Z"
+    },
+    "name": "Gretex Corporate Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.033Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd4a"
+    },
+    "symbol": "GEMAROMA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.034Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "name": "Gem Aromatics Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.034Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd4c"
+    },
+    "symbol": "GICL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.035Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-17T18:30:00Z"
+    },
+    "name": "Globe International Carriers Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.035Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd4e"
+    },
+    "symbol": "GKENERGY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.035Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-25T18:30:00Z"
+    },
+    "name": "GK Energy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.035Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd50"
+    },
+    "symbol": "GKSL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.036Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-29T18:30:00Z"
+    },
+    "name": "Gujarat Kidney And Super Speciality Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.036Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd52"
+    },
+    "symbol": "GLOBECIVIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.036Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "name": "Globe Civil Projects Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.036Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd54"
+    },
+    "symbol": "GLOTTIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.036Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-06T18:30:00Z"
+    },
+    "name": "Glottis Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.036Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd56"
+    },
+    "symbol": "GNRL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.037Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Gujarat Natural Resources Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd58"
+    },
+    "symbol": "GOODYEAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.037Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Goodyear India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd5a"
+    },
+    "symbol": "GRANDOAK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.037Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Grand Oak Canyons Distillery Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.037Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd5c"
+    },
+    "symbol": "GRAUWEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.039Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Grauer & Weil India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.039Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd5e"
+    },
+    "symbol": "GRAVISSHO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.039Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Graviss Hospitality Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.039Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd60"
+    },
+    "symbol": "GROWW",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.040Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-11T18:30:00Z"
+    },
+    "name": "Billionbrains Garage Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd62"
+    },
+    "symbol": "GSPCROP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.040Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-23T18:30:00Z"
+    },
+    "name": "GSP Crop Science Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd64"
+    },
+    "symbol": "HALDER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.040Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-18T18:30:00Z"
+    },
+    "name": "Halder Venture Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.040Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd66"
+    },
+    "symbol": "HALDYNGL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.041Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Haldyn Glass Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.041Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd68"
+    },
+    "symbol": "HAWKINCOOK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.041Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Hawkins Cookers Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.041Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd6a"
+    },
+    "symbol": "HBESD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.042Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "HB Estate Developers Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.042Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd6c"
+    },
+    "symbol": "HDBFS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.043Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-01T18:30:00Z"
+    },
+    "name": "HDB Financial Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.043Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd6e"
+    },
+    "symbol": "HILINFRA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.043Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-11T18:30:00Z"
+    },
+    "name": "Highway Infrastructure Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.043Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd70"
+    },
+    "symbol": "ICICIAMC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.044Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-18T18:30:00Z"
+    },
+    "name": "ICICI Prudential Asset Management Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.044Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd72"
+    },
+    "symbol": "IGCL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.045Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-02T18:30:00Z"
+    },
+    "name": "Indogulf Cropsciences Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.045Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd74"
+    },
+    "symbol": "INA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.045Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-08T18:30:00Z"
+    },
+    "name": "Insolation Energy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.045Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd76"
+    },
+    "symbol": "INDIQUBE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.045Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-29T18:30:00Z"
+    },
+    "name": "Indiqube Spaces Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.045Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd78"
+    },
+    "symbol": "INDPRUD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.046Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Industrial & Prudential Investment Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.046Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd7a"
+    },
+    "symbol": "INNOVISION",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.046Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-22T18:30:00Z"
+    },
+    "name": "Innovision Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.046Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd7c"
+    },
+    "symbol": "INVPRECQ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.048Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Investment & Precision Castings Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.048Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd7e"
+    },
+    "symbol": "IVALUE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.048Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-24T18:30:00Z"
+    },
+    "name": "Ivalue Infosolutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.048Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd80"
+    },
+    "symbol": "IWP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.049Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "The Indian Wood Products Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd82"
+    },
+    "symbol": "JAINREC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.049Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-30T18:30:00Z"
+    },
+    "name": "Jain Resource Recycling Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd84"
+    },
+    "symbol": "JARO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.049Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "name": "Jaro Institute of Technology Management and Research Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.049Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd86"
+    },
+    "symbol": "JAYKAY",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.050Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-02T18:30:00Z"
+    },
+    "name": "Jaykay Enterprises Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.050Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd88"
+    },
+    "symbol": "JKIPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.050Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-02T18:30:00Z"
+    },
+    "name": "Jinkushal Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.050Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd8a"
+    },
+    "symbol": "JSLL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.050Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-10T18:30:00Z"
+    },
+    "name": "Jeena Sikho Lifecare Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.050Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd8c"
+    },
+    "symbol": "JSWCEMENT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-13T18:30:00Z"
+    },
+    "name": "JSW Cement Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd8e"
+    },
+    "symbol": "KALPATARU",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "name": "Kalpataru Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd90"
+    },
+    "symbol": "KAMAHOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kama Holdings Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd92"
+    },
+    "symbol": "KANCHI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kanchi Karpooram Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.052Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd94"
+    },
+    "symbol": "KENNAMET",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.054Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kennametal India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.054Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd96"
+    },
+    "symbol": "KIRANVYPAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.054Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kiran Vyapar Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.054Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd98"
+    },
+    "symbol": "KIRLFER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.055Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kirloskar Ferrous Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.055Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd9a"
+    },
+    "symbol": "KLBRENG-B",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.056Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kilburn Engineering Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.056Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd9c"
+    },
+    "symbol": "KNAGRI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.056Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-08T18:30:00Z"
+    },
+    "name": "KN Agri Resources Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.056Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbd9e"
+    },
+    "symbol": "KOTIC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.057Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kothari Industrial Corporation Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.057Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbda0"
+    },
+    "symbol": "KOTYARK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.057Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-11T18:30:00Z"
+    },
+    "name": "Kotyark Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.057Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbda2"
+    },
+    "symbol": "KOVAI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.057Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kovai Medical Center & Hospital Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.057Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbda4"
+    },
+    "symbol": "KPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.058Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Kwality Pharmaceuticals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.058Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbda6"
+    },
+    "symbol": "KRISHIVAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.059Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-19T18:30:00Z"
+    },
+    "name": "Krishival Foods Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.059Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbda8"
+    },
+    "symbol": "KRISHNADEF",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.059Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-29T18:30:00Z"
+    },
+    "name": "Krishna Defence And Allied Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.059Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdaa"
+    },
+    "symbol": "KSHINTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.060Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-22T18:30:00Z"
+    },
+    "name": "KSH International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.060Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdac"
+    },
+    "symbol": "KSR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.061Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-26T18:30:00Z"
+    },
+    "name": "KSR Footwear Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.061Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdae"
+    },
+    "symbol": "KWIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.061Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-15T18:30:00Z"
+    },
+    "name": "Kwality Wall's (India) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.061Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdb0"
+    },
+    "symbol": "LAHOTIOV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.062Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Lahoti Overseas Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.062Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdb2"
+    },
+    "symbol": "LAXMIINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.062Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-04T18:30:00Z"
+    },
+    "name": "Laxmi India Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.062Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdb4"
+    },
+    "symbol": "LEMERITE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.063Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-11T18:30:00Z"
+    },
+    "name": "Le Merite Exports Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.063Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdb6"
+    },
+    "symbol": "LENSKART",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.063Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-09T18:30:00Z"
+    },
+    "name": "Lenskart Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.063Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdb8"
+    },
+    "symbol": "LGEINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.063Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-13T18:30:00Z"
+    },
+    "name": "LG Electronics India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.063Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdba"
+    },
+    "symbol": "LOTUSDEV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.065Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-05T18:30:00Z"
+    },
+    "name": "Sri Lotus Developers and Realty Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.065Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdbc"
+    },
+    "symbol": "MADHAVIPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.065Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Madhav Infra Projects Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.065Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdbe"
+    },
+    "symbol": "MAFATIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.066Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Mafatlal Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.066Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdc0"
+    },
+    "symbol": "MAJESAUT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.067Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Majestic Auto Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.067Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdc2"
+    },
+    "symbol": "MARKOLINES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.067Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-13T18:30:00Z"
+    },
+    "name": "Markolines Pavement Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.067Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdc4"
+    },
+    "symbol": "MARSONS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.068Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-12T18:30:00Z"
+    },
+    "name": "Marsons Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.068Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdc6"
+    },
+    "symbol": "MBEL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.068Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-05T18:30:00Z"
+    },
+    "name": "M & B Engineering Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.068Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdc8"
+    },
+    "symbol": "MCCHRLS-B",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.069Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Mac Charles India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.069Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdca"
+    },
+    "symbol": "MEESHO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.069Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-09T18:30:00Z"
+    },
+    "name": "Meesho Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.069Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdcc"
+    },
+    "symbol": "MEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.070Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-27T18:30:00Z"
+    },
+    "name": "Mangal Electrical Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.070Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdce"
+    },
+    "symbol": "MENNPIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.070Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Menon Pistons Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.070Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdd0"
+    },
+    "symbol": "MERCANTILE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.071Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Mercantile Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.071Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdd2"
+    },
+    "symbol": "METROGLOBL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.072Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Metroglobal Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.072Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdd4"
+    },
+    "symbol": "MIDWESTLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.072Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-23T18:30:00Z"
+    },
+    "name": "Midwest Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.072Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdd6"
+    },
+    "symbol": "MMWL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.074Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Media Matrix Worldwide Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdd8"
+    },
+    "symbol": "MODINATUR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.074Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-10T18:30:00Z"
+    },
+    "name": "Modi Naturals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdda"
+    },
+    "symbol": "MODIS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.074Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "name": "Modis Navnirman Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.074Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbddc"
+    },
+    "symbol": "MONEYBOXX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.075Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-14T18:30:00Z"
+    },
+    "name": "Moneyboxx Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.075Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdde"
+    },
+    "symbol": "MWL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.075Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-17T18:30:00Z"
+    },
+    "name": "Mangalam Worldwide Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.075Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbde0"
+    },
+    "symbol": "NATIONSTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.075Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "National Standard (India) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.075Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbde2"
+    },
+    "symbol": "NEAGI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.077Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Neelamalai Agro Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.077Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbde4"
+    },
+    "symbol": "NEPHROPLUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.078Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-16T18:30:00Z"
+    },
+    "name": "Nephrocare Health Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.078Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbde6"
+    },
+    "symbol": "NILE",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.078Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Nile Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.078Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbde8"
+    },
+    "symbol": "NIMBSPROJ",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.078Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-05T18:30:00Z"
+    },
+    "name": "Nimbus Projects Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.078Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdea"
+    },
+    "symbol": "NIRLON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.080Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Nirlon Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.080Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdec"
+    },
+    "symbol": "NITTAGELA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.081Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Nitta Gelatin India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.081Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdee"
+    },
+    "symbol": "NOVARTIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.081Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Novartis India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.081Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdf0"
+    },
+    "symbol": "NPST",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.081Z"
+    },
+    "listing_date": {
+      "$date": "2025-04-29T18:30:00Z"
+    },
+    "name": "Network People Services Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.081Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdf2"
+    },
+    "symbol": "OMFREIGHT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.082Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-07T18:30:00Z"
+    },
+    "name": "Om Freight Forwarders Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.082Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdf4"
+    },
+    "symbol": "OMNI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.083Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-04T18:30:00Z"
+    },
+    "name": "Omnitech Engineering Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.083Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdf6"
+    },
+    "symbol": "OMPOWER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.083Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-16T18:30:00Z"
+    },
+    "name": "Om Power Transmission Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.083Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdf8"
+    },
+    "symbol": "ORKLAINDIA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.083Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-05T18:30:00Z"
+    },
+    "name": "Orkla India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.083Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdfa"
+    },
+    "symbol": "OSWALPUMPS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.085Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-19T18:30:00Z"
+    },
+    "name": "Oswal Pumps Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.085Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdfc"
+    },
+    "symbol": "PACEDIGITK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.085Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-05T18:30:00Z"
+    },
+    "name": "Pace Digitek Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.085Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbdfe"
+    },
+    "symbol": "PARKHOSPS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.086Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-16T18:30:00Z"
+    },
+    "name": "Park Medi World Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.086Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe00"
+    },
+    "symbol": "PASHUPATI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.086Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-16T18:30:00Z"
+    },
+    "name": "Pashupati Cotspin Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.086Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe02"
+    },
+    "symbol": "PATELRMART",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.087Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "name": "Patel Retail Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.087Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe04"
+    },
+    "symbol": "PAUSHAKLTD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.087Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-30T18:30:00Z"
+    },
+    "name": "Paushak Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.087Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe06"
+    },
+    "symbol": "PICCADIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.089Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-01T18:30:00Z"
+    },
+    "name": "Piccadily Agro Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.089Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe08"
+    },
+    "symbol": "PINELABS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.089Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "name": "Pine Labs Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.089Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe0a"
+    },
+    "symbol": "PIONRINV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.090Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Pioneer Investcorp Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.090Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe0c"
+    },
+    "symbol": "PIRAMALFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.090Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-06T18:30:00Z"
+    },
+    "name": "Piramal Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.090Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe0e"
+    },
+    "symbol": "PML",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.091Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Paul Merchants Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.091Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe10"
+    },
+    "symbol": "PNGSREVA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.091Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-03T18:30:00Z"
+    },
+    "name": "PNGS Reva Diamond Jewellery Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.091Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe12"
+    },
+    "symbol": "POWERICA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.091Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "name": "Powerica Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.091Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe14"
+    },
+    "symbol": "PRADPME",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.093Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Pradeep Metals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.093Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe16"
+    },
+    "symbol": "PRAVEG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.093Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Praveg Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.093Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe18"
+    },
+    "symbol": "PREMCO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.094Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Premco Global Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.094Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe1a"
+    },
+    "symbol": "PROSTARM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.095Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-02T18:30:00Z"
+    },
+    "name": "Prostarm Info Systems Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.095Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe1c"
+    },
+    "symbol": "PWL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.096Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-17T18:30:00Z"
+    },
+    "name": "Physicswallah Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.096Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe1e"
+    },
+    "symbol": "QUINT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.097Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Quint Digital Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.097Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe20"
+    },
+    "symbol": "RAJOOENG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.097Z"
+    },
+    "listing_date": {
+      "$date": "2025-05-28T18:30:00Z"
+    },
+    "name": "Rajoo Engineers Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.097Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe22"
+    },
+    "symbol": "RAJPALAYAM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.097Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Rajapalayam Mills Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.097Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe24"
+    },
+    "symbol": "RAYMONDREL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.099Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-30T18:30:00Z"
+    },
+    "name": "Raymond Realty Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.099Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe26"
+    },
+    "symbol": "REGAAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.099Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-19T18:30:00Z"
+    },
+    "name": "Regaal Resources Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.099Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe28"
+    },
+    "symbol": "RHETAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.099Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-25T18:30:00Z"
+    },
+    "name": "Rhetan TMT Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.099Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe2a"
+    },
+    "symbol": "RMC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.101Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-31T18:30:00Z"
+    },
+    "name": "RMC Switchgears Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.101Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe2c"
+    },
+    "symbol": "RMDRIP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-29T18:30:00Z"
+    },
+    "name": "R M Drip and Sprinklers Systems Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe2e"
+    },
+    "symbol": "RNBDENIMS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-03T18:30:00Z"
+    },
+    "name": "R&B Denims Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe30"
+    },
+    "symbol": "RRIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "RRIL Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe32"
+    },
+    "symbol": "RSDFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "RSD Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.102Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe34"
+    },
+    "symbol": "RSL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.104Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "name": "Rajputana Stainless Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.104Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe36"
+    },
+    "symbol": "RUBICON",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.105Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-15T18:30:00Z"
+    },
+    "name": "Rubicon Research Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.105Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe38"
+    },
+    "symbol": "RUDRA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.105Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-18T18:30:00Z"
+    },
+    "name": "Rudra Global Infra Products Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.105Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe3a"
+    },
+    "symbol": "SAATVIKGL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.106Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-25T18:30:00Z"
+    },
+    "name": "Saatvik Green Energy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.106Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe3c"
+    },
+    "symbol": "SAHLIBHFI",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-09T18:30:00Z"
+    },
+    "name": "Shalibhadra Finance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe3e"
+    },
+    "symbol": "SAIPARENT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-01T18:30:00Z"
+    },
+    "name": "Sai Parenterals Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe40"
+    },
+    "symbol": "SAMBHV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-01T18:30:00Z"
+    },
+    "name": "Sambhv Steel Tubes Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe42"
+    },
+    "symbol": "SAPPL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Shree Ajit Pulp & Paper Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.107Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe44"
+    },
+    "symbol": "SAYAJIHOTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.109Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Sayaji Hotels Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.109Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe46"
+    },
+    "symbol": "SCANSTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.109Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Scan Steels Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.109Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe48"
+    },
+    "symbol": "SCODATUBES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.111Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-03T18:30:00Z"
+    },
+    "name": "Scoda Tubes Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.111Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe4a"
+    },
+    "symbol": "SEDEMAC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.111Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-10T18:30:00Z"
+    },
+    "name": "SEDEMAC Mechatronics Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.111Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe4c"
+    },
+    "symbol": "SEIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.112Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Shanti Educational Initiatives Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.112Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe4e"
+    },
+    "symbol": "SGFIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.113Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-04T18:30:00Z"
+    },
+    "name": "SG Finserve Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.113Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe50"
+    },
+    "symbol": "SGMART",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.114Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-11T18:30:00Z"
+    },
+    "name": "SG Mart Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.114Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe52"
+    },
+    "symbol": "SHADOWFAX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.114Z"
+    },
+    "listing_date": {
+      "$date": "2026-01-27T18:30:00Z"
+    },
+    "name": "Shadowfax Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.114Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe54"
+    },
+    "symbol": "SHANTIGOLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.115Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-31T18:30:00Z"
+    },
+    "name": "Shanti Gold International Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe56"
+    },
+    "symbol": "SHARDUL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.115Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Shardul Securities Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.115Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe58"
+    },
+    "symbol": "SHBAJRG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.116Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Shri Bajrang Alliance Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.116Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe5a"
+    },
+    "symbol": "SHILCTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.116Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-23T18:30:00Z"
+    },
+    "name": "Shilchar Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.116Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe5c"
+    },
+    "symbol": "SHINDL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.118Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Sharat Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.118Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe5e"
+    },
+    "symbol": "SHIVAUM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.119Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-13T18:30:00Z"
+    },
+    "name": "Shiv Aum Steels Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.119Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe60"
+    },
+    "symbol": "SHREEJISPG",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.120Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "name": "Shreeji Shipping Global Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.120Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe62"
+    },
+    "symbol": "SHRIKRISH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.120Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Shri Krishna Devcon Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.120Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe64"
+    },
+    "symbol": "SHRINGARMS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.121Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-16T18:30:00Z"
+    },
+    "name": "Shringar House of Mangalsutra Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.121Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe66"
+    },
+    "symbol": "SICAGEN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.121Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Sicagen India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.121Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe68"
+    },
+    "symbol": "SIKA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.121Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Sika Interplant Systems Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.121Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe6a"
+    },
+    "symbol": "SINGERIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.123Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-18T18:30:00Z"
+    },
+    "name": "Singer India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.123Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe6c"
+    },
+    "symbol": "SKFINDUS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.124Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-04T18:30:00Z"
+    },
+    "name": "SKF India (Industrial) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.124Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe6e"
+    },
+    "symbol": "SMARTWORKS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.124Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-16T18:30:00Z"
+    },
+    "name": "Smartworks Coworking Spaces Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.124Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe70"
+    },
+    "symbol": "SOLARWORLD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.125Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "name": "Solarworld Energy Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.125Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe72"
+    },
+    "symbol": "SOLEX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.125Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-07T18:30:00Z"
+    },
+    "name": "Solex Energy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.125Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe74"
+    },
+    "symbol": "SONAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.125Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Sonal Mercantile Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.125Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe76"
+    },
+    "symbol": "SRTL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.127Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-01T18:30:00Z"
+    },
+    "name": "Shree Ram Twistex Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.127Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe78"
+    },
+    "symbol": "STLNETWORK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.127Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-03T18:30:00Z"
+    },
+    "name": "STL Networks Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.127Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe7a"
+    },
+    "symbol": "STUDDS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.128Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-06T18:30:00Z"
+    },
+    "name": "Studds Accessories Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.128Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe7c"
+    },
+    "symbol": "STYL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.128Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-29T18:30:00Z"
+    },
+    "name": "Seshaasai Technologies Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.128Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe7e"
+    },
+    "symbol": "SUDEEPPHRM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.130Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-27T18:30:00Z"
+    },
+    "name": "Sudeep Pharma Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.130Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe80"
+    },
+    "symbol": "SURYALA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.131Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Suryalata Spinning Mills Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.131Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe82"
+    },
+    "symbol": "SYSTMTXC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.131Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-05T18:30:00Z"
+    },
+    "name": "Systematix Corporate Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.131Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe84"
+    },
+    "symbol": "TAALTECH",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.132Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Taal Tech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.132Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe86"
+    },
+    "symbol": "TAMBOLIIN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.132Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Tamboli Industries Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.132Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe88"
+    },
+    "symbol": "TATACAP",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.133Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-12T18:30:00Z"
+    },
+    "name": "Tata Capital Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.133Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe8a"
+    },
+    "symbol": "TCC",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.134Z"
+    },
+    "listing_date": {
+      "$date": "2026-02-24T18:30:00Z"
+    },
+    "name": "TCC Concept Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.134Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe8c"
+    },
+    "symbol": "TECHNVISN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.134Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "TechNVision Ventures Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.134Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe8e"
+    },
+    "symbol": "TENNIND",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.135Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-18T18:30:00Z"
+    },
+    "name": "Tenneco Clean Air India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.135Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe90"
+    },
+    "symbol": "THACKER",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.136Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Thacker & Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.136Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe92"
+    },
+    "symbol": "THAKDEV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.136Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Thakkers Developers Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.136Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe94"
+    },
+    "symbol": "THELEELA",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.137Z"
+    },
+    "listing_date": {
+      "$date": "2025-06-01T18:30:00Z"
+    },
+    "name": "Leela Palaces Hotels & Resorts Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.137Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe96"
+    },
+    "symbol": "TIGERLOGS",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.137Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-17T18:30:00Z"
+    },
+    "name": "Tiger Logistics (India) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.137Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe98"
+    },
+    "symbol": "TIMEX",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.138Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Timex Group India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.138Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe9a"
+    },
+    "symbol": "TMCV",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.139Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-11T18:30:00Z"
+    },
+    "name": "Tata Motors Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.139Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe9c"
+    },
+    "symbol": "TRANSPEK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.140Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Transpek Industry Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.140Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbe9e"
+    },
+    "symbol": "TRAVELFOOD",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.141Z"
+    },
+    "listing_date": {
+      "$date": "2025-07-13T18:30:00Z"
+    },
+    "name": "Travel Food Services Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.141Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbea0"
+    },
+    "symbol": "TRUALT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.141Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-02T18:30:00Z"
+    },
+    "name": "TruAlt Bioenergy Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.141Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbea2"
+    },
+    "symbol": "ULTRAMAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.142Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Ultramarine & Pigments Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.142Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbea4"
+    },
+    "symbol": "URBANCO",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.142Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-16T18:30:00Z"
+    },
+    "name": "Urban Company Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.142Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbea6"
+    },
+    "symbol": "UTLSOLAR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.143Z"
+    },
+    "listing_date": {
+      "$date": "2025-11-19T18:30:00Z"
+    },
+    "name": "Fujiyama Power Systems Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.143Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbea8"
+    },
+    "symbol": "VELJAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.143Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Veljan Denison Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.143Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeaa"
+    },
+    "symbol": "VIDYAWIRES",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.144Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-09T18:30:00Z"
+    },
+    "name": "Vidya Wires Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.144Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeac"
+    },
+    "symbol": "VIKRAMSOLR",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.145Z"
+    },
+    "listing_date": {
+      "$date": "2025-08-25T18:30:00Z"
+    },
+    "name": "Vikram Solar Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.145Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeae"
+    },
+    "symbol": "VIKRAN",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.145Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-02T18:30:00Z"
+    },
+    "name": "Vikran Engineering Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.145Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeb0"
+    },
+    "symbol": "VITAL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.145Z"
+    },
+    "listing_date": {
+      "$date": "2026-03-10T18:30:00Z"
+    },
+    "name": "Vital Chemtech Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.145Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeb2"
+    },
+    "symbol": "VMSTMT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.146Z"
+    },
+    "listing_date": {
+      "$date": "2025-09-23T18:30:00Z"
+    },
+    "name": "VMS TMT Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.146Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeb4"
+    },
+    "symbol": "WAKEFIT",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.147Z"
+    },
+    "listing_date": {
+      "$date": "2025-12-14T18:30:00Z"
+    },
+    "name": "Wakefit Innovations Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.147Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeb6"
+    },
+    "symbol": "WELSPLSOL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.148Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Welspun Specialty Solutions Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.148Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeb8"
+    },
+    "symbol": "WEWORK",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.148Z"
+    },
+    "listing_date": {
+      "$date": "2025-10-09T18:30:00Z"
+    },
+    "name": "WeWork India Management Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.148Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbeba"
+    },
+    "symbol": "WIMPLAST",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.148Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Wim Plast Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.148Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbebc"
+    },
+    "symbol": "WPIL",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.149Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "WPIL Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.149Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbebe"
+    },
+    "symbol": "ZFSTEERING",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.149Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "ZF Steering Gear (India) Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.149Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "69ecde4938869899a32dbec0"
+    },
+    "symbol": "ZSARACOM",
+    "created_at": {
+      "$date": "2026-04-25T15:31:21.149Z"
+    },
+    "listing_date": {
+      "$date": "2026-04-19T18:30:00Z"
+    },
+    "name": "Saraswati Commercial India Limited",
+    "updated_at": {
+      "$date": "2026-04-25T15:31:21.149Z"
+    }
+  }
+]

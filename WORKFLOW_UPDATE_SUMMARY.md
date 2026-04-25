@@ -12,18 +12,32 @@
 - Removed: `TA-Lib>=0.4.25`
 - Removed: `beautifulsoup4` (let jugaad-data install it automatically)
 
+## Phase 2: MongoDB Infrastructure Transition
+(Applied 2026-04-25)
+
+✅ **Integrated MongoDB Dual-Write**
+- Primary data storage moved to MongoDB Atlas.
+- All 3 workflows (`ipo-scanner-v2`, `listing-day`, `watchlist-hourly`) now perform deterministic dual-writes.
+- Added `Check MongoDB Connection` pre-flight step to all workflows.
+
+✅ **Infrastructure Guardrails**
+- **Deterministic Identity**: Signals and logs use market-time hashing to prevent duplicates.
+- **Fail-Safe Mode**: System continues via CSV if database connectivity is lost.
+- **Health Reporting**: Summary reports now include `DB Status: ✅ OK` or failure counts.
+
 ## Current Workflow Structure:
 
 1. Checkout code
 2. Set up Python 3.10
 3. Clean up old Python caches
 4. Cache Python dependencies
-5. Install Python dependencies (from requirements.txt)
-6. Show workflow mode and timing
-7. Debug environment variables
-8. Run Consolidation-Based Scanner
-9. Upload CSV files
-10. Commit and push CSV files
+5. Install Python dependencies (including `pymongo`)
+6. Check MongoDB Connection (`test_db_connection.py`)
+7. Show workflow mode and timing
+8. Debug environment variables
+9. Run Scanners (with MongoDB dual-write)
+10. Upload CSV files (Legacy)
+11. Commit and push CSV files (with `git pull --rebase` to avoid conflicts)
 
 ## To Apply Changes to GitHub:
 

@@ -127,6 +127,7 @@ jobs:
           POSITIONS_CSV: ${{ vars.POSITIONS_CSV || 'ipo_positions.csv' }}
           HEARTBEAT_RUNS: ${{ vars.HEARTBEAT_RUNS || '0' }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           echo "=== Environment Variables Debug ==="
           echo "🔐 Secrets:"
@@ -155,6 +156,23 @@ jobs:
           else
             echo "✅ TELEGRAM_BOT_TOKEN is set (length: ${#TELEGRAM_BOT_TOKEN})"
           fi
+
+          if [ -z "$MONGO_URI" ]; then
+            echo "⚠️ WARNING: MONGO_URI is empty! MongoDB dual-write will be disabled."
+          else
+            echo "✅ MONGO_URI is set"
+          fi
+      
+      - name: Check MongoDB Connection
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: |
+          if [ -n "$MONGO_URI" ]; then
+            echo "🔌 Verifying MongoDB Atlas connection..."
+            python test_db_connection.py
+          else
+            echo "⏩ Skipping DB check (MONGO_URI not set)"
+          fi
       
       - name: Run Consolidation-Based Scanner
         env:
@@ -177,6 +195,7 @@ jobs:
           POSITIONS_CSV: ${{ vars.POSITIONS_CSV || 'ipo_positions.csv' }}
           HEARTBEAT_RUNS: ${{ vars.HEARTBEAT_RUNS || '0' }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             MODE="${{ github.event.inputs.mode }}"

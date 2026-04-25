@@ -196,7 +196,28 @@ def update_mapping_csv():
             new_df = pd.DataFrame(new_mappings)
             updated_mapping = pd.concat([existing_mapping, new_df], ignore_index=True)
             updated_mapping.to_csv(MAPPING_CSV, index=False, encoding='utf-8')
-            logger.info(f"✅ Updated {MAPPING_CSV} with {updated_count} new mappings")
+            logger.info(f"Updated {MAPPING_CSV} with {updated_count} new mappings")
+
+            # MongoDB dual-write: upsert each new mapping into instrument_keys collection
+            try:
+                from db import upsert_instrument_key, ensure_indexes
+                ensure_indexes()  # Ensure the ipo_symbol unique index exists
+                for m in new_mappings:
+                    upsert_instrument_key(
+                        ipo_symbol=m['ipo_symbol'],
+                        instrument_key=m['instrument_key'],
+                        isin=m['instrument_key'].split('|')[-1] if '|' in m['instrument_key'] else None,
+                        name=m.get('name', m['ipo_symbol']),
+                        match_type=m.get('match_type', 'exact')
+                    )
+                logger.info(f"[MongoDB] Upserted {len(new_mappings)} instrument key mappings")
+            except Exception as db_e:
+                logger.error(f"[MongoDB] instrument_keys write FAILED (CSV write succeeded): {db_e}")
+                try:
+                    from db import db_metrics
+                    db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+                except Exception:
+                    pass
         else:
             logger.info("No new mappings to add")
         
