@@ -34,6 +34,8 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'production' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -270,6 +272,7 @@ jobs:
               echo "No changes to commit"
             else
               git commit -m "Update IPO data v2 - ${{ github.run_number }} [skip ci]"
+              git pull origin main --rebase
               git push
             fi
           else

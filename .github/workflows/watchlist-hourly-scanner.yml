@@ -24,6 +24,8 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -139,6 +141,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add ipo_signals.csv ipo_positions.csv logs/ 2>/dev/null || true
             git commit -m "🤖 Auto-update: Watchlist hourly scan results [$(date '+%Y-%m-%d %H:%M:%S')]" || exit 0
+            git pull origin main --rebase
             git push || exit 0
           else
             echo "No changes to commit"
