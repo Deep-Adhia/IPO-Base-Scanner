@@ -141,7 +141,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add ipo_signals.csv ipo_positions.csv logs/ 2>/dev/null || true
             git commit -m "🤖 Auto-update: Watchlist hourly scan results [$(date '+%Y-%m-%d %H:%M:%S')]" || exit 0
-            git pull origin main --rebase
+            git pull origin main --rebase --autostash
             git push || exit 0
           else
             echo "No changes to commit"
