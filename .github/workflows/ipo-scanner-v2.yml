@@ -199,6 +199,10 @@ jobs:
           LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
+          echo "🔄 Updating Upstox ID Mappings..."
+          python update_upstox_mapping.py
+          echo "✅ Upstox ID Mappings updated"
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             MODE="${{ github.event.inputs.mode }}"
             if [ -z "$MODE" ]; then
@@ -262,6 +266,9 @@ jobs:
           fi
           if [ -f "recent_ipo_symbols.csv" ]; then
             files_to_add="$files_to_add recent_ipo_symbols.csv"
+          fi
+          if [ -f "ipo_upstox_mapping.csv" ]; then
+            files_to_add="$files_to_add ipo_upstox_mapping.csv"
           fi
           
           if [ -n "$files_to_add" ]; then

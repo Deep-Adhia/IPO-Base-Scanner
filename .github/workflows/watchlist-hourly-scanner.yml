@@ -116,6 +116,10 @@ jobs:
           UPSTOX_ACCESS_TOKEN: ${{ secrets.UPSTOX_ACCESS_TOKEN }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
+          echo "🔄 Updating Upstox ID Mappings..."
+          python update_upstox_mapping.py
+          echo "✅ Upstox ID Mappings updated"
+          
           echo "🚀 Starting Hourly Intraday Breakout Scanner..."
           echo "📅 Date: $(date '+%Y-%m-%d')"
           echo "⏰ Time: $(date '+%H:%M:%S')"
@@ -139,7 +143,7 @@ jobs:
           
           # Check if there are changes to commit
           if [ -n "$(git status --porcelain)" ]; then
-            git add ipo_signals.csv ipo_positions.csv logs/ 2>/dev/null || true
+            git add ipo_signals.csv ipo_positions.csv ipo_upstox_mapping.csv logs/ 2>/dev/null || true
             git commit -m "🤖 Auto-update: Watchlist hourly scan results [$(date '+%Y-%m-%d %H:%M:%S')]" || exit 0
             git pull origin main --rebase --autostash
             git push || exit 0
