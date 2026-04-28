@@ -1,0 +1,20 @@
+{
+  "date": "2026-04-28",
+  "total_signals": 0,
+  "tier_distribution": {
+    "A+": 0,
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0,
+    "UNKNOWN": 0
+  },
+  "avg_signal_score": 0.0,
+  "top_score": 0.0,
+  "rejections": {
+    "loose_base": 27,
+    "low_grade_D": 2,
+    "low_volume": 1,
+    "failed_follow_through": 2
+  }
+}
