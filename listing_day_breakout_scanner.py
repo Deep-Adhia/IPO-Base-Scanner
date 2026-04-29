@@ -52,27 +52,19 @@ load_dotenv()
 REJECTIONS_CSV = "ipo_rejections.csv"
 
 def log_rejected_signal(symbol, current_price, listing_high, days_since, vol_ratio, reason):
+    """Log a simple rejection telemetry event to MongoDB."""
     try:
-        import os, pandas as pd
-        from datetime import datetime
-        
-        if not os.path.exists(REJECTIONS_CSV):
-            pd.DataFrame(columns=[
-                "symbol","date","price","listing_high","age_days","volume_mult","reason"
-            ]).to_csv(REJECTIONS_CSV, index=False, encoding='utf-8')
-            
-        new_row = pd.DataFrame([{
-            "symbol": symbol,
-            "date": datetime.today().strftime('%Y-%m-%d'),
-            "price": round(current_price, 2),
-            "listing_high": round(listing_high, 2),
-            "age_days": days_since,
-            "volume_mult": round(vol_ratio, 2),
-            "reason": reason
-        }])
-        
-        existing = pd.read_csv(REJECTIONS_CSV, encoding='utf-8') if os.path.exists(REJECTIONS_CSV) else pd.DataFrame()
-        pd.concat([existing, new_row], ignore_index=True).to_csv(REJECTIONS_CSV, index=False, encoding='utf-8')
+        write_daily_log("listing_day", symbol, "REJECTED_BREAKOUT", {
+            "rejection_reason": reason,
+            "failing_metric": "price_vs_listing_high",
+            "failing_value": round(current_price, 2),
+            "threshold": round(listing_high, 2),
+            "metrics": {
+                "age_days": days_since,
+                "vol_ratio": round(vol_ratio, 2) if vol_ratio else None,
+                "listing_high": round(listing_high, 2),
+            },
+        }, log_type="REJECTED")
     except Exception as e:
         logger.error(f"Failed to log rejection for {symbol}: {e}")
 
@@ -567,74 +559,40 @@ def _assign_breakout_tier(
 
 
 def initialize_listing_data_csv():
-    """Initialize listing data CSV if it doesn't exist"""
-    if not os.path.exists(LISTING_DATA_CSV):
-        df = pd.DataFrame(columns=[
-            'symbol', 'listing_date', 'listing_day_high', 'listing_day_low',
-            'listing_day_close', 'listing_day_volume', 'last_updated', 'status'
-        ])
-        df.to_csv(LISTING_DATA_CSV, index=False, encoding='utf-8')
-        logger.info(f"Created {LISTING_DATA_CSV}")
-    else:
-        # Clean up any comment rows if file exists
-        try:
-            df = pd.read_csv(LISTING_DATA_CSV, encoding='utf-8')
-            df = df[~df['symbol'].astype(str).str.startswith('#')]
-            df = df[df['symbol'].notna() & (df['symbol'] != '')]
-            df.to_csv(LISTING_DATA_CSV, index=False, encoding='utf-8')
-        except:
-            pass
+    """No-op: listing data is now MongoDB-only. Kept for call-site compatibility."""
+    pass
 
 def load_listing_data():
-    """Load listing day data from CSV"""
+    """Load listing day data from MongoDB listing_data collection."""
     try:
-        if not os.path.exists(LISTING_DATA_CSV):
-            initialize_listing_data_csv()
+        from db import listing_data_col
+        if listing_data_col is None:
+            logger.warning("[DB] listing_data_col unavailable - returning empty DataFrame")
             return pd.DataFrame()
-        
-        df = pd.read_csv(LISTING_DATA_CSV, encoding='utf-8')
-        # Remove comment rows and empty rows
-        df = df[~df['symbol'].astype(str).str.startswith('#')]
-        df = df[df['symbol'].notna() & (df['symbol'] != '')]
-        
-        # Convert listing_date to date object if it exists
+        docs = list(listing_data_col.find({}, {"_id": 0}))
+        if not docs:
+            return pd.DataFrame()
+        df = pd.DataFrame(docs)
         if 'listing_date' in df.columns and not df.empty:
-            df['listing_date'] = pd.to_datetime(df['listing_date']).dt.date
-        
+            df['listing_date'] = pd.to_datetime(df['listing_date'], utc=True, errors='coerce').dt.tz_localize(None).dt.date
         return df
     except Exception as e:
-        logger.error(f"Error loading listing data: {e}")
+        logger.error(f"Error loading listing data from MongoDB: {e}")
         return pd.DataFrame()
 
 def save_listing_data(df):
-    """Save listing data to CSV and MongoDB"""
+    """Save listing data to MongoDB only."""
     try:
-        # Save to CSV
-        df.to_csv(LISTING_DATA_CSV, index=False, encoding='utf-8')
-        
-        # MongoDB dual-write: upsert all records
-        try:
-            from db import upsert_listing_data
-            for _, row in df.iterrows():
-                upsert_listing_data(row['symbol'], row.to_dict())
-        except Exception as db_e:
-            logger.error(f"[MongoDB] listing_data write FAILED (CSV write succeeded): {db_e}")
-            try:
-                from db import db_metrics
-                db_metrics["failures"] = db_metrics.get("failures", 0) + 1
-            except Exception:
-                pass
+        from db import upsert_listing_data
+        for _, row in df.iterrows():
+            upsert_listing_data(row['symbol'], row.to_dict())
     except Exception as e:
-        logger.error(f"Error saving listing data: {e}")
+        logger.error(f"Error saving listing data to MongoDB: {e}")
 
 
 def initialize_watchlist_data_csv():
-    """Initialize dedicated watchlist CSV if it doesn't exist."""
-    if not os.path.exists(WATCHLIST_SIGNALS_CSV):
-        pd.DataFrame(columns=[
-            "signal_id", "symbol", "signal_date", "signal_time", "status",
-            "watch_level", "current_price", "distance_pct", "notes", "version", "scanner"
-        ]).to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
+    """No-op: watchlist signals are written to MongoDB. Kept for call-site compatibility."""
+    pass
 
 
 def load_pending_breakouts():
@@ -785,68 +743,65 @@ def get_listing_day_data(symbol, listing_date):
         return None
 
 def update_listing_data_for_new_ipos():
-    """Check for new IPOs and add their listing day data"""
+    """Check for new IPOs in MongoDB ipos_col and add their listing day data."""
     try:
-        # Load recent IPOs
-        if not os.path.exists(RECENT_IPO_CSV):
-            logger.warning(f"{RECENT_IPO_CSV} not found")
+        # Load recent IPOs from MongoDB
+        from db import ipos_col
+        if ipos_col is None:
+            logger.warning("[DB] ipos_col unavailable — cannot update listing data")
             return
-        
-        recent_ipos = pd.read_csv(RECENT_IPO_CSV, encoding='utf-8')
-        recent_ipos['listing_date'] = pd.to_datetime(recent_ipos['listing_date']).dt.date
-        
-        # Load existing listing data
+
+        docs = list(ipos_col.find({}, {"_id": 0, "symbol": 1, "listing_date": 1}))
+        if not docs:
+            logger.warning("[DB] ipos_col is empty — no recent IPOs to process")
+            return
+
+        recent_ipos = pd.DataFrame(docs)
+        recent_ipos['listing_date'] = pd.to_datetime(
+            recent_ipos['listing_date'], utc=True, errors='coerce'
+        ).dt.tz_localize(None).dt.date
+
+        # Load existing listing data symbols from MongoDB
         listing_data = load_listing_data()
-        
-        if listing_data.empty:
-            existing_symbols = set()
-        else:
-            existing_symbols = set(listing_data['symbol'].tolist())
-        
+        existing_symbols = set(listing_data['symbol'].tolist()) if not listing_data.empty else set()
+
         new_ipos = 0
-        
+
         for _, row in recent_ipos.iterrows():
             symbol = row['symbol']
             listing_date = row['listing_date']
-            
-            # Skip RE/SME right away to avoid noise
-            if '-RE' in symbol or symbol.endswith('-SM') or 'RE1' in symbol:
+
+            # Skip RE/SME noise
+            if pd.isna(symbol) or '-RE' in str(symbol) or str(symbol).endswith('-SM') or 'RE1' in str(symbol):
                 continue
-                
-            # Skip if listing date is today or in the future
-            # NSE archives only update EOD, so we wait until tomorrow to fetch listing data
-            if listing_date >= datetime.now().date():
+
+            # Skip future listings (NSE archives only update EOD)
+            if pd.isna(listing_date) or listing_date >= datetime.now().date():
                 continue
-            
+
             # Skip if already exists
             if symbol in existing_symbols:
                 continue
-            
-            # Get listing day data
+
             listing_info = get_listing_day_data(symbol, listing_date)
-            
+
             if listing_info:
-                # Add to listing data
                 new_row = pd.DataFrame([listing_info])
-                if listing_data.empty:
-                    listing_data = new_row
-                else:
-                    listing_data = pd.concat([listing_data, new_row], ignore_index=True)
-                
+                listing_data = new_row if listing_data.empty else pd.concat(
+                    [listing_data, new_row], ignore_index=True
+                )
                 new_ipos += 1
                 logger.info(f"✅ Added listing data for {symbol}")
-                
-                # Small delay to avoid rate limiting
                 time.sleep(0.5)
             else:
                 logger.warning(f"⚠️ Could not get listing data for {symbol} - skipping")
-        
+
         if new_ipos > 0:
             save_listing_data(listing_data)
             logger.info(f"✅ Updated listing data: {new_ipos} new IPOs added")
         else:
             logger.info("✅ No new IPOs to add")
-    
+
     except Exception as e:
         logger.error(f"Error updating listing data: {e}")
 
@@ -1620,42 +1575,19 @@ Keep {symbol} on your radar. A close above ₹{listing_high:.2f} with volume tri
     return msg
 
 def save_breakout_signal(breakout_data):
-    """Save breakout signal to signals CSV"""
+    """Save breakout signal to MongoDB (DB-only)."""
     try:
         today = datetime.now().date()
         signal_id = f"LISTING_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}"
-        
-        # Check if signal already exists
-        if os.path.exists(SIGNALS_CSV):
-            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-            # Add signal_type column if it doesn't exist (for backward compatibility)
-            if 'signal_type' not in existing_signals.columns:
-                existing_signals['signal_type'] = 'UNKNOWN'
-            # Add notes column if it doesn't exist
-            if 'notes' not in existing_signals.columns:
-                existing_signals['notes'] = ''
-            # Check if we already have a listing day breakout signal for this symbol today
-            today_signals = existing_signals[
-                (existing_signals['symbol'] == breakout_data['symbol']) &
-                (pd.to_datetime(existing_signals['signal_date']).dt.date == today) &
-                (existing_signals['signal_id'].str.contains('LISTING_', na=False))
-            ]
-            if len(today_signals) > 0:
+        try:
+            from db import signal_exists, has_active_position
+            if signal_exists(signal_id):
                 logger.info(f"Listing day breakout signal already exists for {breakout_data['symbol']} today")
                 return False
-        else:
-            existing_signals = pd.DataFrame()
-        
-        # Check if symbol already has active position (prevent duplicates)
-        try:
-            if os.path.exists(POSITIONS_CSV):
-                existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                if not existing_positions.empty:
-                    active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-                    if breakout_data['symbol'] in active_positions['symbol'].tolist():
-                        logger.info(f"⏭️ Skipping {breakout_data['symbol']} - already has active position")
-                        return False
-        except:
+            if has_active_position(breakout_data['symbol']):
+                logger.info(f"⏭️ Skipping {breakout_data['symbol']} - already has active position")
+                return False
+        except Exception:
             pass
         
         # Create new signal
@@ -1731,19 +1663,7 @@ def save_breakout_signal(breakout_data):
             "momentum_score": breakout_data.get("score_components", {}).get("momentum_score", None),
         }, candle_timestamp=breakout_data.get('candle_timestamp') or breakout_data.get('timestamp'))
         
-        # Append to CSV
-        new_df = pd.DataFrame([new_signal])
-        if existing_signals.empty:
-            new_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-        else:
-            # Ensure signal_type and notes columns exist in existing_signals
-            if 'signal_type' not in existing_signals.columns:
-                existing_signals['signal_type'] = 'UNKNOWN'
-            if 'notes' not in existing_signals.columns:
-                existing_signals['notes'] = ''
-            pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-        
-        # MongoDB dual-write: signal
+        # DB-only write: signal
         try:
             from db import upsert_signal
             upsert_signal(new_signal.copy())
@@ -1770,16 +1690,13 @@ def save_watchlist_signal(breakout_data):
         signal_id = f"WATCHLIST_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}"
         
         # Check if signal already exists
-        initialize_watchlist_data_csv()
-        if os.path.exists(WATCHLIST_SIGNALS_CSV):
-            existing_signals = pd.read_csv(WATCHLIST_SIGNALS_CSV, encoding='utf-8')
-            if 'signal_id' in existing_signals.columns:
-                # Check for same signal ID
-                if signal_id in existing_signals['signal_id'].tolist():
-                    logger.info(f"Watchlist alert already sent for {breakout_data['symbol']} today")
-                    return False
-        else:
-            existing_signals = pd.DataFrame()
+        try:
+            from db import signal_exists
+            if signal_exists(signal_id):
+                logger.info(f"Watchlist alert already sent for {breakout_data['symbol']} today")
+                return False
+        except Exception:
+            pass
             
         distance_pct = ((breakout_data['listing_day_high'] - breakout_data['current_price']) / breakout_data['listing_day_high'] * 100) if breakout_data['listing_day_high'] > 0 else 0
 
@@ -1798,13 +1715,7 @@ def save_watchlist_signal(breakout_data):
             "scanner": "listing_day"
         }
         
-        new_df = pd.DataFrame([new_signal])
-        if existing_signals.empty:
-            new_df.to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
-        else:
-            pd.concat([existing_signals, new_df], ignore_index=True).to_csv(WATCHLIST_SIGNALS_CSV, index=False, encoding='utf-8')
-            
-        # MongoDB dual-write: signal
+        # DB-only write: signal
         try:
             from db import upsert_signal
             upsert_signal(new_signal.copy())
@@ -1824,30 +1735,15 @@ def save_watchlist_signal(breakout_data):
         return False
 
 def add_position(breakout_data):
-    """Add position to positions CSV"""
+    """Add position to MongoDB (DB-only)."""
     try:
         today = datetime.now().date()
-        
-        # Check if position already exists
-        if os.path.exists(POSITIONS_CSV):
-            existing_positions = pd.read_csv(POSITIONS_CSV)
-            active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-            if breakout_data['symbol'] in active_positions['symbol'].tolist():
-                logger.info(f"Position already exists for {breakout_data['symbol']}")
-                return False
-        else:
-            existing_positions = pd.DataFrame()
-        
-        # Check if position already exists (double check)
         try:
-            if os.path.exists(POSITIONS_CSV):
-                existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                if not existing_positions.empty:
-                    active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-                    if breakout_data['symbol'] in active_positions['symbol'].tolist():
-                        logger.info(f"⏭️ Position already exists for {breakout_data['symbol']}")
-                        return False
-        except:
+            from db import has_active_position
+            if has_active_position(breakout_data['symbol']):
+                logger.info(f"⏭️ Position already exists for {breakout_data['symbol']}")
+                return False
+        except Exception:
             pass
         
         # Create new position
@@ -1864,14 +1760,7 @@ def add_position(breakout_data):
             "status": "ACTIVE"
         }
         
-        # Append to CSV
-        new_df = pd.DataFrame([new_position])
-        if existing_positions.empty:
-            new_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-        else:
-            pd.concat([existing_positions, new_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-        
-        # MongoDB dual-write: position
+        # DB-only write: position
         try:
             from db import upsert_position
             upsert_position(new_position.copy())

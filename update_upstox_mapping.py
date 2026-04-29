@@ -139,93 +139,65 @@ def search_instrument_key(symbol, listing_date=None):
         logger.error(f"Error searching for {symbol}: {e}")
         return None
 
-def update_mapping_csv():
-    """Update mapping CSV with new IPO symbols"""
+def update_mapping_from_db():
+    """Update MongoDB instrument_keys collection with new IPO symbols from ipos_col."""
     try:
-        # Load existing mapping
-        if os.path.exists(MAPPING_CSV):
-            existing_mapping = pd.read_csv(MAPPING_CSV, encoding='utf-8')
-            existing_symbols = set(existing_mapping['ipo_symbol'].tolist())
-        else:
-            # Create new mapping file
-            existing_mapping = pd.DataFrame(columns=[
-                'ipo_symbol', 'upstox_symbol', 'name', 'instrument_key', 'match_type'
-            ])
-            existing_symbols = set()
-            existing_mapping.to_csv(MAPPING_CSV, index=False, encoding='utf-8')
-            logger.info(f"Created new mapping file: {MAPPING_CSV}")
-        
-        # Load recent IPOs
-        if not os.path.exists(RECENT_IPO_CSV):
-            logger.warning(f"{RECENT_IPO_CSV} not found")
-            return
-        
-        recent_ipos = pd.read_csv(RECENT_IPO_CSV, encoding='utf-8')
+        from db import ipos_col, upsert_instrument_key, ensure_indexes, get_instrument_key_mapping
+        ensure_indexes()
+
+        if ipos_col is None:
+            logger.warning("ipos_col not available — cannot update mappings")
+            return 0
+
+        # Get all IPO symbols from MongoDB
+        docs = list(ipos_col.find({}, {"_id": 0, "symbol": 1}))
+        if not docs:
+            logger.warning("ipos_col is empty — no recent IPOs to process")
+            return 0
+
+        recent_symbols = [d["symbol"] for d in docs if d.get("symbol")]
+
+        # Get already-mapped symbols from instrument_keys collection
+        existing_mapping = get_instrument_key_mapping()
+        existing_symbols = set(existing_mapping.keys())
+
         new_mappings = []
         updated_count = 0
-        
-        for _, row in recent_ipos.iterrows():
-            symbol = row['symbol']
-            
-            # Skip if already in mapping
+
+        for symbol in recent_symbols:
             if symbol in existing_symbols:
                 continue
-            
+
             logger.info(f"Processing {symbol}...")
-            
-            # Get listing date if available
-            listing_date = None
-            if 'listing_date' in row and pd.notna(row['listing_date']):
-                listing_date = row['listing_date']
-            
-            # Try to find instrument key
-            mapping = search_instrument_key(symbol, listing_date)
-            
+            mapping = search_instrument_key(symbol)
+
             if mapping:
                 new_mappings.append(mapping)
                 updated_count += 1
+                upsert_instrument_key(
+                    ipo_symbol=mapping['ipo_symbol'],
+                    instrument_key=mapping['instrument_key'],
+                    isin=mapping['instrument_key'].split('|')[-1] if '|' in mapping['instrument_key'] else None,
+                    name=mapping.get('name', mapping['ipo_symbol']),
+                    match_type=mapping.get('match_type', 'exact')
+                )
                 logger.info(f"✅ Added mapping for {symbol}")
             else:
                 logger.warning(f"⚠️ Could not find mapping for {symbol} - skipping")
-            
-            # Rate limiting
-            time.sleep(0.2)
-        
-        # Update mapping CSV
-        if new_mappings:
-            new_df = pd.DataFrame(new_mappings)
-            updated_mapping = pd.concat([existing_mapping, new_df], ignore_index=True)
-            updated_mapping.to_csv(MAPPING_CSV, index=False, encoding='utf-8')
-            logger.info(f"Updated {MAPPING_CSV} with {updated_count} new mappings")
 
-            # MongoDB dual-write: upsert each new mapping into instrument_keys collection
-            try:
-                from db import upsert_instrument_key, ensure_indexes
-                ensure_indexes()  # Ensure the ipo_symbol unique index exists
-                for m in new_mappings:
-                    upsert_instrument_key(
-                        ipo_symbol=m['ipo_symbol'],
-                        instrument_key=m['instrument_key'],
-                        isin=m['instrument_key'].split('|')[-1] if '|' in m['instrument_key'] else None,
-                        name=m.get('name', m['ipo_symbol']),
-                        match_type=m.get('match_type', 'exact')
-                    )
-                logger.info(f"[MongoDB] Upserted {len(new_mappings)} instrument key mappings")
-            except Exception as db_e:
-                logger.error(f"[MongoDB] instrument_keys write FAILED (CSV write succeeded): {db_e}")
-                try:
-                    from db import db_metrics
-                    db_metrics["failures"] = db_metrics.get("failures", 0) + 1
-                except Exception:
-                    pass
-        else:
-            logger.info("No new mappings to add")
-        
+            time.sleep(0.2)
+
+        logger.info(f"[MongoDB] Upserted {updated_count} new instrument key mappings")
         return updated_count
-        
+
     except Exception as e:
-        logger.error(f"Error updating mapping CSV: {e}")
+        logger.error(f"Error updating mapping from DB: {e}")
         return 0
+
+# Keep backward-compatible alias
+def update_mapping_csv():
+    return update_mapping_from_db()
+
 
 def main():
     """Main function"""
