@@ -348,3 +348,5 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 ---
 
 <sub>Built for systematic IPO momentum trading | v2.2.0 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>
+
+.\venv\Scripts\Activate.ps1

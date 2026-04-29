@@ -608,7 +608,10 @@ def scan_watchlist():
                 logger.info(f"✅ {symbol}: No breakout detected")
                 write_daily_log("watchlist", symbol, "REJECTED_BREAKOUT", {
                     "rejection_reason": "no_intraday_breakout",
-                    "key_metric": {"actual": breakout, "required": "breakout_strength>=2 and price>recent_high"},
+                    "failing_metric": "breakout",
+                    "failing_value": breakout if breakout is not None else 0,
+                    "threshold": "breakout_strength>=2 and price>recent_high",
+                    "metrics": {"breakout": breakout},
                     "volume_ratio": None,
                 }, log_type="REJECTED")
             
