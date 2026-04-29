@@ -240,49 +240,12 @@ jobs:
             python streamlined-ipo-scanner.py scan
           fi
       
-      - name: Upload CSV files
+      - name: Upload recent_ipo_symbols.csv
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ipo-data-v2-${{ github.run_number }}
           path: |
-            ipo_signals.csv
-            ipo_positions.csv
             recent_ipo_symbols.csv
           retention-days: 30
           if-no-files-found: warn
-      
-      - name: Commit and push CSV files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          
-          files_to_add=""
-          if [ -f "ipo_signals.csv" ]; then
-            files_to_add="$files_to_add ipo_signals.csv"
-          fi
-          if [ -f "ipo_positions.csv" ]; then
-            files_to_add="$files_to_add ipo_positions.csv"
-          fi
-          if [ -f "recent_ipo_symbols.csv" ]; then
-            files_to_add="$files_to_add recent_ipo_symbols.csv"
-          fi
-          if [ -f "ipo_upstox_mapping.csv" ]; then
-            files_to_add="$files_to_add ipo_upstox_mapping.csv"
-          fi
-          
-          if [ -n "$files_to_add" ]; then
-            git add -f $files_to_add
-            # Also add daily logs
-            [ -d "logs" ] && git add logs/ 2>/dev/null || true
-            if git diff --staged --quiet; then
-              echo "No changes to commit"
-            else
-              git commit -m "Update IPO data v2 - ${{ github.run_number }} [skip ci]"
-              git pull origin main --rebase --autostash
-              git push
-            fi
-          else
-            echo "No CSV files found to commit"
-          fi
-

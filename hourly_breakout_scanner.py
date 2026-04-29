@@ -18,7 +18,6 @@ import time
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import logging
-import json
 
 # Load environment
 load_dotenv()
@@ -40,31 +39,15 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 SCANNER_VERSION = "2.2.0"
-LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None, log_type="ACCEPTED"):
-    """Write structured scanner logs to logs/YYYY-MM-DD/<scanner>.jsonl"""
+    """Write scanner telemetry to MongoDB only (single-write path)."""
     try:
         from datetime import timezone, timedelta as td
         ist = timezone(td(hours=5, minutes=30))
         now_ist = datetime.now(ist)
-        log_dir = os.path.join("logs", now_ist.strftime("%Y-%m-%d"))
-        os.makedirs(log_dir, exist_ok=True)
-        log_file = os.path.join(log_dir, f"{scanner_name}.jsonl")
-        entry = {
-            "timestamp": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
-            "version": SCANNER_VERSION,
-            "log_schema_version": LOG_SCHEMA_VERSION,
-            "scanner": scanner_name,
-            "symbol": symbol,
-            "action": action,
-            "log_type": log_type,
-            "details": details or {},
-        }
-        with open(log_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(entry, default=str) + "\n")
 
-        # MongoDB dual-write: use provided candle_timestamp if available, else fall back to now_ist
+        # DB-only write: use provided candle_timestamp if available, else fall back to now_ist
         try:
             from db import insert_log
             effective_candle_ts = candle_timestamp if candle_timestamp is not None else now_ist
@@ -201,18 +184,17 @@ def fetch_intraday_data_upstox(symbol, interval=INTRADAY_INTERVAL):
     """Fetch intraday data from Upstox API"""
     try:
         # Load IPO mappings
-        if not os.path.exists('ipo_upstox_mapping.csv'):
-            logger.warning("IPO mapping file not found")
+        try:
+            from db import get_instrument_key_mapping
+            mapping = get_instrument_key_mapping()
+            instrument_key = mapping.get(symbol)
+            
+            if not instrument_key:
+                logger.warning(f"Symbol {symbol} not found in Upstox mapping (MongoDB)")
+                return None
+        except Exception as e:
+            logger.warning(f"Error getting Upstox mapping from MongoDB for {symbol}: {e}")
             return None
-        
-        mapping_df = pd.read_csv('ipo_upstox_mapping.csv', encoding='utf-8')
-        symbol_mapping = dict(zip(mapping_df['ipo_symbol'], mapping_df['instrument_key']))
-        
-        if symbol not in symbol_mapping:
-            logger.warning(f"Symbol {symbol} not found in Upstox mapping")
-            return None
-        
-        instrument_key = symbol_mapping[symbol]
         
         # Get Upstox credentials
         access_token = os.getenv('UPSTOX_ACCESS_TOKEN')
@@ -512,23 +494,24 @@ def save_breakout_signal(breakout_data):
         signal_id = f"INTRADAY_{breakout_data['symbol']}_{signal_date.strftime('%Y%m%d')}_{candle_time}"
         
         # Check if we already have a signal for this symbol today
-        if os.path.exists(SIGNALS_CSV):
-            existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-            today_signals = existing_signals[
-                (existing_signals['symbol'] == breakout_data['symbol']) &
-                (pd.to_datetime(existing_signals['signal_date']).dt.date == signal_date)
-            ]
-            if len(today_signals) > 0:
-                logger.info(f"Signal already exists for {breakout_data['symbol']} today")
-                return False
-        else:
-            existing_signals = pd.DataFrame()
+        try:
+            from db import signals_col
+            if signals_col is not None:
+                existing = signals_col.count_documents({
+                    "symbol": breakout_data['symbol'],
+                    "signal_date": signal_date.strftime('%Y-%m-%d') if isinstance(signal_date, datetime) else str(signal_date)
+                })
+                if existing > 0:
+                    logger.info(f"Signal already exists for {breakout_data['symbol']} today")
+                    return False
+        except Exception as e:
+            logger.warning(f"Error checking MongoDB for existing signals: {e}")
         
         # Create new signal
         new_signal = {
             "signal_id": signal_id,
             "symbol": breakout_data['symbol'],
-            "signal_date": signal_date,  # market candle date
+            "signal_date": signal_date.strftime('%Y-%m-%d') if hasattr(signal_date, 'strftime') else str(signal_date),
             "entry_price": breakout_data['entry_price'],
             "grade": "INTRADAY",
             "score": breakout_data['breakout_strength'] * 10,
@@ -538,17 +521,12 @@ def save_breakout_signal(breakout_data):
             "exit_date": "",
             "exit_price": 0,
             "pnl_pct": 0,
-            "days_held": 0
+            "days_held": 0,
+            "signal_type": "INTRADAY",
+            "scanner": "hourly_breakout_scanner"
         }
         
-        # Append to CSV
-        new_df = pd.DataFrame([new_signal])
-        if existing_signals.empty:
-            new_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-        else:
-            pd.concat([existing_signals, new_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-        
-        # MongoDB dual-write: signal
+        # MongoDB write: signal
         try:
             from db import upsert_signal
             upsert_signal(new_signal.copy())

@@ -453,36 +453,13 @@ if not YFINANCE_AVAILABLE:
 import json
 
 def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None, log_type="ACCEPTED"):
-    """Write a structured daily log entry to logs/YYYY-MM-DD/scanner_name.log
-    
-    Creates daily log files per scanner in a date-organized folder structure.
-    Each entry is a JSON line for easy parsing.
-    """
+    """Write scanner telemetry to MongoDB only (single-write path)."""
     try:
         from datetime import timezone, timedelta as td
         ist = timezone(td(hours=5, minutes=30))
         now_ist = datetime.now(ist)
-        
-        log_dir = os.path.join("logs", now_ist.strftime("%Y-%m-%d"))
-        os.makedirs(log_dir, exist_ok=True)
-        
-        log_file = os.path.join(log_dir, f"{scanner_name}.jsonl")
-        
-        entry = {
-            "timestamp": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
-            "version": SCANNER_VERSION,
-            "log_schema_version": LOG_SCHEMA_VERSION,
-            "scanner": scanner_name,
-            "symbol": symbol,
-            "action": action,
-            "log_type": log_type,
-            "details": details or {}
-        }
-        
-        with open(log_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(entry, default=str) + "\n")
 
-        # MongoDB dual-write: use provided candle_timestamp if available, else fall back to now_ist
+        # DB-only write: use provided candle_timestamp if available, else fall back to now_ist
         try:
             from db import insert_log, db_metrics
             effective_candle_ts = candle_timestamp if candle_timestamp is not None else now_ist
@@ -1427,14 +1404,7 @@ def reject_quick_losers(df, entry_idx, w, avg_vol):
 
 def detect_live_patterns(symbols, listing_map):
     """Detect LIVE FORMING patterns using proven backtest logic"""
-    try:
-        existing_signals_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-        existing = existing_signals_df["signal_id"].tolist()
-        # Add signal_type column if it doesn't exist (for backward compatibility)
-        if 'signal_type' not in existing_signals_df.columns:
-            existing_signals_df['signal_type'] = 'UNKNOWN'
-    except:
-        existing = []
+    existing_signals_df = pd.DataFrame()
     signals_found = 0
     symbols_processed = 0
     processed_today = set()  # Track symbols processed today to prevent duplicates
@@ -1444,7 +1414,12 @@ def detect_live_patterns(symbols, listing_map):
         if symbols_processed % 20 == 0:
             logger.info(f"Processed {symbols_processed}/{len(symbols)} symbols...")
         
-        if sym in pd.read_csv(POSITIONS_CSV, encoding='utf-8')["symbol"].tolist(): continue
+        try:
+            from db import has_active_position
+            if has_active_position(sym):
+                continue
+        except Exception:
+            pass
         
         # Check if we already processed this symbol today
         today_key = f"{sym}_{datetime.today().strftime('%Y%m%d')}"
@@ -1669,18 +1644,19 @@ def detect_live_patterns(symbols, listing_map):
                 
                 # Cooldown: avoid spamming multiple signals for the same symbol in short time
                 try:
-                    if 'existing_signals_df' in locals():
-                        sym_signals = existing_signals_df[existing_signals_df['symbol'] == sym]
-                        if not sym_signals.empty:
-                            last_signal_date = pd.to_datetime(sym_signals['signal_date']).dt.date.max()
-                            gap_days = (entry_date - last_signal_date).days
-                            if gap_days < MIN_DAYS_BETWEEN_SIGNALS:
-                                logger.info(
-                                    f"⏭️ Skipping {sym} - last signal {gap_days} days ago "
-                                    f"(< cooldown {MIN_DAYS_BETWEEN_SIGNALS} days)"
-                                )
-                                _log_consolidation_reject_once({"reason": "cooldown", "gap_days": gap_days})
-                                continue
+                    from db import get_last_signal_date
+                    last_signal_date = get_last_signal_date(sym)
+                    if last_signal_date is not None:
+                        if hasattr(last_signal_date, "date"):
+                            last_signal_date = last_signal_date.date()
+                        gap_days = (entry_date - last_signal_date).days
+                        if gap_days < MIN_DAYS_BETWEEN_SIGNALS:
+                            logger.info(
+                                f"⏭️ Skipping {sym} - last signal {gap_days} days ago "
+                                f"(< cooldown {MIN_DAYS_BETWEEN_SIGNALS} days)"
+                            )
+                            _log_consolidation_reject_once({"reason": "cooldown", "gap_days": gap_days})
+                            continue
                 except Exception as e:
                     logger.warning(f"Cooldown check failed for {sym}: {e}")
 
@@ -1777,17 +1753,20 @@ def detect_live_patterns(symbols, listing_map):
                 
                 # Create unique signal ID with type prefix
                 sid = f"CONSOL_{sym}_{date_str.replace('-', '')}"
-                if sid in existing: continue
+                try:
+                    from db import signal_exists
+                    if signal_exists(sid):
+                        continue
+                except Exception:
+                    pass
                 
                 # Check if symbol already has active position (prevent duplicates)
                 try:
-                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                    if not existing_positions.empty:
-                        active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-                        if sym in active_positions['symbol'].tolist():
-                            logger.info(f"⏭️ Skipping {sym} - already has active position")
-                            continue
-                except:
+                    from db import has_active_position
+                    if has_active_position(sym):
+                        logger.info(f"⏭️ Skipping {sym} - already has active position")
+                        continue
+                except Exception:
                     pass
                 
                 # Calculate target price using proper function based on consolidation pattern
@@ -1963,24 +1942,7 @@ def detect_live_patterns(symbols, listing_map):
                     "status": "ACTIVE"
                 }
                 
-                signals_df = pd.DataFrame([new_signal])
-                positions_df = pd.DataFrame([new_position])
-                
-                # Append to CSV files properly
-                try:
-                    existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-                    # Add signal_type column if it doesn't exist (for backward compatibility)
-                    if 'signal_type' not in existing_signals.columns:
-                        existing_signals['signal_type'] = 'UNKNOWN'
-                except (FileNotFoundError, pd.errors.EmptyDataError):
-                    existing_signals = pd.DataFrame()
-                
-                if existing_signals.empty:
-                    signals_df.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                else:
-                    pd.concat([existing_signals, signals_df], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                
-                # MongoDB dual-write: signal
+                # DB-only write: signal
                 try:
                     from db import upsert_signal, db_metrics
                     upsert_signal(new_signal.copy())
@@ -1992,17 +1954,7 @@ def detect_live_patterns(symbols, listing_map):
                     except Exception:
                         pass
                 
-                try:
-                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                except (FileNotFoundError, pd.errors.EmptyDataError):
-                    existing_positions = pd.DataFrame()
-                
-                if existing_positions.empty:
-                    positions_df.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                else:
-                    pd.concat([existing_positions, positions_df], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-
-                # MongoDB dual-write: position
+                # DB-only write: position
                 try:
                     from db import upsert_position, db_metrics
                     upsert_position(new_position.copy())
@@ -2074,14 +2026,7 @@ def detect_live_patterns(symbols, listing_map):
     return signals_found
 
 def detect_scan(symbols, listing_map):
-    try:
-        existing_signals_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-        existing = existing_signals_df["signal_id"].tolist()
-        # Add signal_type column if it doesn't exist (for backward compatibility)
-        if 'signal_type' not in existing_signals_df.columns:
-            existing_signals_df['signal_type'] = 'UNKNOWN'
-    except:
-        existing = []
+    existing_signals_df = pd.DataFrame()
     signals_found = 0
     symbols_processed = 0
     processed_today = set()  # Track symbols processed today to prevent duplicates
@@ -2091,7 +2036,12 @@ def detect_scan(symbols, listing_map):
         if symbols_processed % 20 == 0:
             logger.info(f"Processed {symbols_processed}/{len(symbols)} symbols...")
         
-        if sym in pd.read_csv(POSITIONS_CSV, encoding='utf-8')["symbol"].tolist(): continue
+        try:
+            from db import has_active_position
+            if has_active_position(sym):
+                continue
+        except Exception:
+            pass
         
         # Check if we already processed this symbol today
         today_key = f"{sym}_{datetime.today().strftime('%Y%m%d')}"
@@ -2282,10 +2232,6 @@ def detect_scan(symbols, listing_map):
                     logger.warning(f"⚠️ Entry date {entry_date} is in the future! Using latest data date: {latest_data_date}")
                     entry_date = latest_data_date
                 
-                logger.info(f"Entry price for {sym}: ₹{entry:.2f} (from {price_source})")
-                logger.info(f"Breakout detected for {sym} at index {j}, date: {df['DATE'].iat[j]}")
-                logger.info(f"Entry date: {entry_date} (validated), Entry price: ₹{entry:.2f}")
-                
                 # Grade-based stop loss: More appropriate for IPO volatility
                 stop, stop_pct = calculate_grade_based_stop_loss(entry, low, grade)
                 risk_pct = (entry - stop) / entry * 100
@@ -2298,21 +2244,21 @@ def detect_scan(symbols, listing_map):
                 
                 # Create unique signal ID with type prefix
                 sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}"
-                if sid in existing: continue
                 
-                # Check if symbol already has active position (prevent duplicates)
                 try:
-                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                    if not existing_positions.empty:
-                        active_positions = existing_positions[existing_positions['status'] == 'ACTIVE']
-                        if sym in active_positions['symbol'].tolist():
-                            logger.info(f"⏭️ Skipping {sym} - already has active position")
-                            _log_scan_reject_once({"reason": "active_position", "mode": "scan", **metrics})
-                            continue
-                except:
+                    from db import signal_exists, has_active_position
+                    if signal_exists(sid):
+                        continue
+                        
+                    if has_active_position(sym):
+                        logger.info(f"⏭️ Skipping {sym} - already has active position")
+                        _log_scan_reject_once({"reason": "active_position", "mode": "scan", **metrics})
+                        continue
+                except Exception as e:
+                    logger.error(f"Error checking DB for existing signal/position: {e}")
                     pass
                 
-                # Calculate target price using proper function based on consolidation pattern
+                # Calculate better target price based on pattern
                 target = calculate_target_price(entry, low, high2, grade)
                 
                 # Ensure date is a string in YYYY-MM-DD format
@@ -2333,6 +2279,25 @@ def detect_scan(symbols, listing_map):
                     "version": SCANNER_VERSION, "scanner": "consolidation_scan"
                 }
                 
+                pos = {
+                    "symbol": sym, "entry_date": date_str, "entry_price": entry,
+                    "grade": grade, "current_price": entry, "stop_loss": stop,
+                    "trailing_stop": stop, "pnl_pct": 0, "days_held": 0, "status": "ACTIVE"
+                }
+                
+                # DB-only write
+                try:
+                    from db import upsert_signal, upsert_position, db_metrics
+                    upsert_signal(row.copy())
+                    upsert_position(pos.copy())
+                except Exception as db_e:
+                    logger.error(f"[MongoDB] DB write FAILED for {sym}: {db_e}")
+                    try:
+                        from db import db_metrics
+                        db_metrics["failures"] = db_metrics.get("failures", 0) + 1
+                    except Exception:
+                        pass
+                
                 # Explainability components (local scope for logging)
                 vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
                 tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
@@ -2343,7 +2308,8 @@ def detect_scan(symbols, listing_map):
 
                 # Write to daily log
                 metrics["metric_ipo_age"] = sanitize_metric(ipo_age_days) if 'ipo_age_days' in locals() else None
-                write_daily_log("consolidation", sym, "ACCEPTED_BREAKOUT", {**metrics, 
+                sig_doc = {
+                    **metrics, 
                     "grade": grade, "entry": round(entry, 2), "stop": round(stop, 2),
                     "target": round(target, 2), "score": score, "breakout_level": round(high2, 2),
                     "consolidation_window": w, "mode": "scan", "price_source": price_source,
@@ -2355,44 +2321,9 @@ def detect_scan(symbols, listing_map):
                     "volume_score": round(volume_score, 2),
                     "base_score": round(base_score, 2),
                     "momentum_score": round(momentum_score, 2),
-                })
-                
-                # Read existing signals and append new signal
-                try:
-                    existing_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-                    # Add signal_type column if it doesn't exist (for backward compatibility)
-                    if 'signal_type' not in existing_signals.columns:
-                        existing_signals['signal_type'] = 'UNKNOWN'
-                except (FileNotFoundError, pd.errors.EmptyDataError):
-                    existing_signals = pd.DataFrame()
-                
-                if existing_signals.empty:
-                    pd.DataFrame([row]).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                else:
-                    pd.concat([existing_signals, pd.DataFrame([row])], ignore_index=True).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-                
-                pos = {
-                    "symbol": sym, "entry_date": date_str, "entry_price": entry,
-                    "grade": grade, "current_price": entry, "stop_loss": stop,
-                    "trailing_stop": stop, "pnl_pct": 0, "days_held": 0, "status": "ACTIVE"
                 }
                 
-                # Read existing positions and append new position
-                try:
-                    existing_positions = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
-                except (FileNotFoundError, pd.errors.EmptyDataError):
-                    existing_positions = pd.DataFrame()
-                
-                if existing_positions.empty:
-                    pd.DataFrame([pos]).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                else:
-                    pd.concat([existing_positions, pd.DataFrame([pos])], ignore_index=True).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-                
-                # Calculate better target price based on pattern
-                target = calculate_target_price(entry, low, high2, grade)
-                
-                # Get data source from DataFrame
-                data_source = df.attrs.get('data_source', 'Unknown')
+                write_daily_log("consolidation", sym, "ACCEPTED_BREAKOUT", sig_doc)
                 
                 # Get current/live price for verification (try to get fresh price)
                 current_price_display = entry
@@ -2407,11 +2338,10 @@ def detect_scan(symbols, listing_map):
                             'jugaad': '📊'
                         }
                         emoji = source_emojis.get(live_source, '💰')
-                        price_source_display = f"{emoji} Live: ₹{live_check:.2f} | {price_source}"
-                except:
+                        price_source_display = f"{emoji} {live_source.title()} Live Price"
+                except Exception:
                     pass
-                
-                # Send detailed signal alert with type
+
                 signal_msg = format_signal_alert(
                     sym, grade, entry, stop, target, score, date_str,
                     consolidation_low=low, consolidation_high=high2, breakout_price=entry,
