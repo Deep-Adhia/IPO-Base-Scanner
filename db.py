@@ -201,6 +201,51 @@ def upsert_position(position_doc: dict):
     except Exception as e:
         logger.error(f"Failed to upsert position for {symbol} into MongoDB: {e}")
 
+def signal_exists(signal_id: str) -> bool:
+    """Return True if a signal_id already exists in MongoDB."""
+    if signals_col is None or not signal_id:
+        return False
+    try:
+        return signals_col.count_documents({"signal_id": signal_id}, limit=1) > 0
+    except Exception as e:
+        logger.error(f"Failed signal_exists lookup for {signal_id}: {e}")
+        return False
+
+def has_active_position(symbol: str) -> bool:
+    """Return True if the symbol already has an ACTIVE position."""
+    if positions_col is None or not symbol:
+        return False
+    try:
+        return positions_col.count_documents({"symbol": symbol, "status": "ACTIVE"}, limit=1) > 0
+    except Exception as e:
+        logger.error(f"Failed has_active_position lookup for {symbol}: {e}")
+        return False
+
+def get_last_signal_date(symbol: str):
+    """Fetch the latest signal_date for a symbol from MongoDB."""
+    if signals_col is None or not symbol:
+        return None
+    try:
+        doc = signals_col.find_one(
+            {"symbol": symbol},
+            {"signal_date": 1, "_id": 0},
+            sort=[("signal_date", -1)],
+        )
+        return doc.get("signal_date") if doc else None
+    except Exception as e:
+        logger.error(f"Failed get_last_signal_date lookup for {symbol}: {e}")
+        return None
+
+def get_active_positions_count() -> int:
+    """Return count of active positions from MongoDB."""
+    if positions_col is None:
+        return 0
+    try:
+        return positions_col.count_documents({"status": "ACTIVE"})
+    except Exception as e:
+        logger.error(f"Failed get_active_positions_count: {e}")
+        return 0
+
 
 def upsert_instrument_key(ipo_symbol: str, instrument_key: str, isin: str = None,
                           name: str = None, match_type: str = "exact", exchange: str = "NSE"):
@@ -325,3 +370,97 @@ def upsert_listing_data(symbol: str, data: dict):
     except Exception as e:
         logger.error(f"Failed to upsert listing data for {symbol}: {e}")
 
+
+def get_all_positions_df(status: str = None):
+    """Return all positions from MongoDB as a pandas DataFrame.
+
+    Args:
+        status: Optional filter, e.g. 'ACTIVE' or 'CLOSED'. None returns all.
+
+    Returns:
+        pd.DataFrame with position rows, empty DataFrame if unavailable.
+    """
+    import pandas as pd
+    if positions_col is None:
+        logger.warning("[DB] positions_col is None — returning empty DataFrame")
+        return pd.DataFrame()
+    try:
+        query = {}
+        if status:
+            query["status"] = status
+        docs = list(positions_col.find(query, {"_id": 0}))
+        if not docs:
+            return pd.DataFrame()
+        df = pd.DataFrame(docs)
+        # Normalise entry_date to timezone-naive date so callers don't break
+        for col in ["entry_date", "exit_date"]:
+            if col in df.columns:
+                df[col] = pd.to_datetime(df[col], utc=True, errors="coerce").dt.tz_localize(None)
+        return df
+    except Exception as e:
+        logger.error(f"[DB] get_all_positions_df failed: {e}")
+        return pd.DataFrame()
+
+
+def get_all_signals_df(status: str = None):
+    """Return all signals from MongoDB as a pandas DataFrame.
+
+    Args:
+        status: Optional filter, e.g. 'ACTIVE' or 'CLOSED'. None returns all.
+
+    Returns:
+        pd.DataFrame with signal rows, empty DataFrame if unavailable.
+    """
+    import pandas as pd
+    if signals_col is None:
+        logger.warning("[DB] signals_col is None — returning empty DataFrame")
+        return pd.DataFrame()
+    try:
+        query = {}
+        if status:
+            query["status"] = status
+        docs = list(signals_col.find(query, {"_id": 0}))
+        if not docs:
+            return pd.DataFrame()
+        df = pd.DataFrame(docs)
+        # Normalise signal_date to timezone-naive datetime for callers
+        for col in ["signal_date", "exit_date"]:
+            if col in df.columns:
+                df[col] = pd.to_datetime(df[col], utc=True, errors="coerce").dt.tz_localize(None)
+        return df
+    except Exception as e:
+        logger.error(f"[DB] get_all_signals_df failed: {e}")
+        return pd.DataFrame()
+
+
+def close_signal_in_db(symbol: str, exit_price: float, pnl_pct: float, days_held: int, exit_reason: str):
+    """Mark the most-recent ACTIVE signal for a symbol as CLOSED in MongoDB."""
+    if signals_col is None:
+        return
+    try:
+        signals_col.update_one(
+            {"symbol": symbol, "status": "ACTIVE"},
+            {"$set": {
+                "status": "CLOSED",
+                "exit_date": datetime.now(timezone.utc),
+                "exit_price": float(exit_price),
+                "pnl_pct": float(pnl_pct),
+                "days_held": int(days_held),
+                "exit_reason": exit_reason,
+                "updated_at": datetime.now(timezone.utc),
+            }},
+        )
+    except Exception as e:
+        logger.error(f"[DB] close_signal_in_db failed for {symbol}: {e}")
+
+
+def get_active_symbols() -> list:
+    """Return list of symbols that have an ACTIVE position in MongoDB."""
+    if positions_col is None:
+        return []
+    try:
+        docs = positions_col.find({"status": "ACTIVE"}, {"symbol": 1, "_id": 0})
+        return [d["symbol"] for d in docs]
+    except Exception as e:
+        logger.error(f"[DB] get_active_symbols failed: {e}")
+        return []

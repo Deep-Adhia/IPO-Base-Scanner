@@ -618,59 +618,17 @@ def format_exit_alert(symbol, exit_reason, exit_price, pnl_pct, days_held, entry
 
 
 def close_active_signal(symbol, exit_price, pnl_pct, days_held, exit_reason):
-    """Mark the latest ACTIVE signal for symbol as CLOSED for lifecycle consistency."""
+    """Mark the latest ACTIVE signal for symbol as CLOSED in MongoDB."""
     try:
-        if not os.path.exists(SIGNALS_CSV):
-            return
-        df_signals = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
-        if df_signals.empty:
-            return
-        if 'status' not in df_signals.columns:
-            return
-        # Keep backward compatibility for optional columns
-        if 'exit_date' not in df_signals.columns:
-            df_signals['exit_date'] = ""
-        if 'exit_price' not in df_signals.columns:
-            df_signals['exit_price'] = 0.0
-        if 'pnl_pct' not in df_signals.columns:
-            df_signals['pnl_pct'] = 0.0
-        if 'days_held' not in df_signals.columns:
-            df_signals['days_held'] = 0
-        if 'notes' not in df_signals.columns:
-            df_signals['notes'] = ""
-
-        active_idx = df_signals.index[
-            (df_signals['symbol'] == symbol) & (df_signals['status'] == 'ACTIVE')
-        ].tolist()
-        if not active_idx:
-            return
-
-        # Close the latest active signal (last row index)
-        idx = active_idx[-1]
-        df_signals.loc[idx, 'status'] = 'CLOSED'
-        df_signals.loc[idx, 'exit_date'] = datetime.today().strftime("%Y-%m-%d")
-        df_signals.loc[idx, 'exit_price'] = float(exit_price)
-        df_signals.loc[idx, 'pnl_pct'] = float(pnl_pct)
-        df_signals.loc[idx, 'days_held'] = int(days_held)
-        notes = str(df_signals.loc[idx, 'notes']) if pd.notna(df_signals.loc[idx, 'notes']) else ""
-        reason_note = f"EXIT_REASON={exit_reason}"
-        df_signals.loc[idx, 'notes'] = f"{notes} | {reason_note}".strip(" |")
-
-        df_signals.to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
+        from db import close_signal_in_db
+        close_signal_in_db(symbol, exit_price, pnl_pct, days_held, exit_reason)
     except Exception as e:
         logger.error(f"Error syncing signal close for {symbol}: {e}")
-    
+
 def initialize_csvs():
-    if not os.path.exists(SIGNALS_CSV):
-        pd.DataFrame(columns=[
-            "signal_id","symbol","signal_date","entry_price","grade","score",
-            "stop_loss","target_price","status","exit_date","exit_price","pnl_pct","days_held","signal_type"
-        ]).to_csv(SIGNALS_CSV, index=False, encoding='utf-8')
-    if not os.path.exists(POSITIONS_CSV):
-        pd.DataFrame(columns=[
-            "symbol","entry_date","entry_price","grade","current_price",
-            "stop_loss","trailing_stop","pnl_pct","days_held","status"
-        ]).to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+    """No-op: CSV files are replaced by MongoDB. Kept for call-site compatibility."""
+    pass
+
 
 def cache_recent_ipos():
     try:
@@ -693,8 +651,9 @@ def get_symbols_and_listing():
         for _, row in ipo_df.iterrows()
     }
     try:
-        active = pd.read_csv(POSITIONS_CSV, encoding='utf-8')["symbol"].unique().tolist()
-    except:
+        from db import get_active_symbols
+        active = get_active_symbols()
+    except Exception:
         active = []
     return list(set(recent + active)), listing_map
 
@@ -719,19 +678,19 @@ def fetch_from_upstox(symbol, start_date, end_date):
         elif isinstance(end_date, pd.Timestamp):
             end_date = end_date.date()
         
-        # Load IPO mappings
-        if not os.path.exists('ipo_upstox_mapping.csv'):
-            logger.warning("IPO mapping file not found")
+        # Load IPO mappings from MongoDB
+        try:
+            from db import get_instrument_key_mapping
+            mapping = get_instrument_key_mapping()
+        except Exception as map_e:
+            logger.warning(f"Could not load instrument key mapping: {map_e}")
             return None
-        
-        mapping_df = pd.read_csv('ipo_upstox_mapping.csv', encoding='utf-8')
-        symbol_mapping = dict(zip(mapping_df['ipo_symbol'], mapping_df['instrument_key']))
-        
-        if symbol not in symbol_mapping:
+
+        if symbol not in mapping:
             logger.warning(f"Symbol {symbol} not found in Upstox mapping")
             return None
-        
-        instrument_key = symbol_mapping[symbol]
+
+        instrument_key = mapping[symbol]
         
         # Get Upstox credentials
         access_token = os.getenv('UPSTOX_ACCESS_TOKEN')
@@ -814,17 +773,17 @@ def fetch_from_upstox(symbol, start_date, end_date):
 def get_live_price_upstox(symbol):
     """Get live price from Upstox market quote API"""
     try:
-        # Load IPO mappings
-        if not os.path.exists('ipo_upstox_mapping.csv'):
+        # Load IPO mappings from MongoDB
+        try:
+            from db import get_instrument_key_mapping
+            mapping = get_instrument_key_mapping()
+        except Exception:
             return None
-        
-        mapping_df = pd.read_csv('ipo_upstox_mapping.csv', encoding='utf-8')
-        symbol_mapping = dict(zip(mapping_df['ipo_symbol'], mapping_df['instrument_key']))
-        
-        if symbol not in symbol_mapping:
+
+        if symbol not in mapping:
             return None
-        
-        instrument_key = symbol_mapping[symbol]
+
+        instrument_key = mapping[symbol]
         
         # Get Upstox credentials
         access_token = os.getenv('UPSTOX_ACCESS_TOKEN')
@@ -1158,7 +1117,11 @@ def fetch_data(symbol, start_date):
         return None
     
 def update_positions():
-    df_pos = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
+    from db import get_all_positions_df
+    df_pos = get_all_positions_df()
+    if df_pos.empty:
+        logger.info("update_positions: no positions found in MongoDB")
+        return
     
     # Initialize outcome tracking columns backward compatibility
     schema_cols = [
@@ -1331,8 +1294,8 @@ def update_positions():
                 float(current_price), float(trailing), float(pnl), int(days), new_max_runup, new_max_drawdown
             ]
     
-    # Save positions
-    df_pos.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
+    # Positions are already written row-by-row via upsert_position inside the loop above;
+    # no batch CSV write needed.
 
 def compute_rsi(close, period=14):
     delta = close.diff()
@@ -2073,22 +2036,33 @@ def detect_scan(symbols, listing_map):
                     ipo_age_for_log = (datetime.today().date() - listing_date_val).days
             except Exception:
                 ipo_age_for_log = None
+                
+            # Determine failing metric name
+            failing_metric_name = "unknown"
+            for k in ["risk", "risk_pct", "ratio", "vol_ratio", "distance_pct", "days_old", "grade"]:
+                if k in details:
+                    failing_metric_name = k
+                    break
+                    
             actual_metric = details.get(
+                "risk_pct", details.get(
                 "risk",
-                details.get("ratio", details.get("distance_pct", details.get("days_old", None)))
+                details.get("ratio", details.get("vol_ratio", details.get("distance_pct", details.get("days_old", details.get("grade", None))))))
             )
             required_metric = details.get(
+                "max_allowed", details.get(
                 "reward",
-                details.get("min_required", details.get("max_allowed", None))
+                details.get("min_required", None))
             )
+            
             restructured_payload = {
                 "symbol": sym,
                 "stage": "post_confirm" if "days_old" in details else "pre_breakout",
                 "rejection_reason": r,
-                "key_metric": {
-                    "actual": actual_metric,
-                    "required": required_metric,
-                },
+                "failing_metric": failing_metric_name,
+                "failing_value": actual_metric,
+                "threshold": required_metric,
+                "metrics": details.copy(),  # Ensures metrics field exists
                 "ipo_age": ipo_age_for_log,
                 "volume_ratio": details.get("vol_ratio", None),
                 "original_details": details,
@@ -2390,15 +2364,16 @@ def detect_scan(symbols, listing_map):
 
 {'🎯 New signals detected! Check details above.' if signals_found > 0 else '✅ No new signals today - Market conditions normal.'}
 
-📈 <b>Active Positions:</b> {len(pd.read_csv(POSITIONS_CSV, encoding='utf-8'))}"""
+📈 <b>Active Positions:</b> {get_active_positions_count()}"""
     
     send_telegram(summary_msg)
     return signals_found
 
 def weekly_summary():
     """Generate detailed weekly summary with performance metrics"""
-    df_signals = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"], encoding='utf-8')
-    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
+    from db import get_all_signals_df, get_all_positions_df
+    df_signals = get_all_signals_df()
+    df_positions = get_all_positions_df()
     
     # Weekly stats
     week_start = datetime.today() - timedelta(days=7)
@@ -2433,8 +2408,9 @@ def weekly_summary():
 
 def monthly_review():
     """Generate detailed monthly review with comprehensive stats"""
-    df_signals = pd.read_csv(SIGNALS_CSV, parse_dates=["signal_date"], encoding='utf-8')
-    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
+    from db import get_all_signals_df, get_all_positions_df
+    df_signals = get_all_signals_df()
+    df_positions = get_all_positions_df()
     
     # Monthly stats
     month_start = datetime.today().replace(day=1)
@@ -2492,8 +2468,8 @@ def format_position_update_alert(symbol, current_price, entry_price, old_trailin
 def stop_loss_update_scan():
     """Dedicated scan for updating stop losses on active positions"""
     logger.info("🔄 Starting stop-loss update scan...")
-    
-    df_positions = pd.read_csv(POSITIONS_CSV, parse_dates=["entry_date"], encoding='utf-8')
+    from db import get_all_positions_df
+    df_positions = get_all_positions_df()
     
     # Initialize outcome schema backward compatibility
     schema_cols = [
@@ -2843,9 +2819,8 @@ def stop_loss_update_scan():
             send_telegram(error_msg)
             continue
     
-    # Save updated positions
-    df_positions.to_csv(POSITIONS_CSV, index=False, encoding='utf-8')
-    
+    # Positions are written row-by-row via upsert_position inside the loop; no batch write needed.
+
     # Send summary
     summary_msg = f"""🔄 <b>Stop-Loss Update Scan Complete</b>
     
@@ -2867,7 +2842,7 @@ def heartbeat():
     """Send heartbeat to confirm scanner is alive"""
     logger.info("💓 Sending heartbeat...")
     try:
-        active_positions = len(pd.read_csv(POSITIONS_CSV, encoding='utf-8'))
+        active_positions = get_active_positions_count()
         message = f"💓 <b>Scanner Heartbeat</b>\n\n⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n📈 Active Positions: {active_positions}"
         logger.info(f"Heartbeat message: {message}")
         send_telegram(message)
@@ -2943,17 +2918,18 @@ if __name__ == "__main__":
                 "rejections": {}
             }
             
-            # 1. Parse signals
-            if os.path.exists(SIGNALS_CSV):
-                try:
-                    sig_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+            # 1. Parse signals from MongoDB
+            try:
+                from db import get_all_signals_df
+                sig_df = get_all_signals_df()
+                if not sig_df.empty and "signal_date" in sig_df.columns:
+                    sig_df["signal_date"] = sig_df["signal_date"].astype(str).str[:10]
                     todays_signals = sig_df[sig_df["signal_date"] == today_str]
                     summary["total_signals"] = len(todays_signals)
-                    
+
                     if len(todays_signals) > 0:
                         total_score = 0.0
                         for _, row in todays_signals.iterrows():
-                            # Reconstruct tier distribution
                             t = row.get("tier", "N/A")
                             if pd.isna(t) or str(t).strip() == "":
                                 t = "UNKNOWN"
@@ -2961,14 +2937,14 @@ if __name__ == "__main__":
                                 t = "UNKNOWN"
                             if t in summary["tier_distribution"]:
                                 summary["tier_distribution"][t] += 1
-                                
+
                             score = float(row.get("signal_strength_score", 0.0) or 0.0)
                             total_score += score
                             summary["top_score"] = max(summary["top_score"], score)
-                            
+
                         summary["avg_signal_score"] = round(total_score / len(todays_signals), 2)
-                except Exception as e:
-                    logger.error(f"Error parsing signals for summary: {e}")
+            except Exception as e:
+                logger.error(f"Error parsing signals for summary: {e}")
             
             # 2. Parse rejections from logs
             for list_file in ["consolidation.jsonl", "listing_day.jsonl", "watchlist.jsonl"]:
