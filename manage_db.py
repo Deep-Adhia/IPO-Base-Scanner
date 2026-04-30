@@ -15,10 +15,11 @@ def run_script(script_name, args=None):
 
 def main():
     parser = argparse.ArgumentParser(description="IPO Scanner MongoDB Management Tool")
-    parser.add_argument("task", choices=["test", "backfill-all", "validate", "backup", "analyze"], 
+    parser.add_argument("task", choices=["test", "backfill-all", "validate", "backup", "analyze", "quality", "recent"], 
                         help="Task to perform")
     parser.add_argument("--today", action="store_true", help="For validation: logs only for today")
-    parser.add_argument("--days", type=int, default=3, help="For analysis: number of days to analyze")
+    parser.add_argument("--days", type=int, default=3, help="For analysis/quality/recent: number of days")
+    parser.add_argument("--limit", type=int, default=20, help="For recent: max number of logs")
 
     args = parser.parse_args()
 
@@ -40,7 +41,15 @@ def main():
         run_script("mongodb_backup.py")
 
     elif args.task == "analyze":
-        run_script("analyze_telemetry.py", ["--days", str(args.days)] if hasattr(args, "days") else [])
+        run_script("analyze_telemetry.py", ["--days", str(args.days)])
+
+    elif args.task == "quality":
+        run_script("analyze_db_log_quality.py", ["--days", str(args.days)])
+
+    elif args.task == "recent":
+        import os
+        path = os.path.join("scratch", "check_recent_logs.py")
+        run_script(path, ["--days", str(args.days), "--limit", str(args.limit)])
 
 if __name__ == "__main__":
     main()

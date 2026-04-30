@@ -243,9 +243,12 @@ CONSOL_WINDOWS=10,20,40,80,120
 python streamlined-ipo-scanner.py scan
 
 # Run infrastructure tasks
-python manage_db.py validate   # Compare CSV vs MongoDB
+python manage_db.py test       # Check MongoDB connectivity
+python manage_db.py validate   # Compare CSV vs MongoDB integrity
 python manage_db.py backup     # Export MongoDB to local JSON
-python manage_db.py analyze    # Run Phase 4 Data Intelligence
+python manage_db.py quality    # [New] Analyze log structural quality (missing fields, rejection stats)
+python manage_db.py recent     # [New] Quick peek at most recent N logs with symbol/action info
+python manage_db.py analyze    # Run Phase 4 Data Intelligence (Telemetry Analysis)
 
 # Update stop-losses on active positions
 python streamlined-ipo-scanner.py stop_loss_update
