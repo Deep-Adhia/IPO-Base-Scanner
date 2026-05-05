@@ -1408,6 +1408,45 @@ def detect_live_patterns(symbols, listing_map):
         # Nested w/i loops can hit the same breakout many times — log each rejection reason once per symbol per run
         _consolidation_reject_logged = set()
 
+        def _log_consolidation_reject_once(details: dict):
+            r = details.get("reason", "unknown")
+            if r in _consolidation_reject_logged:
+                return
+            _consolidation_reject_logged.add(r)
+            
+            # Determine failing metric name
+            failing_metric_name = "unknown"
+            for k in ["risk", "risk_pct", "ratio", "vol_ratio", "distance_pct", "days_old", "grade"]:
+                if k in details:
+                    failing_metric_name = k
+                    break
+                    
+            actual_metric = details.get(
+                "risk_pct", details.get(
+                "risk",
+                details.get("ratio", details.get("vol_ratio", details.get("distance_pct", details.get("days_old", details.get("grade", None))))))
+            )
+            required_metric = details.get(
+                "max_allowed", details.get(
+                "reward",
+                details.get("min_required", None))
+            )
+            
+            restructured_payload = {
+                "symbol": sym,
+                "stage": "post_confirm" if "days_old" in details else "pre_breakout",
+                "rejection_reason": r,
+                "failing_metric": failing_metric_name,
+                "failing_value": actual_metric,
+                "threshold": required_metric,
+                "metrics": details.copy(),
+                "ipo_age": ipo_age_for_log,
+                "volume_ratio": details.get("vol_ratio", None),
+                "source": "live",
+                "log_type": "REJECTED"
+            }
+            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", restructured_payload, log_type="REJECTED")
+
         # listing_map values are typically datetime.date; older codepaths may pass dict-like objects.
         ipo_age_for_log = 0
         try:
