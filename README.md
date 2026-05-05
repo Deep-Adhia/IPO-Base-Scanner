@@ -184,17 +184,38 @@ IPO-Base-Scanner/
 └── logs/                           # Structured daily JSONL logs
 ```
 
-### 🗄️ Database Architecture (Phase 2.2 / 2.3)
+- **Phase 3**: 3-Day Live Validation (Zero Failure Cutover).
+- **Phase 4**: Data Intelligence & Edge Extraction (Filter Optimization).
 
-The system is currently in **Phase 2.2: Structured Telemetry**.
+---
 
-- **Primary Storage**: MongoDB Atlas (Cloud-native, UTC storage, deterministic IDs).
-- **Secondary Storage**: Legacy CSVs (maintained as a 3-day verification fail-safe).
-- **Versioning**: All data is versioned (`v2.2.0`) to ensure clean analysis cohorts.
-- **Fail-Safe**: Rejection logging is capped at 500/day to protect free-tier limits.
-- **Roadmap**: 
-    - **Phase 3**: 3-Day Live Validation (Zero Failure Cutover).
-    - **Phase 4**: Data Intelligence & Edge Extraction (Filter Optimization).
+## 🧠 Institutional Analytics & Forensic Research (v2)
+
+Starting with **v2.3.0**, the system has transitioned from monolithic logging to a **Modular Feature Store** architecture. This enables high-fidelity causal analysis and predictive modeling.
+
+### 🏛️ The Modular Architecture
+
+| Component | Path | Responsibility |
+|---|---|---|
+| **Core** | `core/` | Immutable data models and MongoDB repository layer. |
+| **Enrichment** | `enrichment/` | Feature Store: Breakout character, Base quality, and Market regime. |
+| **Lifecycle** | `lifecycle/` | Append-only PnL evolution tracking and outcome evaluation. |
+| **Integration** | `integration/` | The bridge between the scanner and the analytics engine. |
+
+### 📊 The Data Contract: Signal = Snapshot + History + Outcome
+
+1.  **Immutable Truth (`signals_v2`)**: Captures exactly what the system knew at decision time (Fingerprint, Base, Market).
+2.  **Append-Only Lifecycle (`signal_updates`)**: Records daily runup/drawdown to reconstruct the trade's path.
+3.  **Outcome Analysis (`signal_outcomes`)**: Summarizes the final trade performance (Efficiency, Horizon analysis).
+
+### 🔍 Forensic Audit Workflow
+
+Every scan now concludes with a **Forensic Blueprint** in the terminal. This provides a **Trust Score** and specific Signal IDs for manual "Ground Truth" validation:
+- **`CLEAN_BREAKOUT`**: Textbook case for baseline validation.
+- **`HIGH_VOL` / `HIGH_DELTA`**: Edge cases for math and slippage verification.
+- **`FIRST_INCOMPLETE`**: Failure attribution for systematic error detection.
+
+---
 
 ---
 

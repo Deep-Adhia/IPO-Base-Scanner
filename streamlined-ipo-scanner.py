@@ -29,6 +29,17 @@ from jugaad_data.nse.history import stock_raw
 import pandas as pd
 import threading
 
+# Institutional Analytics & Enrichment (Phase 2.2 Upgrade)
+try:
+    from core.repository import MongoRepository
+    from integration.signal_builder import SignalBuilder
+    from lifecycle.tracker import LifecycleTracker
+    from lifecycle.evaluator import evaluate_signal_outcome
+    ANALYTICS_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️ Analytics modules not found: {e}")
+    ANALYTICS_AVAILABLE = False
+
 # Try to import yfinance, fallback if not available
 try:
     import yfinance as yf
@@ -1138,6 +1149,16 @@ def update_positions():
     df_pos["max_runup_pct"] = df_pos["max_runup_pct"].fillna(0.0)
     df_pos["max_drawdown_pct"] = df_pos["max_drawdown_pct"].fillna(0.0)
 
+    # Initialize Analytics (Phase 2.2)
+    analytics_repo = None
+    lifecycle_tracker = None
+    if ANALYTICS_AVAILABLE:
+        try:
+            analytics_repo = MongoRepository()
+            lifecycle_tracker = LifecycleTracker(analytics_repo)
+        except Exception:
+            pass
+
     for idx, pos in df_pos[df_pos["status"]=="ACTIVE"].iterrows():
         sym = pos["symbol"]
         
@@ -1231,6 +1252,21 @@ def update_positions():
         new_max_runup = max(current_max_runup, pnl)
         new_max_drawdown = min(current_max_drawdown, pnl)
 
+        # --- Lifecycle Tracking (Phase 2.2) ---
+        if ANALYTICS_AVAILABLE and analytics_repo and lifecycle_tracker:
+            try:
+                # Deterministic Signal ID reconstruction
+                sig_id = analytics_repo.generate_deterministic_id(sym, start)
+                lifecycle_tracker.record_daily_update(
+                    signal_id=sig_id,
+                    entry_price=float(pos["entry_price"]),
+                    stop_price=float(pos["stop_loss"]),
+                    current_price=float(current_price),
+                    date=datetime.now()
+                )
+            except Exception as e:
+                logger.error(f"❌ Failed to record lifecycle update for {sym}: {e}")
+
         
         # Enhanced exit strategies
         exit_reason = None
@@ -1284,6 +1320,15 @@ def update_positions():
                 new_max_runup, new_max_drawdown, outcome_type, holding_efficiency_pct, time_to_failure_days, time_to_failure_min
             ]
             close_active_signal(sym, current_price, pnl, days, exit_reason)
+            
+            # --- Outcome Evaluation (Phase 2.2) ---
+            if ANALYTICS_AVAILABLE and analytics_repo:
+                try:
+                    sig_id = analytics_repo.generate_deterministic_id(sym, start)
+                    evaluate_signal_outcome(analytics_repo, sig_id)
+                except Exception as e:
+                    logger.error(f"❌ Failed to evaluate outcome for {sym}: {e}")
+
             # Send detailed exit alert
             exit_msg = format_exit_alert(sym, exit_reason, current_price, pnl, days, pos["entry_price"])
             # Append outcome visually
@@ -1371,6 +1416,27 @@ def detect_live_patterns(symbols, listing_map):
     signals_found = 0
     symbols_processed = 0
     processed_today = set()  # Track symbols processed today to prevent duplicates
+    
+    # Initialize Institutional Analytics (if available)
+    analytics_repo = None
+    signal_builder = None
+    analytics_failures = 0
+    v2_complete_count = 0
+    v2_incomplete_count = 0
+    v2_audit_samples = {
+        "CLEAN_BREAKOUT": None, # Textbook case: low wick, high vol, tight base
+        "HIGH_VOL": None,
+        "HIGH_DELTA": None,
+        "FIRST_INCOMPLETE": None,
+        "RANDOM": None
+    }
+    if ANALYTICS_AVAILABLE:
+        try:
+            analytics_repo = MongoRepository()
+            signal_builder = SignalBuilder()
+            logger.info("🏛️ Institutional Analytics Engine Initialized (v2)")
+        except Exception as e:
+            logger.error(f"Failed to initialize analytics: {e}")
     
     for sym in symbols:
         symbols_processed += 1
@@ -1930,6 +1996,90 @@ def detect_live_patterns(symbols, listing_map):
                     "momentum_score": score_components.get("momentum_score", None),
                 })
                 
+                # --- Institutional Snapshot Layer (Phase 2.2) ---
+                if ANALYTICS_AVAILABLE and analytics_repo and signal_builder:
+                    try:
+                        # 1. Enrich (Breakout, Base, Market)
+                        enriched = signal_builder.enricher.enrich_signal(
+                            candle=df.iloc[j],
+                            history=df.iloc[:j],
+                            base_candles=df.iloc[max(0, j-w):j]
+                        )
+                        
+                        # 2. Strict Binary Integrity Check
+                        reasons = []
+                        if not enriched.get("breakout") or "error" in enriched["breakout"]:
+                            reasons.append("breakout_fingerprint_missing")
+                        if not enriched.get("base") or "error" in enriched["base"]:
+                            reasons.append("base_quality_missing")
+                        if not enriched.get("market") or "error" in enriched["market"]:
+                            reasons.append("market_context_missing")
+                            
+                        is_complete = len(reasons) == 0
+                        
+                        # 3. Build & Save
+                        inst_signal = signal_builder.build_signal(
+                            raw_payload={**new_signal, 
+                                         "log_id": locals().get('log_id', 'v1_link_missing'),
+                                         "tier_weight": score_components.get("tier_weight"), 
+                                         "volume_score": score_components.get("volume_score"),
+                                         "base_score": score_components.get("base_score"),
+                                         "momentum_score": score_components.get("momentum_score"),
+                                         "signal_strength_score": score_components.get("total_score")},
+                            candle=df.iloc[j],
+                            history=df.iloc[:j],
+                            base_candles=df.iloc[max(0, j-w):j],
+                            scanner_version=SCANNER_VERSION,
+                            is_complete_snapshot=is_complete,
+                            incomplete_reasons=reasons
+                        )
+                        
+                        if analytics_repo.save_signal(inst_signal):
+                            if is_complete:
+                                v2_complete_count += 1
+                                # Stratified Audit Logic
+                                vol_z = inst_signal.breakout_fingerprint.get("volume_zscore", 0)
+                                delta = abs(inst_signal.entry_price_delta_pct)
+                                wick = inst_signal.breakout_fingerprint.get("upper_wick_pct", 1.0)
+                                tightness = inst_signal.base_quality.get("tightness_index", 10.0)
+                                
+                                # Hunt for the "Textbook Case"
+                                # Composite score: high vol, low wick, low tightness
+                                quality_score = vol_z - (wick * 5) - (tightness / 2)
+                                if not v2_audit_samples["CLEAN_BREAKOUT"] or quality_score > v2_audit_samples["CLEAN_BREAKOUT"]["metrics"]["quality"]:
+                                    v2_audit_samples["CLEAN_BREAKOUT"] = {"id": inst_signal.signal_id, "metrics": {"quality": quality_score}}
+                                    
+                                if not v2_audit_samples["HIGH_VOL"] or vol_z > v2_audit_samples["HIGH_VOL"]["metrics"]["vol_z"]:
+                                    v2_audit_samples["HIGH_VOL"] = {"id": inst_signal.signal_id, "metrics": {"vol_z": vol_z}}
+                                if not v2_audit_samples["HIGH_DELTA"] or delta > v2_audit_samples["HIGH_DELTA"]["metrics"]["delta"]:
+                                    v2_audit_samples["HIGH_DELTA"] = {"id": inst_signal.signal_id, "metrics": {"delta": delta}}
+                                if not v2_audit_samples["RANDOM"]:
+                                    v2_audit_samples["RANDOM"] = {"id": inst_signal.signal_id}
+                            else:
+                                v2_incomplete_count += 1
+                                if not v2_audit_samples["FIRST_INCOMPLETE"]:
+                                    v2_audit_samples["FIRST_INCOMPLETE"] = {"id": inst_signal.signal_id, "reasons": reasons}
+                                logger.warning(f"⚠️ [Analytics] Incomplete snapshot for {sym}: {', '.join(reasons)}")
+                                
+                    except Exception as e:
+                        analytics_failures += 1
+                        v2_incomplete_count += 1
+                        logger.error(f"❌ Failed to capture institutional snapshot for {sym}: {e}")
+                        try:
+                            # Save partial/failed signal for audit trail
+                            fail_signal = signal_builder.build_signal(
+                                raw_payload={**new_signal, "log_id": locals().get('log_id', 'v1_link_missing')},
+                                candle=df.iloc[j],
+                                history=df.iloc[:j],
+                                base_candles=df.iloc[max(0, j-w):j],
+                                scanner_version=SCANNER_VERSION,
+                                is_complete_snapshot=False
+                            )
+                            analytics_repo.save_signal(fail_signal)
+                            write_daily_log("analytics", sym, "ANALYTICS_FAILURE", {"error": str(e)}, log_type="ERROR")
+                        except:
+                            pass
+                
                 # Add to positions
                 new_position = {
                     "symbol": sym,
@@ -2025,6 +2175,35 @@ def detect_live_patterns(symbols, listing_map):
         # DO NOT break the symbol loop — continue scanning other symbols
     
     logger.info(f"Live pattern scan complete: {signals_found} signals found from {symbols_processed} symbols")
+    
+    # Final Analytics Health Check (Forensic Audit Mode)
+    if ANALYTICS_AVAILABLE and analytics_repo:
+        v2_total = v2_complete_count + v2_incomplete_count
+        trust_score = (v2_complete_count / signals_found) if signals_found > 0 else 1.0
+        
+        logger.info(f"🏛️ [Analytics] Forensic Audit Complete.")
+        logger.info(f"   - Trust Score (Completeness): {trust_score:.2f}")
+        logger.info(f"   - Signals (Total/Complete/Incomplete): {signals_found} / {v2_complete_count} / {v2_incomplete_count}")
+        
+        # Stratified Audit Blueprint
+        logger.info(f"🔍 [Audit] FORENSIC BLUEPRINT: Verify these specific signals for correctness:")
+        for category, sample in v2_audit_samples.items():
+            if sample:
+                msg = f"   👉 {category}: {sample['id']}"
+                if category == "CLEAN_BREAKOUT": msg += " (Does this visually match your IDEAL setup?)"
+                elif category == "HIGH_VOL": msg += f" (Check volume math, Z: {sample['metrics']['vol_z']})"
+                elif category == "HIGH_DELTA": msg += f" (Check slippage logic, Delta: {sample['metrics']['delta']})"
+                elif category == "FIRST_INCOMPLETE": msg += f" (Check why {', '.join(sample['reasons'])})"
+                logger.info(msg)
+        
+        logger.info(f"⏰ [Audit] TIMEZONE CHECK: Verify candle_timestamp matches your chart's TZ (IST vs UTC).")
+        
+        if v2_total != signals_found:
+            logger.error(f"❌ [Analytics] CRITICAL: Completeness Invariant Broken! Found {signals_found} but recorded {v2_total}.")
+        
+        if trust_score < 1.0:
+            logger.warning(f"⚠️ [Analytics] Dataset Quality Degraded. Bias risk detected.")
+
     return signals_found
 
 def detect_scan(symbols, listing_map):
@@ -2609,6 +2788,8 @@ def stop_loss_update_scan():
             # Use listing date as fallback if entry_date is invalid
             try:
                 ipo_df = cache_recent_ipos()
+                if not listing_map:
+                    listing_map = {}
                 listing_map = {
                     row["symbol"]: pd.to_datetime(row["listing_date"]).date()
                     for _, row in ipo_df.iterrows()
