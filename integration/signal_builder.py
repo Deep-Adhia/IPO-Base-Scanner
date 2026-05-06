@@ -35,8 +35,13 @@ class SignalBuilder:
             
         ds = breakout_date.strftime("%Y%m%d")
         symbol = raw_payload.get("symbol")
-        entry = float(raw_payload.get("entry", 0))
-        prng = raw_payload.get("features", {}).get("prng", 0)
+        
+        # Robust field extraction
+        entry = float(raw_payload.get("entry") or raw_payload.get("entry_price") or 0)
+        stop = float(raw_payload.get("stop") or raw_payload.get("stop_loss") or 0)
+        target = float(raw_payload.get("target") or raw_payload.get("target_price") or 0)
+        
+        prng = raw_payload.get("features", {}).get("prng") or raw_payload.get("consolidation_range_pct") or 0
         
         # Unique hash per setup
         import hashlib
@@ -56,8 +61,8 @@ class SignalBuilder:
             candle_timestamp=pd.to_datetime(candle['DATE']).to_pydatetime() if hasattr(candle['DATE'], 'to_pydatetime') else candle['DATE'],
             
             entry_price=entry,
-            stop_price=float(raw_payload.get("stop", 0)),
-            target_price=float(raw_payload.get("target", 0)),
+            stop_price=stop,
+            target_price=target,
             
             features=raw_payload.get("metrics", {}),
             

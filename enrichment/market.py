@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import numpy as np
 from datetime import datetime, timedelta
 import logging
 
@@ -31,11 +32,22 @@ def compute_market_context(market_data: pd.DataFrame = None) -> dict:
         ma20 = market_data['CLOSE'].rolling(window=20).mean()
         dist_20ma = (latest_close / ma20.iloc[-1] - 1) * 100.0
         
-        # 3. Trend Slope (Last 5 days)
-        # Simple linear regression slope proxy
+        # 3. Trend Slope (Last 5 days) using simple linear regression
         y = market_data['CLOSE'].tail(5).values
-        x = range(5)
-        slope = (len(x) * sum(x*y) - sum(x) * sum(y)) / (len(x) * sum(x**2) - sum(x)**2)
+        x = np.arange(len(y))
+        
+        n = len(x)
+        sum_x = np.sum(x)
+        sum_y = np.sum(y)
+        sum_xx = np.sum(x**2)
+        sum_xy = np.sum(x * y)
+        
+        denominator = (n * sum_xx - sum_x**2)
+        if denominator == 0:
+            slope = 0
+        else:
+            slope = (n * sum_xy - sum_x * sum_y) / denominator
+            
         trend_slope = (slope / latest_close) * 100.0 # Normalized as %
         
         # 4. Market State Label (Derived)
