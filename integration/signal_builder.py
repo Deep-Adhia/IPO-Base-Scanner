@@ -17,12 +17,15 @@ class SignalBuilder:
                      base_candles: pd.DataFrame,
                       scanner_version: str,
                       is_complete_snapshot: bool = True,
-                      incomplete_reasons: list[str] = None) -> Signal:
+                      incomplete_reasons: list[str] = None,
+                      reference_date: datetime = None) -> Signal:
         """
         Takes raw data and builds the full Signal snapshot.
         """
         # 1. Enrichment (Breakout character, Base quality, Market regime)
-        enriched = self.enricher.enrich_signal(candle, history, base_candles)
+        # Use explicit reference_date if provided (for backfills), otherwise use candle date
+        ref_dt = reference_date or (pd.to_datetime(candle['DATE']).to_pydatetime() if hasattr(candle['DATE'], 'to_pydatetime') else candle['DATE'])
+        enriched = self.enricher.enrich_signal(candle, history, base_candles, reference_date=ref_dt)
         
         # 2. Determine deterministic ID (symbol_date_setup_hash)
         breakout_date = candle['DATE']
@@ -85,7 +88,10 @@ class SignalBuilder:
                 "total_score": raw_payload.get("signal_strength_score")
             },
             
-            scanner_version=scanner_version
+            scanner=raw_payload.get("scanner", "ipo_base"),
+            scanner_version=scanner_version,
+            sector=raw_payload.get("sector", "Unknown"),
+            industry=raw_payload.get("industry", "Unknown")
         )
         
         return signal

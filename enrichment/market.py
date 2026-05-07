@@ -6,22 +6,33 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def compute_market_context(market_data: pd.DataFrame = None) -> dict:
+def compute_market_context(market_data: pd.DataFrame = None, end_date: datetime = None) -> dict:
     """
     Fetch and analyze Nifty 50 context.
-    If market_data is not provided, it fetches the last 60 days.
+    If market_data is not provided, it fetches the last 60 days up to end_date.
     """
     try:
         if market_data is None:
             # Fetch Nifty 50 (^NSEI)
             nifty = yf.Ticker("^NSEI")
-            market_data = nifty.history(period="60d")
+            if end_date:
+                start_date = end_date - timedelta(days=90) # Sufficient buffer for 60d MA
+                market_data = nifty.history(start=start_date.strftime('%Y-%m-%d'), 
+                                           end=(end_date + timedelta(days=1)).strftime('%Y-%m-%d'))
+            else:
+                market_data = nifty.history(period="90d") # Increased period for 20DMA stability
             
         if market_data is None or market_data.empty:
             return {"error": "No market data available"}
             
         # Ensure column names are standard
         market_data.columns = [c.upper() for c in market_data.columns]
+        
+        # If we have more than 60 rows, slice to the last 60 for consistency
+        if len(market_data) > 60:
+            market_data = market_data.tail(60)
+            
+        latest_candle_date = market_data.index[-1].strftime('%Y-%m-%d')
         
         # 1. Nifty Daily Return
         latest_close = market_data['CLOSE'].iloc[-1]
@@ -66,7 +77,7 @@ def compute_market_context(market_data: pd.DataFrame = None) -> dict:
             "nifty_trend_slope": round(float(trend_slope), 3),
             "market_state": state,
             "nifty_close": round(float(latest_close), 2),
-            "market_data_date": market_data.index[-1].strftime("%Y-%m-%d") if hasattr(market_data.index[-1], 'strftime') else str(market_data.index[-1]),
+            "market_data_date": latest_candle_date,
             "market_cache_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
     except Exception as e:

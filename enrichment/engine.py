@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 from .breakout import compute_breakout_fingerprint
 from .base import compute_base_quality
 from .market import compute_market_context
@@ -25,13 +26,18 @@ class EnrichmentEngine:
             
         return self._market_cache
 
-    def enrich_signal(self, candle: pd.Series, history: pd.DataFrame, base_candles: pd.DataFrame) -> dict:
+    def enrich_signal(self, candle: pd.Series, history: pd.DataFrame, base_candles: pd.DataFrame, reference_date: datetime = None) -> dict:
         """
         Enrich a raw signal with institutional features.
         """
         breakout_features = compute_breakout_fingerprint(candle, history)
         base_features = compute_base_quality(base_candles)
-        market_features = self.get_market_data()
+        
+        # If backfilling, we need historical market data, not cached current data
+        if reference_date:
+            market_features = compute_market_context(end_date=reference_date)
+        else:
+            market_features = self.get_market_data()
 
         return {
             "breakout": breakout_features,

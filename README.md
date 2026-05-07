@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.2.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
+[![Version](https://img.shields.io/badge/version-2.4.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
 [![Automated](https://img.shields.io/badge/automation-GitHub%20Actions-green.svg)](https://github.com/features/actions)
 
 This is **not** a simple breakout scanner.
@@ -191,22 +191,26 @@ IPO-Base-Scanner/
 
 ## 🧠 Institutional Analytics & Forensic Research (v2)
 
-Starting with **v2.3.0**, the system has transitioned from monolithic logging to a **Modular Feature Store** architecture. This enables high-fidelity causal analysis and predictive modeling.
+Starting with **v2.3.0**, [![Version](https://img.shields.io/badge/version-2.4.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
 
-### 🏛️ The Modular Architecture
+### 🏛️ The Modular Architecture (v2.4.0)
 
 | Component | Path | Responsibility |
 |---|---|---|
-| **Core** | `core/` | Immutable data models and MongoDB repository layer. |
-| **Enrichment** | `enrichment/` | Feature Store: Breakout character, Base quality, and Market regime. |
-| **Lifecycle** | `lifecycle/` | Append-only PnL evolution tracking and outcome evaluation. |
-| **Integration** | `integration/` | The bridge between the scanner and the analytics engine. |
+| **Core** | `core/` | Immutable data models with Sector/Industry tracking. |
+| **Enrichment** | `enrichment/` | Feature Store: Point-in-time Market context, Breakout & Base character. |
+| **Lifecycle** | `lifecycle/` | PnL evolution and Synthetic Outcome Reconstruction. |
+| **Integration** | `integration/` | Cross-scanner Bridge (Consolidation + Listing Day). |
+| **Research** | `analyze_winning_traits.py` | Alpha Trait Discovery & Pattern Fingerprinting. |
 
-### 📊 The Data Contract: Signal = Snapshot + History + Outcome
+### 🧪 Alpha Research & Trait Discovery
+Starting with **v2.4.0**, the system enables forensic backtesting of historical signals to identify the "DNA" of winning setups.
 
-1.  **Immutable Truth (`signals_v2`)**: Captures exactly what the system knew at decision time (Fingerprint, Base, Market).
-2.  **Append-Only Lifecycle (`signal_updates`)**: Records daily runup/drawdown to reconstruct the trade's path.
-3.  **Outcome Analysis (`signal_outcomes`)**: Summarizes the final trade performance (Efficiency, Horizon analysis).
+1.  **Synthetic Reconstruction (`reconstruct_outcomes.py`)**: Walks forward through historical data to objectively calculate Max Run-up and Drawdown for past signals.
+2.  **Point-in-Time Enrichment**: Ensures historical signals are enriched with the *actual* market context (Nifty slope, RSI) from the date of the trade, not current data.
+3.  **Sector Decoupling Analysis**: Tracks performance by Industry Group to identify "Oversold Decoupling"—setups that thrive even during market stress.
+
+---
 
 ### 🔍 Forensic Audit Workflow
 

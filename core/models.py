@@ -34,7 +34,10 @@ class Signal:
     score_components: Dict[str, Any]
     
     # Metadata
+    scanner: str
     scanner_version: str
+    sector: str = "Unknown"
+    industry: str = "Unknown"
 
     # Fields with Defaults
     incomplete_reasons: list[str] = field(default_factory=list)

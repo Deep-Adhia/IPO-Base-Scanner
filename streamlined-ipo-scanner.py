@@ -12,7 +12,7 @@ Optimized IPO breakout scanner:
 - Dry-run and heartbeat modes
 """
 
-SCANNER_VERSION = "2.2.0"  # Tracks logic version for signal bifurcation
+SCANNER_VERSION = "2.4.0"  # Tracks logic version for signal bifurcation
 LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 import os
@@ -46,6 +46,50 @@ try:
     YFINANCE_AVAILABLE = True
 except ImportError:
     YFINANCE_AVAILABLE = False
+
+class IntegrationBridge:
+    """Bridge between legacy scanner loops and v2 institutional telemetry."""
+    def __init__(self):
+        try:
+            from core.repository import MongoRepository
+            from integration.signal_builder import SignalBuilder
+            self.repo = MongoRepository()
+            self.builder = SignalBuilder()
+            self.active = True
+        except Exception as e:
+            # We don't want to crash the main scanner if bridge fails
+            import logging
+            logging.getLogger(__name__).warning(f"🏛️ Institutional Bridge failed to initialize: {e}")
+            self.active = False
+
+    def save_signal(self, raw_payload, candle=None, history=None, base_candles=None):
+        """Builds and saves an institutional signal from raw scanner data."""
+        if not self.active:
+            return False
+        try:
+            # Fallback for data objects if not passed explicitly
+            c = candle if candle is not None else raw_payload.get('_candle')
+            h = history if history is not None else raw_payload.get('_history')
+            b = base_candles if base_candles is not None else raw_payload.get('_base_candles', h)
+            
+            # Fetch sector/industry if missing
+            if 'sector' not in raw_payload or raw_payload['sector'] == 'Unknown':
+                try:
+                    import yfinance as yf
+                    ticker = yf.Ticker(f"{raw_payload['symbol']}.NS")
+                    raw_payload['sector'] = ticker.info.get('sector', 'Unknown')
+                    raw_payload['industry'] = ticker.info.get('industry', 'Unknown')
+                except:
+                    pass
+
+            # Use global SCANNER_VERSION
+            signal_v2 = self.builder.build_signal(raw_payload, c, h, b, SCANNER_VERSION)
+            self.repo.save_signal(signal_v2)
+            return True
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"🏛️ IntegrationBridge Save Failed: {e}")
+            return False
 
 # Global rate limiters for APIs
 _upstox_last_request = 0.0
@@ -2571,6 +2615,10 @@ def detect_scan(symbols, listing_map):
 
     write_daily_log("scanner", "SYSTEM", "SCAN_COMPLETED", db_stats)
 
+    # Pre-calculate summary strings to avoid complex nested f-strings
+    db_status = '✅ OK' if db_stats.get('db_failures', 0) == 0 else f"❌ {db_stats.get('db_failures')} FAILURES"
+    detection_msg = '🎯 New signals detected! Check details above.' if signals_found > 0 else '✅ No new signals today - Market conditions normal.'
+    
     # Send scan summary to Telegram
     summary_msg = f"""📊 <b>IPO Scanner Summary</b>
     
@@ -2578,9 +2626,9 @@ def detect_scan(symbols, listing_map):
 • Symbols Processed: {symbols_processed}
 • New Signals Found: {signals_found}
 • Scan Date: {datetime.today().strftime('%Y-%m-%d %H:%M')}
-• DB Status: {'✅ OK' if db_stats.get('db_failures', 0) == 0 else f"❌ {db_stats.get('db_failures')} FAILURES"}
+• DB Status: {db_status}
 
-{'🎯 New signals detected! Check details above.' if signals_found > 0 else '✅ No new signals today - Market conditions normal.'}
+{detection_msg}
 
 📈 <b>Active Positions:</b> {get_active_positions_count()}"""
     

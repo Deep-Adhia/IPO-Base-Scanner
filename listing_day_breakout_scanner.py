@@ -1394,6 +1394,10 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 'entry_vs_breakout_pct': round(entry_vs_breakout_pct, 2),
                 'signal_strength_score': score_comps['total_score'],
                 'score_components': score_comps,
+                # --- Enrichment Data (Institutional V2) ---
+                '_candle': latest,
+                '_history': df,
+                '_base_candles': df,
             }
 
         
@@ -1577,7 +1581,8 @@ Keep {symbol} on your radar. A close above ₹{listing_high:.2f} with volume tri
 def save_breakout_signal(breakout_data):
     """Save breakout signal to MongoDB (DB-only)."""
     try:
-        today = datetime.now().date()
+        now = datetime.now()
+        today = now.date()
         signal_id = f"LISTING_{breakout_data['symbol']}_{today.strftime('%Y%m%d')}"
         try:
             from db import signal_exists, has_active_position
@@ -1600,8 +1605,8 @@ def save_breakout_signal(breakout_data):
         new_signal = {
             "signal_id": signal_id,
             "symbol": breakout_data['symbol'],
-            "signal_date": today,
-            "signal_time": datetime.now().strftime("%H:%M:%S"),
+            "signal_date": now, # Use full datetime for MongoDB compatibility
+            "signal_time": now.strftime("%H:%M:%S"),
             "entry_price": breakout_data['entry_price'],
             "grade": "LISTING_BREAKOUT" + ("_LOW_VOL" if breakout_data.get('has_volume_caution', False) else ""),
             "score": 100 if not breakout_data.get('has_volume_caution', False) else 80,
@@ -1663,7 +1668,26 @@ def save_breakout_signal(breakout_data):
             "momentum_score": breakout_data.get("score_components", {}).get("momentum_score", None),
         }, candle_timestamp=breakout_data.get('candle_timestamp') or breakout_data.get('timestamp'))
         
-        # DB-only write: signal
+        # --- NEW: V2 Institutional Telemetry Integration ---
+        try:
+            IntegrationBridge = getattr(scanner_module, 'IntegrationBridge', None)
+            if IntegrationBridge:
+                bridge = IntegrationBridge()
+                # Transform data for SignalBuilder
+                enriched_payload = breakout_data.copy()
+                enriched_payload['scanner'] = 'listing_day'
+                enriched_payload['entry_price'] = breakout_data.get('entry_price')
+                enriched_payload['stop_loss'] = breakout_data.get('stop_loss')
+                enriched_payload['target_price'] = breakout_data.get('target_price')
+                enriched_payload['candle_timestamp'] = breakout_data.get('candle_timestamp') or datetime.now()
+                
+                success_v2 = bridge.save_signal(enriched_payload)
+                if success_v2:
+                    logger.info(f"🏛️  V2 Institutional Snapshot saved for {breakout_data['symbol']}")
+        except Exception as v2_e:
+            logger.warning(f"[Telemetry] V2 bridge failed (falling back to V1 only): {v2_e}")
+
+        # DB-only write: signal (V1 Legacy Collection)
         try:
             from db import upsert_signal
             upsert_signal(new_signal.copy())
@@ -1675,7 +1699,7 @@ def save_breakout_signal(breakout_data):
             except Exception:
                 pass
         
-        logger.info(f"✅ Saved breakout signal for {breakout_data['symbol']}")
+        logger.info(f"✅ Saved legacy signal for {breakout_data['symbol']}")
         return True
     
     except Exception as e:
