@@ -12,7 +12,7 @@ Optimized IPO breakout scanner:
 - Dry-run and heartbeat modes
 """
 
-SCANNER_VERSION = "2.4.0"  # Tracks logic version for signal bifurcation
+SCANNER_VERSION = "2.4.1"  # Tracks logic version for signal bifurcation
 LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 import os
@@ -559,7 +559,7 @@ def send_telegram(msg):
     except Exception as e:
         logger.error(f"❌ Telegram error: {e}")
 
-def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None, current_price=None, price_source=None):
+def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None, current_price=None, price_source=None, breakout_close=None, entry_note=None):
     """Format detailed IPO signal alert with comprehensive trading information"""
     # Calculate risk metrics
     risk_amount = entry_price - stop_loss
@@ -586,15 +586,27 @@ def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, sco
     confidence = info["confidence"]
     emoji = info["emoji"]
     
-    # Format current price information
+    # Format price information section
+    # Bug 2 Fix: Always show BOTH breakout_close (fair reference) and entry_price
+    # (actual live/execution price) so the alert is never ambiguous.
     price_info_section = ""
-    if current_price is not None:
-        price_info_section = f"""
-💰 <b>Price Information:</b>
-• Current/Live Price: ₹{current_price:,.2f}
-• Entry Reference: ₹{entry_price:,.2f}"""
+    if current_price is not None or breakout_close is not None:
+        price_info_section = f"\n\n💰 <b>Price Information:</b>"
+        if breakout_close is not None:
+            price_info_section += f"\n• Breakout Close (Reference): ₹{breakout_close:,.2f}"
+        if current_price is not None:
+            price_info_section += f"\n• Current/Live Price: ₹{current_price:,.2f}"
+        price_info_section += f"\n• Entry Price (Logged): ₹{entry_price:,.2f}"
         if price_source:
             price_info_section += f"\n• Price Source: {price_source}"
+        if entry_note:
+            note_labels = {
+                "LIVE_INTRADAY": "⚡ Live intraday — execution price may differ from breakout close.",
+                "NEXT_DAY_CLOSE": "📅 Based on next-day close.",
+                "FALLBACK_CLOSE": "⚠️ Fallback close — live price unavailable."
+            }
+            price_info_section += f"\n• Entry Type: {note_labels.get(entry_note, entry_note)}"
+
     
     # Format the alert message with comprehensive information
     msg = f"""🎯 <b>IPO BREAKOUT SIGNAL</b>
@@ -1863,20 +1875,23 @@ def detect_live_patterns(symbols, listing_map):
                 else:
                     date_str = str(date)
                 
-                # Create unique signal ID with type prefix
-                sid = f"CONSOL_{sym}_{date_str.replace('-', '')}"
-                try:
-                    from db import signal_exists
-                    if signal_exists(sid):
-                        continue
-                except Exception:
-                    pass
-                
-                # Check if symbol already has active position (prevent duplicates)
+                # Bug 1 Fix: has_active_position MUST be checked first — it is the
+                # unconditional business rule. signal_exists is secondary deduplication.
                 try:
                     from db import has_active_position
                     if has_active_position(sym):
                         logger.info(f"⏭️ Skipping {sym} - already has active position")
+                        _log_consolidation_reject_once({"reason": "active_position", "mode": "live", **metrics})
+                        continue
+                except Exception:
+                    pass
+
+                # Bug 4 Fix: include window size in signal ID to prevent collision
+                # across different consolidation windows on the same date.
+                sid = f"CONSOL_{sym}_{date_str.replace('-', '')}_{w}"
+                try:
+                    from db import signal_exists
+                    if signal_exists(sid):
                         continue
                 except Exception:
                     pass
@@ -1981,12 +1996,29 @@ def detect_live_patterns(symbols, listing_map):
                     "total_score": round(total_score, 2)
                 }
                 
+                # Bug 2 Fix: record breakout_close (fair reference price) separately
+                # from entry (which may be a live intraday price). This prevents
+                # look-ahead confusion in research and PnL attribution.
+                breakout_close_ref = float(df["CLOSE"].iat[j])
+                if live_price is not None and is_market_hours():
+                    entry_note = "LIVE_INTRADAY"
+                elif j + 1 < len(df):
+                    entry_note = "NEXT_DAY_CLOSE"
+                else:
+                    entry_note = "FALLBACK_CLOSE"
+
                 new_signal = {
                     "signal_id": sid,
                     "symbol": sym,
                     "signal_date": date_str,
                     "signal_time": datetime.now().strftime("%H:%M:%S"),
                     "entry_price": round(entry, 2),
+                    # Bug 2: breakout_close = close of the candle that confirmed the breakout.
+                    # This is the fair reference price for research; entry_price may differ
+                    # if the scanner was live during market hours.
+                    "breakout_close": round(breakout_close_ref, 2),
+                    "entry_note": entry_note,
+                    "consolidation_window": w,
                     "grade": grade,
                     "score": score,
                     "stop_loss": round(stop, 2),
@@ -2008,7 +2040,7 @@ def detect_live_patterns(symbols, listing_map):
                     "distance_from_listing_high_pct": round(dist_listing_high_pct, 2),
                     "consolidation_range_pct": round(prng, 2),
                     "volume_ratio": round(vol_ratio_val, 2),
-                    "volume_vs_listing_day": 0.0, # Not actively tracked in consol loop
+                    "volume_vs_listing_day": 0.0,
                     "risk_reward_ratio": round(risk_reward_ratio, 2) if 'risk_reward_ratio' in locals() else 0.0,
                     "confirmation_time_min": 0,
                     "max_extension_during_confirmation_pct": 0.0,
@@ -2478,17 +2510,18 @@ def detect_scan(symbols, listing_map):
                 # Use actual entry date from dataframe
                 date = entry_date
                 
-                # Create unique signal ID with type prefix
-                sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}"
-                
+                # Bug 4 Fix: include window size in signal ID to prevent collision
+                # across different consolidation windows on the same date.
+                sid = f"CONSOL_{sym}_{date.strftime('%Y%m%d')}_{w}"
+
+                # Bug 1 Fix: has_active_position MUST be the unconditional first guard.
                 try:
-                    from db import signal_exists, has_active_position
-                    if signal_exists(sid):
-                        continue
-                        
+                    from db import has_active_position, signal_exists
                     if has_active_position(sym):
                         logger.info(f"⏭️ Skipping {sym} - already has active position")
                         _log_scan_reject_once({"reason": "active_position", "mode": "scan", **metrics})
+                        continue
+                    if signal_exists(sid):
                         continue
                 except Exception as e:
                     logger.error(f"Error checking DB for existing signal/position: {e}")
@@ -2505,10 +2538,18 @@ def detect_scan(symbols, listing_map):
                 else:
                     date_str = str(date)
                 
+                # Bug 2 Fix: record breakout_close (fair reference) alongside entry
+                breakout_close_ref_scan = float(df["CLOSE"].iat[j]) if j < len(df) else entry
+                entry_note_scan = "LIVE_INTRADAY" if (live_price is not None and is_market_hours()) else ("NEXT_DAY_CLOSE" if j + 1 < len(df) else "FALLBACK_CLOSE")
+
                 row = {
                     "signal_id": sid, "symbol": sym, "signal_date": date_str,
                     "signal_time": datetime.now().strftime("%H:%M:%S"),
-                    "entry_price": entry, "grade": grade, "score": score,
+                    "entry_price": entry,
+                    "breakout_close": round(breakout_close_ref_scan, 2),
+                    "entry_note": entry_note_scan,
+                    "consolidation_window": w,
+                    "grade": grade, "score": score,
                     "stop_loss": stop, "target_price": target,
                     "status": "ACTIVE", "exit_date": "", "exit_price": 0,
                     "pnl_pct": 0, "days_held": 0, "signal_type": "CONSOLIDATION",

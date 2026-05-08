@@ -33,7 +33,7 @@ db_metrics = {
 }
 
 # Versioning and Safeguards
-SCANNER_VERSION = "2.2.0"
+SCANNER_VERSION = "2.4.1"
 MAX_DAILY_REJECTIONS = 500
 _rejection_guard_warned = False
 

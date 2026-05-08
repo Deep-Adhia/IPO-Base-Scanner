@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.4.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
+[![Version](https://img.shields.io/badge/version-2.4.1-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
 [![Automated](https://img.shields.io/badge/automation-GitHub%20Actions-green.svg)](https://github.com/features/actions)
 
 This is **not** a simple breakout scanner.
@@ -191,7 +191,7 @@ IPO-Base-Scanner/
 
 ## 🧠 Institutional Analytics & Forensic Research (v2)
 
-Starting with **v2.3.0**, [![Version](https://img.shields.io/badge/version-2.4.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
+Starting with **v2.3.0**, [![Version](https://img.shields.io/badge/version-2.4.1-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
 
 ### 🏛️ The Modular Architecture (v2.4.0)
 
@@ -375,6 +375,6 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 
 ---
 
-<sub>Built for systematic IPO momentum trading | v2.2.0 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>
+<sub>Built for systematic IPO momentum trading | v2.4.1 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>
 
 .\venv\Scripts\Activate.ps1
