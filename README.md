@@ -123,14 +123,13 @@ logs/
 Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of all technical components:
 ```json
 {
-  "timestamp": "2026-04-15 10:14:00 IST",
-  "version": "2.1.0",
+  "timestamp": "2026-05-08 14:14:00 IST",
+  "version": "2.4.1",
   "log_schema_version": "2026-04-23.v1",
   "scanner": "consolidation",
   "symbol": "INOXINDIA",
   "action": "REJECTED_BREAKOUT",
   "log_type": "REJECTED",
-  "version": "2.2.0",
   "details": {
     "rejection_reason": "low_volume",
     "failing_metric": "vol_ratio",
@@ -147,7 +146,7 @@ Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of 
 }
 ```
 
-*Because every log now includes a standardized `metrics` snapshot and explicit `failing_metric` attribution (v2.2.0), you can build high-fidelity distributions of near-misses to mathematically optimize your filters.*
+*Because every log includes a standardized `metrics` snapshot and explicit `failing_metric` attribution, you can build high-fidelity distributions of near-misses to mathematically optimize your filters.*
 
 Daily summary snapshots may also be generated as:
 
@@ -169,19 +168,31 @@ After 30 days this dataset allows answering:
 
 ```text
 IPO-Base-Scanner/
-├── streamlined-ipo-scanner.py      # Consolidation scanner (v2.1.0)
-├── listing_day_breakout_scanner.py # Listing day scanner
+├── streamlined-ipo-scanner.py       # Consolidation breakout scanner (v2.4.1)
+├── listing_day_breakout_scanner.py  # Listing day breakout scanner
+├── hourly_breakout_scanner.py       # Intraday watchlist scanner
 │
-├── ipo_signals.csv                 # [Legacy] All confirmed signals (active + closed)
-├── ipo_positions.csv               # [Legacy] Portfolio tracker (pnl, trailing stops, status)
-├── ipo_listing_data.csv            # [Legacy] Listing day metrics per symbol
-├── ipo_upstox_mapping.csv          # [Legacy] NSE symbol → Upstox instrument_key mapping
-├── recent_ipo_symbols.csv          # [Legacy] Discovery layer output
+├── db.py                            # Core MongoDB persistence layer (v2.4.1)
+├── master_audit.py                  # System integrity audit (Section 1/2/3)
+├── manage_db.py                     # Unified management entrypoint
+├── backfill_v2_from_v1.py           # Signal enrichment backfill
+├── reconstruct_outcomes.py          # Synthetic outcome reconstruction
 │
-├── db.py                           # Core MongoDB persistence layer
-├── manage_db.py                    # Unified management entrypoint (test, backup, backfill, validate)
-├── test_db_connection.py           # Infrastructure health-check utility
-└── logs/                           # Structured daily JSONL logs
+├── core/                            # Immutable data models (Signal, SignalUpdate, SignalOutcome)
+├── enrichment/                      # Point-in-time feature store
+├── lifecycle/                       # PnL evolution & outcome tracking
+├── integration/                     # Cross-scanner signal bridge
+│
+├── analyze_winning_traits.py        # Alpha trait discovery
+├── analyze_30d_data.py              # 30-day cohort analysis
+│
+├── [Legacy — archived, not in active use]
+│   ├── ipo_signals.csv
+│   ├── ipo_positions.csv
+│   ├── ipo_listing_data.csv
+│   └── ipo_upstox_mapping.csv
+│
+└── logs/                            # Structured daily JSONL logs (MongoDB-synced)
 ```
 
 - **Phase 3**: 3-Day Live Validation (Zero Failure Cutover).
@@ -189,11 +200,11 @@ IPO-Base-Scanner/
 
 ---
 
-## 🧠 Institutional Analytics & Forensic Research (v2)
+## 🧠 Institutional Analytics & Forensic Research
 
-Starting with **v2.3.0**, [![Version](https://img.shields.io/badge/version-2.4.1-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
+Starting with **v2.3.0** the system grew a dedicated research layer. **v2.4.1** adds a self-auditing infrastructure layer on top.
 
-### 🏛️ The Modular Architecture (v2.4.0)
+### 🏛️ The Modular Architecture (v2.4.x)
 
 | Component | Path | Responsibility |
 |---|---|---|
@@ -208,7 +219,30 @@ Starting with **v2.4.0**, the system enables forensic backtesting of historical 
 
 1.  **Synthetic Reconstruction (`reconstruct_outcomes.py`)**: Walks forward through historical data to objectively calculate Max Run-up and Drawdown for past signals.
 2.  **Point-in-Time Enrichment**: Ensures historical signals are enriched with the *actual* market context (Nifty slope, RSI) from the date of the trade, not current data.
-3.  **Sector Decoupling Analysis**: Tracks performance by Industry Group to identify "Oversold Decoupling"—setups that thrive even during market stress.
+3. **Sector Decoupling Analysis**: Tracks performance by Industry Group to identify "Oversold Decoupling" — setups that thrive even during market stress.
+
+---
+
+### 🔍 System Integrity Audit (`master_audit.py`)
+
+Added in **v2.4.1** — a standalone daily/weekly audit with three sections:
+
+| Section | What it checks |
+|---|---|
+| **1: DB Integrity** | Orphan signals, inverted stops/targets, zero entry prices, duplicate signal IDs, unrealistic PnL |
+| **2: Log Quality** | SCAN_COMPLETED heartbeats, rejection ratios, version drift in logs, DAILY_SNAPSHOT coverage |
+| **3: Strategy Consistency** | Version alignment across all files, sector population, entry-vs-breakout guard, enrichment completeness |
+
+```bash
+python master_audit.py             # Full audit
+python master_audit.py --section 1 # DB integrity only
+python master_audit.py --json      # JSON output for CI
+```
+
+Exit codes: `0` = PASS · `1` = WARN · `2` = FAIL
+
+> The audit is aware of all three signal statuses (`ACTIVE`, `CLOSED`, `WATCH`) and excludes watchlist
+> candidates from checks that only apply to executed trade signals.
 
 ---
 
@@ -264,16 +298,19 @@ CONSOL_WINDOWS=10,20,40,80,120
 
 ### 4. Run Manually
 ```bash
+# Run system integrity audit
+python master_audit.py             # Full audit (DB + logs + strategy)
+python master_audit.py --section 1 # DB integrity only
+python master_audit.py --json      # JSON output for CI
+
 # Run consolidation scan
 python streamlined-ipo-scanner.py scan
 
 # Run infrastructure tasks
-python manage_db.py test       # Check MongoDB connectivity
-python manage_db.py validate   # Compare CSV vs MongoDB integrity
-python manage_db.py backup     # Export MongoDB to local JSON
-python manage_db.py quality    # [New] Analyze log structural quality (missing fields, rejection stats)
-python manage_db.py recent     # [New] Quick peek at most recent N logs with symbol/action info
-python manage_db.py analyze    # Run Phase 4 Data Intelligence (Telemetry Analysis)
+python manage_db.py test           # Check MongoDB connectivity
+python manage_db.py backup         # Export MongoDB to local JSON
+python manage_db.py quality        # Analyze log structural quality
+python manage_db.py analyze        # Run Phase 4 Data Intelligence
 
 # Update stop-losses on active positions
 python streamlined-ipo-scanner.py stop_loss_update
@@ -341,15 +378,16 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 ## 📱 Alert Format (Telegram)
 
 ```text
-🎯 CONSOLIDATION BREAKOUT SIGNAL
+🎯 IPO BREAKOUT SIGNAL
 
 📊 Symbol: SAATVIKGL
-📋 Signal Type: Consolidation-Based Breakout
-📈 Grade: C (Medium Confidence)
+⭐ Grade: A (High Confidence)
 
 💰 Price Information:
-• Current/Live Price: ₹464.00 (🚀 Upstox Live)
-• Entry Reference: ₹464.00 (Next Day Opening)
+• Breakout Close (Reference): ₹446.90
+• Entry Price (Logged): ₹464.00
+• Price Source: Upstox Live
+• Entry Type: LIVE_INTRADAY — execution price may differ from breakout close.
 
 🛑 Stop Loss: ₹408.32 (12.0% risk)
 🎯 Target: ₹589.58 (27.1% reward)
@@ -361,7 +399,7 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 • Score: 1.0/5
 • Consolidation Window: 80 days
 
-🤖 Scanner v2.2.0 | 2026-04-13 10:14 IST
+🤖 Scanner v2.4.1 | 2026-05-08 14:15 IST
 ```
 
 ---
@@ -376,5 +414,3 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 ---
 
 <sub>Built for systematic IPO momentum trading | v2.4.1 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>
-
-.\venv\Scripts\Activate.ps1
