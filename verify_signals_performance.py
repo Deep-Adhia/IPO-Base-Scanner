@@ -18,7 +18,7 @@ import json
 
 # Import from main scanner
 import importlib.util
-spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanner.py")
+spec = importlib.util.spec_from_file_location("scanner", "streamlined_ipo_scanner.py")
 scanner_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(scanner_module)
 

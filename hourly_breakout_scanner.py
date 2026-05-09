@@ -38,7 +38,20 @@ MIN_VOLUME_MULTIPLIER = 1.5  # Minimum volume spike for breakout
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-SCANNER_VERSION = "2.2.0"
+# Add current directory to path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+# Import from main scanner
+import importlib.util
+spec = importlib.util.spec_from_file_location("scanner", "streamlined_ipo_scanner.py")
+scanner_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(scanner_module)
+
+# Import shared utilities
+get_market_regime = scanner_module.get_market_regime
+classify_pattern_type = scanner_module.classify_pattern_type
+
+SCANNER_VERSION = "2.5.0"
 
 def write_daily_log(scanner_name, symbol, action, details=None, candle_timestamp=None, log_type="ACCEPTED"):
     """Write scanner telemetry to MongoDB only (single-write path)."""
@@ -332,7 +345,7 @@ def detect_intraday_breakout(df, symbol):
         try:
             # Import get_live_price from main scanner
             import importlib.util
-            spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanner.py")
+            spec = importlib.util.spec_from_file_location("scanner", "streamlined_ipo_scanner.py")
             scanner_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(scanner_module)
             get_live_price = scanner_module.get_live_price
@@ -429,6 +442,8 @@ def detect_intraday_breakout(df, symbol):
                 'volume_score': round(min(2.0, (current_volume / avg_volume) / 2.0), 2) if avg_volume > 0 else None,
                 'base_score': 1.0,
                 'momentum_score': round(min(2.0, max(0.0, (current_rsi - 50.0) / 10.0)), 2) if current_rsi is not None else None,
+                'pattern_type': classify_pattern_type("INTRADAY", 30, breakout_strength/2.0, 10),
+                'market_regime': get_market_regime(),
                 'timestamp': datetime.now()
             }
         
@@ -472,6 +487,8 @@ def format_intraday_alert(breakout_data):
 📊 <b>Breakout Metrics:</b>
 • RSI: {rsi:.1f}
 • Volume Spike: {vol_spike:.1f}x
+• Pattern: <b>{breakout_data.get('pattern_type', 'N/A')}</b>
+• Regime: <b>{breakout_data.get('market_regime', 'N/A')}</b>
 • Breakout Strength: {strength}/3
 
 ⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}

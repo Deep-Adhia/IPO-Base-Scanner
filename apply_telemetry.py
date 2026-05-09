@@ -1,6 +1,6 @@
 import os
 
-filepath = 'streamlined-ipo-scanner.py'
+filepath = 'streamlined_ipo_scanner.py'
 with open(filepath, 'r', encoding='utf-8') as f:
     content = f.read()
 
@@ -213,4 +213,4 @@ if old_scan_stop in content:
 with open(filepath, 'w', encoding='utf-8') as f:
     f.write(content)
 
-print(f"Applied {changes} changes to streamlined-ipo-scanner.py")
+print(f"Applied {changes} changes to streamlined_ipo_scanner.py")

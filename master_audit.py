@@ -35,7 +35,7 @@ load_dotenv()
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-# Keep this in sync with streamlined-ipo-scanner.py SCANNER_VERSION.
+# Keep this in sync with streamlined_ipo_scanner.py SCANNER_VERSION.
 # Section 3 will flag any drift automatically.
 EXPECTED_VERSION = "2.4.1"
 
@@ -338,8 +338,8 @@ def audit_strategy_consistency(db):
 
     # 3a. Version consistency across files
     versions = {
-        "streamlined-ipo-scanner.py": extract_ver(
-            os.path.join(base_dir, "streamlined-ipo-scanner.py"),
+        "streamlined_ipo_scanner.py": extract_ver(
+            os.path.join(base_dir, "streamlined_ipo_scanner.py"),
             r'SCANNER_VERSION\s*=\s*["\']([^"\']+)["\']'),
         "db.py": extract_ver(
             os.path.join(base_dir, "db.py"),

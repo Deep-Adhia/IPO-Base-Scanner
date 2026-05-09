@@ -118,14 +118,13 @@ def fetch_recent_ipo_symbols(years_back=1):
         # Method 2: Fallback to existing CSV
         print("🔄 Falling back to existing CSV...")
         try:
-            if pd.io.common.file_exists("recent_ipo_symbols.csv"):
+            if os.path.exists("recent_ipo_symbols.csv"):
                 print("📁 Using existing recent_ipo_symbols.csv as fallback")
                 df_symbols = pd.read_csv("recent_ipo_symbols.csv")
-                print(f"📊 CSV fallback: {len(df_symbols)} symbols from existing file")
-                return df_symbols
-            else:
-                print("❌ No existing CSV file found")
-                raise Exception("No fallback data available")
+                if not df_symbols.empty:
+                    print(f"📊 CSV fallback: {len(df_symbols)} symbols from existing file")
+                    return df_symbols
+            print("❌ No valid existing CSV file found or file is empty")
         except Exception as csv_error:
             print(f"⚠️ CSV fallback failed: {csv_error}")
             print("🔄 Creating minimal fallback data...")

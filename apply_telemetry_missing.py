@@ -1,6 +1,6 @@
 import os
 
-filepath = 'streamlined-ipo-scanner.py'
+filepath = 'streamlined_ipo_scanner.py'
 with open(filepath, 'r', encoding='utf-8') as f:
     content = f.read()
 

@@ -33,18 +33,20 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import from main scanner
 import importlib.util
-spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanner.py")
+spec = importlib.util.spec_from_file_location("scanner", "streamlined_ipo_scanner.py")
 scanner_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(scanner_module)
 
 # Import version and logging utilities from main scanner
-SCANNER_VERSION = "2.2.0"
+SCANNER_VERSION = "2.5.0"
 write_daily_log = getattr(scanner_module, 'write_daily_log', lambda *a, **k: None)
 
 fetch_data = scanner_module.fetch_data
 send_telegram = scanner_module.send_telegram
 logger = scanner_module.logger
 get_live_price = scanner_module.get_live_price
+get_market_regime = scanner_module.get_market_regime
+classify_pattern_type = scanner_module.classify_pattern_type
 
 # Load environment
 load_dotenv()
@@ -1375,6 +1377,9 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 'has_volume_caution': len(volume_warnings) > 0,
                 'leader_score': int(leader_score),
                 'type': signal_type,
+                # --- Institutional Research Metadata (v2.5.0) ---
+                'pattern_type': classify_pattern_type("LISTING_BREAKOUT" if signal_type == "BREAKOUT" else "CONSOLIDATION", days_since_listing, vol_ratio_for_tier, listing_range_pct),
+                'market_regime': get_market_regime(current_date),
                 # --- Tier fields ---
                 'tier': tier,
                 'position_size_pct': position_size_pct,
@@ -1458,6 +1463,8 @@ def format_listing_breakout_alert(breakout_data):
 📊 <b>Confirmation:</b>
 • Volume Spike: {vol_spike:.1f}x avg
 • Vol vs Listing: {volume_vs_listing_day:.1f}x {'✅' if not has_volume_caution else '⚠️'}
+• Pattern: <b>{breakout_data.get('pattern_type', 'N/A')}</b>
+• Regime: <b>{breakout_data.get('market_regime', 'N/A')}</b>
 • {conditions}"""
 
     if has_volume_caution:
@@ -1522,6 +1529,8 @@ def format_base_breakout_alert(breakout_data):
 • Listing Day High (target): ₹{listing_high:,.2f}
 • Volume Spike: {vol_spike:.1f}x avg
 • IPO Age: {days_since}d  |  Listed: {listing_date_str}
+• Pattern: <b>{breakout_data.get('pattern_type', 'N/A')}</b>
+• Regime: <b>{breakout_data.get('market_regime', 'N/A')}</b>
 • {conditions}
 
 🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}
@@ -1570,6 +1579,8 @@ The stock is within <b>{distance_pct:.1f}%</b> of its Listing Day High.
 📅 <b>Listing Context:</b>
 • Listed on: {listing_date_str}
 • Age: {days_since} days old
+• Pattern: <b>{breakout_data.get('pattern_type', 'N/A')}</b>
+• Regime: <b>{breakout_data.get('market_regime', 'N/A')}</b>
 
 💡 <b>Actionable Advice:</b>
 Keep {symbol} on your radar. A close above ₹{listing_high:.2f} with volume triggers a valid entry.

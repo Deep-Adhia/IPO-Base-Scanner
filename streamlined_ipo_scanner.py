@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-streamlined-ipo-scanner.py
+streamlined_ipo_scanner.py
 
 Optimized IPO breakout scanner:
 - Dynamic symbol list (recent IPOs + active positions)
@@ -12,7 +12,7 @@ Optimized IPO breakout scanner:
 - Dry-run and heartbeat modes
 """
 
-SCANNER_VERSION = "2.4.1"  # Tracks logic version for signal bifurcation
+SCANNER_VERSION = "2.5.0"  # Behavioral Research Engine Upgrade
 LOG_SCHEMA_VERSION = "2026-04-23.v1"
 
 import os
@@ -91,6 +91,98 @@ class IntegrationBridge:
             logging.getLogger(__name__).error(f"🏛️ IntegrationBridge Save Failed: {e}")
             return False
 
+# ── Research Metadata Helpers (Phase 2.3) ──────────────────────────────────
+# Pattern archetypes are observational labels ONLY — not separate strategies.
+PATTERN_IPO_DISCOVERY         = "PATTERN_IPO_DISCOVERY"
+PATTERN_CONSOLIDATION_BREAKOUT = "PATTERN_CONSOLIDATION_BREAKOUT"
+PATTERN_RUNAWAY_GAP           = "PATTERN_RUNAWAY_GAP"
+PATTERN_EARLY_CONTINUATION    = "PATTERN_EARLY_CONTINUATION"
+PATTERN_RECOVERY_BREAKOUT     = "PATTERN_RECOVERY_BREAKOUT"
+
+def classify_pattern_type(grade: str, days_since_listing: int, vol_ratio: float, prng: float) -> str:
+    """Assign an observational pattern archetype. Classification ONLY — no live logic."""
+    if grade == "LISTING_BREAKOUT" or days_since_listing <= 10:
+        return PATTERN_IPO_DISCOVERY
+    if vol_ratio >= 5.0 and prng < 8:
+        return PATTERN_RUNAWAY_GAP
+    if days_since_listing <= 30 and prng < 15:
+        return PATTERN_EARLY_CONTINUATION
+    if prng > 25:
+        return PATTERN_RECOVERY_BREAKOUT
+    return PATTERN_CONSOLIDATION_BREAKOUT
+
+# Global cache for Nifty data to avoid redundant API calls
+_nifty_regime_cache = {}
+
+def get_market_regime(target_date=None):
+    """
+    Automated Nifty-based regime detection.
+    Classification:
+    - BULL: Price > 20-EMA (with buffer) and 20-EMA > 50-EMA
+    - WEAK_BULL: Price > 50-EMA (with buffer) but below 20-EMA
+    - RANGE: Price within 0.2% of either EMA (Transition zone)
+    - CORRECTION: Price below 50-EMA (with buffer)
+    - UNKNOWN: Data fetch failed
+    """
+    try:
+        # Buffer for regime stability (0.2% tolerance)
+        TOLERANCE = 0.002
+        
+        # Default to today if no date provided
+        if target_date is None:
+            target_date = datetime.today().date()
+        elif hasattr(target_date, 'date'):
+            target_date = target_date.date()
+        
+        # Check cache (key is date string)
+        date_key = target_date.strftime('%Y-%m-%d')
+        if date_key in _nifty_regime_cache:
+            return _nifty_regime_cache[date_key]
+            
+        # Fetch Nifty data (^NSEI for Nifty 50)
+        start_dt = target_date - timedelta(days=150)
+        end_dt = target_date + timedelta(days=1)
+        
+        # Use yfinance with auto_adjust=False to avoid FutureWarnings
+        df_nifty = yf.download("^NSEI", start=start_dt, end=end_dt, progress=False, auto_adjust=False)
+        if df_nifty is None or df_nifty.empty:
+            return "UNKNOWN"
+            
+        # Reset index if MultiIndex columns exist
+        df_nifty.columns = [c[0] if isinstance(c, tuple) else c for c in df_nifty.columns]
+        
+        # Calculate EMAs
+        df_nifty['EMA20'] = df_nifty['Close'].ewm(span=20, adjust=False).mean()
+        df_nifty['EMA50'] = df_nifty['Close'].ewm(span=50, adjust=False).mean()
+        
+        latest = df_nifty.iloc[-1]
+        price = float(latest['Close'])
+        ema20 = float(latest['EMA20'])
+        ema50 = float(latest['EMA50'])
+        
+        # Calculate distance from EMAs
+        dist_20 = (price / ema20) - 1
+        dist_50 = (price / ema50) - 1
+        
+        # Priority 1: Range/Neutral check
+        if abs(dist_20) < TOLERANCE or abs(dist_50) < TOLERANCE:
+            regime = "RANGE"
+        # Priority 2: Directional trends
+        elif price > ema20 and ema20 > ema50:
+            regime = "BULL"
+        elif price > ema50:
+            regime = "WEAK_BULL"
+        else:
+            regime = "CORRECTION"
+            
+        # Cache for next time
+        _nifty_regime_cache[date_key] = regime
+        return regime
+        
+    except Exception as e:
+        logger.warning(f"⚠️ Market regime detection failed: {e}")
+        return "UNKNOWN"
+
 # Global rate limiters for APIs
 _upstox_last_request = 0.0
 _upstox_lock = threading.Lock()
@@ -124,7 +216,7 @@ def auto_refresh_upstox_token():
     }
     
     try:
-        response = requests.post(url, headers=headers, data=data)
+        response = requests.post(url, headers=headers, data=data, timeout=10)
         if response.status_code == 200:
             token_data = response.json()
             new_access_token = token_data.get('access_token')
@@ -470,7 +562,8 @@ PT_A_PLUS = get_env_float("PT_A_PLUS", 0.15)
 PT_B = get_env_float("PT_B", 0.12)
 PT_C = get_env_float("PT_C", 0.10)
 # Trading parameters
-CONSOL_WINDOWS = get_env_list("CONSOL_WINDOWS", "10,20,40,80,120")
+CONSOL_WINDOWS = get_env_list("CONSOL_WINDOWS", "30,60,90,120")
+MAX_PRNG = get_env_float("MAX_PRNG", 25.0)
 VOL_MULT = get_env_float("VOL_MULT", 1.2)
 ABS_VOL_MIN = get_env_int("ABS_VOL_MIN", 3000000)
 LOOKAHEAD = get_env_int("LOOKAHEAD", 80)
@@ -488,7 +581,30 @@ MIN_RISK_REWARD = get_env_float("MIN_RISK_REWARD", 1.3)
 MIN_PNL_FOR_TRAIL = get_env_float("MIN_PNL_FOR_TRAIL", 5.0)
 MIN_TRAIL_MOVE_PCT = get_env_float("MIN_TRAIL_MOVE_PCT", 1.0)
 MIN_DAYS_BETWEEN_SIGNALS = get_env_int("MIN_DAYS_BETWEEN_SIGNALS", 10)
-MIN_LIVE_GRADE = os.getenv("MIN_LIVE_GRADE", "C")
+MIN_LIVE_GRADE = os.getenv("MIN_LIVE_GRADE", "C") # Reset to C for Permissive base
+
+# --- Cohort Definitions for Comparative Research ---
+# These define the logical "buckets" for expectancy analysis.
+RESEARCH_COHORTS = {
+    "PERMISSIVE": {
+        "max_prng": 60.0,
+        "min_window": 10,
+        "min_grade": "C",
+        "vol_follow": 0.8
+    },
+    "STRICT": {
+        "max_prng": 35.0,
+        "min_window": 20,
+        "min_grade": "C",
+        "vol_follow": 1.0
+    },
+    "ULTRA_STRICT": {
+        "max_prng": 25.0,
+        "min_window": 30,
+        "min_grade": "B",
+        "vol_follow": 1.0
+    }
+}
 # File paths
 CACHE_FILE = os.getenv("CACHE_FILE", "ipo_cache.pkl")
 SIGNALS_CSV = os.getenv("SIGNALS_CSV", "ipo_signals.csv")
@@ -559,7 +675,7 @@ def send_telegram(msg):
     except Exception as e:
         logger.error(f"❌ Telegram error: {e}")
 
-def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None, current_price=None, price_source=None, breakout_close=None, entry_note=None):
+def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, score, date, consolidation_low=None, consolidation_high=None, breakout_price=None, data_source=None, current_price=None, price_source=None, breakout_close=None, entry_note=None, pattern_type=None, market_regime=None):
     """Format detailed IPO signal alert with comprehensive trading information"""
     # Calculate risk metrics
     risk_amount = entry_price - stop_loss
@@ -629,8 +745,12 @@ def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, sco
         msg += f"""
 • Breakout: ₹{breakout_price:,.2f}"""
     
-    msg += f"""
 • Score: {score:.1f}/100"""
+    
+    if pattern_type:
+        msg += f"\n• Pattern: <b>{pattern_type}</b>"
+    if market_regime:
+        msg += f"\n• Regime: <b>{market_regime}</b>"
 
     # Add data source information
     if data_source:
@@ -698,16 +818,31 @@ def initialize_csvs():
 
 
 def cache_recent_ipos():
+    df = None
     try:
         df = fetch_recent_ipo_symbols(years_back=IPO_YEARS_BACK)
-        with open(CACHE_FILE, "wb") as f:
-            pickle.dump(df, f)
-    except:
+        if df is not None and not df.empty:
+            with open(CACHE_FILE, "wb") as f:
+                pickle.dump(df, f)
+    except Exception as e:
+        print(f"Error fetching symbols: {e}")
+
+    # Fallback to existing cache if fetch failed
+    if df is None or df.empty:
         if os.path.exists(CACHE_FILE):
-            with open(CACHE_FILE,"rb") as f:
-                df = pickle.load(f)
+            try:
+                with open(CACHE_FILE,"rb") as f:
+                    df = pickle.load(f)
+            except:
+                df = None
+        
+    # Final fallback to CSV directly
+    if df is None or df.empty:
+        if os.path.exists("recent_ipo_symbols.csv"):
+            df = pd.read_csv("recent_ipo_symbols.csv")
         else:
             df = pd.DataFrame(columns=["symbol","company","listing_date"])
+            
     return df
 
 def get_symbols_and_listing():
@@ -786,13 +921,13 @@ def fetch_from_upstox(symbol, start_date, end_date):
             _upstox_last_request = time.time()
         
         logger.info(f"🔄 Trying Upstox API for {symbol}")
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         
         # Handle rate limiting (429 Too Many Requests)
         if response.status_code == 429:
             logger.warning(f"⚠️ Rate limited for {symbol}, waiting 1 second...")
             time.sleep(1)
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=10)
         
         if response.status_code == 200:
             data = response.json()
@@ -835,6 +970,50 @@ def fetch_from_upstox(symbol, start_date, end_date):
         
     except Exception as e:
         logger.warning(f"⚠️ Upstox API error for {symbol}: {e}")
+        return None
+
+def fetch_from_yfinance(symbol, start_date, end_date):
+    """Tertiary fallback fetch from YFinance"""
+    try:
+        if not YFINANCE_AVAILABLE:
+            return None
+            
+        yf_sym = f"{symbol}.NS"
+        # yfinance download end date is exclusive, add 1 day
+        end_dt = pd.to_datetime(end_date) + pd.Timedelta(days=1)
+        
+        # Rate limiting for yfinance
+        global _yfinance_last_request
+        with _yfinance_lock:
+            current_time = time.time()
+            time_since_last = current_time - _yfinance_last_request
+            if time_since_last < _yfinance_min_delay:
+                time.sleep(_yfinance_min_delay - time_since_last)
+            _yfinance_last_request = time.time()
+            
+        df = yf.download(yf_sym, start=start_date, end=end_dt, progress=False)
+        if df is None or df.empty:
+            return None
+            
+        df = df.reset_index()
+        # Handle MultiIndex columns in newer yfinance versions
+        df.columns = [c[0] if isinstance(c, tuple) else c for c in df.columns]
+        
+        col_map = {"Date": "DATE", "Open": "OPEN", "High": "HIGH",
+                   "Low": "LOW", "Close": "CLOSE", "Volume": "VOLUME"}
+        df = df.rename(columns=col_map)
+        
+        # Standardize columns to match scanner expectations
+        required = ["DATE", "OPEN", "HIGH", "LOW", "CLOSE", "VOLUME"]
+        if not all(col in df.columns for col in required):
+            return None
+            
+        df["DATE"] = pd.to_datetime(df["DATE"])
+        df["LTP"] = df["CLOSE"]
+        
+        return df[required + ["LTP"]]
+    except Exception as e:
+        logger.warning(f"⚠️ YFinance fallback failed for {symbol}: {e}")
         return None
 
 def get_live_price_upstox(symbol):
@@ -932,39 +1111,7 @@ def get_live_price_yfinance(symbol):
         logger.warning(f"Error fetching live price from yfinance for {symbol}: {e}")
         return None
 
-def get_live_price_jugaad(symbol):
-    """Get live price from jugaad-data (NSE) with rate limiting"""
-    try:
-        # Rate limiting: jugaad-data can be slow, add delay
-        time.sleep(0.3)  # 300ms delay for jugaad-data
-        
-        # Get latest data (last 1 day)
-        today = datetime.today().date()
-        yesterday = today - timedelta(days=1)
-        
-        # Use stock_raw to get latest data
-        raw = stock_raw(symbol, yesterday, today, series="EQ")
-        if not raw:
-            return None
-        
-        # Convert to DataFrame
-        df = pd.DataFrame(raw)
-        
-        # Map columns
-        if 'CH_LAST_TRADED_PRICE' in df.columns:
-            latest_price = df['CH_LAST_TRADED_PRICE'].iloc[-1]
-        elif 'CH_CLOSING_PRICE' in df.columns:
-            latest_price = df['CH_CLOSING_PRICE'].iloc[-1]
-        else:
-            return None
-        
-        if pd.notna(latest_price):
-            return float(latest_price)
-        
-        return None
-    except Exception as e:
-        logger.warning(f"Error fetching live price from jugaad-data for {symbol}: {e}")
-        return None
+
 
 def get_live_price(symbol, prefer_source=None):
     """
@@ -977,37 +1124,22 @@ def get_live_price(symbol, prefer_source=None):
     """
     sources = []
     
-    # Determine source priority - yfinance is preferred over jugaad-data
+    # Determine source priority
     if prefer_source == 'yfinance':
         sources = [('yfinance', get_live_price_yfinance), ('upstox', get_live_price_upstox)]
-    elif prefer_source == 'jugaad':
-        sources = [('jugaad', get_live_price_jugaad), ('yfinance', get_live_price_yfinance), ('upstox', get_live_price_upstox)]
     else:
-        # Default: Try Upstox first, then yfinance (most reliable), skip jugaad-data
-        # Only use jugaad-data as absolute last resort if yfinance also fails
+        # Default: Try Upstox first, then yfinance (most reliable)
         sources = [('upstox', get_live_price_upstox), ('yfinance', get_live_price_yfinance)]
     
     for source_name, fetch_func in sources:
         try:
             price = fetch_func(symbol)
             if price is not None and price > 0:
-                logger.info(f"✅ Got live price for {symbol} from {source_name}: ₹{price:.2f}")
+                logger.info(f"✅ Got live price for {symbol} from {source_name}: Rs.{price:.2f}")
                 return price, source_name
         except Exception as e:
             logger.debug(f"Failed to get price from {source_name} for {symbol}: {e}")
             continue
-    
-    # Only try jugaad-data as absolute last resort (not accurate, but better than nothing)
-    # DISABLE JUGAAD-DATA FALLBACK FOR LIVE PRICE: It causes major hangs (2-4 mins per symbol) and often fails anyway.
-    # Better to fail fast and fallback to historical data (yesterday's close).
-    # logger.warning(f"⚠️ Upstox and yfinance failed, trying jugaad-data as last resort for {symbol}...")
-    # try:
-    #     price = get_live_price_jugaad(symbol)
-    #     if price is not None and price > 0:
-    #         logger.warning(f"⚠️ Using jugaad-data price for {symbol} (may not be accurate): ₹{price:.2f}")
-    #         return price, 'jugaad'
-    # except Exception as e:
-    #     logger.debug(f"jugaad-data also failed for {symbol}: {e}")
     
     logger.warning(f"⚠️ Could not fetch live price for {symbol} from any source")
     return None, None
@@ -1037,146 +1169,18 @@ def fetch_data(symbol, start_date):
         df = fetch_from_upstox(symbol, start_date, today)
         if df is not None and not df.empty:
             logger.info(f"✅ Upstox API: Got data for {symbol} ({len(df)} rows)")
-            # Add data source info to DataFrame
             df.attrs['data_source'] = 'Upstox API'
             return df
-        else:
-            logger.warning(f"⚠️ Upstox API: No data for {symbol}, trying NSE fallback")
         
-        # Fallback to NSE data (existing logic)
-        
-        # CRITICAL OPTIMIZATION: If start_date is today, do not attempt fallback
-        # NSE fallback uses historical archives which are only updated EOD.
-        # Requesting today's data from archives will fail or hang.
-        if start_date >= today:
-             logger.warning(f"⚠️ {symbol} listing is today ({start_date}) - Skipping NSE fallback (Archives update EOD)")
-             return None
+        # Primary Fallback: Yahoo Finance (Simplified and Reliable)
+        logger.warning(f"⚠️ Upstox API failed for {symbol}, trying YFinance fallback")
+        df = fetch_from_yfinance(symbol, start_date, today)
+        if df is not None and not df.empty:
+            logger.info(f"✅ YFinance Fallback: Got data for {symbol} ({len(df)} rows)")
+            df.attrs['data_source'] = 'Yahoo Finance'
+            return df
 
-        # Try to get data for the last 7 days (reduced from 30) to find the most recent data
-        # Start from the entry date and go forward
-        for days_back in range(0, 7):
-            target_date = start_date + timedelta(days=days_back)
-            
-            # CRITICAL FIX: Do not attempt to fetch data for future dates
-            if target_date > today:
-                logger.debug(f"Target date {target_date} is in the future, stopping fallback search")
-                break
-            
-            try:
-                # Add retry mechanism for jugaad_data calls
-                max_retries = 1  # Only 1 retry to avoid infinite loops
-                df = None
-                for retry in range(max_retries):
-                    try:
-                        # Use a date range from start_date to target_date
-                        df = stock_df(symbol,
-                            from_date=start_date,
-                            to_date=target_date,
-                            series="EQ")
-                        break  # Success, exit retry loop
-                    except Exception as retry_error:
-                        if retry == max_retries - 1:
-                            logger.warning(f"Failed to fetch data for {symbol}: {retry_error}")
-                            # return None  # Don't return None here, let the loop continue or break naturally
-                            # If we return None, we abort all attempts. Instead, just break the retry loop
-                            break
-                        else:
-                            logger.warning(f"Retry {retry + 1}/{max_retries} for {symbol}: {retry_error}")
-                            time.sleep(0.2)  # Very short wait time
-                
-                # Debug: Log what we actually received
-                if isinstance(df, str) and df == "FATAL_API_ERROR":
-                    logger.warning(f"⚠️ Fatal API error for {symbol} - symbol likely invalid or missing on NSE. Aborting fallback.")
-                    break
-                elif df is None:
-                    logger.warning(f"Received None for {symbol} - skipping")
-                    continue
-                elif hasattr(df, 'empty') and df.empty:
-                    logger.warning(f"Received empty DataFrame for {symbol}")
-                    continue
-                elif not hasattr(df, 'columns'):
-                    logger.warning(f"Received non-DataFrame object for {symbol}: {type(df)}")
-                    continue
-                else:
-                    logger.info(f"Received data for {symbol}: {len(df)} rows, columns: {list(df.columns)}")
-                    
-                # Check if the data looks like HTML (error page)
-                if hasattr(df, 'iloc') and len(df) > 0:
-                    first_row = df.iloc[0]
-                    if isinstance(first_row, pd.Series):
-                        # Check if any column contains HTML-like content
-                        for col in first_row.index:
-                            if isinstance(first_row[col], str) and ('<html' in str(first_row[col]).lower() or '<!doctype' in str(first_row[col]).lower()):
-                                logger.warning(f"Received HTML error page for {symbol}, skipping")
-                                raise ValueError("HTML error page received")
-                
-            except Exception as e:
-                logger.warning(f"Error fetching data for {symbol}: {e}")
-                # Add more detailed error logging
-                import traceback
-                logger.warning(f"Full traceback for {symbol}: {traceback.format_exc()}")
-                continue
-            
-            # Add small delay to avoid rate limiting
-            import time
-            time.sleep(0.1)  # 100ms delay between requests
-            
-            if not df.empty:
-                # Check data freshness
-                latest_date = df['DATE'].max()
-                if hasattr(latest_date, 'date'):
-                    latest_date = latest_date.date()
-                elif hasattr(latest_date, 'to_pydatetime'):
-                    latest_date = latest_date.to_pydatetime().date()
-                elif hasattr(latest_date, 'date'):
-                    latest_date = latest_date.date()
-                
-                # Ensure both are date objects for comparison
-                if isinstance(latest_date, pd.Timestamp):
-                    latest_date = latest_date.date()
-                if isinstance(today, pd.Timestamp):
-                    today = today.date()
-                
-                days_old = (today - latest_date).days
-                if days_old <= 1:
-                    logger.info(f"Using fresh data for {symbol}: {latest_date}")
-                elif days_old <= 3:
-                    logger.info(f"Using recent data for {symbol}: {latest_date} ({days_old} days old)")
-                else:
-                    logger.warning(f"Using old data for {symbol}: {latest_date} ({days_old} days old)")
-                
-                # stock_df already handles column mapping, but verify we have required columns
-                if not df.empty:
-                    # Ensure required columns exist (stock_df should have already standardized them)
-                    required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE']
-                    missing_cols = [col for col in required_cols if col not in df.columns]
-                    if missing_cols:
-                        logger.error(f"Missing required columns for {symbol} after stock_df: {missing_cols}. Available columns: {list(df.columns)}")
-                        continue  # Try next date
-                    
-                    # Add LTP if missing (use CLOSE as fallback)
-                    if 'LTP' not in df.columns:
-                        df['LTP'] = df['CLOSE']
-                    
-                    # Add VOLUME if missing (set to 0)
-                    if 'VOLUME' not in df.columns:
-                        df['VOLUME'] = 0
-                    
-                    # Ensure DATE is datetime (stock_df should have done this, but double-check)
-                    if not pd.api.types.is_datetime64_any_dtype(df['DATE']):
-                        df['DATE'] = pd.to_datetime(df['DATE'])
-                    
-                    # Sort by date (ascending - oldest to newest)
-                    df = df.sort_values('DATE').reset_index(drop=True)
-                    
-                    # Add data source info to DataFrame
-                    df.attrs['data_source'] = 'NSE (jugaad-data)'
-                    logger.info(f"✅ NSE (jugaad-data): Got data for {symbol} ({len(df)} rows, columns: {list(df.columns)})")
-                    return df
-                
-                break
-        
-        logger.warning(f"No data found for {symbol} in the last 30 days")
+        logger.warning(f"❌ No data found for {symbol} (Upstox & YFinance both failed)")
         return None
             
     except Exception as e:
@@ -1586,7 +1590,10 @@ def detect_live_patterns(symbols, listing_map):
         _rejection_reasons = []
         _rejection_logged = False
         
-        def _log_rejection_telemetry(reason: str, value: float, threshold: float, metrics: dict):
+        def _log_rejection_telemetry(reason: str, value: float, threshold: float, metrics: dict,
+                                       potential_entry: float = None, potential_stop: float = None,
+                                       potential_target: float = None, pattern_type: str = None,
+                                       cohort: str = None):
             nonlocal _rejection_logged
             if reason not in _rejection_reasons:
                 _rejection_reasons.append(reason)
@@ -1602,12 +1609,27 @@ def detect_live_patterns(symbols, listing_map):
             if not is_interesting: return
 
             _rejection_logged = True
+
+            # ── Phase 3: Ghost PnL — freeze potential levels at rejection time ──
+            # Fixed observation window: forward PnL will be calculated against
+            # the price N candles *after* rejection, not today's price.
+            # This prevents hindsight drift in the research analytics.
+            ghost_pnl = {}
+            if potential_entry is not None:
+                ghost_pnl = {
+                    "potential_entry":  round(potential_entry, 2),
+                    "potential_stop":   round(potential_stop, 2)   if potential_stop  is not None else None,
+                    "potential_target": round(potential_target, 2) if potential_target is not None else None,
+                    "observation_window_days": 60,  # Fixed window — do NOT change retroactively
+                    "ghost_status": "PENDING"        # Updated by outcome_analytics once window closes
+                }
+
             payload = {
                 "symbol": sym,
                 "action": "REJECTED_BREAKOUT",
                 "log_type": "REJECTED",
-                "rejection_reason": reason, # Primary reason code
-                "failing_metric": reason,   # Explicitly link value to metric
+                "rejection_reason": reason,
+                "failing_metric": reason,
                 "failing_value": value,
                 "threshold": threshold,
                 "rejection_reasons": _rejection_reasons,
@@ -1620,11 +1642,16 @@ def detect_live_patterns(symbols, listing_map):
                     "rsi": metrics.get("rsi"),
                     "score": metrics.get("score")
                 },
+                # ── Phase 2 Research Metadata ──
+                "pattern_type": pattern_type or "UNKNOWN",
+                "cohort": cohort or "UNKNOWN",
+                "market_regime": "UNKNOWN",  # TODO: wire live Nifty 20-EMA regime check
+                # ── Phase 3 Ghost PnL ──
+                **ghost_pnl,
                 "source": "live"
             }
-            # Centralized logging with REJECTED type
             write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", payload, log_type="REJECTED")
-            logger.debug(f"[Telemetry] Logged rejection for {sym}: {reason}")
+            logger.debug(f"[Telemetry] Logged rejection for {sym}: {reason} | GhostPnL entry={potential_entry}")
         
         # Use your proven backtest logic but check for LIVE patterns (recent breakouts)
         for w in CONSOL_WINDOWS[::-1]:  # Start with larger windows first
@@ -1632,80 +1659,85 @@ def detect_live_patterns(symbols, listing_map):
             
             # Check recent data for live patterns (last 10 days for better coverage)
             recent_start = max(w, len(df)-10)  # Check last 10 days for live patterns
-            for i in range(recent_start, len(df)):
-                perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
-                # Only analyze symbols in the "Base Formation Zone" (8-35% below listing high)
+            for j in range(recent_start, len(df)):
+                # 1. Define immediate base O(N)
+                base_window = df.iloc[j-w:j]
+                if len(base_window) < w: continue
+                
+                low = base_window["LOW"].min()
+                high2 = base_window["HIGH"].max()
+                
+                # 2. Context Rule (Base Formation Zone 8-35% below lhigh)
+                perf = (low - lhigh) / lhigh
                 if not (0.08 <= -perf <= 0.35): continue
                 
-                # Capture baseline metrics for this window
                 current_metrics = {"perf": round(perf, 4), "window": w}
                 
-                # CRITICAL FIX: For breakout detection, calculate consolidation from HISTORICAL data
-                # Exclude the current candle (i) to get accurate consolidation levels
-                # This ensures we're comparing current price against historical consolidation, not including it
-                historical_end = i  # Exclude candle i from consolidation calculation
-                if historical_end < w:
-                    continue  # Not enough historical data
-                
-                # Calculate consolidation from historical data (excluding current candle i)
-                low, high2 = df["LOW"][:historical_end].tail(w).min(), df["HIGH"][:historical_end].tail(w).max()
+                # 3. Base Tightness
                 prng = round((high2 - low) / low * 100, 2)
                 current_metrics["prng"] = prng
                 
-                if prng > 60:
-                    _log_rejection_telemetry("loose_base", prng, 60.0, current_metrics)
+                if prng > MAX_PRNG:
+                    _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, 0, prng)
+                    _log_rejection_telemetry("loose_base", prng, MAX_PRNG, current_metrics,
+                                             pattern_type=_pt)
                     continue
                 
-                # Calculate average volume from historical data (excluding current candle)
-                avgv = df["VOLUME"][:historical_end].tail(w).mean()
-                vol_ratio = round(df["VOLUME"].iat[i] / avgv, 2)
+                # 4. Volume Checks
+                avgv = base_window["VOLUME"].mean()
+                if avgv <= 0: continue
+                vol_ratio = round(df["VOLUME"].iat[j] / avgv, 2)
                 current_metrics["vol_ratio"] = vol_ratio
                 
-                vol_ok = ((df["VOLUME"].iat[i] >= 2.5*avgv and df["VOLUME"].iloc[i-2:i+1].sum() >= 4*avgv) or
+                vol_ok = ((df["VOLUME"].iat[j] >= 2.5*avgv and df["VOLUME"].iloc[j-2:j+1].sum() >= 4*avgv) or
                          vol_ratio >= VOL_MULT or
-                         (df["VOLUME"].iloc[i-2:i+1].sum() * df["CLOSE"].iat[i]) >= ABS_VOL_MIN)
+                         (df["VOLUME"].iloc[j-2:j+1].sum() * df["CLOSE"].iat[j]) >= ABS_VOL_MIN)
                 
                 if not vol_ok:
-                    _log_rejection_telemetry("low_volume", vol_ratio, VOL_MULT, current_metrics)
+                    # Ghost PnL: entry would have been the base high (high2)
+                    _ghost_entry  = float(high2)
+                    _ghost_stop   = round(_ghost_entry * 0.92, 2)  # 8% cap
+                    _ghost_target = round(_ghost_entry + (_ghost_entry - _ghost_stop) * 2, 2)
+                    _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, vol_ratio, prng)
+                    _log_rejection_telemetry("low_volume", vol_ratio, VOL_MULT, current_metrics,
+                                             potential_entry=_ghost_entry,
+                                             potential_stop=_ghost_stop,
+                                             potential_target=_ghost_target,
+                                             pattern_type=_pt)
                     continue
                 
-                # Check if this is a LIVE breakout (happening now or very recently)
-                # For the last candle (i == len(df)-1), check LIVE price against consolidation
-                # For earlier candles, check future candles (j) for breakout confirmation
+                # Double-check tightness again at breakout
+                if prng > MAX_PRNG:
+                    _log_rejection_telemetry("loose_base", prng, MAX_PRNG, current_metrics)
+                    continue
+                
+                # Additional Tightness Check for Institutional Quality
+                if prng > MAX_PRNG:
+                    _log_rejection_telemetry("loose_base", prng, MAX_PRNG, current_metrics)
+                    continue
+                
+                # 5. Breakout Confirmation
                 is_live_breakout = False
-                breakout_candle_idx = None
                 
-                # Use tighter LOOKAHEAD for live signals (max 5 days, not the global 80)
-                LIVE_LOOKAHEAD = 5
-                
-                if i == len(df) - 1:
+                if j == len(df) - 1:
                     # This is the latest candle - check LIVE price for breakout
-                    # Only use live price during market hours
                     if is_market_hours():
                         live_price, _ = get_live_price(sym)
                     else:
                         live_price = float(df["CLOSE"].iloc[-1])
                         logger.debug(f"Outside market hours - using last close for {sym}: ₹{live_price:.2f}")
-                    if live_price is not None and live_price > max(high2, lhigh*0.97):
+                    if live_price is not None and live_price > high2:
                         is_live_breakout = True
-                        breakout_candle_idx = i
-                        logger.info(f"🔥 LIVE breakout detected for {sym}: Live price ₹{live_price:.2f} > consolidation high ₹{high2:.2f}")
+                        logger.info(f"🔥 LIVE breakout forming for {sym}: Live price ₹{live_price:.2f} > base high ₹{high2:.2f}")
                 else:
-                    # Check future candles for breakout confirmation (tighter window for live)
-                    for j in range(i+1, min(i+1+LIVE_LOOKAHEAD, len(df))):
-                        # QUALITY CHECK: Breakout candle must CLOSE above consolidation high
-                        # (not just wick above - failed breakouts wick above then close below)
-                        if df["CLOSE"].iat[j] > max(high2, lhigh*0.97) and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
-                            is_live_breakout = True
-                            breakout_candle_idx = j
-                            break
+                    # Historical confirmed candle
+                    if df["CLOSE"].iat[j] > high2 and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
+                        is_live_breakout = True
                 
                 if not is_live_breakout:
                     continue
                 
-                j = breakout_candle_idx
-                if j is None:
-                    continue
+                # j is correctly defined, continue with follow-through
                 
                 # Continue with breakout validation
                 # Follow-through filter (relaxed): next day should show conviction
@@ -1720,34 +1752,46 @@ def detect_live_patterns(symbols, listing_map):
                     close_holds = next_day_close > base_high * 0.98  # Allow 2% pullback
                     volume_confirms = next_day_volume >= 0.8 * breakout_volume  # 80% volume ok
                     if not close_holds and not volume_confirms:
-                        _log_rejection_telemetry("failed_follow_through", next_day_volume/breakout_volume, 0.8, current_metrics)
+                        _ghost_entry  = float(breakout_close)
+                        _ghost_stop   = round(_ghost_entry * 0.92, 2)
+                        _ghost_target = round(_ghost_entry + (_ghost_entry - _ghost_stop) * 2, 2)
+                        _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, breakout_volume/avgv, prng)
+                        _log_rejection_telemetry("failed_follow_through",
+                                                 next_day_volume/breakout_volume, 0.8, current_metrics,
+                                                 potential_entry=_ghost_entry,
+                                                 potential_stop=_ghost_stop,
+                                                 potential_target=_ghost_target,
+                                                 pattern_type=_pt)
                         continue
 
                 # Apply your proven filters
                 if reject_quick_losers(df, j, w, avgv):
                     continue
 
-                score, metrics = compute_grade_hybrid(df, j, w, avgv)
-                grade = assign_grade(score)
+                # --- Cohort Validation (Multi-Bucket Research) ---
+                valid_cohorts = []
+                for name, config in RESEARCH_COHORTS.items():
+                    # Window check
+                    if w < config["min_window"]: continue
+                    # Tightness check
+                    if prng > config["max_prng"]: continue
+                    # Grade check
+                    if GRADE_ORDER.index(grade) < GRADE_ORDER.index(config["min_grade"]): continue
+                    
+                    # Follow-through (if available)
+                    if j + 1 < len(df):
+                        breakout_volume = df["VOLUME"].iat[j]
+                        next_day_volume = df["VOLUME"].iat[j + 1]
+                        if next_day_volume < config["vol_follow"] * breakout_volume:
+                            continue
+                    
+                    valid_cohorts.append(name)
 
-                # Enforce minimum grade for LIVE signals
-                if not is_live_grade_allowed(grade):
-                    logger.info(f"⏭️ Skipping {sym} - grade {grade} below live threshold {MIN_LIVE_GRADE}")
-                    _log_rejection_telemetry(f"low_grade_{grade}", score, 1.0, {**current_metrics, **metrics, "grade": grade})
+                if not valid_cohorts:
                     continue
-
-                # Enhanced B-grade filters with RSI and MACD
-                if grade == 'B' and not smart_b_filters(df, j, avgv):
-                    _log_rejection_telemetry("failed_b_filters", score, 2.0, {**current_metrics, **metrics, "grade": grade})
-                    continue
-
-                if grade == 'C' and not smart_c_filters(df, j, df["OPEN"].iat[j], w, avgv):
-                    _log_rejection_telemetry("failed_c_filters", score, 1.0, {**current_metrics, **metrics, "grade": grade})
-                    continue
-
-                if grade == 'D':
-                    _log_rejection_telemetry("grade_d", score, 0.0, {**current_metrics, **metrics, "grade": grade})
-                    continue
+                
+                # Signal found - carry forward with valid_cohorts tagging
+                current_metrics["valid_cohorts"] = valid_cohorts
 
                 # This is a LIVE pattern - generate signal
                 # Get the latest available data date (not system date to avoid future date issues)
@@ -1960,7 +2004,7 @@ def detect_live_patterns(symbols, listing_map):
                     date_str = str(date)
 
                 # Lightweight score component decomposition for explainability logs
-                vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
+                vol_ratio_val = df["VOLUME"].iat[j] / avgv if avgv > 0 else 0.0
                 tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
                 volume_score = min(2.0, float(vol_ratio_val) / 2.0)
                 base_score = 1.0
@@ -1981,7 +2025,7 @@ def detect_live_patterns(symbols, listing_map):
                 except Exception:
                     ipo_age_days = 0
                 dist_listing_high_pct = ((lhigh - entry) / lhigh * 100.0) if lhigh > 0 else 0.0
-                vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
+                vol_ratio_val = df["VOLUME"].iat[j] / avgv if avgv > 0 else 0.0
                 
                 tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
                 volume_score = min(2.0, float(vol_ratio_val) / 2.0)
@@ -2094,6 +2138,20 @@ def detect_live_patterns(symbols, listing_map):
                         is_complete = len(reasons) == 0
                         
                         # 3. Build & Save
+                        _pt = classify_pattern_type(grade, ipo_age_for_log, vol_ratio, prng)
+                        _mr = get_market_regime()
+                        _src = getattr(df, 'attrs', {}).get('data_source', 'unknown')
+                        _snap = {
+                            "pattern_type": _pt,
+                            "market_regime": _mr,
+                            "valid_cohorts": [c[0] for c in valid_cohorts] if 'valid_cohorts' in locals() else [],
+                            "grade": grade,
+                            "metrics_snapshot": current_metrics if 'current_metrics' in locals() else {},
+                            "entry_at_signal": entry,
+                            "stop_at_signal": stop,
+                            "snapshot_ts": datetime.now(timezone.utc).isoformat()
+                        }
+
                         inst_signal = signal_builder.build_signal(
                             raw_payload={**new_signal, 
                                          "log_id": locals().get('log_id', 'v1_link_missing'),
@@ -2101,7 +2159,13 @@ def detect_live_patterns(symbols, listing_map):
                                          "volume_score": score_components.get("volume_score"),
                                          "base_score": score_components.get("base_score"),
                                          "momentum_score": score_components.get("momentum_score"),
-                                         "signal_strength_score": score_components.get("total_score")},
+                                         "signal_strength_score": score_components.get("total_score"),
+                                         "pattern_type": _pt,
+                                         "market_regime": _mr,
+                                         "source_type": _src,
+                                         "data_quality": "CONFIRMED" if _src == "Upstox API" else "FALLBACK",
+                                         "decision_snapshot": _snap
+                                         },
                             candle=df.iloc[j],
                             history=df.iloc[:j],
                             base_candles=df.iloc[max(0, j-w):j],
@@ -2365,60 +2429,48 @@ def detect_scan(symbols, listing_map):
 
         for w in CONSOL_WINDOWS:
             if len(df) < w: continue
-            for i in range(w, min(len(df), MAX_DAYS)):
-                perf = (df["CLOSE"].iat[i] - lhigh) / lhigh
+            for j in range(w, min(len(df), MAX_DAYS)):
+                # 1. Define immediate base O(N)
+                base_window = df.iloc[j-w:j]
+                if len(base_window) < w: continue
+                
+                low = base_window["LOW"].min()
+                high2 = base_window["HIGH"].max()
+                
+                # 2. Context Rule (Base Formation Zone)
+                perf = (low - lhigh) / lhigh
                 if not (0.08 <= -perf <= 0.35): continue
                 
-                # CRITICAL FIX: For breakout detection, calculate consolidation from HISTORICAL data
-                # Exclude the current candle (i) to get accurate consolidation levels
-                # This ensures we're comparing current price against historical consolidation, not including it
-                historical_end = i  # Exclude candle i from consolidation calculation
-                if historical_end < w:
-                    continue  # Not enough historical data
-                
-                # Calculate consolidation from historical data (excluding current candle i)
-                low, high2 = df["LOW"][:historical_end].tail(w).min(), df["HIGH"][:historical_end].tail(w).max()
+                # 3. Base Tightness
                 prng = (high2 - low) / low * 100
                 if prng > 60: continue
                 
-                # Calculate average volume from historical data (excluding current candle)
-                avgv = df["VOLUME"][:historical_end].tail(w).mean()
-                vol_ok = ((df["VOLUME"].iat[i] >= 2.5*avgv and df["VOLUME"].iloc[i-2:i+1].sum() >= 4*avgv) or
-                         df["VOLUME"].iat[i]/avgv >= VOL_MULT or
-                         (df["VOLUME"].iloc[i-2:i+1].sum() * df["CLOSE"].iat[i]) >= ABS_VOL_MIN)
+                # 4. Volume Checks
+                avgv = base_window["VOLUME"].mean()
+                if avgv <= 0: continue
+                vol_ok = ((df["VOLUME"].iat[j] >= 2.5*avgv and df["VOLUME"].iloc[j-2:j+1].sum() >= 4*avgv) or
+                         df["VOLUME"].iat[j]/avgv >= VOL_MULT or
+                         (df["VOLUME"].iloc[j-2:j+1].sum() * df["CLOSE"].iat[j]) >= ABS_VOL_MIN)
                 if not vol_ok: continue
                 
-                # Check if this is a LIVE breakout (happening now or very recently)
-                # For the last candle (i == len(df)-1), check LIVE price against consolidation
-                # For earlier candles, check future candles (j) for breakout confirmation
+                # 5. Breakout Confirmation
                 is_live_breakout = False
-                breakout_candle_idx = None
                 
-                if i == len(df) - 1:
-                    # This is the latest candle - check LIVE price for breakout
-                    # Only use live price during market hours
+                if j == len(df) - 1:
+                    # Live candle
                     if is_market_hours():
                         live_price, _ = get_live_price(sym)
                     else:
                         live_price = float(df["CLOSE"].iloc[-1])
-                    if live_price is not None and live_price > max(high2, lhigh*0.97):
+                    if live_price is not None and live_price > high2:
                         is_live_breakout = True
-                        breakout_candle_idx = i
-                        logger.info(f"🔥 LIVE breakout detected for {sym}: Live price ₹{live_price:.2f} > consolidation high ₹{high2:.2f}")
+                        logger.info(f"🔥 LIVE breakout forming for {sym}: Live price ₹{live_price:.2f} > base high ₹{high2:.2f}")
                 else:
-                    # Check future candles for breakout confirmation
-                    for j in range(i+1, min(i+1+LOOKAHEAD, len(df))):
-                        # QUALITY CHECK: Breakout candle must CLOSE above consolidation high
-                        if df["CLOSE"].iat[j] > max(high2, lhigh*0.97) and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
-                            is_live_breakout = True
-                            breakout_candle_idx = j
-                            break
+                    # Historical confirmed candle
+                    if df["CLOSE"].iat[j] > high2 and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
+                        is_live_breakout = True
                 
                 if not is_live_breakout:
-                    continue
-                
-                j = breakout_candle_idx
-                if j is None:
                     continue
                 
                 # Continue with breakout validation
@@ -2576,7 +2628,7 @@ def detect_scan(symbols, listing_map):
                         pass
                 
                 # Explainability components (local scope for logging)
-                vol_ratio_val = df["VOLUME"].iat[i] / avgv if avgv > 0 else 0.0
+                vol_ratio_val = df["VOLUME"].iat[j] / avgv if avgv > 0 else 0.0
                 tier_weight = 4.0 if grade == 'A+' else (3.0 if grade == 'A' else (2.0 if grade == 'B' else 1.0))
                 volume_score = min(2.0, float(vol_ratio_val) / 2.0)
                 base_score = 1.0
@@ -2622,7 +2674,9 @@ def detect_scan(symbols, listing_map):
                 signal_msg = format_signal_alert(
                     sym, grade, entry, stop, target, score, date_str,
                     consolidation_low=low, consolidation_high=high2, breakout_price=entry,
-                    data_source=data_source, current_price=current_price_display, price_source=price_source_display
+                    data_source=data_source, current_price=current_price_display, price_source=price_source_display,
+                    pattern_type=_pt if '_pt' in locals() else None, 
+                    market_regime=_mr if '_mr' in locals() else None
                 )
                 # Add signal type and version to alert
                 signal_msg = signal_msg.replace("🎯 <b>IPO BREAKOUT SIGNAL</b>", 

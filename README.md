@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.4.1-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
+[![Version](https://img.shields.io/badge/version-2.5.0-orange.svg)](https://github.com/Deep-Adhia/IPO-Base-Scanner)
 [![Automated](https://img.shields.io/badge/automation-GitHub%20Actions-green.svg)](https://github.com/features/actions)
 
 This is **not** a simple breakout scanner.
@@ -37,7 +37,7 @@ Targets the **listing day** and the days immediately following, when momentum is
 
 ---
 
-### 2. 🔁 Consolidation Breakout Scanner (`streamlined-ipo-scanner.py`)
+### 2. 🔁 Consolidation Breakout Scanner (`streamlined_ipo_scanner.py`)
 
 Targets IPOs **10–200 days post-listing** that have built a proper base structure and are breaking out of that base.
 
@@ -124,7 +124,7 @@ Each JSONL entry is structured containing a flattened, Pandas-ready snapshot of 
 ```json
 {
   "timestamp": "2026-05-08 14:14:00 IST",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "log_schema_version": "2026-04-23.v1",
   "scanner": "consolidation",
   "symbol": "INOXINDIA",
@@ -168,11 +168,11 @@ After 30 days this dataset allows answering:
 
 ```text
 IPO-Base-Scanner/
-├── streamlined-ipo-scanner.py       # Consolidation breakout scanner (v2.4.1)
+├── streamlined_ipo_scanner.py       # Consolidation breakout scanner (v2.5.0)
 ├── listing_day_breakout_scanner.py  # Listing day breakout scanner
 ├── hourly_breakout_scanner.py       # Intraday watchlist scanner
 │
-├── db.py                            # Core MongoDB persistence layer (v2.4.1)
+├── db.py                            # Core MongoDB persistence layer (v2.5.0)
 ├── master_audit.py                  # System integrity audit (Section 1/2/3)
 ├── manage_db.py                     # Unified management entrypoint
 ├── backfill_v2_from_v1.py           # Signal enrichment backfill
@@ -202,7 +202,7 @@ IPO-Base-Scanner/
 
 ## 🧠 Institutional Analytics & Forensic Research
 
-Starting with **v2.3.0** the system grew a dedicated research layer. **v2.4.1** adds a self-auditing infrastructure layer on top.
+Starting with **v2.3.0** the system grew a dedicated research layer. **v2.5.0** adds a self-auditing infrastructure layer on top.
 
 ### 🏛️ The Modular Architecture (v2.4.x)
 
@@ -225,7 +225,7 @@ Starting with **v2.4.0**, the system enables forensic backtesting of historical 
 
 ### 🔍 System Integrity Audit (`master_audit.py`)
 
-Added in **v2.4.1** — a standalone daily/weekly audit with three sections:
+Added in **v2.5.0** — a standalone daily/weekly audit with three sections:
 
 | Section | What it checks |
 |---|---|
@@ -304,7 +304,7 @@ python master_audit.py --section 1 # DB integrity only
 python master_audit.py --json      # JSON output for CI
 
 # Run consolidation scan
-python streamlined-ipo-scanner.py scan
+python streamlined_ipo_scanner.py scan
 
 # Run infrastructure tasks
 python manage_db.py test           # Check MongoDB connectivity
@@ -313,11 +313,11 @@ python manage_db.py quality        # Analyze log structural quality
 python manage_db.py analyze        # Run Phase 4 Data Intelligence
 
 # Update stop-losses on active positions
-python streamlined-ipo-scanner.py stop_loss_update
+python streamlined_ipo_scanner.py stop_loss_update
 
 # Weekly / monthly summaries (Telegram)
-python streamlined-ipo-scanner.py weekly_summary
-python streamlined-ipo-scanner.py monthly_review
+python streamlined_ipo_scanner.py weekly_summary
+python streamlined_ipo_scanner.py monthly_review
 ```
 
 ### 5. Automation Deployment (GitHub Actions)
@@ -399,7 +399,7 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 • Score: 1.0/5
 • Consolidation Window: 80 days
 
-🤖 Scanner v2.4.1 | 2026-05-08 14:15 IST
+🤖 Scanner v2.5.0 | 2026-05-08 14:15 IST
 ```
 
 ---
@@ -413,4 +413,4 @@ For experiment cutovers and baseline tracking, see `EXPERIMENT_CHANGELOG.md`.
 
 ---
 
-<sub>Built for systematic IPO momentum trading | v2.4.1 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>
+<sub>Built for systematic IPO momentum trading | v2.5.0 | Automated via GitHub Actions | MongoDB Atlas Infrastructure | Data-Driven Filter Optimization</sub>

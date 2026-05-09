@@ -12,13 +12,13 @@ print("🔍 TESTING ALL SCANNERS")
 print("=" * 80)
 
 # Test 1: Main IPO Base Scanner
-print("\n1️⃣ TESTING MAIN IPO BASE SCANNER (streamlined-ipo-scanner.py)")
+print("\n1️⃣ TESTING MAIN IPO BASE SCANNER (streamlined_ipo_scanner.py)")
 print("-" * 80)
 
 try:
     # Test imports
     import importlib.util
-    spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanner.py")
+    spec = importlib.util.spec_from_file_location("scanner", "streamlined_ipo_scanner.py")
     scanner_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(scanner_module)
     
@@ -249,7 +249,7 @@ print("   1. Main IPO Base Scanner: ✅ WORKING")
 print("   2. Hourly Breakout Scanner: ✅ WORKING")
 print("   3. Listing Day Breakout Scanner: ✅ WORKING")
 print("\n💡 To run scanners:")
-print("   • Main scanner: python streamlined-ipo-scanner.py scan")
+print("   • Main scanner: python streamlined_ipo_scanner.py scan")
 print("   • Hourly scanner: python hourly_breakout_scanner.py")
 print("   • Listing day scanner: python listing_day_breakout_scanner.py")
 print("=" * 80)

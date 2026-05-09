@@ -39,6 +39,14 @@ class Signal:
     sector: str = "Unknown"
     industry: str = "Unknown"
 
+    # Research Metadata (Phase 2)
+    pattern_type: str = "UNKNOWN"
+    market_regime: str = "UNKNOWN"
+    lifecycle_state: str = "POSITION_ACTIVE"
+    source_type: str = "UNKNOWN"
+    data_quality: str = "UNKNOWN"
+    decision_snapshot: Dict[str, Any] = field(default_factory=dict)
+
     # Fields with Defaults
     incomplete_reasons: list[str] = field(default_factory=list)
     data_version: str = "v2"

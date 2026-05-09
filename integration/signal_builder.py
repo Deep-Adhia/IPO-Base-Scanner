@@ -91,7 +91,15 @@ class SignalBuilder:
             scanner=raw_payload.get("scanner", "ipo_base"),
             scanner_version=scanner_version,
             sector=raw_payload.get("sector", "Unknown"),
-            industry=raw_payload.get("industry", "Unknown")
+            industry=raw_payload.get("industry", "Unknown"),
+
+            # Research Metadata (Phase 2)
+            pattern_type=raw_payload.get("pattern_type", "UNKNOWN"),
+            market_regime=raw_payload.get("market_regime", "UNKNOWN"),
+            lifecycle_state="POSITION_ACTIVE",
+            source_type=raw_payload.get("source_type", "UNKNOWN"),
+            data_quality=raw_payload.get("data_quality", "UNKNOWN"),
+            decision_snapshot=raw_payload.get("decision_snapshot", {})
         )
         
         return signal

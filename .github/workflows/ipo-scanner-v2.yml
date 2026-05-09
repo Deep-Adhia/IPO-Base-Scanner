@@ -209,7 +209,7 @@ jobs:
               MODE="scan"
             fi
             echo "🎯 Running consolidation-based scanner in mode: $MODE"
-            python streamlined-ipo-scanner.py $MODE
+            python streamlined_ipo_scanner.py $MODE
           elif [ "${{ github.event_name }}" = "schedule" ]; then
             echo "⏰ Running scheduled consolidation-based scanner"
             echo "📋 Schedule that triggered: ${{ github.event.schedule }}"
@@ -219,25 +219,25 @@ jobs:
             case "$SCHEDULE" in
               "45 08 * * 1-5")
                 echo "✅ DAILY SCAN: Running weekday consolidation scan (2:15 PM IST)"  
-                python streamlined-ipo-scanner.py scan
-                python streamlined-ipo-scanner.py stop_loss_update
+                python streamlined_ipo_scanner.py scan
+                python streamlined_ipo_scanner.py stop_loss_update
                 ;;
               "15 09 * * 0")
                 echo "✅ WEEKLY SUMMARY: Running Sunday summary (2:45 PM IST)"
-                python streamlined-ipo-scanner.py weekly_summary
+                python streamlined_ipo_scanner.py weekly_summary
                 ;;
               "15 09 1 * *")
                 echo "✅ MONTHLY REVIEW: Running monthly review (2:45 PM IST)"
-                python streamlined-ipo-scanner.py monthly_review
+                python streamlined_ipo_scanner.py monthly_review
                 ;;
               *)
                 echo "⚠️ UNKNOWN SCHEDULE: $SCHEDULE - Running default scan"
-                python streamlined-ipo-scanner.py scan
+                python streamlined_ipo_scanner.py scan
                 ;;
             esac
           else
             echo "🔄 DEFAULT: Running default mode: scan"
-            python streamlined-ipo-scanner.py scan
+            python streamlined_ipo_scanner.py scan
           fi
       
       - name: Upload recent_ipo_symbols.csv

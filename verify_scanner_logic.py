@@ -19,7 +19,7 @@ warnings = []
 print("\n1️⃣  Checking SCANNER_VERSION...")
 try:
     import importlib.util
-    spec = importlib.util.spec_from_file_location("scanner", "streamlined-ipo-scanner.py")
+    spec = importlib.util.spec_from_file_location("scanner", "streamlined_ipo_scanner.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     
@@ -27,7 +27,7 @@ try:
     if ver:
         print(f"   ✅ SCANNER_VERSION = {ver}")
     else:
-        errors.append("SCANNER_VERSION not found in streamlined-ipo-scanner.py")
+        errors.append("SCANNER_VERSION not found in streamlined_ipo_scanner.py")
         print("   ❌ SCANNER_VERSION not found")
 except Exception as e:
     errors.append(f"Failed to load scanner: {e}")
@@ -81,7 +81,7 @@ except Exception as e:
 # ─── 4. Check symbol loop breaks are fixed ───────────────────
 print("\n4️⃣  Checking symbol loop break fix...")
 try:
-    with open("streamlined-ipo-scanner.py", "r", encoding="utf-8") as f:
+    with open("streamlined_ipo_scanner.py", "r", encoding="utf-8") as f:
         content = f.read()
     
     # The bad pattern: "if signals_found > 0: break" at the end of symbol loop
@@ -131,7 +131,7 @@ except Exception as e:
 # ─── 6. Check breakout candle quality check ──────────────────
 print("\n6️⃣  Checking breakout candle quality checks...")
 try:
-    with open("streamlined-ipo-scanner.py", "r", encoding="utf-8") as f:
+    with open("streamlined_ipo_scanner.py", "r", encoding="utf-8") as f:
         content = f.read()
     
     # Check for CLOSE-based breakout check and bullish candle check
@@ -169,7 +169,7 @@ except Exception as e:
 # ─── 8. Check version in Telegram messages ───────────────────
 print("\n8️⃣  Checking version in Telegram messages...")
 try:
-    with open("streamlined-ipo-scanner.py", "r", encoding="utf-8") as f:
+    with open("streamlined_ipo_scanner.py", "r", encoding="utf-8") as f:
         content = f.read()
     
     scanner_msg_count = content.count("Scanner v{SCANNER_VERSION}")
