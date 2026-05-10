@@ -99,6 +99,48 @@ PATTERN_RUNAWAY_GAP           = "PATTERN_RUNAWAY_GAP"
 PATTERN_EARLY_CONTINUATION    = "PATTERN_EARLY_CONTINUATION"
 PATTERN_RECOVERY_BREAKOUT     = "PATTERN_RECOVERY_BREAKOUT"
 
+# --- Phase 3: Model Validation Buckets (Scientific Research Refactor) ---
+BUCKET_ALIGNED  = "ALIGNED"   # Meets all current heuristic alpha rules
+BUCKET_EXTENDED = "EXTENDED"  # Structurally valid but Out-of-Sample (for research)
+BUCKET_BROKEN   = "BROKEN"    # Structurally flawed or erratic action
+
+# --- Reason Codes (Hard Fields for Analytics) ---
+RC_OK                 = "OK"
+RC_PRNG_LIMIT         = "PRNG_LIMIT"         # PRNG > 25.0
+RC_VOL_LIMIT          = "VOL_LIMIT"          # Volume ratio < 1.2
+RC_NON_IPO_CONTEXT    = "NON_IPO_CONTEXT"    # Days since listing > 750
+RC_STRUCTURE_FAILED   = "STRUCTURE_FAILED"   # Price broke base low during window
+RC_ERRATIC_VOLATILITY = "ERRATIC_VOLATILITY" # PRNG > 45.0 (No longer a base)
+
+def categorize_signal_bucket(metrics: dict, days_since_listing: int) -> tuple:
+    """
+    Objective signal categorization into ALIGNED, EXTENDED, or BROKEN.
+    Returns (bucket, reason_codes_list).
+    """
+    reasons = []
+    prng = metrics.get("prng", 0)
+    vol_ratio = metrics.get("vol_ratio", 0)
+    
+    # 1. Structural Checks (BROKEN)
+    if prng > 45.0:
+        reasons.append(RC_ERRATIC_VOLATILITY)
+    if days_since_listing > 750:
+        reasons.append(RC_NON_IPO_CONTEXT)
+    
+    if reasons:
+        return BUCKET_BROKEN, reasons
+
+    # 2. Heuristic Alignment Checks (EXTENDED)
+    if prng > 25.0:
+        reasons.append(RC_PRNG_LIMIT)
+    if vol_ratio < 1.2:
+        reasons.append(RC_VOL_LIMIT)
+    
+    if reasons:
+        return BUCKET_EXTENDED, reasons
+    
+    return BUCKET_ALIGNED, [RC_OK]
+
 def classify_pattern_type(grade: str, days_since_listing: int, vol_ratio: float, prng: float) -> str:
     """Assign an observational pattern archetype. Classification ONLY — no live logic."""
     if grade == "LISTING_BREAKOUT" or days_since_listing <= 10:
@@ -562,7 +604,7 @@ PT_A_PLUS = get_env_float("PT_A_PLUS", 0.15)
 PT_B = get_env_float("PT_B", 0.12)
 PT_C = get_env_float("PT_C", 0.10)
 # Trading parameters
-CONSOL_WINDOWS = get_env_list("CONSOL_WINDOWS", "30,60,90,120")
+CONSOL_WINDOWS = get_env_list("CONSOL_WINDOWS", "10,20,30,60,90,120")
 MAX_PRNG = get_env_float("MAX_PRNG", 25.0)
 VOL_MULT = get_env_float("VOL_MULT", 1.2)
 ABS_VOL_MIN = get_env_int("ABS_VOL_MIN", 3000000)
@@ -738,19 +780,17 @@ def format_signal_alert(symbol, grade, entry_price, stop_loss, target_price, sco
 📋 <b>Pattern Details:</b>"""
     
     if consolidation_low and consolidation_high:
-        msg += f"""
-• Consolidation: ₹{consolidation_low:,.2f} - ₹{consolidation_high:,.2f}"""
+        msg += f"\n- Consolidation: Rs{consolidation_low:,.2f} - Rs{consolidation_high:,.2f}"
     
     if breakout_price:
-        msg += f"""
-• Breakout: ₹{breakout_price:,.2f}"""
+        msg += f"\n- Breakout: Rs{breakout_price:,.2f}"
     
-• Score: {score:.1f}/100"""
+    msg += f"\n- Score: {score:.1f}/100"
     
     if pattern_type:
-        msg += f"\n• Pattern: <b>{pattern_type}</b>"
+        msg += f"\n- Pattern: <b>{pattern_type}</b>"
     if market_regime:
-        msg += f"\n• Regime: <b>{market_regime}</b>"
+        msg += f"\n- Regime: <b>{market_regime}</b>"
 
     # Add data source information
     if data_source:
@@ -1600,58 +1640,68 @@ def detect_live_patterns(symbols, listing_map):
             
             if _rejection_logged: return
             
+            # Map reason string to objective reason codes for analytics
+            reason_code_map = {
+                "loose_base": RC_PRNG_LIMIT,
+                "low_volume": RC_VOL_LIMIT,
+                "failed_follow_through": RC_STRUCTURE_FAILED,
+                "grade_d": "LOW_GRADE"
+            }
+            rc = reason_code_map.get(reason, reason.upper())
+            
+            # Determine Bucket
+            bucket, bucket_reasons = categorize_signal_bucket(metrics, ipo_age_for_log)
+            
             # 1. Near-Miss Threshold Filter: Only log candidates that are "interesting"
+            # Extended bucket items are ALWAYS interesting for research
             is_interesting = (
+                bucket == BUCKET_EXTENDED or
                 metrics.get("vol_ratio", 0) >= 0.8 or 
                 metrics.get("prng", 999) <= 70 or
                 metrics.get("rsi", 0) >= 55
             )
-            if not is_interesting: return
+            if not is_interesting and bucket != BUCKET_EXTENDED: return
 
             _rejection_logged = True
 
             # ── Phase 3: Ghost PnL — freeze potential levels at rejection time ──
-            # Fixed observation window: forward PnL will be calculated against
-            # the price N candles *after* rejection, not today's price.
-            # This prevents hindsight drift in the research analytics.
             ghost_pnl = {}
             if potential_entry is not None:
                 ghost_pnl = {
                     "potential_entry":  round(potential_entry, 2),
                     "potential_stop":   round(potential_stop, 2)   if potential_stop  is not None else None,
                     "potential_target": round(potential_target, 2) if potential_target is not None else None,
-                    "observation_window_days": 60,  # Fixed window — do NOT change retroactively
-                    "ghost_status": "PENDING"        # Updated by outcome_analytics once window closes
+                    "observation_window_days": 60,  
+                    "ghost_status": "PENDING"        
                 }
 
             payload = {
                 "symbol": sym,
-                "action": "REJECTED_BREAKOUT",
-                "log_type": "REJECTED",
-                "rejection_reason": reason,
+                "action": "MODEL_EXCLUSION",
+                "log_type": "EXCLUDED",
+                "bucket": bucket,
+                "reason_codes": bucket_reasons,
                 "failing_metric": reason,
                 "failing_value": value,
                 "threshold": threshold,
-                "rejection_reasons": _rejection_reasons,
-                "base_zone_passed": True,
                 "ipo_age": ipo_age_for_log,
                 "metrics": {
                     "perf": metrics.get("perf"),
                     "prng": metrics.get("prng"),
                     "vol_ratio": metrics.get("vol_ratio"),
                     "rsi": metrics.get("rsi"),
-                    "score": metrics.get("score")
+                    "score": metrics.get("score"),
+                    "window": metrics.get("window")
                 },
-                # ── Phase 2 Research Metadata ──
                 "pattern_type": pattern_type or "UNKNOWN",
                 "cohort": cohort or "UNKNOWN",
-                "market_regime": "UNKNOWN",  # TODO: wire live Nifty 20-EMA regime check
-                # ── Phase 3 Ghost PnL ──
+                "market_regime": get_market_regime(df["DATE"].iat[j]), 
                 **ghost_pnl,
+                "post_breakout_tracking": bucket in [BUCKET_ALIGNED, BUCKET_EXTENDED],
                 "source": "live"
             }
-            write_daily_log("consolidation", sym, "REJECTED_BREAKOUT", payload, log_type="REJECTED")
-            logger.debug(f"[Telemetry] Logged rejection for {sym}: {reason} | GhostPnL entry={potential_entry}")
+            write_daily_log("consolidation", sym, "MODEL_EXCLUSION", payload, log_type="EXCLUDED")
+            logger.debug(f"[Research] Logged {bucket} exclusion for {sym}: {bucket_reasons} | Entry={potential_entry}")
         
         # Use your proven backtest logic but check for LIVE patterns (recent breakouts)
         for w in CONSOL_WINDOWS[::-1]:  # Start with larger windows first
@@ -1677,12 +1727,6 @@ def detect_live_patterns(symbols, listing_map):
                 prng = round((high2 - low) / low * 100, 2)
                 current_metrics["prng"] = prng
                 
-                if prng > MAX_PRNG:
-                    _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, 0, prng)
-                    _log_rejection_telemetry("loose_base", prng, MAX_PRNG, current_metrics,
-                                             pattern_type=_pt)
-                    continue
-                
                 # 4. Volume Checks
                 avgv = base_window["VOLUME"].mean()
                 if avgv <= 0: continue
@@ -1693,29 +1737,6 @@ def detect_live_patterns(symbols, listing_map):
                          vol_ratio >= VOL_MULT or
                          (df["VOLUME"].iloc[j-2:j+1].sum() * df["CLOSE"].iat[j]) >= ABS_VOL_MIN)
                 
-                if not vol_ok:
-                    # Ghost PnL: entry would have been the base high (high2)
-                    _ghost_entry  = float(high2)
-                    _ghost_stop   = round(_ghost_entry * 0.92, 2)  # 8% cap
-                    _ghost_target = round(_ghost_entry + (_ghost_entry - _ghost_stop) * 2, 2)
-                    _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, vol_ratio, prng)
-                    _log_rejection_telemetry("low_volume", vol_ratio, VOL_MULT, current_metrics,
-                                             potential_entry=_ghost_entry,
-                                             potential_stop=_ghost_stop,
-                                             potential_target=_ghost_target,
-                                             pattern_type=_pt)
-                    continue
-                
-                # Double-check tightness again at breakout
-                if prng > MAX_PRNG:
-                    _log_rejection_telemetry("loose_base", prng, MAX_PRNG, current_metrics)
-                    continue
-                
-                # Additional Tightness Check for Institutional Quality
-                if prng > MAX_PRNG:
-                    _log_rejection_telemetry("loose_base", prng, MAX_PRNG, current_metrics)
-                    continue
-                
                 # 5. Breakout Confirmation
                 is_live_breakout = False
                 
@@ -1725,16 +1746,51 @@ def detect_live_patterns(symbols, listing_map):
                         live_price, _ = get_live_price(sym)
                     else:
                         live_price = float(df["CLOSE"].iloc[-1])
-                        logger.debug(f"Outside market hours - using last close for {sym}: ₹{live_price:.2f}")
                     if live_price is not None and live_price > high2:
                         is_live_breakout = True
-                        logger.info(f"🔥 LIVE breakout forming for {sym}: Live price ₹{live_price:.2f} > base high ₹{high2:.2f}")
                 else:
                     # Historical confirmed candle
                     if df["CLOSE"].iat[j] > high2 and df["CLOSE"].iat[j] > df["OPEN"].iat[j]:
                         is_live_breakout = True
                 
                 if not is_live_breakout:
+                    continue
+
+                # 6. Bucket Validation (ALIGNED vs EXTENDED vs BROKEN)
+                bucket, bucket_reasons = categorize_signal_bucket(current_metrics, ipo_age_for_log)
+                
+                # Use actual price for realistic research entry (close or high2, whichever is higher)
+                realistic_entry = float(max(high2, df["CLOSE"].iat[j]))
+                
+                if bucket != BUCKET_ALIGNED:
+                    # Log for research (Out-of-sample or Broken)
+                    _ghost_entry  = realistic_entry
+                    _ghost_stop   = round(_ghost_entry * 0.92, 2)
+                    _ghost_target = round(_ghost_entry + (_ghost_entry - _ghost_stop) * 2, 2)
+                    _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, vol_ratio, prng)
+                    
+                    # Map bucket reasons back to telemetry strings
+                    primary_reason = "loose_base" if RC_PRNG_LIMIT in bucket_reasons else "other"
+                    if bucket == BUCKET_BROKEN: primary_reason = "structurally_broken"
+                    
+                    _log_rejection_telemetry(primary_reason, prng, MAX_PRNG, current_metrics,
+                                             potential_entry=_ghost_entry,
+                                             potential_stop=_ghost_stop,
+                                             potential_target=_ghost_target,
+                                             pattern_type=_pt)
+                    continue
+
+                # 7. Volume Validation for ALIGNED bucket
+                if not vol_ok:
+                    _ghost_entry  = realistic_entry
+                    _ghost_stop   = round(_ghost_entry * 0.92, 2)
+                    _ghost_target = round(_ghost_entry + (_ghost_entry - _ghost_stop) * 2, 2)
+                    _pt = classify_pattern_type("UNKNOWN", ipo_age_for_log, vol_ratio, prng)
+                    _log_rejection_telemetry("low_volume", vol_ratio, VOL_MULT, current_metrics,
+                                             potential_entry=_ghost_entry,
+                                             potential_stop=_ghost_stop,
+                                             potential_target=_ghost_target,
+                                             pattern_type=_pt)
                     continue
                 
                 # j is correctly defined, continue with follow-through
@@ -1768,6 +1824,10 @@ def detect_live_patterns(symbols, listing_map):
                 if reject_quick_losers(df, j, w, avgv):
                     continue
 
+                # --- Grade Assignment ---
+                score, metrics = compute_grade_hybrid(df, j, w, avgv)
+                grade = assign_grade(score)
+                
                 # --- Cohort Validation (Multi-Bucket Research) ---
                 valid_cohorts = []
                 for name, config in RESEARCH_COHORTS.items():
@@ -2139,7 +2199,7 @@ def detect_live_patterns(symbols, listing_map):
                         
                         # 3. Build & Save
                         _pt = classify_pattern_type(grade, ipo_age_for_log, vol_ratio, prng)
-                        _mr = get_market_regime()
+                        _mr = get_market_regime(df["DATE"].iat[j])
                         _src = getattr(df, 'attrs', {}).get('data_source', 'unknown')
                         _snap = {
                             "pattern_type": _pt,

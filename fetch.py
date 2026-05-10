@@ -2,16 +2,17 @@ import pandas as pd
 import requests
 from datetime import datetime, timedelta
 from io import StringIO
+import os
 
 def fetch_recent_ipo_symbols(years_back=1):
     """Dynamic IPO symbol fetching with multiple fallback methods"""
     try:
-        print(f"🔄 Fetching recent IPO symbols for last {years_back} year(s)...")
+        print(f"[*] Fetching recent IPO symbols for last {years_back} year(s)...")
         
         # Method 1: Try NSE API with retry
         for attempt in range(3):
             try:
-                print(f"📡 Fetching NSE equity list... (Attempt {attempt + 1}/3)")
+                print(f"[Attempt {attempt + 1}/3] Fetching NSE equity list...")
                 url = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
                 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
                 session = requests.Session()
@@ -22,10 +23,10 @@ def fetch_recent_ipo_symbols(years_back=1):
                 resp = session.get(url, timeout=45)
                 resp.raise_for_status()
                 
-                print("✅ NSE API connection successful")
+                print("[OK] NSE API connection successful")
                 
                 df = pd.read_csv(StringIO(resp.text))
-                print(f"📊 NSE EQUITY_L returned {len(df)} records")
+                print(f"[Info] NSE EQUITY_L returned {len(df)} records")
                 
                 # Find the right columns
                 date_col = None
@@ -50,7 +51,7 @@ def fetch_recent_ipo_symbols(years_back=1):
                     recent_ipos = df[recent_mask]
                     
                     # Remove suspicious companies
-                    suspicious_patterns = ['RNBDENIMS'] # Kept one for example, but removed major groups to allow subsidiaries
+                    suspicious_patterns = ['RNBDENIMS'] 
                     if name_col:
                         suspicious_mask = recent_ipos[name_col].str.contains('|'.join(suspicious_patterns), case=False, na=False)
                         recent_ipos = recent_ipos[~suspicious_mask]
@@ -64,7 +65,7 @@ def fetch_recent_ipo_symbols(years_back=1):
                     companies = recent_ipos[name_col].tolist() if name_col else symbols
                     dates = recent_ipos[date_col].dt.strftime('%Y-%m-%d').tolist()
                     
-                    print(f"✅ NSE API: Found {len(symbols)} recent IPOs")
+                    print(f"[OK] NSE API: Found {len(symbols)} recent IPOs")
                     
                     df_symbols = pd.DataFrame({
                         'symbol': symbols,
@@ -79,7 +80,7 @@ def fetch_recent_ipo_symbols(years_back=1):
                         for sym in symbols:
                             f.write(f"{sym}\n")
                     
-                    print(f"💾 Saved to: recent_ipo_symbols.csv")
+                    print(f"[File] Saved to: recent_ipo_symbols.csv")
 
                     # MongoDB dual-write: upsert discovered IPOs
                     try:
@@ -91,9 +92,9 @@ def fetch_recent_ipo_symbols(years_back=1):
                                 listing_date=row['listing_date'],
                                 name=row['company']
                             )
-                        print(f"✅ [MongoDB] Upserted {len(df_symbols)} IPO records")
+                        print(f"[MongoDB] Upserted {len(df_symbols)} IPO records")
                     except Exception as db_e:
-                        print(f"⚠️ [MongoDB] IPO write FAILED (CSV write succeeded): {db_e}")
+                        print(f"[Warning] [MongoDB] IPO write FAILED (CSV write succeeded): {db_e}")
                         try:
                             from db import db_metrics
                             db_metrics["failures"] = db_metrics.get("failures", 0) + 1
@@ -102,32 +103,32 @@ def fetch_recent_ipo_symbols(years_back=1):
 
                     return df_symbols
                 else:
-                    print("⚠️ NSE API: Could not find required columns")
+                    print("[Warning] NSE API: Could not find required columns")
                     raise Exception("Column mapping failed")
                     
             except Exception as e:
-                print(f"⚠️ NSE API attempt {attempt + 1} failed: {e}")
+                print(f"[Warning] NSE API attempt {attempt + 1} failed: {e}")
                 if attempt == 2:  # Last attempt
-                    print("❌ All NSE API attempts failed")
+                    print("[Error] All NSE API attempts failed")
                     break
                 else:
-                    print("🔄 Retrying in 5 seconds...")
+                    print("[Info] Retrying in 5 seconds...")
                     import time
                     time.sleep(5)
         
         # Method 2: Fallback to existing CSV
-        print("🔄 Falling back to existing CSV...")
+        print("[Info] Falling back to existing CSV...")
         try:
             if os.path.exists("recent_ipo_symbols.csv"):
-                print("📁 Using existing recent_ipo_symbols.csv as fallback")
+                print("[File] Using existing recent_ipo_symbols.csv as fallback")
                 df_symbols = pd.read_csv("recent_ipo_symbols.csv")
                 if not df_symbols.empty:
-                    print(f"📊 CSV fallback: {len(df_symbols)} symbols from existing file")
+                    print(f"[Info] CSV fallback: {len(df_symbols)} symbols from existing file")
                     return df_symbols
-            print("❌ No valid existing CSV file found or file is empty")
+            print("[Error] No valid existing CSV file found or file is empty")
         except Exception as csv_error:
-            print(f"⚠️ CSV fallback failed: {csv_error}")
-            print("🔄 Creating minimal fallback data...")
+            print(f"[Warning] CSV fallback failed: {csv_error}")
+            print("[Info] Creating minimal fallback data...")
             
             # Method 3: Create minimal fallback
             fallback_symbols = [
@@ -149,9 +150,9 @@ def fetch_recent_ipo_symbols(years_back=1):
                 for sym in fallback_symbols:
                     f.write(f"{sym}\n")
             
-            print(f"💾 Created fallback with {len(fallback_symbols)} symbols")
+            print(f"[File] Created fallback with {len(fallback_symbols)} symbols")
             return df_symbols
                 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[Error] fetch_recent_ipo_symbols failed: {e}")
         return None

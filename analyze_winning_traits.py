@@ -1,99 +1,148 @@
 import os
 import pandas as pd
+import numpy as np
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from pprint import pprint
+from tabulate import tabulate
+from datetime import datetime
 
 load_dotenv()
 
-def analyze_traits():
+def analyze_institutional_expectancy():
+    """
+    V2.5.0 Institutional Expectancy Analysis:
+    Generates a Regime-Pattern matrix to identify high-probability alpha archetypes.
+    """
+    print("\n" + "="*80)
+    print("           INSTITUTIONAL EXPECTANCY MATRIX (v2.5.0)")
+    print("="*80)
+
+    # 1. Load Data
     client = MongoClient(os.getenv("MONGO_URI"))
     db = client['ipo_scanner_v2']
-    signals = list(db.signals_v2.find({"scanner_version": "backfill-1.0"}))
-    
+    signals = list(db.signals.find()) # Main collection enriched by backfill
+
     if not signals:
-        print("No backfilled signals found for analysis.")
+        print("X No signals found in MongoDB collection 'signals'.")
         return
 
-    # Convert to DataFrame for easy analysis
-    data = []
-    for s in signals:
-        outcome = s.get('outcome', {})
-        market = s.get('market_context', {})
-        features = s.get('features', {})
+    df = pd.DataFrame(signals)
+    total_records = len(df)
+    
+    # 2. Cleanup & Processing
+    # Handle status: SUCCESS/FAILURE/STOPPED_OUT/FAILED
+    def derive_result(row):
+        # We look at 'status' or PnL if status is not final
+        s = str(row.get('status', '')).upper()
+        pnl = float(row.get('pnl_pct', 0))
         
-        # Flatten the record
-        row = {
-            'symbol': s.get('symbol'),
-            'pnl_pct': outcome.get('max_runup_pct', 0), # Use Max Runup for "Potential" analysis
-            'max_drawdown': outcome.get('max_drawdown_pct', 0),
-            'market_state': market.get('market_state'),
-            'nifty_slope': market.get('nifty_trend_slope'),
-            'nifty_dist_ma20': market.get('nifty_20ma_dist'),
-            'scanner': s.get('scanner'),
-            'sector': s.get('sector', 'Unknown'),
-            'industry': s.get('industry', 'Unknown'),
-            'status': outcome.get('status', 'UNKNOWN')
-        }
-        data.append(row)
+        if s in ['SUCCESS', 'TARGET_HIT']: return 1 # Win
+        if s in ['STOPPED_OUT', 'FAILED', 'FAILURE']: return 0 # Loss
         
-    df = pd.DataFrame(data)
-    
-    print("-" * 60)
-    print("           ALFA TRAIT DISCOVERY REPORT (V2)")
-    print("-" * 60)
-    print(f"Total Trades Analyzed: {len(df)}")
-    
-    # Winners vs Losers based on Synthetic Outcome
-    winners = df[df['status'] == 'SUCCESS']
-    super_winners = df[df['pnl_pct'] >= 40]
-    losers = df[df['status'].isin(['STOPPED_OUT', 'FAILED'])]
-    
-    print(f"\nWinners (Success): {len(winners)}")
-    print(f"SUPER WINNERS (>40%): {len(super_winners)}")
-    print(f"Losers (Stopped):  {len(losers)}")
-    print(f"Scratch/Pending:   {len(df) - len(winners) - len(losers)}")
-    
-    if len(super_winners) > 0:
-        print("\n[SUPER WINNER TRAITS]")
-        print(f"Avg Nifty Slope:      {super_winners['nifty_slope'].mean():.3f}")
-        print(f"Avg Dist from 20MA:   {super_winners['nifty_dist_ma20'].mean():.2f}%")
-        print("Market State Dist:")
-        print(super_winners['market_state'].value_counts())
-        print("Sector Distribution:")
-        print(super_winners['sector'].value_counts())
-        print("Symbols:", ", ".join(super_winners['symbol'].tolist()))
+        # If status is ambiguous but we have an exit_price
+        if row.get('exit_price', 0) > 0:
+            return 1 if pnl > 0 else 0
+        return None # Pending/Active
 
-    if len(winners) > 0:
-        print("\n[WINNING TRAITS]")
-        print(f"Avg Nifty Slope:      {winners['nifty_slope'].mean():.3f}")
-        print(f"Avg Dist from 20MA:   {winners['nifty_dist_ma20'].mean():.2f}%")
-        print("Market State Dist:")
-        print(winners['market_state'].value_counts())
-        
-    if len(losers) > 0:
-        print("\n[LOSING TRAITS]")
-        print(f"Avg Nifty Slope:      {losers['nifty_slope'].mean():.3f}")
-        print(f"Avg Dist from 20MA:   {losers['nifty_dist_ma20'].mean():.2f}%")
-        print("Market State Dist:")
-        print(losers['market_state'].value_counts())
-
-    print("\n" + "-" * 60)
-    print("Scanner Distribution of Winners:")
-    if len(winners) > 0:
-        print(winners['scanner'].value_counts())
+    df['is_win'] = df.apply(derive_result, axis=1)
+    df['pnl_pct'] = pd.to_numeric(df['pnl_pct'], errors='coerce').fillna(0)
     
-    # Summary Insight
-    print("\n[ALPHA INSIGHT]")
-    if len(winners) > 0 and len(losers) > 0:
-        slope_diff = winners['nifty_slope'].mean() - losers['nifty_slope'].mean()
-        if slope_diff > 0.1:
-            print(f"👉 Winning trades correlate strongly with a HIGHER Nifty Slope ({winners['nifty_slope'].mean():.3f} vs {losers['nifty_slope'].mean():.3f}).")
-        
-        bull_winners = len(winners[winners['market_state'] == 'BULL_CONFIRMED'])
-        bear_winners = len(winners[winners['market_state'] == 'BEAR_CONFIRMED'])
-        if bull_winners > bear_winners:
-            print(f"👉 Setup success is {bull_winners/len(winners)*100:.1f}% more likely in BULL_CONFIRMED states.")
+    # Ensure metadata fields exist
+    df['market_regime'] = df['market_regime'].fillna('UNKNOWN')
+    df['pattern_type'] = df['pattern_type'].fillna('UNKNOWN')
+    df['grade'] = df['grade'].fillna('N/A')
+
+    # Filter for closed/concluded trades for expectancy
+    concluded = df[df['is_win'].notna()].copy()
+    
+    print(f"Total Signals:    {total_records}")
+    print(f"Concluded Trades: {len(concluded)}")
+    print(f"Active/Pending:   {total_records - len(concluded)}")
+
+    if concluded.empty:
+        print("\n[Warning] No concluded trades available for expectancy calculation.")
+        return
+
+    # 3. Regime-Pattern Expectancy Matrix
+    print("\n[SECTION 1: REGIME-PATTERN WIN RATE MATRIX]")
+    
+    matrix_win_rate = pd.pivot_table(
+        concluded, 
+        values='is_win', 
+        index='pattern_type', 
+        columns='market_regime', 
+        aggfunc='mean'
+    ).fillna(0) * 100
+
+    print(tabulate(matrix_win_rate, headers='keys', tablefmt='simple', floatfmt=".1f"))
+
+    # 4. Net Expectancy Matrix (Avg P&L per Trade)
+    print("\n[SECTION 2: EXPECTANCY MATRIX (Avg P&L % per Trade)]")
+    
+    matrix_expectancy = pd.pivot_table(
+        concluded, 
+        values='pnl_pct', 
+        index='pattern_type', 
+        columns='market_regime', 
+        aggfunc='mean'
+    ).fillna(0)
+
+    print(tabulate(matrix_expectancy, headers='keys', tablefmt='simple', floatfmt=".2f"))
+
+    # 5. Volume/Sample Size Check
+    print("\n[SECTION 3: SAMPLE SIZE (Sample count per cell)]")
+    matrix_counts = pd.pivot_table(
+        concluded, 
+        values='symbol', 
+        index='pattern_type', 
+        columns='market_regime', 
+        aggfunc='count'
+    ).fillna(0)
+    print(tabulate(matrix_counts, headers='keys', tablefmt='simple', floatfmt=".0f"))
+
+    # 6. Deep Insights
+    print("\n" + "="*80)
+    print("           FORENSIC INSIGHTS")
+    print("="*80)
+
+    # Best performing combination
+    flat_expectancy = matrix_expectancy.unstack().sort_values(ascending=False)
+    best_regime, best_pattern = flat_expectancy.index[0]
+    best_val = flat_expectancy.iloc[0]
+    
+    # Worst performing combination
+    worst_regime, worst_pattern = flat_expectancy.index[-1]
+    worst_val = flat_expectancy.iloc[-1]
+
+    print(f"[*] TOP ALPHA:  {best_pattern} in {best_regime} ({best_val:+.2f}% avg)")
+    print(f"[!] DEAD ZONE:  {worst_pattern} in {worst_regime} ({worst_val:+.2f}% avg)")
+    
+    # Grade Analysis
+    grade_perf = concluded.groupby('grade')['pnl_pct'].agg(['mean', 'count']).sort_values('mean', ascending=False)
+    print("\n[GRADE PERFORMANCE]")
+    print(tabulate(grade_perf, headers=['Grade', 'Avg P&L %', 'Count'], tablefmt='simple', floatfmt=".2f"))
+
+    # Summary Conclusion
+    overall_win_rate = concluded['is_win'].mean() * 100
+    overall_expectancy = concluded['pnl_pct'].mean()
+    
+    print("\n" + "-"*40)
+    print(f"OVERALL WIN RATE:  {overall_win_rate:.1f}%")
+    print(f"OVERALL EXPECTANCY: {overall_expectancy:+.2f}% per trade")
+    print("-"*40)
+    
+    if overall_expectancy < 0:
+        print("[-] CAUTION: System-wide expectancy is currently negative. Tighten filters!")
+    elif overall_expectancy > 5:
+        print("[+] STRONG: System-wide expectancy is robust. Consider scaling!")
+    else:
+        print("[/] NEUTRAL: System is hovering near breakeven. Pattern pruning required.")
 
 if __name__ == "__main__":
-    analyze_traits()
+    # Ensure tabulate is installed or use fallback
+    try:
+        analyze_institutional_expectancy()
+    except ImportError:
+        print("\n[Error] 'tabulate' package not found. Please run: pip install tabulate")
+    except Exception as e:
+        print(f"\n[Error] Analysis failed: {e}")

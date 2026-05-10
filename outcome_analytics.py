@@ -1,95 +1,119 @@
 """
-outcome_analytics.py — Edge Research & Expectancy Tracking (Phase 6)
-====================================================================
-PURPOSE: The final validation layer. Analyzes both ACCEPTED and REJECTED
-         signals to determine the true statistical edge of different
-         Pattern Archetypes and Market Regimes.
-
-KEY METRICS:
-  - Avg R-Multiple & Median R
-  - Win Rate (Secondary to R-Multiple)
-  - Time-to-Target (Efficiency)
-  - Ghost PnL (Are we rejecting true winners?)
-  - False Positive Rate (Failure within 5 candles)
-
-This script will run periodically (e.g., weekly) to update research models.
+outcome_analytics.py — Model Validation & Expectancy Tracking
+=============================================================
+Calculates the "Truth" for both ALIGNED and EXTENDED signals.
+Computes multi-window returns (5d, 10d, 20d, 40d) to determine
+if our filters (PRNG/VOL) are alpha-generators or noise.
 """
-
 import os
 import sys
 import pandas as pd
-from datetime import datetime, timedelta
+import numpy as np
+import yfinance as yf
+from datetime import datetime, timedelta, timezone
+from pymongo import UpdateOne
+from dotenv import load_dotenv
 
+load_dotenv()
+
+# Centralized imports from project db handler
 sys.path.append(os.getcwd())
-from db import signals_col, logs_col
+from db import logs_col, signals_col
 
-# ── 1. Ghost PnL Resolution ──────────────────────────────────────────────────
+WINDOWS = [5, 10, 20, 40]
 
-def resolve_pending_ghost_pnl():
-    """
-    Finds REJECTED logs with ghost_status == "PENDING".
-    If the observation window has passed, it calculates the MFE/MAE and final PnL
-    against the actual historical price action and marks it "RESOLVED".
-    """
-    print("Resolving pending Ghost PnL records... (Skeleton)")
-    # TODO: Implement historical data fetch for the window after rejection
-    # Compute:
-    # 1. Did it hit target before stop?
-    # 2. Maximum Favorable Excursion (MFE)
-    # 3. Maximum Adverse Excursion (MAE)
-    pass
+def fetch_forward_data(symbol, start_date, days_needed=60):
+    """Fetch price action for the window after the signal."""
+    ticker = f"{symbol}.NS"
+    end_date = start_date + timedelta(days=days_needed + 10) 
+    try:
+        df = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=True)
+        if df.empty: return None
+        df = df.reset_index()
+        df.columns = [c[0] if isinstance(c, tuple) else c for c in df.columns]
+        df = df.rename(columns={"Date":"DATE","High":"HIGH","Low":"LOW","Close":"CLOSE","Volume":"VOLUME"})
+        return df
+    except:
+        return None
 
-
-# ── 2. Expectancy & Edge Analytics ───────────────────────────────────────────
-
-def analyze_archetype_expectancy():
-    """
-    Groups signals by pattern_type and market_regime to compute real edge.
-    """
-    print("\n[ Analyzing Archetype Expectancy ]")
-    
-    pipeline = [
-        {"$match": {"status": "CLOSED"}},
-        {"$group": {
-            "_id": {
-                "pattern": "$pattern_type",
-                "regime": "$market_regime"
-            },
-            "count": {"$sum": 1},
-            "avg_pnl": {"$avg": "$pnl_pct"},
-            "wins": {"$sum": {"$cond": [{"$gt": ["$pnl_pct", 0]}, 1, 0]}}
-        }},
-        {"$sort": {"count": -1}}
-    ]
-    
-    results = list(signals_col.aggregate(pipeline))
-    
-    if not results:
-        print("  Not enough closed data to run analytics.")
+def resolve_outcomes():
+    if logs_col is None:
+        print("Database not connected.")
         return
         
-    for r in results:
-        pat = r["_id"].get("pattern", "UNKNOWN")
-        reg = r["_id"].get("regime", "UNKNOWN")
-        cnt = r["count"]
-        pnl = r.get("avg_pnl") or 0.0
-        wins = r.get("wins", 0)
-        win_rate = (wins / cnt) * 100 if cnt > 0 else 0
-        
-        print(f"  {pat[:30]:<30} | {reg:<12} | N={cnt:<4} | WinRate: {win_rate:>5.1f}% | AvgPnL: {pnl:>5.1f}%")
+    # 1. Find PENDING exclusions (ALIGNED or EXTENDED)
+    query = {
+        "action": "MODEL_EXCLUSION",
+        "ghost_status": "PENDING",
+        "post_breakout_tracking": True
+    }
+    pending = list(logs_col.find(query).limit(50))
+    
+    if not pending:
+        print("No pending outcomes to resolve.")
+        return
 
-def analyze_rejection_efficiency():
-    """
-    Checks if our rejection filters are saving us money or costing us alpha.
-    """
-    print("\n[ Analyzing Rejection Efficiency (Ghost PnL) ]")
-    # TODO: Aggregate RESOLVED ghost PnL to see if certain rejection_reasons
-    # have positive expectancy (i.e., we shouldn't be rejecting them).
-    print("  (Pending Ghost PnL resolution data...)")
+    print(f"Resolving outcomes for {len(pending)} pending signals...")
+    updates = []
+
+    for log in pending:
+        sym = log['symbol']
+        sig_date = log.get('candle_timestamp') or log.get('createdAt')
+        if isinstance(sig_date, str):
+            sig_date = pd.to_datetime(sig_date)
+        
+        entry_price = log.get('potential_entry')
+        if not entry_price:
+            continue
+
+        df = fetch_forward_data(sym, sig_date.date())
+        if df is None or len(df) < 5:
+            continue
+
+        outcomes = {}
+        for w in WINDOWS:
+            if len(df) > w:
+                price_at_w = float(df['CLOSE'].iat[w])
+                outcomes[f"return_{w}d"] = round((price_at_w - entry_price) / entry_price * 100, 2)
+        
+        window_df = df.iloc[:60]
+        max_high = float(window_df['HIGH'].max())
+        min_low  = float(window_df['LOW'].min())
+        
+        outcomes["max_runup"]    = round((max_high - entry_price) / entry_price * 100, 2)
+        outcomes["max_drawdown"] = round((min_low - entry_price) / entry_price * 100, 2)
+        outcomes["ghost_status"] = "RESOLVED"
+        outcomes["resolved_at"]  = datetime.now(timezone.utc)
+
+        updates.append(UpdateOne({"_id": log["_id"]}, {"$set": outcomes}))
+
+    if updates:
+        res = logs_col.bulk_write(updates)
+        print(f"Successfully resolved {res.modified_count} outcomes.")
+
+def analyze_bucket_expectancy():
+    if logs_col is None: return
+    
+    pipeline = [
+        {"$match": {"ghost_status": "RESOLVED"}},
+        {"$group": {
+            "_id": "$bucket",
+            "count": {"$sum": 1},
+            "avg_5d": {"$avg": "$return_5d"},
+            "avg_20d": {"$avg": "$return_20d"},
+            "avg_max_runup": {"$avg": "$max_runup"},
+            "avg_max_drawdown": {"$avg": "$max_drawdown"}
+        }}
+    ]
+    
+    results = list(logs_col.aggregate(pipeline))
+    print("\n" + "="*80)
+    print(f"{'BUCKET':<12} | {'N':<4} | {'Avg 5d':<8} | {'Avg 20d':<8} | {'Avg MaxUp':<10} | {'Avg MaxDn'}")
+    print("-" * 80)
+    for r in results:
+        print(f"{r['_id']:<12} | {r['count']:<4} | {r['avg_5d']:>7.1f}% | {r['avg_20d']:>7.1f}% | {r['avg_max_runup']:>8.1f}% | {r['avg_max_drawdown']:>8.1f}%")
+    print("="*80 + "\n")
 
 if __name__ == "__main__":
-    resolve_pending_ghost_pnl()
-    analyze_archetype_expectancy()
-    analyze_rejection_efficiency()
-    
-    print("\n[ Phase 6 Analytics Groundwork Ready ]")
+    resolve_outcomes()
+    analyze_bucket_expectancy()
