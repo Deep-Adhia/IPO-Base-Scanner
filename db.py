@@ -390,7 +390,7 @@ def get_all_positions_df(status: str = None):
             query["status"] = status
         docs = list(positions_col.find(query, {"_id": 0}))
         if not docs:
-            return pd.DataFrame()
+            return pd.DataFrame(columns=["symbol", "status", "entry_date", "exit_date", "pnl_pct", "grade"])
         df = pd.DataFrame(docs)
         # Normalise entry_date to timezone-naive date so callers don't break
         for col in ["entry_date", "exit_date"]:
@@ -421,7 +421,7 @@ def get_all_signals_df(status: str = None):
             query["status"] = status
         docs = list(signals_col.find(query, {"_id": 0}))
         if not docs:
-            return pd.DataFrame()
+            return pd.DataFrame(columns=["symbol", "status", "signal_date", "exit_date", "pnl_pct", "grade"])
         df = pd.DataFrame(docs)
         # Normalise signal_date to timezone-naive datetime for callers
         for col in ["signal_date", "exit_date"]:

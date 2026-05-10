@@ -2805,15 +2805,29 @@ def weekly_summary():
     
     # Weekly stats
     week_start = datetime.today() - timedelta(days=7)
-    weekly_signals = len(df_signals[df_signals["signal_date"] >= week_start])
-    active_positions = len(df_positions[df_positions["status"] == "ACTIVE"])
+    
+    if not df_signals.empty and "signal_date" in df_signals.columns:
+        # Ensure week_start is naive if signal_date is naive
+        if df_signals["signal_date"].dt.tz is None and week_start.tzinfo is not None:
+            week_start = week_start.replace(tzinfo=None)
+        elif df_signals["signal_date"].dt.tz is not None and week_start.tzinfo is None:
+            from db import IST
+            week_start = week_start.replace(tzinfo=IST)
+            
+        weekly_signals = len(df_signals[df_signals["signal_date"] >= week_start])
+    else:
+        weekly_signals = 0
+    if not df_positions.empty and "status" in df_positions.columns:
+        active_positions = len(df_positions[df_positions["status"] == "ACTIVE"])
+    else:
+        active_positions = 0
     
     # Performance stats for active positions
-    if active_positions > 0:
+    if active_positions > 0 and "pnl_pct" in df_positions.columns:
         active_df = df_positions[df_positions["status"] == "ACTIVE"]
         avg_pnl = active_df["pnl_pct"].mean()
-        best_position = active_df.loc[active_df["pnl_pct"].idxmax()]
-        worst_position = active_df.loc[active_df["pnl_pct"].idxmin()]
+        best_position = active_df.loc[active_df["pnl_pct"].idxmax()] if not active_df.empty else None
+        worst_position = active_df.loc[active_df["pnl_pct"].idxmin()] if not active_df.empty else None
         
         performance_text = f"""
 📈 <b>Performance Highlights:</b>
@@ -2842,19 +2856,35 @@ def monthly_review():
     
     # Monthly stats
     month_start = datetime.today().replace(day=1)
-    monthly_signals = len(df_signals[df_signals["signal_date"] >= month_start])
+    
+    if not df_signals.empty and "signal_date" in df_signals.columns:
+        # Ensure month_start is naive if signal_date is naive
+        if df_signals["signal_date"].dt.tz is None and month_start.tzinfo is not None:
+            month_start = month_start.replace(tzinfo=None)
+        elif df_signals["signal_date"].dt.tz is not None and month_start.tzinfo is None:
+            from db import IST
+            month_start = month_start.replace(tzinfo=IST)
+            
+        monthly_signals = len(df_signals[df_signals["signal_date"] >= month_start])
+    else:
+        monthly_signals = 0
+        
     total_signals = len(df_signals)
     
     # Grade distribution
-    if total_signals > 0:
+    if total_signals > 0 and "grade" in df_signals.columns:
         grade_dist = df_signals["grade"].value_counts()
         grade_text = "\n".join([f"• {grade}: {count}" for grade, count in grade_dist.items()])
     else:
         grade_text = "• No signals yet"
     
     # Position stats
-    active_positions = len(df_positions[df_positions["status"] == "ACTIVE"])
-    closed_positions = len(df_positions[df_positions["status"] == "CLOSED"])
+    if not df_positions.empty and "status" in df_positions.columns:
+        active_positions = len(df_positions[df_positions["status"] == "ACTIVE"])
+        closed_positions = len(df_positions[df_positions["status"] == "CLOSED"])
+    else:
+        active_positions = 0
+        closed_positions = 0
     
     msg = f"""📊 <b>Monthly Review</b>
     
