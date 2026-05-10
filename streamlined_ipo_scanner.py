@@ -1652,6 +1652,11 @@ def detect_live_patterns(symbols, listing_map):
             # Determine Bucket
             bucket, bucket_reasons = categorize_signal_bucket(metrics, ipo_age_for_log)
             
+            # Capture Cluster Index (Deduplication of correlated events)
+            # Use j-th candle date as the cluster anchor
+            candle_dt = df["DATE"].iat[j]
+            cluster_idx = candle_dt.strftime('%Y-%m-%d') if hasattr(candle_dt, 'strftime') else str(candle_dt)
+            
             # 1. Near-Miss Threshold Filter: Only log candidates that are "interesting"
             # Extended bucket items are ALWAYS interesting for research
             is_interesting = (
@@ -1681,6 +1686,7 @@ def detect_live_patterns(symbols, listing_map):
                 "log_type": "EXCLUDED",
                 "bucket": bucket,
                 "reason_codes": bucket_reasons,
+                "cluster_index": cluster_idx,
                 "failing_metric": reason,
                 "failing_value": value,
                 "threshold": threshold,
@@ -1691,11 +1697,12 @@ def detect_live_patterns(symbols, listing_map):
                     "vol_ratio": metrics.get("vol_ratio"),
                     "rsi": metrics.get("rsi"),
                     "score": metrics.get("score"),
-                    "window": metrics.get("window")
+                    "window": metrics.get("window"),
+                    "avg_vol": metrics.get("avg_vol", 0)
                 },
                 "pattern_type": pattern_type or "UNKNOWN",
                 "cohort": cohort or "UNKNOWN",
-                "market_regime": get_market_regime(df["DATE"].iat[j]), 
+                "market_regime": get_market_regime(candle_dt), 
                 **ghost_pnl,
                 "post_breakout_tracking": bucket in [BUCKET_ALIGNED, BUCKET_EXTENDED],
                 "source": "live"
