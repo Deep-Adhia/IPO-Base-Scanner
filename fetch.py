@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from io import StringIO
 import os
 
-def fetch_recent_ipo_symbols(years_back=1):
+def fetch_recent_ipo_symbols(years_back=3):
     """Dynamic IPO symbol fetching with multiple fallback methods"""
     try:
         print(f"[*] Fetching recent IPO symbols for last {years_back} year(s)...")
@@ -135,7 +135,8 @@ def fetch_recent_ipo_symbols(years_back=1):
                 'SWIGGY', 'BLACKBUCK', 'STALLION', 'BHARATSE', 
                 'NATCAPSUQ', 'MOSCHIP', 'TRAVELFOOD', 'OCCLLTD', 'GARUDA',
                 'CEWATER', 'RACLGEAR', 'ORCHASP', 'OSWALPUMPS', 'IGIL',
-                'VIKRAN', 'AFCONS', 'MOBIKWIK', 'MASTERTR', 'JAINREC'
+                'VIKRAN', 'AFCONS', 'MOBIKWIK', 'MASTERTR', 'JAINREC',
+                'DRAGARWQ', 'KOTIC', 'SCANSTL', 'IWP', 'NOVARTIND'
             ]
             
             df_symbols = pd.DataFrame({

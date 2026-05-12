@@ -108,7 +108,7 @@ BUCKET_BROKEN   = "BROKEN"    # Structurally flawed or erratic action
 RC_OK                 = "OK"
 RC_PRNG_LIMIT         = "PRNG_LIMIT"         # PRNG > 25.0
 RC_VOL_LIMIT          = "VOL_LIMIT"          # Volume ratio < 1.2
-RC_NON_IPO_CONTEXT    = "NON_IPO_CONTEXT"    # Days since listing > 750
+RC_NON_IPO_CONTEXT    = "NON_IPO_CONTEXT"    # Days since listing > LISTING_MAX_DAYS_SINCE_LISTING
 RC_STRUCTURE_FAILED   = "STRUCTURE_FAILED"   # Price broke base low during window
 RC_ERRATIC_VOLATILITY = "ERRATIC_VOLATILITY" # PRNG > 45.0 (No longer a base)
 
@@ -124,7 +124,7 @@ def categorize_signal_bucket(metrics: dict, days_since_listing: int) -> tuple:
     # 1. Structural Checks (BROKEN)
     if prng > 45.0:
         reasons.append(RC_ERRATIC_VOLATILITY)
-    if days_since_listing > 750:
+    if days_since_listing > LISTING_MAX_DAYS_SINCE_LISTING:
         reasons.append(RC_NON_IPO_CONTEXT)
     
     if reasons:
@@ -137,6 +137,11 @@ def categorize_signal_bucket(metrics: dict, days_since_listing: int) -> tuple:
         reasons.append(RC_VOL_LIMIT)
     
     if reasons:
+        return BUCKET_EXTENDED, reasons
+    
+    # 3. Strategy Alignment (EXTENDED)
+    if days_since_listing < MIN_AGE_DAYS:
+        reasons.append("ULTRA_FRESH_IPO")
         return BUCKET_EXTENDED, reasons
     
     return BUCKET_ALIGNED, [RC_OK]
@@ -596,13 +601,15 @@ CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 
 # Core configuration
-IPO_YEARS_BACK = get_env_int("IPO_YEARS_BACK", 1)
+# Global Scanner Constants
+IPO_YEARS_BACK = get_env_int("IPO_YEARS_BACK", 3)
 STOP_PCT = get_env_float("STOP_PCT", 0.07)  # Default 7% for IPO volatility
 
 # Dynamic partial take per grade
 PT_A_PLUS = get_env_float("PT_A_PLUS", 0.15)
 PT_B = get_env_float("PT_B", 0.12)
 PT_C = get_env_float("PT_C", 0.10)
+
 # Trading parameters
 CONSOL_WINDOWS = get_env_list("CONSOL_WINDOWS", "10,20,30,60,90,120")
 MAX_PRNG = get_env_float("MAX_PRNG", 25.0)
@@ -610,6 +617,10 @@ VOL_MULT = get_env_float("VOL_MULT", 1.2)
 ABS_VOL_MIN = get_env_int("ABS_VOL_MIN", 3000000)
 LOOKAHEAD = get_env_int("LOOKAHEAD", 80)
 MAX_DAYS = get_env_int("MAX_DAYS", 200)
+
+# Institutional Universe Logic
+LISTING_MAX_DAYS_SINCE_LISTING = get_env_int("LISTING_MAX_DAYS_SINCE_LISTING", 750)
+MIN_AGE_DAYS = get_env_int("MIN_AGE_DAYS", 60)
 
 # Risk / reward and trailing configuration (tunable via .env)
 # - MAX_ENTRY_ABOVE_BREAKOUT_PCT: max % above breakout/high we'll accept as entry
@@ -624,6 +635,63 @@ MIN_PNL_FOR_TRAIL = get_env_float("MIN_PNL_FOR_TRAIL", 5.0)
 MIN_TRAIL_MOVE_PCT = get_env_float("MIN_TRAIL_MOVE_PCT", 1.0)
 MIN_DAYS_BETWEEN_SIGNALS = get_env_int("MIN_DAYS_BETWEEN_SIGNALS", 10)
 MIN_LIVE_GRADE = os.getenv("MIN_LIVE_GRADE", "C") # Reset to C for Permissive base
+
+# --- Meta-Observability: Config Drift Detection ──────────────────────────────
+def get_last_trading_day(target_date=None):
+    """Calculate the most recent date that was NOT a weekend or NSE holiday."""
+    if target_date is None:
+        target_date = datetime.today().date()
+    
+    check_date = target_date - timedelta(days=1)
+    while True:
+        # Check if weekend
+        if check_date.weekday() >= 5: # 5=Sat, 6=Sun
+            check_date -= timedelta(days=1)
+            continue
+        
+        # Check if holiday
+        if check_date.strftime("%Y-%m-%d") in NSE_HOLIDAYS:
+            check_date -= timedelta(days=1)
+            continue
+            
+        return check_date
+
+def get_last_expected_data_date():
+    """
+    Returns the date of the most recent trading session that should have EOD data.
+    - If today is a trading day and it's after 6:30 PM IST, today is the last expected date.
+    - Otherwise, it's the previous trading day.
+    """
+    from datetime import timezone, timedelta as td
+    ist = timezone(td(hours=5, minutes=30))
+    now_ist = datetime.now(ist)
+    today = now_ist.date()
+    
+    # After 6:30 PM IST, today's EOD data should be available on most providers
+    if is_market_day() and (now_ist.hour > 18 or (now_ist.hour == 18 and now_ist.minute >= 30)):
+        return today
+    
+    # Otherwise, return the previous trading day
+    return get_last_trading_day(today)
+
+def check_config_drift():
+    """Warn if .env overrides are significantly diverging from institutional baselines."""
+    recommendations = {
+        "IPO_YEARS_BACK": (3, "Too short lookback blinds scanner to mature Stage-2 bases."),
+        "LISTING_MAX_DAYS_SINCE_LISTING": (750, "Tight age filters kill institutional accumulation detection."),
+        "MIN_AGE_DAYS": (60, "Scanning ultra-fresh IPOs (<60d) risks being trapped in post-listing distribution.")
+    }
+    
+    # We check globals for the values established by get_env_int/float
+    for key, (recommended, reason) in recommendations.items():
+        val = globals().get(key)
+        if val is not None and val < recommended:
+            logger.warning(f"⚠️ [CONFIG DRIFT] {key} is set to {val}. Recommended is >= {recommended}.")
+            logger.warning(f"   Reason: {reason}")
+
+# Initialize Config Audit
+check_config_drift()
+# ─────────────────────────────────────────────────────────────────────────────
 
 # --- Cohort Definitions for Comparative Research ---
 # These define the logical "buckets" for expectancy analysis.
@@ -885,13 +953,43 @@ def cache_recent_ipos():
             
     return df
 
+def discover_listing_date(symbol):
+    """Discovery mechanism for missing listing dates using yfinance max history."""
+    try:
+        import yfinance as yf
+        ticker = yf.Ticker(f"{symbol}.NS")
+        hist = ticker.history(period="max")
+        if not hist.empty:
+            return hist.index[0].date()
+    except Exception as e:
+        logger.warning(f"  [Discovery] Failed for {symbol}: {e}")
+    return None
+
 def get_symbols_and_listing():
     ipo_df = cache_recent_ipos()
     recent = ipo_df["symbol"].tolist()
-    listing_map = {
-        row["symbol"]: pd.to_datetime(row["listing_date"]).date()
-        for _, row in ipo_df.iterrows()
-    }
+    listing_map = {}
+    
+    today = datetime.today().date()
+    for _, row in ipo_df.iterrows():
+        sym = row["symbol"]
+        try:
+            ld = pd.to_datetime(row["listing_date"]).date()
+            # Safety: If date is today/yesterday, it might be a fetch.py fallback.
+            # Verify via discovery to avoid treating old IPOs as fresh listings.
+            if ld >= today - timedelta(days=1):
+                actual_ld = discover_listing_date(sym)
+                if actual_ld and actual_ld < ld:
+                    ld = actual_ld
+                    logger.info(f"🔄 Corrected listing date for {sym}: {ld}")
+            listing_map[sym] = ld
+        except Exception:
+            # If date parsing fails, try discovery
+            ld = discover_listing_date(sym)
+            if ld:
+                listing_map[sym] = ld
+                logger.info(f"🔍 Discovered missing listing date for {sym}: {ld}")
+
     try:
         from db import get_active_symbols
         active = get_active_symbols()
@@ -1304,14 +1402,14 @@ def update_positions():
             else:
                 latest_date = pd.to_datetime(latest_date).date()
             
-            # CRITICAL: Validate data is from today (or at most yesterday if market closed)
-            # Do NOT use stale data for exit decisions
-            today_date = datetime.today().date()
-            days_old = (today_date - latest_date).days
+            # CRITICAL: Validate data is from a recent trading session
+            # Use market-aware logic instead of calendar-day hacks
+            last_trading_day = get_last_trading_day()
             
-            if days_old > 1:
-                # Data is more than 1 day old - too stale for exit decisions
-                logger.error(f"❌ STALE DATA for {sym}: Latest data is {days_old} days old ({latest_date}). Cannot make exit decision with stale data!")
+            # Allow data to be as old as the last valid trading day
+            # If the market hasn't updated today yet, the data must be at least from the previous session
+            if latest_date < last_trading_day:
+                logger.error(f"❌ STALE DATA for {sym}: Latest data is {latest_date}. Last trading day was {last_trading_day}. Refusing exit decision with stale data!")
                 continue
             
             # Data is fresh (today or yesterday) - safe to use
@@ -1560,13 +1658,14 @@ def detect_live_patterns(symbols, listing_map):
         df = fetch_data(sym, ld)
         if df is None or df.empty: continue
         
-        # Check data freshness - reject signals with data older than 2 days for live trading
+        # Check data freshness - reject signals with data older than expected for live trading
         latest_date = df['DATE'].max()
         if hasattr(latest_date, 'date'):
             latest_date = latest_date.date()
-        days_old = (datetime.today().date() - latest_date).days
-        if days_old > 2:
-            logger.warning(f"Skipping {sym} - data is {days_old} days old (latest: {latest_date}). Too old for live trading!")
+        
+        last_expected = get_last_expected_data_date()
+        if latest_date < last_expected:
+            logger.warning(f"Skipping {sym} - data is stale (Latest: {latest_date}, Expected: {last_expected}). Too old for live trading!")
             continue
         
         lhigh = df["HIGH"].iloc[0]
@@ -1950,11 +2049,12 @@ def detect_live_patterns(symbols, listing_map):
                 latest_date = df['DATE'].max()
                 if hasattr(latest_date, 'date'):
                     latest_date = latest_date.date()
-                days_old = (datetime.today().date() - latest_date).days
-                if days_old > 1:
-                    logger.warning(f"⚠️  DATA IS {days_old} DAYS OLD! Latest data: {latest_date}")
+                
+                last_expected = get_last_expected_data_date()
+                if latest_date < last_expected:
+                    logger.warning(f"⚠️ DATA IS STALE! Latest: {latest_date}, Expected: {last_expected}")
                 else:
-                    logger.info(f"✅ Data is fresh: {days_old} days old")
+                    logger.info(f"✅ Data is fresh: {latest_date}")
                 
                 logger.info(f"Breakout day data:")
                 breakout_row = df.iloc[j]
@@ -3091,19 +3191,19 @@ def stop_loss_update_scan():
                 else:
                     latest_date = pd.to_datetime(latest_date).date()
                 
-                # CRITICAL: Validate data is from today (or at most yesterday if market closed)
+                # CRITICAL: Validate data is from the latest expected trading session
                 # Do NOT use stale data for exit decisions
-                today_date = datetime.today().date()
-                days_old = (today_date - latest_date).days
+                last_expected = get_last_expected_data_date()
                 
-                if days_old > 1:
-                    # Data is more than 1 day old - too stale for exit decisions
-                    logger.error(f"❌ STALE DATA for {sym}: Latest data is {days_old} days old ({latest_date}). Cannot make exit decision with stale data!")
+                if latest_date < last_expected:
+                    # Data is older than the last valid trading session
+                    logger.error(f"❌ STALE DATA for {sym}: Latest data is {latest_date}, but expected {last_expected}. Cannot make exit decision with stale data!")
                     failed_updates.append(sym)
                     stale_msg = f"""⚠️ <b>Position Update Skipped - Stale Data</b>
 
 📊 Symbol: <b>{sym}</b>
-❌ Latest data is {days_old} days old ({latest_date})
+❌ Latest data: {latest_date}
+⚠️ Expected: {last_expected}
 ⚠️ Cannot make exit decision with stale data
 💰 Last Known Price: ₹{pos.get('current_price', pos['entry_price']):,.2f}
 📅 Entry Date: {pos['entry_date']}

@@ -388,10 +388,55 @@ def get_all_positions_df(status: str = None):
         query = {}
         if status:
             query["status"] = status
-        docs = list(positions_col.find(query, {"_id": 0}))
+        
+        # 1. Get from positions collection
+        pos_docs = list(positions_col.find(query, {"_id": 0}))
+        
+        # 2. Get from signals collection (Phase 2.2 migration path)
+        # We look for records where lifecycle_state is POSITION_ACTIVE or status is ACTIVE
+        sig_query = {}
+        if status == "ACTIVE":
+            sig_query = {"$or": [{"status": "ACTIVE"}, {"lifecycle_state": "POSITION_ACTIVE"}]}
+        elif status == "CLOSED":
+            sig_query = {"$or": [{"status": "CLOSED"}, {"lifecycle_state": "CLOSED"}]}
+        else:
+            sig_query = {}
+            
+        sig_docs = list(signals_col.find(sig_query, {"_id": 0}))
+        
+        # Combine them
+        docs = pos_docs + sig_docs
+        
         if not docs:
             return pd.DataFrame(columns=["symbol", "status", "entry_date", "exit_date", "pnl_pct", "grade"])
+        
         df = pd.DataFrame(docs)
+        
+        # Explicit Schema Guarantee & Mapping
+        if "lifecycle_state" in df.columns:
+            if "status" not in df.columns:
+                df["status"] = df["lifecycle_state"]
+            else:
+                df["status"] = df["status"].fillna(df["lifecycle_state"])
+            df["status"] = df["status"].apply(lambda x: "ACTIVE" if x == "POSITION_ACTIVE" else x)
+        
+        if "signal_date" in df.columns:
+            if "entry_date" not in df.columns:
+                df["entry_date"] = df["signal_date"]
+            else:
+                df["entry_date"] = df["entry_date"].combine_first(df["signal_date"])
+        
+        # Fallback to created_at (v2 schema)
+        if "created_at" in df.columns:
+            if "entry_date" not in df.columns:
+                df["entry_date"] = df["created_at"]
+            else:
+                df["entry_date"] = df["entry_date"].combine_first(df["created_at"])
+        
+        # Final safety for missing columns
+        if "status" not in df.columns: df["status"] = None
+        if "entry_date" not in df.columns: df["entry_date"] = None
+            
         # Normalise entry_date to timezone-naive date so callers don't break
         for col in ["entry_date", "exit_date"]:
             if col in df.columns:

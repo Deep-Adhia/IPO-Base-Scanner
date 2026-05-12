@@ -118,7 +118,7 @@ MIN_VOLUME_VS_LISTING_DAY = _env_float(
 )
 # Reject listing-high breakouts when IPO is too old (strategy is "listing day" edge)
 MAX_DAYS_SINCE_LISTING_FOR_BREAKOUT = _env_int(
-    "LISTING_MAX_DAYS_SINCE_LISTING", 60 if LISTING_STRICT_QUALITY else 365
+    "LISTING_MAX_DAYS_SINCE_LISTING", 500
 )
 # If listing-day volume in CSV is 0 / missing, require this multiple of recent avg volume
 MIN_VOL_MULT_WHEN_NO_LISTING_VOL = _env_float(
