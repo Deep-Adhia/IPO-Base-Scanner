@@ -689,6 +689,10 @@ def check_config_drift():
             logger.warning(f"⚠️ [CONFIG DRIFT] {key} is set to {val}. Recommended is >= {recommended}.")
             logger.warning(f"   Reason: {reason}")
 
+# Logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+logger = logging.getLogger(__name__)
+
 # Initialize Config Audit
 check_config_drift()
 # ─────────────────────────────────────────────────────────────────────────────
@@ -722,10 +726,6 @@ POSITIONS_CSV = os.getenv("POSITIONS_CSV", "ipo_positions.csv")
 
 # System parameters
 HEARTBEAT_RUNS = get_env_int("HEARTBEAT_RUNS", 0)
-
-# Logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
-logger = logging.getLogger(__name__)
 
 # Log yfinance availability after logger is initialized
 if not YFINANCE_AVAILABLE:
