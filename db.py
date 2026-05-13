@@ -435,7 +435,16 @@ def get_all_positions_df(status: str = None):
         
         # Final safety for missing columns
         if "status" not in df.columns: df["status"] = None
-        if "entry_date" not in df.columns: df["entry_date"] = None
+        if "entry_date" not in df.columns: 
+            # Deep fallback for backfilled signals missing top-level dates
+            if "decision_snapshot" in df.columns:
+                def extract_snapshot_ts(x):
+                    if isinstance(x, dict) and "snapshot_ts" in x:
+                        return x["snapshot_ts"]
+                    return None
+                df["entry_date"] = df["decision_snapshot"].apply(extract_snapshot_ts)
+            else:
+                df["entry_date"] = None
             
         # Normalise entry_date to timezone-naive date so callers don't break
         for col in ["entry_date", "exit_date"]:
@@ -495,6 +504,19 @@ def close_signal_in_db(symbol: str, exit_price: float, pnl_pct: float, days_held
                 "updated_at": datetime.now(timezone.utc),
             }},
         )
+        # SYNC: Also close the record in positions collection if it exists
+        if positions_col is not None:
+            positions_col.update_one(
+                {"symbol": symbol, "status": "ACTIVE"},
+                {"$set": {
+                    "status": "CLOSED",
+                    "exit_date": datetime.now(timezone.utc),
+                    "exit_price": float(exit_price),
+                    "pnl_pct": float(pnl_pct),
+                    "days_held": int(days_held),
+                    "updated_at": datetime.now(timezone.utc),
+                }}
+            )
     except Exception as e:
         logger.error(f"[DB] close_signal_in_db failed for {symbol}: {e}")
 

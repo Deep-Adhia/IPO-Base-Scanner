@@ -16,8 +16,8 @@ def main():
 
     client = MongoClient(MONGO_URI)
     db = client["ipo_scanner_v2"]
-    signals_v2 = db["signals_v2"]
-    signal_updates = db["signal_updates"]
+    signals_v2 = db["signals"]
+    signal_updates = db["positions"]
     
     # Today's range in UTC (Match logic of the daily scanner)
     today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)

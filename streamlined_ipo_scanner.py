@@ -3026,7 +3026,7 @@ def format_position_update_alert(symbol, current_price, entry_price, old_trailin
 def stop_loss_update_scan():
     """Dedicated scan for updating stop losses on active positions"""
     logger.info("🔄 Starting stop-loss update scan...")
-    from db import get_all_positions_df
+    from db import get_all_positions_df, upsert_position
     df_positions = get_all_positions_df()
     
     # Initialize outcome schema backward compatibility
@@ -3116,6 +3116,13 @@ def stop_loss_update_scan():
             # Skip positions with 0 days held (just added today)
             if days_held <= 0:
                 logger.info(f"⏭️ Skipping {sym} - position just added (0 days held). Will update tomorrow.")
+                # Still persist the current price if available
+                try:
+                    p = pos.to_dict()
+                    p["days_held"] = 0
+                    upsert_position(p)
+                except:
+                    pass
                 continue
         except Exception as e:
             logger.warning(f"Could not calculate days held for {sym}: {e}")
@@ -3364,6 +3371,15 @@ def stop_loss_update_scan():
                         sym, current_price, entry_price, old_trailing, new_trailing, pnl, days_held, grade
                     )
                     send_telegram(update_msg)
+
+                # Persist to DB (Critical Fix: was missing)
+                try:
+                    updated_pos = df_positions.loc[idx].to_dict()
+                    # Clean up for MongoDB (remove NaN/None if any)
+                    updated_pos = {k: v for k, v in updated_pos.items() if pd.notna(v)}
+                    upsert_position(updated_pos)
+                except Exception as db_e:
+                    logger.error(f"Failed to persist position update for {sym}: {db_e}")
         except Exception as e:
             logger.error(f"Error updating {sym}: {e}")
             failed_updates.append(sym)
