@@ -913,6 +913,12 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
         except Exception as e:
             logger.debug(f"Could not get live price for {symbol}: {e}")
         
+        # --- PRICE FLOOR GUARDRAIL ---
+        if current_price is not None and current_price < 20.0:
+            logger.info(f"⏭️ Skipping {symbol} - Price ₹{current_price:.2f} is below ₹20.00 floor")
+            return None
+        # -----------------------------
+        
         # Fallback to historical data if live price unavailable
         if current_price is None:
             current_price = float(latest['CLOSE'])
@@ -926,6 +932,12 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 logger.info(f"✅ Using today's historical close for {symbol}: ₹{current_price:.2f}")
             else:
                 logger.info(f"⚠️ Using yesterday's close for {symbol}: ₹{current_price:.2f} (market may be closed)")
+
+        # --- PRICE FLOOR GUARDRAIL (Second Check) ---
+        if current_price is not None and current_price < 20.0:
+            logger.info(f"⏭️ Skipping {symbol} - Price ₹{current_price:.2f} is below ₹20.00 floor")
+            return None
+        # --------------------------------------------
         
         # Log breakout level comparison
         logger.info(f"📊 {symbol} Breakout Level Check:")

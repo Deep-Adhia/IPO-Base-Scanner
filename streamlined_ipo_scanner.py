@@ -2019,6 +2019,13 @@ def detect_live_patterns(symbols, listing_map):
                     price_source = f"📊 Latest Close ({latest_date_str})"
                     logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
                 
+                # --- PRICE FLOOR GUARDRAIL ---
+                if entry < 20.0:
+                    logger.info(f"⏭️ Skipping {sym} - Price ₹{entry:.2f} is below ₹20.00 floor")
+                    _log_consolidation_reject_once({"reason": "price_below_floor", "price": round(entry, 2), "floor": 20.0, **metrics})
+                    continue
+                # -----------------------------
+
                 # Entry date should be the next trading day after breakout
                 if j + 1 < len(df):
                     entry_date = df['DATE'].iat[j + 1]
@@ -2702,6 +2709,13 @@ def detect_scan(symbols, listing_map):
                         latest_date_str = str(latest_date)
                     price_source = f"📊 Latest Close ({latest_date_str})"
                     logger.warning(f"⚠️ No live price available, using latest close: ₹{entry:.2f} from {latest_date_str}")
+
+                # --- PRICE FLOOR GUARDRAIL ---
+                if entry < 20.0:
+                    logger.info(f"⏭️ Skipping {sym} - Price ₹{entry:.2f} is below ₹20.00 floor")
+                    _log_scan_reject_once({"reason": "price_below_floor", "price": round(entry, 2), "floor": 20.0, **metrics})
+                    continue
+                # -----------------------------
                 
                 # Entry date should be the next trading day after breakout
                 if j + 1 < len(df):
@@ -3376,8 +3390,15 @@ def stop_loss_update_scan():
                 try:
                     updated_pos = df_positions.loc[idx].to_dict()
                     # Clean up for MongoDB (remove NaN/None if any)
-                    updated_pos = {k: v for k, v in updated_pos.items() if pd.notna(v)}
-                    upsert_position(updated_pos)
+                    # Use a safer check that works with scalars and arrays
+                    clean_pos = {}
+                    for k, v in updated_pos.items():
+                        try:
+                            if pd.isna(v): continue
+                        except:
+                            pass # If v is an array, keep it
+                        clean_pos[k] = v
+                    upsert_position(clean_pos)
                 except Exception as db_e:
                     logger.error(f"Failed to persist position update for {sym}: {db_e}")
         except Exception as e:
