@@ -66,7 +66,11 @@ The system rejects aggressively. A setup is terminated at the first failing cond
 
 | Filter | Reason Logged |
 |---|---|
-| Price below `8%` or above `35%` of listing high | Outside base formation range |
+| Price below `₹20.00` | `too_cheap` — avoid penny stock manipulation |
+| Daily Turnover `< ₹2.0 Cr` | `LIQUIDITY_TRAP` — avoid capital lock-in |
+| Market Cap `< ₹500 Cr` | `MICROCAP_PENALTY` — high manipulation risk |
+| `3+` Circuit Days in 15 sessions | `LIQUIDITY_TRAP_CIRCUITS` — prevent trap reversals |
+| Price outside `8%–35%` of listing high | Outside base formation range |
 | Consolidation range `>60%` | `loose_base` — chop, not accumulation |
 | Failed follow-through | `failed_follow_through` |
 | Grade below minimum (`C` by default) | `low_grade` |
@@ -74,9 +78,9 @@ The system rejects aggressively. A setup is terminated at the first failing cond
 | Entry `>8%` above breakout level | `too_extended` |
 | Stop Loss `>10.0%` risk from entry | `excessive_stop_risk` |
 | Breakout `>10` days old | `stale_breakout` |
-| Cooldown (`<10` days since last signal for same symbol) | `cooldown` |
+| Cooldown (`<10` days since last signal) | `cooldown` |
 | Symbol already in active position | Silent skip (no duplicate positions) |
-| Market holiday (NSE calendar enforced) | Scanner exits cleanly with Telegram notification |
+| Market holiday (NSE calendar) | Scanner exits cleanly |
 
 *Most symbols are rejected. Only the highest-quality setups generate signals.*
 
@@ -97,6 +101,8 @@ Grades are assigned by the `compute_grade_hybrid()` scoring function (5 criteria
 | **B** | 2–3 | Medium-High (75%) | Reduced + smart filters |
 | **C** | 1 | Medium (65%) | Min size — monitor closely |
 | **D** | 0 | Rejected | ❌ Never traded |
+
+> **Microcap Penalty (Phase 2.5)**: Any symbol with a Market Cap < ₹1000 Crore is automatically capped at **Grade C**, regardless of technical base quality, to enforce strict risk management on smaller counters.
 
 **5 scoring criteria:**
 1. Consolidation range `≤18%` (tight base = institutional accumulation)
@@ -173,26 +179,18 @@ IPO-Base-Scanner/
 ├── hourly_breakout_scanner.py       # Intraday watchlist scanner
 │
 ├── db.py                            # Core MongoDB persistence layer (v2.5.0)
+├── fetch.py                         # Data acquisition (Upstox + YFinance)
 ├── master_audit.py                  # System integrity audit (Section 1/2/3)
 ├── manage_db.py                     # Unified management entrypoint
-├── backfill_v2_from_v1.py           # Signal enrichment backfill
-├── reconstruct_outcomes.py          # Synthetic outcome reconstruction
 │
-├── core/                            # Immutable data models (Signal, SignalUpdate, SignalOutcome)
-├── enrichment/                      # Point-in-time feature store
-├── lifecycle/                       # PnL evolution & outcome tracking
-├── integration/                     # Cross-scanner signal bridge
+├── [Legacy — DELETED/DEPRECATED]
+│   ├── *.csv                        # All CSV files removed for MongoDB-only operation
+│   ├── *.pkl                        # Legacy pickle caches removed
 │
-├── analyze_winning_traits.py        # Alpha trait discovery
-├── analyze_30d_data.py              # 30-day cohort analysis
-│
-├── [Legacy — archived, not in active use]
-│   ├── ipo_signals.csv
-│   ├── ipo_positions.csv
-│   ├── ipo_listing_data.csv
-│   └── ipo_upstox_mapping.csv
-│
-└── logs/                            # Structured daily JSONL logs (MongoDB-synced)
+└── logs/                            # derive output summary files (optional)
+```
+
+**⚠️ ARCHITECTURAL FREEZE**: As of v2.5.0, the system is strictly **MongoDB-only**. All CSV fallback paths have been purged to ensure a stationary, high-fidelity quant baseline.
 ```
 
 - **Phase 3**: 3-Day Live Validation (Zero Failure Cutover).
