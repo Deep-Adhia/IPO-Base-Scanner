@@ -72,7 +72,8 @@ jobs:
         run: |
           echo "Environment variables configured"
           if [ -z "$MONGO_URI" ]; then
-            echo "⚠️ WARNING: MONGO_URI is empty! MongoDB dual-write will be disabled."
+            echo "❌ ERROR: MONGO_URI is missing! MongoDB is now REQUIRED."
+            exit 1
           else
             echo "✅ MONGO_URI is set"
           fi
@@ -85,7 +86,8 @@ jobs:
             echo "🔌 Verifying MongoDB Atlas connection..."
             python test_db_connection.py
           else
-            echo "⏩ Skipping DB check (MONGO_URI not set)"
+            echo "❌ ERROR: MONGO_URI missing"
+            exit 1
           fi
       
       - name: Run Listing Day Breakout Scanner
@@ -96,8 +98,9 @@ jobs:
           IPO_YEARS_BACK: ${{ vars.IPO_YEARS_BACK || '1' }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
+          echo "🔄 Fetching recent IPO symbols to MongoDB..."
           python -c "import os; from fetch import fetch_recent_ipo_symbols; fetch_recent_ipo_symbols(years_back=int(os.environ.get('IPO_YEARS_BACK', 1)))"
-          echo "✅ IPO list updated"
+          echo "✅ IPO list updated in MongoDB"
 
           echo "🔄 Updating Upstox ID Mappings..."
           python update_upstox_mapping.py

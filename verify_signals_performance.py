@@ -25,8 +25,8 @@ spec.loader.exec_module(scanner_module)
 get_live_price = scanner_module.get_live_price
 logger = scanner_module.logger
 
-SIGNALS_CSV = "ipo_signals.csv"
-POSITIONS_CSV = "ipo_positions.csv"
+# Metadata & State (Legacy CSVs removed, using MongoDB)
+from db import get_all_signals_df, get_all_positions_df
 REPORT_FILE = "signals_performance_report.json"
 
 def analyze_signals():
@@ -38,7 +38,8 @@ def analyze_signals():
         print("❌ No signals file found!")
         return None
     
-    signals_df = pd.read_csv(SIGNALS_CSV, encoding='utf-8')
+    # Load signals from MongoDB
+    signals_df = get_all_signals_df()
     if signals_df.empty:
         print("❌ No signals found!")
         return None
@@ -87,7 +88,7 @@ def analyze_signals():
         current_price = None
         price_source = "Unknown"
         try:
-            current_price, price_source = get_live_price(symbol)
+            current_price, price_source, _ = get_live_price(symbol)
             if current_price:
                 print(f"   Current Price: ₹{current_price:.2f} ({price_source})")
         except Exception as e:
@@ -186,7 +187,8 @@ def analyze_positions():
         print("❌ No positions file found!")
         return None
     
-    positions_df = pd.read_csv(POSITIONS_CSV, encoding='utf-8')
+    # Load positions from MongoDB
+    positions_df = get_all_positions_df()
     if positions_df.empty:
         print("❌ No positions found!")
         return None
@@ -233,7 +235,7 @@ def analyze_positions():
         live_price = None
         price_source = "Unknown"
         try:
-            live_price, price_source = get_live_price(symbol)
+            live_price, price_source, _ = get_live_price(symbol)
             if live_price:
                 print(f"   Current Live Price: ₹{live_price:.2f} ({price_source})")
                 print(f"   Stored Price: ₹{current_price:.2f}")

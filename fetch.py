@@ -73,14 +73,7 @@ def fetch_recent_ipo_symbols(years_back=3):
                         'listing_date': dates
                     })
                     
-                    # Save files
-                    df_symbols.to_csv("recent_ipo_symbols.csv", index=False, encoding='utf-8')
-                    
-                    with open("recent_ipo_symbols.txt", "w", encoding='utf-8') as f:
-                        for sym in symbols:
-                            f.write(f"{sym}\n")
-                    
-                    print(f"[File] Saved to: recent_ipo_symbols.csv")
+                    # No longer saving to CSV, using MongoDB exclusively
 
                     # MongoDB dual-write: upsert discovered IPOs
                     try:
@@ -116,18 +109,19 @@ def fetch_recent_ipo_symbols(years_back=3):
                     import time
                     time.sleep(5)
         
-        # Method 2: Fallback to existing CSV
-        print("[Info] Falling back to existing CSV...")
+        # Method 2: Fallback to MongoDB list
+        print("[Info] Falling back to MongoDB records...")
         try:
-            if os.path.exists("recent_ipo_symbols.csv"):
-                print("[File] Using existing recent_ipo_symbols.csv as fallback")
-                df_symbols = pd.read_csv("recent_ipo_symbols.csv")
-                if not df_symbols.empty:
-                    print(f"[Info] CSV fallback: {len(df_symbols)} symbols from existing file")
+            from db import ipos_col
+            if ipos_col is not None:
+                docs = list(ipos_col.find({}, {"_id": 0, "symbol": 1, "company": 1, "listing_date": 1}))
+                if docs:
+                    df_symbols = pd.DataFrame(docs)
+                    print(f"[Info] MongoDB fallback: {len(df_symbols)} symbols")
                     return df_symbols
-            print("[Error] No valid existing CSV file found or file is empty")
-        except Exception as csv_error:
-            print(f"[Warning] CSV fallback failed: {csv_error}")
+            print("[Error] No valid MongoDB records found")
+        except Exception as db_fallback_error:
+            print(f"[Warning] MongoDB fallback failed: {db_fallback_error}")
             print("[Info] Creating minimal fallback data...")
             
             # Method 3: Create minimal fallback
@@ -145,13 +139,15 @@ def fetch_recent_ipo_symbols(years_back=3):
                 'listing_date': [datetime.now().strftime('%Y-%m-%d')] * len(fallback_symbols)
             })
             
-            df_symbols.to_csv("recent_ipo_symbols.csv", index=False)
+            # Save to MongoDB
+            try:
+                from db import upsert_ipo
+                for _, row in df_symbols.iterrows():
+                    upsert_ipo(row['symbol'], row['listing_date'], row['company'])
+            except:
+                pass
             
-            with open("recent_ipo_symbols.txt", "w", encoding='utf-8') as f:
-                for sym in fallback_symbols:
-                    f.write(f"{sym}\n")
-            
-            print(f"[File] Created fallback with {len(fallback_symbols)} symbols")
+            print(f"[Info] Created minimal fallback with {len(fallback_symbols)} symbols")
             return df_symbols
                 
     except Exception as e:

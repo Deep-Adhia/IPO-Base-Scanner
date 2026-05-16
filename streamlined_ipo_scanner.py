@@ -23,7 +23,7 @@ import pandas as pd
 import numpy as np
 import requests
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 from jugaad_data.nse.history import stock_raw
 import pandas as pd
@@ -111,6 +111,8 @@ RC_VOL_LIMIT          = "VOL_LIMIT"          # Volume ratio < 1.2
 RC_NON_IPO_CONTEXT    = "NON_IPO_CONTEXT"    # Days since listing > LISTING_MAX_DAYS_SINCE_LISTING
 RC_STRUCTURE_FAILED   = "STRUCTURE_FAILED"   # Price broke base low during window
 RC_ERRATIC_VOLATILITY = "ERRATIC_VOLATILITY" # PRNG > 45.0 (No longer a base)
+RC_LIQUIDITY_TRAP     = "LIQUIDITY_TRAP"     # Low turnover or frequent circuits
+RC_MICROCAP_PENALTY   = "MICROCAP_PENALTY"   # Market cap below floor
 
 def categorize_signal_bucket(metrics: dict, days_since_listing: int) -> tuple:
     """
@@ -142,6 +144,23 @@ def categorize_signal_bucket(metrics: dict, days_since_listing: int) -> tuple:
     # 3. Strategy Alignment (EXTENDED)
     if days_since_listing < MIN_AGE_DAYS:
         reasons.append("ULTRA_FRESH_IPO")
+    
+    # 4. Institutional Liquidity Hardening (Phase 2.5)
+    mcap = metrics.get("market_cap_cr", 0)
+    turnover = metrics.get("avg_turnover_cr", 0)
+    circuits = metrics.get("circuit_days_15", 0)
+    
+    if turnover > 0 and turnover < MIN_DAILY_TURNOVER_CR:
+        reasons.append(RC_LIQUIDITY_TRAP)
+    if circuits >= 3:
+        reasons.append(f"{RC_LIQUIDITY_TRAP}_CIRCUITS")
+    if mcap > 0 and mcap < MIN_MARKET_CAP_CR:
+        reasons.append(RC_MICROCAP_PENALTY)
+    
+    if reasons:
+        # If it's a liquidity trap or microcap, it's BROKEN (Avoid capital lock-in)
+        if RC_LIQUIDITY_TRAP in reasons or f"{RC_LIQUIDITY_TRAP}_CIRCUITS" in reasons:
+            return BUCKET_BROKEN, reasons
         return BUCKET_EXTENDED, reasons
     
     return BUCKET_ALIGNED, [RC_OK]
@@ -586,6 +605,56 @@ def get_env_float(key, default):
         print(f"Warning: Invalid {key} value, using default: {default}")
         return default
 
+def get_liquidity_metrics(symbol, df):
+    """
+    Calculate turnover and detect circuit days from historical data.
+    Returns (avg_turnover_cr, circuit_days_15, market_cap_cr)
+    """
+    try:
+        # 1. Avg Turnover in Crores (Last 20 sessions)
+        df_copy = df.copy()
+        df_copy['turnover'] = df_copy['CLOSE'] * df_copy['VOLUME']
+        avg_turnover = df_copy['turnover'].tail(20).mean()
+        avg_turnover_cr = round(avg_turnover / 10000000, 2)
+        
+        # 2. Circuit Days in last 15 sessions
+        # Heuristic: High == Low and Volume > 0
+        df_copy['is_circuit'] = (df_copy['HIGH'] == df_copy['LOW']) & (df_copy['VOLUME'] > 0)
+        circuit_days = int(df_copy['is_circuit'].tail(15).sum())
+        
+        # 3. Market Cap from yfinance
+        mcap_cr = 0
+        if YFINANCE_AVAILABLE:
+            with _yfinance_lock:
+                current_time = time.time()
+                time_since_last = current_time - _yfinance_last_request
+                if time_since_last < _yfinance_min_delay:
+                    time.sleep(_yfinance_min_delay - time_since_last)
+                
+                try:
+                    ticker = yf.Ticker(f"{symbol}.NS")
+                    mcap = ticker.info.get('marketCap')
+                    if mcap:
+                        mcap_cr = round(mcap / 10000000, 2)
+                except Exception as e:
+                    logger.debug(f"Could not fetch market cap for {symbol}: {e}")
+                
+                global _yfinance_last_request
+                _yfinance_last_request = time.time()
+                
+        return avg_turnover_cr, circuit_days, mcap_cr
+    except Exception as e:
+        logger.warning(f"⚠️ Error calculating liquidity metrics for {symbol}: {e}")
+        return 0, 0, 0
+
+def get_env_float(key, default):
+    """Get environment variable as float with fallback"""
+    try:
+        return float(os.getenv(key, default) or default)
+    except (ValueError, TypeError):
+        print(f"Warning: Invalid {key} value, using default: {default}")
+        return default
+
 def get_env_list(key, default, separator=","):
     """Get environment variable as list with fallback"""
     try:
@@ -621,6 +690,11 @@ MAX_DAYS = get_env_int("MAX_DAYS", 200)
 # Institutional Universe Logic
 LISTING_MAX_DAYS_SINCE_LISTING = get_env_int("LISTING_MAX_DAYS_SINCE_LISTING", 750)
 MIN_AGE_DAYS = get_env_int("MIN_AGE_DAYS", 60)
+
+# --- Phase 4: Institutional Liquidity Hardening (Phase 2.5) ---
+MIN_DAILY_TURNOVER_CR = get_env_float("MIN_DAILY_TURNOVER_CR", 2.0)
+MIN_MARKET_CAP_CR     = get_env_float("MIN_MARKET_CAP_CR", 500.0)
+CIRCUIT_DAY_THRESHOLD = get_env_int("CIRCUIT_DAY_THRESHOLD", 3)
 
 # Risk / reward and trailing configuration (tunable via .env)
 # - MAX_ENTRY_ABOVE_BREAKOUT_PCT: max % above breakout/high we'll accept as entry
@@ -721,8 +795,7 @@ RESEARCH_COHORTS = {
 }
 # File paths
 CACHE_FILE = os.getenv("CACHE_FILE", "ipo_cache.pkl")
-SIGNALS_CSV = os.getenv("SIGNALS_CSV", "ipo_signals.csv")
-POSITIONS_CSV = os.getenv("POSITIONS_CSV", "ipo_positions.csv")
+# Metadata & State (Legacy CSVs removed, using MongoDB)
 
 # System parameters
 HEARTBEAT_RUNS = get_env_int("HEARTBEAT_RUNS", 0)
@@ -920,9 +993,7 @@ def close_active_signal(symbol, exit_price, pnl_pct, days_held, exit_reason):
     except Exception as e:
         logger.error(f"Error syncing signal close for {symbol}: {e}")
 
-def initialize_csvs():
-    """No-op: CSV files are replaced by MongoDB. Kept for call-site compatibility."""
-    pass
+# initialize_csvs removed as system is fully on MongoDB
 
 
 def cache_recent_ipos():
@@ -944,12 +1015,9 @@ def cache_recent_ipos():
             except:
                 df = None
         
-    # Final fallback to CSV directly
+    # Final fallback to empty DF (CSV removed)
     if df is None or df.empty:
-        if os.path.exists("recent_ipo_symbols.csv"):
-            df = pd.read_csv("recent_ipo_symbols.csv")
-        else:
-            df = pd.DataFrame(columns=["symbol","company","listing_date"])
+        df = pd.DataFrame(columns=["symbol","company","listing_date"])
             
     return df
 
@@ -1202,13 +1270,17 @@ def get_live_price_upstox(symbol):
                 if quote_key in data['data']:
                     quote = data['data'][quote_key]
                     live_price = quote.get('last_price')
+                    ohlc = quote.get('ohlc', {})
+                    day_high = ohlc.get('high')
                     if live_price:
-                        return float(live_price)
+                        return float(live_price), (float(day_high) if day_high else float(live_price))
                 elif instrument_key in data['data']:
                     quote = data['data'][instrument_key]
                     live_price = quote.get('last_price')
+                    ohlc = quote.get('ohlc', {})
+                    day_high = ohlc.get('high')
                     if live_price:
-                        return float(live_price)
+                        return float(live_price), (float(day_high) if day_high else float(live_price))
         
         return None
     except Exception as e:
@@ -1242,7 +1314,9 @@ def get_live_price_yfinance(symbol):
         # Fallback: Get latest quote
         data = ticker.history(period="1d", interval="1m")
         if not data.empty:
-            return float(data['Close'].iloc[-1])
+            last_price = float(data['Close'].iloc[-1])
+            day_high = float(data['High'].max())
+            return last_price, day_high
         
         return None
     except Exception as e:
@@ -1271,16 +1345,18 @@ def get_live_price(symbol, prefer_source=None):
     
     for source_name, fetch_func in sources:
         try:
-            price = fetch_func(symbol)
-            if price is not None and price > 0:
-                logger.info(f"✅ Got live price for {symbol} from {source_name}: Rs.{price:.2f}")
-                return price, source_name
+            result = fetch_func(symbol)
+            if result is not None:
+                price, day_high = result
+                if price > 0:
+                    logger.info(f"✅ Got live price for {symbol} from {source_name}: Rs.{price:.2f} (High: Rs.{day_high:.2f})")
+                    return price, source_name, day_high
         except Exception as e:
             logger.debug(f"Failed to get price from {source_name} for {symbol}: {e}")
             continue
     
     logger.warning(f"⚠️ Could not fetch live price for {symbol} from any source")
-    return None, None
+    return None, None, None
 
 def fetch_data(symbol, start_date):
     """Fetch the most recent available data for a symbol using Upstox API with NSE fallback (jugaad-data)"""
@@ -1378,7 +1454,7 @@ def update_positions():
         
         # Try to get live price first (more accurate for exit decisions)
         try:
-            live_price, live_source = get_live_price(sym)
+            live_price, live_source, _ = get_live_price(sym)
             if live_price is not None and live_price > 0:
                 current_price = live_price
                 price_source = f"Live ({live_source})"
@@ -1417,6 +1493,7 @@ def update_positions():
             latest_date_str = latest_date.strftime('%Y-%m-%d')
             price_source = f"Historical Close ({latest_date_str})"
             
+            days_old = (datetime.today().date() - latest_date).days
             if days_old == 0:
                 logger.info(f"✅ Using today's historical close for {sym}: ₹{current_price:.2f}")
             else:
@@ -1468,12 +1545,6 @@ def update_positions():
         
         # Enhanced exit strategies
         exit_reason = None
-        
-        # Early Base-Break Exit (0-10 days) - need to get base low from original signal
-        if days <= 10:
-            # For now, use a simple approach - if price drops below entry * 0.95 in first 10 days
-            if current_price < pos["entry_price"] * 0.95:
-                exit_reason = "Early Base Break"
         
         # Tiered Time-Based Stops
         if days > 30 and current_price < pos["entry_price"] * 0.95:
@@ -1849,7 +1920,7 @@ def detect_live_patterns(symbols, listing_map):
                 if j == len(df) - 1:
                     # This is the latest candle - check LIVE price for breakout
                     if is_market_hours():
-                        live_price, _ = get_live_price(sym)
+                        live_price, _, _ = get_live_price(sym)
                     else:
                         live_price = float(df["CLOSE"].iloc[-1])
                     if live_price is not None and live_price > high2:
@@ -1862,7 +1933,14 @@ def detect_live_patterns(symbols, listing_map):
                 if not is_live_breakout:
                     continue
 
-                # 6. Bucket Validation (ALIGNED vs EXTENDED vs BROKEN)
+                # 6. Institutional Liquidity & Microcap Guardrails (Phase 2.5)
+                # Fetch fresh liquidity metrics (Turnover, Circuits, Market Cap)
+                avg_turnover_cr, circuit_days_15, mcap_cr = get_liquidity_metrics(sym, df)
+                current_metrics["avg_turnover_cr"] = avg_turnover_cr
+                current_metrics["circuit_days_15"] = circuit_days_15
+                current_metrics["market_cap_cr"] = mcap_cr
+
+                # 7. Bucket Validation (ALIGNED vs EXTENDED vs BROKEN)
                 bucket, bucket_reasons = categorize_signal_bucket(current_metrics, ipo_age_for_log)
                 
                 # Use actual price for realistic research entry (close or high2, whichever is higher)
@@ -1877,13 +1955,19 @@ def detect_live_patterns(symbols, listing_map):
                     
                     # Map bucket reasons back to telemetry strings
                     primary_reason = "loose_base" if RC_PRNG_LIMIT in bucket_reasons else "other"
-                    if bucket == BUCKET_BROKEN: primary_reason = "structurally_broken"
+                    if bucket == BUCKET_BROKEN: 
+                        if RC_LIQUIDITY_TRAP in bucket_reasons:
+                            primary_reason = "liquidity_trap"
+                        elif f"{RC_LIQUIDITY_TRAP}_CIRCUITS" in bucket_reasons:
+                            primary_reason = "circuit_trap"
+                        else:
+                            primary_reason = "structurally_broken"
                     
                     _log_rejection_telemetry(primary_reason, prng, MAX_PRNG, current_metrics,
-                                             potential_entry=_ghost_entry,
-                                             potential_stop=_ghost_stop,
-                                             potential_target=_ghost_target,
-                                             pattern_type=_pt)
+                                             potential_entry=realistic_entry,
+                                             potential_stop=round(realistic_entry * 0.92, 2),
+                                             potential_target=round(realistic_entry * 1.20, 2),
+                                             pattern_type=classify_pattern_type("UNKNOWN", ipo_age_for_log, vol_ratio, prng))
                     continue
 
                 # 7. Volume Validation for ALIGNED bucket
@@ -1931,8 +2015,13 @@ def detect_live_patterns(symbols, listing_map):
                     continue
 
                 # --- Grade Assignment ---
-                score, metrics = compute_grade_hybrid(df, j, w, avgv)
                 grade = assign_grade(score)
+                
+                # --- Institutional Grade Penalty (Phase 2.5) ---
+                # Cap signals for microcaps to Grade C (Higher risk, smaller size)
+                if mcap_cr > 0 and mcap_cr < 1000.0 and GRADE_ORDER.index(grade) > GRADE_ORDER.index("C"):
+                    logger.info(f"⚠️ Downgrading {sym} from {grade} to C due to Microcap Penalty (< ₹1000Cr)")
+                    grade = "C"
                 
                 # --- Cohort Validation (Multi-Bucket Research) ---
                 valid_cohorts = []
@@ -1997,7 +2086,7 @@ def detect_live_patterns(symbols, listing_map):
                 # For live signals, ALWAYS use CURRENT market price as entry price
                 # This ensures entry price matches what user would actually pay NOW
                 # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
-                live_price, price_source_name = get_live_price(sym)
+                live_price, price_source_name, _ = get_live_price(sym)
                 if live_price is not None:
                     entry = live_price
                     source_emojis = {
@@ -2081,7 +2170,7 @@ def detect_live_patterns(symbols, listing_map):
                 risk_pct = (entry - stop) / entry * 100
                 if risk_pct > 10.0:
                     logger.info(f"⏭️ Skipping {sym} - Stop risk {risk_pct:.2f}% exceeds hard 10% limit")
-                    _log_consolidation_reject_once({"reason": "excessive_stop_risk", "risk_pct": round(risk_pct, 2), "max_allowed": 10.0, **metrics})
+                    _log_consolidation_reject_once({"reason": "excessive_stop_risk", "risk_pct": round(risk_pct, 2), "max_allowed": 10.0, **current_metrics})
                     continue
                 date = entry_date  # Use actual entry date from dataframe
                 
@@ -2099,7 +2188,7 @@ def detect_live_patterns(symbols, listing_map):
                     from db import has_active_position
                     if has_active_position(sym):
                         logger.info(f"⏭️ Skipping {sym} - already has active position")
-                        _log_consolidation_reject_once({"reason": "active_position", "mode": "live", **metrics})
+                        _log_consolidation_reject_once({"reason": "active_position", "mode": "live", **current_metrics})
                         continue
                 except Exception:
                     pass
@@ -2122,14 +2211,14 @@ def detect_live_patterns(symbols, listing_map):
                 reward_amount = target - entry
                 if risk_amount <= 0 or reward_amount <= 0:
                     logger.info(f"⏭️ Skipping {sym} - invalid risk/reward (risk={risk_amount:.2f}, reward={reward_amount:.2f})")
-                    _log_consolidation_reject_once({"reason": "invalid_risk_reward", "risk": round(risk_amount, 2), "reward": round(reward_amount, 2), **metrics})
+                    _log_consolidation_reject_once({"reason": "invalid_risk_reward", "risk": round(risk_amount, 2), "reward": round(reward_amount, 2), **current_metrics})
                     continue
                 risk_reward_ratio = reward_amount / risk_amount
 
                 # Reject trades with poor risk/reward
                 if risk_reward_ratio < MIN_RISK_REWARD:
                     logger.info(f"⏭️ Skipping {sym} - poor risk/reward 1:{risk_reward_ratio:.2f} (< {MIN_RISK_REWARD})")
-                    _log_consolidation_reject_once({"reason": "poor_risk_reward", "ratio": round(risk_reward_ratio, 2), "min_required": MIN_RISK_REWARD, **metrics})
+                    _log_consolidation_reject_once({"reason": "poor_risk_reward", "ratio": round(risk_reward_ratio, 2), "min_required": MIN_RISK_REWARD, **current_metrics})
                     continue
 
                 # Reject entries that are too extended above breakout level
@@ -2141,7 +2230,7 @@ def detect_live_patterns(symbols, listing_map):
                             f"⏭️ Skipping {sym} - entry {distance_above:.2f}% above breakout "
                             f"(max allowed {MAX_ENTRY_ABOVE_BREAKOUT_PCT}%)"
                         )
-                        _log_consolidation_reject_once({"reason": "too_extended", "distance_pct": round(distance_above, 2), "max_allowed": MAX_ENTRY_ABOVE_BREAKOUT_PCT, **metrics})
+                        _log_consolidation_reject_once({"reason": "too_extended", "distance_pct": round(distance_above, 2), "max_allowed": MAX_ENTRY_ABOVE_BREAKOUT_PCT, **current_metrics})
                         continue
                 
                 # Smart freshness filter: allow if stock is holding the breakout level
@@ -2157,13 +2246,13 @@ def detect_live_patterns(symbols, listing_map):
                 
                 if days_since_breakout > 10:
                     logger.info(f"⏭️ Skipping {sym} - breakout is {days_since_breakout} days old (>10 days, too stale)")
-                    _log_consolidation_reject_once({"reason": "stale_breakout", "days_old": days_since_breakout, **metrics})
+                    _log_consolidation_reject_once({"reason": "stale_breakout", "days_old": days_since_breakout, **current_metrics})
                     continue
                 elif days_since_breakout > 3:
                     # Allow only if price is still holding above breakout level
                     if entry < high2:
                         logger.info(f"⏭️ Skipping {sym} - breakout {days_since_breakout} days old and price ₹{entry:.2f} has fallen below breakout level ₹{high2:.2f}")
-                        _log_consolidation_reject_once({"reason": "stale_and_fallen", "days_old": days_since_breakout, "entry": round(entry, 2), "breakout_level": round(high2, 2), **metrics})
+                        _log_consolidation_reject_once({"reason": "stale_and_fallen", "days_old": days_since_breakout, "entry": round(entry, 2), "breakout_level": round(high2, 2), **current_metrics})
                         continue
                     else:
                         logger.info(f"✅ {sym} - breakout {days_since_breakout} days old but price ₹{entry:.2f} still holding above ₹{high2:.2f}")
@@ -2264,6 +2353,10 @@ def detect_live_patterns(symbols, listing_map):
                     "max_extension_during_confirmation_pct": 0.0,
                     "rejection_depth_pct": 0.0,
                     "post_confirm_move_pct": round(distance_above, 2) if 'distance_above' in locals() else 0.0,
+                    # --- Phase 2.5 Liquidity Hardening ---
+                    "market_cap_cr": round(mcap_cr, 2),
+                    "avg_turnover_cr": round(avg_turnover_cr, 2),
+                    "circuit_days_15": int(circuit_days_15),
                     "did_hold_breakout_level": True,
                     "entry_vs_breakout_pct": round(distance_above, 2) if 'distance_above' in locals() else 0.0,
                     "signal_strength_score": score_components['total_score'],
@@ -2321,6 +2414,11 @@ def detect_live_patterns(symbols, listing_map):
                             "valid_cohorts": [c[0] for c in valid_cohorts] if 'valid_cohorts' in locals() else [],
                             "grade": grade,
                             "metrics_snapshot": current_metrics if 'current_metrics' in locals() else {},
+                            "liquidity": {
+                                "market_cap_cr": mcap_cr,
+                                "avg_turnover_cr": avg_turnover_cr,
+                                "circuit_days_15": circuit_days_15
+                            },
                             "entry_at_signal": entry,
                             "stop_at_signal": stop,
                             "snapshot_ts": datetime.now(timezone.utc).isoformat()
@@ -2433,6 +2531,7 @@ def detect_live_patterns(symbols, listing_map):
                         pass
                 
                 # Send Telegram notification with next day trading instructions
+                days_old = (datetime.today().date() - latest_date).days
                 if days_old > 1:
                     price_warning = f"⚠️ OLD DATA: {days_old} days old. Verify current price before trading!"
                 else:
@@ -2441,7 +2540,7 @@ def detect_live_patterns(symbols, listing_map):
                 # Get current/live price for verification (try to get fresh price)
                 current_price_display = entry  # Entry price is the current/reference price
                 try:
-                    live_check, live_source = get_live_price(sym)
+                    live_check, live_source, _ = get_live_price(sym)
                     if live_check is not None:
                         current_price_display = live_check
                         source_emojis = {
@@ -2470,6 +2569,11 @@ def detect_live_patterns(symbols, listing_map):
 🛑 Stop Loss: ₹{stop:.2f}
 📈 Target: ₹{target:.2f}
 📅 Signal Date: {date_str}
+
+🏗️ <b>Institutional Quality:</b>
+• Market Cap: ₹{mcap_cr:.1f} Cr
+• Avg Turnover: ₹{avg_turnover_cr:.2f} Cr/day
+• Circuit Days (15d): {circuit_days_15}
 {price_warning}
 
 📋 <b>TRADING INSTRUCTIONS:</b>
@@ -2633,7 +2737,7 @@ def detect_scan(symbols, listing_map):
                 if j == len(df) - 1:
                     # Live candle
                     if is_market_hours():
-                        live_price, _ = get_live_price(sym)
+                        live_price, _, _ = get_live_price(sym)
                     else:
                         live_price = float(df["CLOSE"].iloc[-1])
                     if live_price is not None and live_price > high2:
@@ -2688,7 +2792,7 @@ def detect_scan(symbols, listing_map):
                 # For live signals, ALWAYS use CURRENT market price as entry price
                 # This ensures entry price matches what user would actually pay NOW
                 # Try multiple sources: Upstox -> yfinance -> jugaad-data -> latest close
-                live_price, price_source_name = get_live_price(sym)
+                live_price, price_source_name, _ = get_live_price(sym)
                 if live_price is not None:
                     entry = live_price
                     source_emojis = {
@@ -2839,7 +2943,7 @@ def detect_scan(symbols, listing_map):
                 current_price_display = entry
                 price_source_display = price_source
                 try:
-                    live_check, live_source = get_live_price(sym)
+                    live_check, live_source, _ = get_live_price(sym)
                     if live_check is not None:
                         current_price_display = live_check
                         source_emojis = {
@@ -3177,7 +3281,7 @@ def stop_loss_update_scan():
             
             # Try to get live price first (more accurate for exit decisions)
             try:
-                live_price, live_source = get_live_price(sym)
+                live_price, live_source, _ = get_live_price(sym)
                 if live_price is not None and live_price > 0:
                     current_price = live_price
                     price_source = f"Live ({live_source})"
@@ -3239,6 +3343,7 @@ def stop_loss_update_scan():
                 latest_date_str = latest_date.strftime('%Y-%m-%d')
                 price_source = f"Historical Close ({latest_date_str})"
                 
+                days_old = (datetime.today().date() - latest_date).days
                 if days_old == 0:
                     logger.info(f"✅ Using today's historical close for {sym}: ₹{current_price:.2f}")
                 else:
@@ -3264,14 +3369,16 @@ def stop_loss_update_scan():
             
             # Check for exits - use current price for exit decisions
             exit_reason = None
+            is_winner_archetype = (new_max_runup >= 15.0)
+
             if current_price <= old_trailing:  # Use OLD trailing stop for exit check, not new one
                 exit_reason = "Stop Loss"
-            elif days_held <= 10 and current_price < entry_price * 0.95:
-                exit_reason = "Early Base Break"
-            elif days_held > 30 and current_price < entry_price * 0.95:
-                exit_reason = "Time Stop -5%"
-            elif days_held > 60 and current_price < entry_price * 0.92:
-                exit_reason = "Time Stop -8%"
+            elif not is_winner_archetype:
+                # Time-based stops only apply to non-winners (stale/dead trades)
+                if days_held > 30 and current_price < entry_price * 0.95:
+                    exit_reason = "Time Stop -5%"
+                elif days_held > 60 and current_price < entry_price * 0.92:
+                    exit_reason = "Time Stop -8%"
             
             if exit_reason:
                 # Outcome Classification
@@ -3451,6 +3558,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("mode",choices=["scan","weekly_summary","monthly_review","stop_loss_update","heartbeat","dry_run"],
                         nargs="?",default="scan")
+    parser.add_argument("--bypass-holiday", action="store_true", help="Run scanner even if it's a holiday/weekend")
     args = parser.parse_args()
 
     # Show mode identification
@@ -3475,13 +3583,12 @@ if __name__ == "__main__":
         print("==========================================")
 
     auto_refresh_upstox_token()
-    initialize_csvs()
 
     # --- Market Holiday Guard ---
     # For scan and stop_loss_update: verify today is an NSE trading day.
     # Weekly/monthly summaries and heartbeat always run regardless of market day.
     scan_modes = {"scan", "stop_loss_update", "dry_run"}
-    if args.mode in scan_modes and not is_market_day():
+    if args.mode in scan_modes and not is_market_day() and not args.bypass_holiday:
         from datetime import timezone, timedelta as td
         ist = timezone(td(hours=5, minutes=30))
         today_ist = datetime.now(ist).strftime("%Y-%m-%d")
@@ -3503,6 +3610,7 @@ if __name__ == "__main__":
     def generate_daily_summary():
         try:
             today_str = datetime.today().strftime('%Y-%m-%d')
+            today_dt = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
             todays_log_dir = os.path.join("logs", today_str)
             os.makedirs(todays_log_dir, exist_ok=True)
             
@@ -3543,27 +3651,23 @@ if __name__ == "__main__":
             except Exception as e:
                 logger.error(f"Error parsing signals for summary: {e}")
             
-            # 2. Parse rejections from logs
-            for list_file in ["consolidation.jsonl", "listing_day.jsonl", "watchlist.jsonl"]:
-                filepath = os.path.join(todays_log_dir, list_file)
-                if not os.path.exists(filepath):
-                    continue
-                try:
-                    with open(filepath, "r", encoding="utf-8") as f:
-                        for line in f:
-                            if not line.strip():
-                                continue
-                            try:
-                                entry = json.loads(line)
-                            except json.JSONDecodeError:
-                                continue
-                            action = entry.get("action")
-                            if action in ("REJECTED_BREAKOUT", "PENDING_REJECTED"):
-                                details = entry.get("details", {}) or {}
-                                reason = details.get("rejection_reason", details.get("reason", "unknown"))
-                                summary["rejections"][reason] = summary["rejections"].get(reason, 0) + 1
-                except Exception as e:
-                    logger.error(f"Error parsing {filepath}: {e}")
+            # 2. Parse rejections from MongoDB (Phase 2.5)
+            try:
+                from db import logs_col
+                if logs_col is not None:
+                    # Fetch all rejections for today from DB
+                    rejection_logs = logs_col.find({
+                        "timestamp": {"$gte": today_dt},
+                        "action": {"$in": ["REJECTED_BREAKOUT", "PENDING_REJECTED"]}
+                    })
+                    for entry in rejection_logs:
+                        details = entry.get("details", {}) or {}
+                        reason = details.get("rejection_reason", details.get("reason", "unknown"))
+                        summary["rejections"][reason] = summary["rejections"].get(reason, 0) + 1
+                else:
+                    logger.warning("logs_col is None, skipping rejection summary")
+            except Exception as e:
+                logger.error(f"Error parsing rejections from MongoDB: {e}")
             
             # Dump to JSON
             summary_file = os.path.join(todays_log_dir, "daily_summary.json")

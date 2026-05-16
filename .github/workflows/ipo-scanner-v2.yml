@@ -85,13 +85,12 @@ jobs:
           # Install jugaad-data separately to avoid dependency resolver conflicts
           echo "📦 Installing jugaad-data..."
           retry 4 pip install --retries 10 --timeout 120 "jugaad-data>=0.27,<0.28"
-          echo "✅ Dependencies installed - NO TA-Lib (removed from requirements.txt)"
-          echo "✅ beautifulsoup4==4.9.3 installed first to resolve dependency conflict"
+          echo "✅ Dependencies installed successfully"
       
       - name: Show workflow mode and timing
         run: |
           echo "🚀 =========================================="
-          echo "🚀 IPO Scanner Workflow v2 Started (TEST)"
+          echo "🚀 IPO Scanner Workflow v2 Started (MongoDB-Only)"
           echo "🚀 =========================================="
           echo "📅 Current UTC: $(date -u +%Y-%m-%d\ %H:%M:%S)"
           echo "📅 Current IST: $(TZ='Asia/Kolkata' date +%Y-%m-%d\ %H:%M:%S)"
@@ -125,9 +124,6 @@ jobs:
           MAX_DAYS: ${{ vars.MAX_DAYS || '200' }}
           MAX_FLAT_HOLD_WEEKS: ${{ vars.MAX_FLAT_HOLD_WEEKS || '20' }}
           CACHE_FILE: ${{ vars.CACHE_FILE || 'ipo_cache.pkl' }}
-          SIGNALS_CSV: ${{ vars.SIGNALS_CSV || 'ipo_signals.csv' }}
-          POSITIONS_CSV: ${{ vars.POSITIONS_CSV || 'ipo_positions.csv' }}
-          HEARTBEAT_RUNS: ${{ vars.HEARTBEAT_RUNS || '0' }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
@@ -135,32 +131,16 @@ jobs:
           echo "🔐 Secrets:"
           echo "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:0:10}..." 
           echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID"
-          echo "IPO_YEARS_BACK: $IPO_YEARS_BACK"
           echo ""
-          echo "⚙️ Variables:"
-          echo "STOP_PCT: $STOP_PCT"
-          echo "PT_A_PLUS: $PT_A_PLUS, PT_B: $PT_B, PT_C: $PT_C"
-          echo "CONSOL_WINDOWS: $CONSOL_WINDOWS"
-          echo "VOL_MULT: $VOL_MULT, ABS_VOL_MIN: $ABS_VOL_MIN"
-          echo "LOOKAHEAD: $LOOKAHEAD, MAX_DAYS: $MAX_DAYS"
-          echo "=================================="
           
-          if [ -z "$TELEGRAM_CHAT_ID" ]; then
-            echo "❌ ERROR: TELEGRAM_CHAT_ID is empty!"
+          if [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$TELEGRAM_BOT_TOKEN" ]; then
+            echo "❌ ERROR: Telegram credentials missing!"
             exit 1
-          else
-            echo "✅ TELEGRAM_CHAT_ID is set: $TELEGRAM_CHAT_ID"
           fi
           
-          if [ -z "$TELEGRAM_BOT_TOKEN" ]; then
-            echo "❌ ERROR: TELEGRAM_BOT_TOKEN is empty!"
-            exit 1
-          else
-            echo "✅ TELEGRAM_BOT_TOKEN is set (length: ${#TELEGRAM_BOT_TOKEN})"
-          fi
-
           if [ -z "$MONGO_URI" ]; then
-            echo "⚠️ WARNING: MONGO_URI is empty! MongoDB dual-write will be disabled."
+            echo "❌ ERROR: MONGO_URI is missing! MongoDB is now REQUIRED."
+            exit 1
           else
             echo "✅ MONGO_URI is set"
           fi
@@ -173,7 +153,8 @@ jobs:
             echo "🔌 Verifying MongoDB Atlas connection..."
             python test_db_connection.py
           else
-            echo "⏩ Skipping DB check (MONGO_URI not set)"
+            echo "❌ ERROR: MONGO_URI missing"
+            exit 1
           fi
       
       - name: Run Consolidation-Based Scanner
@@ -193,9 +174,6 @@ jobs:
           MAX_DAYS: ${{ vars.MAX_DAYS || '200' }}
           MAX_FLAT_HOLD_WEEKS: ${{ vars.MAX_FLAT_HOLD_WEEKS || '20' }}
           CACHE_FILE: ${{ vars.CACHE_FILE || 'ipo_cache.pkl' }}
-          SIGNALS_CSV: ${{ vars.SIGNALS_CSV || 'ipo_signals.csv' }}
-          POSITIONS_CSV: ${{ vars.POSITIONS_CSV || 'ipo_positions.csv' }}
-          HEARTBEAT_RUNS: ${{ vars.HEARTBEAT_RUNS || '0' }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL || 'INFO' }}
           MONGO_URI: ${{ secrets.MONGO_URI }}
         run: |
@@ -205,47 +183,28 @@ jobs:
 
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             MODE="${{ github.event.inputs.mode }}"
-            if [ -z "$MODE" ]; then
-              MODE="scan"
-            fi
             echo "🎯 Running consolidation-based scanner in mode: $MODE"
             python streamlined_ipo_scanner.py $MODE
           elif [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "⏰ Running scheduled consolidation-based scanner"
-            echo "📋 Schedule that triggered: ${{ github.event.schedule }}"
-            
             SCHEDULE="${{ github.event.schedule }}"
-            
             case "$SCHEDULE" in
               "45 08 * * 1-5")
-                echo "✅ DAILY SCAN: Running weekday consolidation scan (2:15 PM IST)"  
                 python streamlined_ipo_scanner.py scan
                 python streamlined_ipo_scanner.py stop_loss_update
                 ;;
               "15 09 * * 0")
-                echo "✅ WEEKLY SUMMARY: Running Sunday summary (2:45 PM IST)"
                 python streamlined_ipo_scanner.py weekly_summary
                 ;;
               "15 09 1 * *")
-                echo "✅ MONTHLY REVIEW: Running monthly review (2:45 PM IST)"
                 python streamlined_ipo_scanner.py monthly_review
                 ;;
               *)
-                echo "⚠️ UNKNOWN SCHEDULE: $SCHEDULE - Running default scan"
                 python streamlined_ipo_scanner.py scan
                 ;;
             esac
           else
-            echo "🔄 DEFAULT: Running default mode: scan"
             python streamlined_ipo_scanner.py scan
           fi
       
-      - name: Upload recent_ipo_symbols.csv
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ipo-data-v2-${{ github.run_number }}
-          path: |
-            recent_ipo_symbols.csv
-          retention-days: 30
-          if-no-files-found: warn
+      - name: Workflow Complete
+        run: echo "IPO Scanner v2 workflow completed successfully."

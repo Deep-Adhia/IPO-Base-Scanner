@@ -21,7 +21,7 @@ if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
 
 def get_upstox_mapping():
-    """Load symbol to instrument_key mapping"""
+    """Load symbol to instrument_key mapping from MongoDB."""
     try:
         from db import get_instrument_key_mapping
         mapping = get_instrument_key_mapping()
@@ -30,10 +30,6 @@ def get_upstox_mapping():
     except Exception as e:
         print(f"Could not load Upstox mapping from DB: {e}")
 
-    # Fallback to CSV
-    if os.path.exists("ipo_upstox_mapping.csv"):
-        df = pd.read_csv("ipo_upstox_mapping.csv")
-        return dict(zip(df['symbol'], df['instrument_key']))
     return {}
 
 UPSTOX_MAPPING = get_upstox_mapping()
@@ -120,19 +116,14 @@ def fetch_historical_data(symbol, start_date, end_date):
     return None, "Failed"
 
 def get_listing_date(symbol):
-    """Fetch listing date from db or csv"""
+    """Fetch listing date from MongoDB listing_data collection."""
     try:
-        from db import db
-        meta = db["metadata"].find_one({"_id": "listing_dates"})
-        if meta and symbol in meta.get("dates", {}):
-            return pd.to_datetime(meta["dates"][symbol]).date()
-    except:
-        pass
-    if os.path.exists("ipo_listing_data.csv"):
-        df = pd.read_csv("ipo_listing_data.csv")
-        row = df[df["symbol"] == symbol]
-        if not row.empty:
-            return pd.to_datetime(row.iloc[0]["listing_date"]).date()
+        from db import listing_data_col
+        doc = listing_data_col.find_one({"symbol": symbol}, {"listing_date": 1, "_id": 0})
+        if doc and doc.get("listing_date"):
+            return pd.to_datetime(doc["listing_date"]).date()
+    except Exception as e:
+        print(f"Error fetching listing date for {symbol} from MongoDB: {e}")
     return None
 
 

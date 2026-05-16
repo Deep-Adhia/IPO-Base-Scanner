@@ -230,6 +230,7 @@ hybrid_checkpoint.pkl
 
 # Log files
 *.log
+logs/
 
 # Temporary files
 temp_*

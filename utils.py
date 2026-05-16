@@ -21,20 +21,16 @@ _upstox_lock = threading.Lock()
 def fetch_from_upstox(symbol, start_date, end_date):
     """Fetch historical data from Upstox API with rate limiting"""
     try:
-        # Load IPO mappings — prefers MongoDB, falls back to CSV automatically
+        # Load IPO mappings from MongoDB
         try:
             from db import get_instrument_key_mapping
             symbol_mapping = get_instrument_key_mapping()
-        except Exception:
-            # Hard fallback: read CSV directly if db import itself fails
-            if not os.path.exists('ipo_upstox_mapping.csv'):
-                logger.warning("IPO mapping file not found")
-                return None
-            mapping_df = pd.read_csv('ipo_upstox_mapping.csv', encoding='utf-8')
-            symbol_mapping = dict(zip(mapping_df['ipo_symbol'], mapping_df['instrument_key']))
+        except Exception as e:
+            logger.error(f"Error getting Upstox mapping from DB: {e}")
+            return None
 
-        if symbol not in symbol_mapping:
-            logger.warning(f"Symbol {symbol} not found in Upstox mapping")
+        if not symbol_mapping or symbol not in symbol_mapping:
+            logger.warning(f"Symbol {symbol} not found in Upstox mapping (MongoDB)")
             return None
         
         instrument_key = symbol_mapping[symbol]

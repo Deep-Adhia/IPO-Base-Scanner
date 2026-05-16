@@ -27,9 +27,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # Configuration
-WATCHLIST_CSV = "watchlist.csv"
-SIGNALS_CSV = "ipo_signals.csv"
-POSITIONS_CSV = "ipo_positions.csv"
+# Metadata & State (Legacy CSVs removed, using MongoDB)
 INTRADAY_INTERVAL = "5minute"  # 1minute, 5minute, 15minute, 30minute, 60minute
 LOOKBACK_DAYS = 5  # Days of intraday data to fetch
 MIN_VOLUME_MULTIPLIER = 1.5  # Minimum volume spike for breakout
@@ -105,36 +103,21 @@ def send_telegram(msg):
         logger.error(f"❌ Telegram error: {e}")
 
 def load_watchlist():
-    """Load symbols from watchlist.csv"""
+    """Load active symbols from MongoDB watchlist collection."""
     try:
-        if not os.path.exists(WATCHLIST_CSV):
-            logger.warning(f"Watchlist file {WATCHLIST_CSV} not found. Creating template...")
-            df = pd.DataFrame(columns=['symbol', 'added_date', 'notes', 'status'])
-            df.to_csv(WATCHLIST_CSV, index=False, encoding='utf-8')
+        from db import watchlist_col
+        if watchlist_col is None:
+            logger.warning("[DB] watchlist_col unavailable")
             return []
         
-        df = pd.read_csv(WATCHLIST_CSV, encoding='utf-8')
+        docs = list(watchlist_col.find({"status": "ACTIVE"}, {"symbol": 1, "_id": 0}))
+        active_symbols = [d["symbol"] for d in docs if d.get("symbol")]
         
-        # Check if DataFrame is empty or missing required columns
-        if df.empty:
-            logger.info("📋 Watchlist is empty")
-            return []
-        
-        if 'status' not in df.columns or 'symbol' not in df.columns:
-            logger.warning("📋 Watchlist missing required columns (symbol, status)")
-            return []
-        
-        # Filter for active symbols only
-        active_symbols = df[df['status'] == 'ACTIVE']['symbol'].tolist()
-        
-        # Remove comments and empty lines
-        active_symbols = [s for s in active_symbols if not str(s).startswith('#') and str(s).strip() and pd.notna(s)]
-        
-        logger.info(f"📋 Loaded {len(active_symbols)} active symbols from watchlist")
+        logger.info(f"📋 Loaded {len(active_symbols)} active symbols from MongoDB watchlist")
         return active_symbols
     
     except Exception as e:
-        logger.error(f"Error loading watchlist: {e}")
+        logger.error(f"Error loading watchlist from MongoDB: {e}")
         return []
 
 # Try to import yfinance for intraday data
@@ -350,7 +333,7 @@ def detect_intraday_breakout(df, symbol):
             spec.loader.exec_module(scanner_module)
             get_live_price = scanner_module.get_live_price
             
-            live_price, live_source = get_live_price(symbol)
+            live_price, live_source, _ = get_live_price(symbol)
             if live_price is not None and live_price > 0:
                 logger.info(f"✅ Using live price for {symbol} breakout detection: ₹{live_price:.2f} ({live_source})")
         except Exception as e:

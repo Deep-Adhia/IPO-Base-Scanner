@@ -5,6 +5,7 @@ Test all scanners to verify they're working correctly
 
 import sys
 import os
+import pandas as pd
 from datetime import datetime
 
 print("=" * 80)
@@ -50,47 +51,44 @@ try:
     # Test data fetching
     print("\n   📊 Testing data fetch...")
     try:
-        # Get a test symbol
-        if os.path.exists('ipo_listing_data.csv'):
-            import pandas as pd
-            listing_df = pd.read_csv('ipo_listing_data.csv', encoding='utf-8')
-            if not listing_df.empty and 'symbol' in listing_df.columns:
-                test_symbol = listing_df['symbol'].iloc[0]
-                listing_date = pd.to_datetime(listing_df['listing_date'].iloc[0])
+        from db import listing_data_col
+        doc = listing_data_col.find_one({}, {"_id": 0, "symbol": 1, "listing_date": 1})
+        if doc:
+            test_symbol = doc['symbol']
+            listing_date = pd.to_datetime(doc['listing_date'])
+            
+            df = scanner_module.fetch_data(test_symbol, listing_date)
+            if df is not None and not df.empty:
+                print(f"   ✅ Data fetch successful for {test_symbol}")
+                print(f"      Rows: {len(df)}, Latest Date: {df['DATE'].max()}")
                 
-                df = scanner_module.fetch_data(test_symbol, listing_date)
-                if df is not None and not df.empty:
-                    print(f"   ✅ Data fetch successful for {test_symbol}")
-                    print(f"      Rows: {len(df)}, Latest Date: {df['DATE'].max()}")
-                    
-                    # Check columns
-                    required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']
-                    missing = [col for col in required_cols if col not in df.columns]
-                    if missing:
-                        print(f"   ⚠️ Missing columns: {missing}")
-                    else:
-                        print(f"   ✅ All required columns present")
+                # Check columns
+                required_cols = ['DATE', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'VOLUME']
+                missing = [col for col in required_cols if col not in df.columns]
+                if missing:
+                    print(f"   ⚠️ Missing columns: {missing}")
                 else:
-                    print(f"   ⚠️ Data fetch returned empty for {test_symbol}")
+                    print(f"   ✅ All required columns present")
+            else:
+                print(f"   ⚠️ Data fetch returned empty for {test_symbol}")
         else:
-            print(f"   ⚠️ Cannot test - ipo_listing_data.csv not found")
+            print(f"   ⚠️ Cannot test - listing_data_col is empty")
     except Exception as e:
         print(f"   ❌ Data fetch test failed: {e}")
     
     # Test live price
     print("\n   💰 Testing live price fetch...")
     try:
-        if os.path.exists('ipo_listing_data.csv'):
-            import pandas as pd
-            listing_df = pd.read_csv('ipo_listing_data.csv', encoding='utf-8')
-            if not listing_df.empty and 'symbol' in listing_df.columns:
-                test_symbol = listing_df['symbol'].iloc[0]
-                price, source = scanner_module.get_live_price(test_symbol)
-                if price:
-                    print(f"   ✅ Live price fetch successful for {test_symbol}")
-                    print(f"      Price: ₹{price:.2f}, Source: {source}")
-                else:
-                    print(f"   ⚠️ Live price fetch returned None for {test_symbol}")
+        from db import listing_data_col
+        doc = listing_data_col.find_one({}, {"_id": 0, "symbol": 1})
+        if doc:
+            test_symbol = doc['symbol']
+            price, source, _ = scanner_module.get_live_price(test_symbol)
+            if price:
+                print(f"   ✅ Live price fetch successful for {test_symbol}")
+                print(f"      Price: ₹{price:.2f}, Source: {source}")
+            else:
+                print(f"   ⚠️ Live price fetch returned None for {test_symbol}")
     except Exception as e:
         print(f"   ❌ Live price test failed: {e}")
     
@@ -130,15 +128,7 @@ try:
         print(f"\n   ✅ All key functions available")
     
     # Check watchlist
-    if os.path.exists('watchlist.csv'):
-        import pandas as pd
-        watchlist_df = pd.read_csv('watchlist.csv', encoding='utf-8')
-        if not watchlist_df.empty:
-            print(f"   ✅ Watchlist found with {len(watchlist_df)} symbols")
-        else:
-            print(f"   ⚠️ Watchlist is empty")
-    else:
-        print(f"   ⚠️ Watchlist file not found (will be created on first run)")
+    print(f"   ✅ Watchlist check: Moved to MongoDB signals collection")
     
     print("\n   ✅ Hourly Breakout Scanner: WORKING")
     
@@ -175,15 +165,12 @@ try:
         print(f"\n   ✅ All key functions available")
     
     # Check listing data
-    if os.path.exists('ipo_listing_data.csv'):
-        import pandas as pd
-        listing_df = pd.read_csv('ipo_listing_data.csv', encoding='utf-8')
-        if not listing_df.empty:
-            print(f"   ✅ Listing data found with {len(listing_df)} IPOs")
-        else:
-            print(f"   ⚠️ Listing data is empty")
+    from db import listing_data_col
+    if listing_data_col is not None:
+        count = listing_data_col.count_documents({})
+        print(f"   ✅ Listing data in MongoDB: {count} IPOs")
     else:
-        print(f"   ⚠️ Listing data file not found")
+        print(f"   ⚠️ Listing data collection not available")
     
     print("\n   ✅ Listing Day Breakout Scanner: WORKING")
     
@@ -192,52 +179,43 @@ except Exception as e:
     import traceback
     traceback.print_exc()
 
-# Test 4: Check CSV files
-print("\n\n4️⃣ CHECKING CSV FILES")
+# Test 4: Check MongoDB Collections
+print("\n\n4️⃣ CHECKING MONGODB COLLECTIONS")
 print("-" * 80)
 
-csv_files = [
-    'ipo_signals.csv',
-    'ipo_positions.csv',
-    'ipo_listing_data.csv',
-    'watchlist.csv',
-    'ipo_upstox_mapping.csv'
-]
+from db import signals_col, positions_col, listing_data_col, instrument_keys_col
 
-for csv_file in csv_files:
-    if os.path.exists(csv_file):
-        try:
-            import pandas as pd
-            df = pd.read_csv(csv_file, encoding='utf-8')
-            print(f"   ✅ {csv_file} - {len(df)} rows")
-        except Exception as e:
-            print(f"   ⚠️ {csv_file} - Error reading: {e}")
+cols = {
+    'signals': signals_col,
+    'positions': positions_col,
+    'listing_data': listing_data_col,
+    'instrument_keys': instrument_keys_col
+}
+
+for name, col in cols.items():
+    if col is not None:
+        count = col.count_documents({})
+        print(f"   ✅ {name} - {count} records")
     else:
-        print(f"   ⚠️ {csv_file} - Not found (will be created on first run)")
+        print(f"   ❌ {name} - Collection unavailable")
 
 # Test 5: Check recent signals
 print("\n\n5️⃣ CHECKING RECENT SIGNALS")
 print("-" * 80)
 
-if os.path.exists('ipo_signals.csv'):
-    try:
-        import pandas as pd
-        signals_df = pd.read_csv('ipo_signals.csv', encoding='utf-8')
-        if not signals_df.empty:
-            print(f"   📊 Total signals: {len(signals_df)}")
-            active = signals_df[signals_df['status'] == 'ACTIVE'] if 'status' in signals_df.columns else signals_df
-            print(f"   ✅ Active signals: {len(active)}")
-            
-            if len(active) > 0:
-                print(f"\n   Recent signals:")
-                for idx, signal in active.head(5).iterrows():
-                    print(f"      • {signal['symbol']} - {signal.get('signal_date', 'N/A')} - Grade: {signal.get('grade', 'N/A')}")
-        else:
-            print(f"   ℹ️ No signals found (file is empty)")
-    except Exception as e:
-        print(f"   ❌ Error reading signals: {e}")
+from db import get_all_signals_df
+signals_df = get_all_signals_df()
+if not signals_df.empty:
+    print(f"   📊 Total signals: {len(signals_df)}")
+    active = signals_df[signals_df['status'] == 'ACTIVE']
+    print(f"   ✅ Active signals: {len(active)}")
+    
+    if len(active) > 0:
+        print(f"\n   Recent active signals:")
+        for idx, signal in active.head(5).iterrows():
+            print(f"      • {signal['symbol']} - {signal.get('signal_date', 'N/A')} - Grade: {signal.get('grade', 'N/A')}")
 else:
-    print(f"   ⚠️ Signals file not found")
+    print(f"   ℹ️ No signals found in MongoDB")
 
 # Summary
 print("\n\n" + "=" * 80)

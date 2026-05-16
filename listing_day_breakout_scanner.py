@@ -17,6 +17,7 @@ import pandas as pd
 import numpy as np
 import requests
 import time
+import argparse
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import logging
@@ -47,11 +48,12 @@ logger = scanner_module.logger
 get_live_price = scanner_module.get_live_price
 get_market_regime = scanner_module.get_market_regime
 classify_pattern_type = scanner_module.classify_pattern_type
+is_market_day = getattr(scanner_module, 'is_market_day', lambda: True)
 
 # Load environment
 load_dotenv()
 
-REJECTIONS_CSV = "ipo_rejections.csv"
+# Metadata & State (Legacy CSVs removed, using MongoDB)
 
 def log_rejected_signal(symbol, current_price, listing_high, days_since, vol_ratio, reason):
     """Log a simple rejection telemetry event to MongoDB."""
@@ -97,11 +99,8 @@ def _env_int(key: str, default: int) -> int:
 LISTING_STRICT_QUALITY = _env_bool("LISTING_STRICT_QUALITY", True)
 
 # Configuration (stricter defaults when LISTING_STRICT_QUALITY is True)
-LISTING_DATA_CSV = "ipo_listing_data.csv"
-SIGNALS_CSV = "ipo_signals.csv"
-POSITIONS_CSV = "ipo_positions.csv"
-WATCHLIST_SIGNALS_CSV = "ipo_watchlist_signals.csv"
-RECENT_IPO_CSV = "recent_ipo_symbols.csv"
+# Legacy CSV paths removed
+
 PENDING_BREAKOUTS_FILE = "listing_pending_breakouts.json"
 MIN_VOLUME_MULTIPLIER = _env_float(
     "LISTING_MIN_VOLUME_MULT", 1.8 if LISTING_STRICT_QUALITY else 1.5
@@ -560,9 +559,7 @@ def _assign_breakout_tier(
     return None, None, f"Signal type '{signal_type}' does not qualify for tier assignment"
 
 
-def initialize_listing_data_csv():
-    """No-op: listing data is now MongoDB-only. Kept for call-site compatibility."""
-    pass
+# Legacy CSV initialization removed
 
 def load_listing_data():
     """Load listing day data from MongoDB listing_data collection."""
@@ -904,20 +901,38 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
         price_source = "Historical Close"
         
         try:
-            live_price, live_source = get_live_price(symbol)
+            live_price, live_source, day_high = get_live_price(symbol)
             if live_price is not None and live_price > 0:
                 current_price = live_price
-                current_high = live_price  # Use live price as current high for breakout detection
+                current_high = day_high if day_high else live_price
                 price_source = f"Live ({live_source})"
-                logger.info(f"✅ Using live price for {symbol} breakout detection: ₹{current_price:.2f} from {live_source}")
+                logger.info(f"✅ Using live price for {symbol} breakout detection: ₹{current_price:.2f} (High: ₹{current_high:.2f}) from {live_source}")
         except Exception as e:
             logger.debug(f"Could not get live price for {symbol}: {e}")
         
-        # --- PRICE FLOOR GUARDRAIL ---
-        if current_price is not None and current_price < 20.0:
-            logger.info(f"⏭️ Skipping {symbol} - Price ₹{current_price:.2f} is below ₹20.00 floor")
+        # --- INSTITUTIONAL LIQUIDITY GUARDRAIL (Phase 2.5) ---
+        avg_turnover_cr, circuit_days_15, mcap_cr = scanner_module.get_liquidity_metrics(symbol, df)
+        
+        # We need these metrics in the payload/log
+        liquidity_metrics = {
+            "avg_turnover_cr": avg_turnover_cr,
+            "circuit_days_15": circuit_days_15,
+            "market_cap_cr": mcap_cr
+        }
+
+        if avg_turnover_cr > 0 and avg_turnover_cr < scanner_module.MIN_DAILY_TURNOVER_CR:
+            logger.info(f"⏭️ Skipping {symbol} - Turnover ₹{avg_turnover_cr:.2f}Cr is below ₹{scanner_module.MIN_DAILY_TURNOVER_CR}Cr floor")
+            _log_listing_rejection("LIQUIDITY_TRAP", avg_turnover_cr, scanner_module.MIN_DAILY_TURNOVER_CR, liquidity_metrics)
             return None
-        # -----------------------------
+        if circuit_days_15 >= scanner_module.CIRCUIT_DAY_THRESHOLD:
+            logger.info(f"⏭️ Skipping {symbol} - Frequent circuits detected ({circuit_days_15} days)")
+            _log_listing_rejection("LIQUIDITY_TRAP_CIRCUITS", circuit_days_15, scanner_module.CIRCUIT_DAY_THRESHOLD, liquidity_metrics)
+            return None
+        if mcap_cr > 0 and mcap_cr < scanner_module.MIN_MARKET_CAP_CR:
+            logger.info(f"⏭️ Skipping {symbol} - Market Cap ₹{mcap_cr:.1f}Cr is below ₹{scanner_module.MIN_MARKET_CAP_CR}Cr floor")
+            _log_listing_rejection("MICROCAP_PENALTY", mcap_cr, scanner_module.MIN_MARKET_CAP_CR, liquidity_metrics)
+            return None
+        # ---------------------------------------------------
         
         # Fallback to historical data if live price unavailable
         if current_price is None:
@@ -1335,6 +1350,13 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
             if tier is None and signal_type != 'WATCHLIST':
                 logger.info(f"⏭️ {symbol}: No tier assigned — {tier_rationale}")
                 return None
+            
+            # --- Institutional Grade Penalty (Phase 2.5) ---
+            # Cap signals for microcaps to Grade C (Higher risk, smaller size)
+            if mcap_cr > 0 and mcap_cr < 1000.0 and tier in ["A+", "A", "B"]:
+                logger.info(f"⚠️ Downgrading Listing Signal {symbol} from {tier} to C due to Microcap Penalty (< ₹1000Cr)")
+                tier = "C"
+                position_size_pct = 20 # Standard size for C tier
 
             # --- Analytics & Score Components ---
             if signal_type == 'BASE_BREAKOUT':
@@ -1361,6 +1383,11 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 rejection_depth_pct = ((max_seen - current_price) / max_seen * 100.0) if max_seen > 0 else 0.0
                 
             score_comps = calculate_signal_score_components(tier, vol_ratio_for_tier, perfect_base_ok, post_confirm_move_pct)
+
+            # --- Sustained Check (New Logic) ---
+            is_sustained = current_price >= listing_day_high
+            pullback_from_high_pct = ((current_high - current_price) / current_high * 100.0) if current_high > 0 else 0.0
+            max_extension_pct = ((current_high - breakout_level_for_calc) / breakout_level_for_calc * 100.0) if breakout_level_for_calc > 0 else 0.0
 
             return {
                 'symbol': symbol,
@@ -1389,6 +1416,10 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 'has_volume_caution': len(volume_warnings) > 0,
                 'leader_score': int(leader_score),
                 'type': signal_type,
+                # --- Sustained Status ---
+                'is_sustained': is_sustained,
+                'pullback_from_high_pct': round(pullback_from_high_pct, 2),
+                'max_extension_pct': round(max_extension_pct, 2),
                 # --- Institutional Research Metadata (v2.5.0) ---
                 'pattern_type': classify_pattern_type("LISTING_BREAKOUT" if signal_type == "BREAKOUT" else "CONSOLIDATION", days_since_listing, vol_ratio_for_tier, listing_range_pct),
                 'market_regime': get_market_regime(current_date),
@@ -1411,6 +1442,10 @@ def check_listing_day_breakout(symbol, listing_info, pending_breakouts=None):
                 'entry_vs_breakout_pct': round(entry_vs_breakout_pct, 2),
                 'signal_strength_score': score_comps['total_score'],
                 'score_components': score_comps,
+                # --- Institutional Liquidity Hardening (Phase 2.5) ---
+                'market_cap_cr': round(mcap_cr, 2),
+                'avg_turnover_cr': round(avg_turnover_cr, 2),
+                'circuit_days_15': int(circuit_days_15),
                 # --- Enrichment Data (Institutional V2) ---
                 '_candle': latest,
                 '_history': df,
@@ -1458,7 +1493,9 @@ def format_listing_breakout_alert(breakout_data):
 
 ⏰ <b>Context & Timing:</b>
 • Age: {days_since_listing} days old
-• Post-Confirm Move: {breakout_data.get('post_confirm_move_pct', 0):+.2f}%
+• Breakout Status: <b>{'✅ SUSTAINED' if breakout_data.get('is_sustained') else '❌ FAILED_TO_SUSTAIN'}</b>
+• Pullback from High: {breakout_data.get('pullback_from_high_pct', 0):.1f}%
+• Max Extension: {breakout_data.get('max_extension_pct', 0):+.1f}%
 {'• <b>✅ Perfect Base Detected</b>' if breakout_data.get('perfect_base') else ''}
 
 💰 <b>Trade Details:</b>
@@ -1512,6 +1549,9 @@ def format_base_breakout_alert(breakout_data):
     tier_rationale = breakout_data.get('tier_rationale', '')
     price_source = breakout_data.get('price_source', 'Live')
     conditions = breakout_data.get('breakout_conditions', '')
+    symbol = breakout_data['symbol']
+    is_sustained = breakout_data.get('is_sustained', False)
+    pullback = breakout_data.get('pullback_from_high_pct', 0)
 
     listing_date = breakout_data['listing_date']
     listing_date_str = (
@@ -1543,6 +1583,7 @@ def format_base_breakout_alert(breakout_data):
 • IPO Age: {days_since}d  |  Listed: {listing_date_str}
 • Pattern: <b>{breakout_data.get('pattern_type', 'N/A')}</b>
 • Regime: <b>{breakout_data.get('market_regime', 'N/A')}</b>
+• Status: <b>{'✅ SUSTAINED' if is_sustained else f'❌ PULLED BACK ({pullback:.1f}%)'}</b>
 • {conditions}
 
 🤖 Scanner v{SCANNER_VERSION} | {datetime.now().strftime('%Y-%m-%d %H:%M IST')}
@@ -1856,9 +1897,7 @@ def scan_listing_day_breakouts():
         logger.info("⚙️ Quality: RELAXED — low-vol breakouts may be sent with caution")
     logger.info("=" * 60)
     
-    # Initialize CSV
-    initialize_listing_data_csv()
-    initialize_watchlist_data_csv()
+    # Step 0: Prep MongoDB (Legacy CSV initialization removed)
     
     # Update listing data for new IPOs
     logger.info("📊 Step 1: Updating listing data for new IPOs...")
@@ -1982,6 +2021,10 @@ def scan_listing_day_breakouts():
 
 def main():
     """Main function"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--bypass-holiday", action="store_true", help="Run scanner even if it's a holiday/weekend")
+    args = parser.parse_args()
+
     try:
         print("IPO Listing Day Breakout Scanner")
         print("=" * 60)
@@ -1989,13 +2032,24 @@ def main():
         print(f"Time: {datetime.now().strftime('%H:%M:%S')}")
         print("=" * 60)
     except:
-        # Fallback for systems with encoding issues
         print("IPO Listing Day Breakout Scanner")
         print("=" * 60)
-        print(f"Date: {datetime.now().strftime('%Y-%m-%d')}")
-        print(f"Time: {datetime.now().strftime('%H:%M:%S')}")
-        print("=" * 60)
-    
+
+    # --- Market Holiday Guard ---
+    if not is_market_day() and not args.bypass_holiday:
+        from datetime import timezone, timedelta as td
+        ist = timezone(td(hours=5, minutes=30))
+        today_ist = datetime.now(ist).strftime("%Y-%m-%d")
+        skip_msg = (
+            f"📅 <b>Listing Day: Market Holiday</b>\n\n"
+            f"🗓 Date: {today_ist}\n"
+            f"⏭ Scanner skipped — NSE is closed today.\n"
+            f"✅ Use --bypass-holiday to force run."
+        )
+        logger.info(f"📅 Market is closed today ({today_ist}). Skipping listing day scan.")
+        send_telegram(skip_msg)
+        sys.exit(0)
+
     scan_listing_day_breakouts()
 
 if __name__ == "__main__":

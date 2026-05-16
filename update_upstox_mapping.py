@@ -2,11 +2,11 @@
 """
 update_upstox_mapping.py
 
-Automatically update ipo_upstox_mapping.csv with new IPO symbols.
+Automatically update MongoDB instrument_keys collection with new IPO symbols.
 This script:
-1. Reads recent IPOs from recent_ipo_symbols.csv
+1. Reads recent IPOs from MongoDB ipos collection
 2. Uses Upstox API to find instrument keys for missing symbols
-3. Updates ipo_upstox_mapping.csv automatically
+3. Updates MongoDB instrument_keys collection automatically
 """
 
 import os
@@ -25,8 +25,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # Configuration
-MAPPING_CSV = "ipo_upstox_mapping.csv"
-RECENT_IPO_CSV = "recent_ipo_symbols.csv"
 UPSTOX_ACCESS_TOKEN = os.getenv('UPSTOX_ACCESS_TOKEN')
 
 def get_isin_from_nse(symbol):
@@ -194,7 +192,7 @@ def update_mapping_from_db():
         logger.error(f"Error updating mapping from DB: {e}")
         return 0
 
-# Keep backward-compatible alias
+# Keep backward-compatible alias (deprecated CSV ref)
 def update_mapping_csv():
     return update_mapping_from_db()
 

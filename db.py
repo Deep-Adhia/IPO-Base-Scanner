@@ -21,6 +21,7 @@ logs_col = db["logs"] if db is not None else None
 instrument_keys_col = db["instrument_keys"] if db is not None else None
 ipos_col = db["ipos"] if db is not None else None
 listing_data_col = db["listing_data"] if db is not None else None
+watchlist_col = db["watchlist"] if db is not None else None
 
 # In-process cache — avoids a DB round-trip on every data fetch
 _instrument_key_cache: dict = {}
@@ -55,13 +56,23 @@ def make_utc(dt: datetime) -> datetime:
 def generate_log_id(scanner: str, symbol: str, action: str, candle_timestamp, version: str, details: dict = None) -> str:
     """Generate deterministic dedupe hash for logs."""
     import json
-    # Ensure candle_timestamp is standard string for hashing in UTC
+    
+    # 1. Standardize timestamp to DATE only for daily deduplication
+    # This prevents duplicate logs if the scanner runs multiple times a day
     if isinstance(candle_timestamp, datetime):
-        ts_str = make_utc(candle_timestamp).isoformat()
+        ts_str = candle_timestamp.strftime('%Y-%m-%d')
     else:
-        ts_str = str(candle_timestamp)
+        ts_str = str(candle_timestamp)[:10] # Extract YYYY-MM-DD
         
-    details_str = json.dumps(details, sort_keys=True) if details else "{}"
+    # 2. Stable Details: Remove volatile metrics (like live price/RSI) from dedupe hash
+    # to ensure that "REJECTED_BREAKOUT" doesn't log 10 times if price moves 0.1%
+    stable_details = {}
+    if details:
+        # Include structural metrics but exclude live price/time-sensitive ones
+        skip_fields = {"current_price", "timestamp", "price_source", "rsi", "score", "candle_timestamp"}
+        stable_details = {k: v for k, v in details.items() if k not in skip_fields}
+        
+    details_str = json.dumps(stable_details, sort_keys=True)
     raw = f"{scanner}_{symbol}_{action}_{ts_str}_{version}_{details_str}"
     return hashlib.sha256(raw.encode('utf-8')).hexdigest()
 
@@ -78,6 +89,7 @@ def ensure_indexes():
     instrument_keys_col.create_index("isin")
     ipos_col.create_index("symbol", unique=True)
     listing_data_col.create_index("symbol", unique=True)
+    watchlist_col.create_index("symbol", unique=True)
 
 def insert_log(scanner: str, symbol: str, action: str, candle_timestamp, details: dict, version: str = SCANNER_VERSION, source: str = "live", log_type: str = "ACCEPTED"):
     global _rejection_guard_warned
@@ -274,10 +286,7 @@ def upsert_instrument_key(ipo_symbol: str, instrument_key: str, isin: str = None
 
 
 def get_instrument_key_mapping() -> dict:
-    """Return a {ipo_symbol: instrument_key} dict, cached for this process lifetime.
-
-    Falls back to ipo_upstox_mapping.csv if MongoDB is unavailable.
-    """
+    """Load symbol to instrument_key mapping from MongoDB instrument_keys collection."""
     global _instrument_key_cache
     if _instrument_key_cache:
         return _instrument_key_cache
@@ -289,18 +298,8 @@ def get_instrument_key_mapping() -> dict:
             logger.info(f"[InstrumentKeys] Loaded {len(_instrument_key_cache)} mappings from MongoDB")
             return _instrument_key_cache
         except Exception as e:
-            logger.warning(f"[InstrumentKeys] MongoDB unavailable, falling back to CSV: {e}")
+            logger.error(f"[InstrumentKeys] MongoDB error: {e}")
 
-    # Graceful CSV fallback so scanners never hard-fail
-    import os, pandas as pd
-    csv_path = "ipo_upstox_mapping.csv"
-    if os.path.exists(csv_path):
-        try:
-            df = pd.read_csv(csv_path, encoding="utf-8")
-            _instrument_key_cache = dict(zip(df["ipo_symbol"], df["instrument_key"]))
-            logger.info(f"[InstrumentKeys] Loaded {len(_instrument_key_cache)} mappings from CSV fallback")
-        except Exception as e:
-            logger.error(f"[InstrumentKeys] CSV fallback also failed: {e}")
     return _instrument_key_cache
 
 def upsert_ipo(symbol: str, listing_date=None, name: str = None, **kwargs):
@@ -369,6 +368,24 @@ def upsert_listing_data(symbol: str, data: dict):
         increment_metric("db_inserts")
     except Exception as e:
         logger.error(f"Failed to upsert listing data for {symbol}: {e}")
+
+
+def upsert_watchlist(symbol: str, data: dict = None):
+    """Upsert a symbol into the watchlist collection."""
+    if watchlist_col is None:
+        return
+    doc = data.copy() if data else {}
+    doc["symbol"] = symbol
+    doc["status"] = doc.get("status", "ACTIVE")
+    doc["updated_at"] = datetime.now(timezone.utc)
+    try:
+        watchlist_col.update_one(
+            {"symbol": symbol},
+            {"$set": doc, "$setOnInsert": {"created_at": datetime.now(timezone.utc)}},
+            upsert=True
+        )
+    except Exception as e:
+        logger.error(f"Failed to upsert watchlist for {symbol}: {e}")
 
 
 def get_all_positions_df(status: str = None):
